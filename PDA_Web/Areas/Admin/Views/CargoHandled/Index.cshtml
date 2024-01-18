@@ -1,0 +1,350 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Cargo Handled</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Cargo Handled</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Add Cargo Handled </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <div class="card-body">
+                        <input type="hidden" id="CargoHandledId" name="CargoHandledId" value="">
+                        <div class="row">
+                            <div class="col-sm-6">
+
+                                <div class="form-group">
+                                    <label for="PortName">Port<span class="text-danger">*</span></label>
+                                    @Html.DropDownList("PortName", new SelectList(ViewBag.Port, "ID", "PortName"), "Please Select" ,new { @class="form-control" })
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+
+                                <div class="form-group" id="terminaldrop">
+                                    <label for="TerminalName">Terminal<span class="text-danger">*</span></label>
+                                    @Html.DropDownList("TerminalName", new SelectList(ViewBag.Terminal, "ID", "TerminalName"), "Please Select", new { @class="form-control", @onchange = "callChangefunc(this.value)" })
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+
+                                <div class="form-group" id="berthdrop">
+                                    <label for="PortName">Berth<span class="text-danger">*</span></label>
+                                    @Html.DropDownList("BerthName", new SelectList(ViewBag.Berth, "ID", "BerthName"), "Please Select", new { @class="form-control" })
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+
+                                <div class="form-group">
+                                    <label for="PortName">Cargo<span class="text-danger">*</span></label>
+                                    @Html.ListBox("CargoName", new MultiSelectList(ViewBag.Cargo,  "ID", "CargoName"),  new { @class = "form-control"})
+
+                                    @Html.DropDownList("CargoNameEdit", new SelectList(ViewBag.Cargo, "ID", "CargoName"), "Please Select", new { @class="form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="Status">
+                                        <label class="form-check-label" for="Status">Status</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-primary" onclick="cargoHandledSave()">Submit</button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Cargo Handled List</h3>
+                    </div>
+                    <div class="card-body">
+                        <label for="">Filters:</label>
+                        <div class="row" style="padding-bottom: 10px;">
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="PortNameFilter">Port Name</label>
+                                @Html.DropDownList("PortNameFilter", new SelectList(ViewBag.Port, "ID", "PortName"), "Please Select" ,new { @class="form-control" })
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="TerminalNamefilter">Terminal Name</label>
+                                @Html.DropDownList("TerminalNamefilter", new SelectList(ViewBag.Terminal, "ID", "TerminalName"), "Please Select", new { @class="form-control" })
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="BerthNameFilter">Berth Name</label>
+                                @Html.DropDownList("BerthNameFilter", new SelectList(ViewBag.Berth, "ID", "BerthName"), "Please Select", new { @class="form-control" })
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="CargoNameFilter">Cargo Name</label>
+                                @Html.DropDownList("CargoNameFilter", new SelectList(ViewBag.Cargo, "ID", "CargoName"), "Please Select", new { @class="form-control" })
+                            </div>
+                        </div>
+                        <div id="viewAll" class="table-responsive"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+@section Scripts
+    {
+    <script>
+        function cargoHandledSave() {
+            debugger
+            var cargoHandled;
+
+            cargoHandled = {
+                "ID": $('#CargoHandledId').val(),
+                "PortID": $('#PortName').val(),
+                "TerminalID": $('#TerminalName').val(),
+                "BerthID": $('#BerthName').val(),
+                "CargoIDs": $('#CargoName').val(),
+                "CargoID": $('#CargoNameEdit').val(),
+            }
+            if ($('#PortName').val() == "") {
+                toastr.error("Please enter port name.", 'Error Alert');
+            }
+            else if ($('#TerminalName').val() == "") {
+                toastr.error("Please enter terminal name.", 'Error Alert');
+            }
+            else if ($('#BerthName').val() == "") {
+                toastr.error("Please enter berth name.", 'Error Alert');
+            }
+            //else if ($('#CargoHandledId').val() != "" && $('#CargoHandledId').val() > 0) {
+            //    if ($('#CargoNameEdit').val() == "") {
+            //        toastr.error("Please enter cargo name.", 'Error Alert');
+            //    }
+            //}
+            //else if ($('#CargoHandledId').val() == "" && $('#CargoHandledId').val() == 0) {
+            //    if ($('#CargoName').val() == "") {
+            //        toastr.error("Please enter cargo name.", 'Error Alert');
+            //    }
+            //}
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/CargoHandled/CargoHandledSave",
+                    data: cargoHandled,
+                    success: function (data) {
+                        if (!data.proceed) {
+                            return;
+                        }
+                        else {
+                            loadData();
+                        }
+
+                    },
+                    error: function () {
+                    }
+                });
+                $('#CargoHandledId').val("");
+                $('#PortName').val("");
+                $('#TerminalName').val("");
+                $('#BerthName').val("");
+                $('#CargoName').val("");
+                $('#CargoNameEdit').val("");
+                $('#CargoName').show();
+                $('#CargoNameEdit').hide();
+            }
+        }
+
+        function deleteCargoHandled(id) {
+            var cargoHandled;
+            cargoHandled = {
+                "ID": id,
+                "PortID": $('#PortName').val(),
+                "TerminalID": $('#TerminalName').val(),
+                "BerthID": $('#BerthName').val(),
+                "CargoID": $('#CargoName').val(),
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/CargoHandled/DeleteCargoHandled",
+                data: cargoHandled,
+                success: function (data) {
+                    loadData();
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function editCargoHandled(id) {
+            $('#CargoHandledId').val(id);
+
+            var cargoHandled;
+
+            cargoHandled = {
+                "ID": id,
+                "PortID": $('#PortName').val(),
+
+                "TerminalID": $('#TerminalName').val(),
+                "BerthID": $('#BerthName').val(),
+                "CargoID": $('#CargoName').val(),
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/CargoHandled/EditCargoHandled",
+                data: cargoHandled,
+                success: function (data) {
+                    debugger;
+                    $('#CargoNameEdit').show();
+                    $('#CargoName').hide();
+                    $('#PortName').val(data.cargoHandled.portID);
+                    $('#TerminalName').val(data.cargoHandled.terminalID);
+                    $('#BerthName').val(data.cargoHandled.berthID);
+                    $('#CargoNameEdit').val(data.cargoHandled.cargoIDs);
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function callChangefunc(val) {
+            var portid = $('option:selected', this).val();
+            debugger;
+            var cargoHandled;
+            cargoHandled = {
+                "PortID": portid,
+                "TerminalID": $('#TerminalName').val(),
+                "BerthID": $('#BerthName').val(),
+                "CargoID": $('#CargoName').val(),
+            }
+            $.ajax({
+                type: "GET",
+                url: "/Admin/CargoHandled/TerminalNameOnchange",
+                data: cargoHandled,
+                dataType: "HTML",
+                success: function (data) {
+
+                    $("#berthdrop").html(data);
+
+                },
+                error: function () {
+                }
+            });
+        }
+        $(document).ready(function () {
+            $('#CargoName').show();
+            $('#CargoNameEdit').hide();
+            $('#CargoMainMenu').addClass('active');
+            $('#CargoHandledMenu').addClass('active');
+            $('#CargoHandledMenu').parent().closest('ul').parent().addClass('menu-open');
+
+            $('#Status').prop("checked", true);
+            loadData();
+            $("#PortNameFilter").change(function () {
+                loadData();
+            });
+            $("#TerminalNamefilter").change(function () {
+                loadData();
+            });
+            $("#BerthNameFilter").change(function () {
+                loadData();
+            });
+            $("#CargoNameFilter").change(function () {
+                loadData();
+            });
+            $("#PortName").change(function () {
+                var portid = $('option:selected', this).val();
+                debugger;
+                var cargoHandled;
+                cargoHandled = {
+                    "PortID": portid,
+                    "TerminalID": $('#TerminalName').val(),
+                    "BerthID": $('#BerthName').val(),
+                    "CargoID": $('#CargoName').val(),
+                }
+
+                $.ajax({
+
+                    type: "GET",
+                    url: "/Admin/CargoHandled/PortNameOnchange",
+                    data: cargoHandled,
+                    dataType: "HTML",
+                    success: function (data) {
+
+                        $("#terminaldrop").html(data);
+
+                    },
+                    error: function () {
+                    }
+                });
+            });
+        });
+
+
+
+
+
+        function loadData() {
+            var CargoHandled;
+
+            CargoHandled = {
+                "PortID": $("#PortNameFilter").val(),
+                "TerminalID": $("#TerminalNamefilter").val(),
+                "BerthID": $("#BerthNameFilter").val(),
+                "CargoID": $("#CargoNameFilter").val(),
+            }
+            //$('#viewAll').load('/CargoHandled/LoadAll');
+            $.ajax({
+                type: "GET",
+                url: "/Admin/CargoHandled/LoadAll",
+                data: CargoHandled,
+                dataType: "HTML",
+                success: function (data) {
+                    $("#viewAll").html(data);
+                },
+                error: function () {
+                }
+            });
+        }
+    </script>
+
+}

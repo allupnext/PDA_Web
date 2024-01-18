@@ -1,0 +1,238 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>State</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">State</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Add State </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <div class="card-body">
+                        <input type="hidden" id="StateId" name="StateId" value="">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="Country">Country<span class="text-danger">*</span></label>
+                                    @Html.DropDownList("Country", new SelectList(ViewBag.Country, "ID", "CountryName"),"Please Select" ,new { @class="form-control" })
+                                    @*<input type="text" class="form-control" id="Country" placeholder="Country">*@
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="PortName">State Name<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="StateName" placeholder="State Name" onchange="onStateChange(this.val)">
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <!-- /.card-body -->
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary" onclick="StateSave()">Submit</button>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">State List</h3>
+                    </div>
+                    <div class="card-body">
+                        <label for="">Filters:</label>
+                        <div class="row" style="padding-bottom: 10px;">
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="StateNameFilter">State Name</label>
+                                <input type="text" class="form-control" id="StateNameFilter" placeholder="State Name">
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="StateNameFilter">Country</label>
+                                @Html.DropDownList("CountryFilter", new SelectList(ViewBag.Country, "ID", "CountryName"),"Please Select" ,new { @class="form-control" })
+                            </div>
+                        </div>
+                        <div id="viewAll" class="table-responsive"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+            $('#MasterMenu').addClass('active');
+            $('#StateMenu').addClass('active');
+            $('#StateMenu').parent().closest('ul').parent().addClass('menu-open');
+            loadData();
+
+            $("#StateNameFilter").change(function () {
+                loadData();
+            });
+
+            $("#CountryFilter").change(function () {
+                loadData();
+            });
+        });
+
+        function onStateChange(val) {
+            $('#StateName').css("border", "1px solid #ced4da");
+        }
+        function StateSave() {
+            var states;
+
+            states = {
+                "ID": $('#StateId').val(),
+                "CountryId": $('#Country').val(),
+                "StateName": $('#StateName').val()
+            }
+            if ($('#StateName').val() == "") {
+                toastr.error("Please enter state name.", 'Error Alert');
+                $('#StateName').css("border-color", "Red");
+            }
+            else if ($('#Country').val() == "") {
+                toastr.error("Please select country.", 'Error Alert');
+                //$('#Country').css("border-color", "Red");
+            }
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/State/stateSave",
+                    data: states,
+                    success: function (data) {
+                        if (!data.proceed) {
+                            return;
+                        }
+                        else {
+                            loadData();
+                        }
+
+                    },
+                    error: function () {
+                    }
+                });
+                $('#StateName').val("");
+                $('#Country').val("");
+                $('#StateId').val("");
+            }
+        }
+
+        function deleteState(id) {
+
+            var states;
+
+            states = {
+                "ID": id,
+                "CountryId": $('#Country').val(),
+                "StateName": $('#StateName').val()
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/state/deletestate",
+                data: states,
+                success: function (data) {
+                    loadData();
+                },
+                error: function () {
+                }
+            });
+
+        }
+
+
+        function editState(id) {
+            //Id
+            $('#StateId').val(id);
+            $('#CountryId').val(id);
+
+            var states;
+
+            states = {
+                "ID": $('#StateId').val(),
+                "CountryId": $('#Country').val(),
+                "StateName": $('#StateName').val()
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/State/editState",
+                data: states,
+                success: function (data) {
+                    debugger;
+                    $('#StateName').val(data.states.stateName);
+                    $('#Country').val(data.states.countryId);
+                  
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function loadData() {
+            //$('#viewAll').load('/State/LoadAll');
+            var State;
+            debugger;
+            State = {
+                "StateID": $('#StateId').val(),
+                "StateName": $("#StateNameFilter").val(),
+                "CountryId": $("#CountryFilter").val()
+            }
+            $.ajax({
+
+                type: "GET",
+                url: "/Admin/State/LoadAll",
+                data: State,
+                dataType: "HTML",
+                success: function (data) {
+
+                    $("#viewAll").html(data);
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+    </script>
+
+}

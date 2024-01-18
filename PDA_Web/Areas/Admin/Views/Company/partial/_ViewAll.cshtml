@@ -1,0 +1,151 @@
+﻿@model IEnumerable<PDAEstimator_Domain.Entities.CompanyMasterList>
+<style>
+    table td {
+        width: 110px;
+        word-wrap: break-word;
+    }
+</style>
+<table class="table table-bordered table-striped" id="CompanyMasterTable">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CompanyName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CompanyLog)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address1)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address2)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Country)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.State)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.City)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Telephone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AlterTel)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompanyName)
+                </td>
+                <td>
+                    <img src="/companylogo/@item.CompanyLog"
+                     height="80" width="80" id="DownloadFile"
+                     asp-append-version="true" >
+                    @*@Html.DisplayFor(modelItem => item.CompanyLog)*@
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address1)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address2)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CountryName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StateName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CityName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Telephone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AlterTel)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @if (item.Status == true)
+                    {
+                        <span class="badge badge-success">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge badge-danger">In Active</span>
+                    }
+                </td>
+                <td>
+
+                    <a class="btn btn-info btn-sm" onclick="editCompany(@item.CompanyId)">
+                        <i class="fas fa-pencil-alt">
+                        </i>
+                        Edit
+                    </a>
+                    <a class="btn btn-danger btn-sm" onclick="deleteCompany(@item.CompanyId)">
+                        <i class="fas fa-trash">
+                        </i>
+                        Delete
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<!-- jQuery -->
+<script src="~/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/plugins/datatables/jquery.datatables.js"></script>
+<script src="~/plugins/datatables/jquery.datatables.min.js"></script>
+<script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="~/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="~/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="~/plugins/jszip/jszip.min.js"></script>
+<script src="~/plugins/pdfmake/pdfmake.min.js"></script>
+<script src="~/plugins/pdfmake/vfs_fonts.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+<script>
+
+
+    $(function () {
+        $("#CompanyMasterTable").DataTable({
+            "columns": [
+                { "width": "8%" },
+                { "width": "8%" },
+                { "width": "8%" },
+                { "width": "8%" },
+                { "width": "8%" },
+                { "width": "8%" },
+                { "width": "8%" },
+                { "width": "8%" },
+                { "width": "8%" },
+                { "width": "8%" },
+                { "width": "8%" },
+                { "width": "12%" }
+            ],
+            "responsive": false, "lengthChange": false, "autoWidth": false,
+            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        }).buttons().container().appendTo('#CompanyMasterTable_wrapper .col-md-6:eq(0)');
+    });
+</script>

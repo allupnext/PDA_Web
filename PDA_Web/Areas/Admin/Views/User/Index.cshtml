@@ -1,0 +1,418 @@
+﻿    @{
+    ViewData["Title"] = "Index";
+}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>User</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">User</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Add User </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <div class="card-body">
+                        <input type="hidden" id="UserId" name="UserId" value="">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="PortName">Salutation </label>
+                                    <select class="form-control" id="Salutation">
+                                        <option value="">Please Select</option>
+                                        <option value="Mr">Mr</option>
+                                        <option value="Mrs">Mrs</option>
+                                        <option value="Miss">Ms</option>
+                                        <option value="Miss">Dr</option>
+                                        <option value="Miss">Captain</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+
+                                <div class="form-group">
+                                    <label for="PortName">First Name<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="FirstName" placeholder="First Name" onchange="onUserChange(this.val,1)">
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+
+                                <div class="form-group">
+                                    <label for="PortName">Last Name<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="LastName" placeholder="Last Name" onchange="onUserChange(this.val,2)">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+
+                                <div class="form-group">
+                                    <label for="PortName">Employ Code(UserName)<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="EmployCode" placeholder="EmployCode" onchange="onUserChange(this.val,3)">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="PortName">UserPassword<span class="text-danger">*</span></label>
+                                    <input type="password" class="form-control" id="UserPassword" placeholder="UserPassword" onkeyup="checkPasswordMatch();" onchange="onUserChange(this.val,4)">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="PortName">Confirm Password <span class="text-danger">*</span></label>
+                                    <input type="password" class="form-control" id="ConfirmPassword" placeholder="ConfirmPassword" onkeyup="checkPasswordMatch();">
+                                    <div class="registrationFormAlert" id="divCheckPasswordMatch"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="PortName">Mobile<span class="text-danger">*</span> </label>
+                                    <input type="text" class="form-control" id="MobileNo" placeholder="MobileNo" onchange="onUserChange(this.val,5)">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="Role">Role<span class="text-danger">*</span></label>
+                                    @Html.DropDownList("Role", new SelectList(ViewBag.Roles, "RoleID", "RoleName"), "Please Select", new { @class = "form-control" })
+                                    @*<input type="text" class="form-control" id="Country" placeholder="Country">*@
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="PrimaryCompany">Primary Company<span class="text-danger">*</span></label>
+                                    @Html.DropDownList("PrimaryCompany", new SelectList(ViewBag.PrimaryCompany, "CompanyId", "CompanyName"), "Please Select", new { @class = "form-control"})
+                                </div>
+
+                            </div>
+
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="SecondaryCompany">Secondary Company</label>
+                                    @Html.ListBox("SecondaryCompany", new MultiSelectList(ViewBag.SecondaryCompany,  "CompanyId", "CompanyName"),  new { @class = "form-control"})
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="UserStatus">
+                                    <label class="form-check-label" for="CargoTypeStatus">Status</label>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                        <!-- /.card-body -->
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary" onclick="userSave()">Submit</button>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">User List</h3>
+                    </div>
+                    <div class="card-body">
+                        <label for="">Filters:</label>
+                        <div class="row" style="padding-bottom: 10px;">
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="NameFilter">Name</label>
+                                <input type="text" class="form-control" id="NameFilter" placeholder="Name">
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="RoleFilter">Role</label>
+                                @Html.DropDownList("RoleFilter", new SelectList(ViewBag.Roles, "RoleID", "RoleName"), "Please Select", new { @class = "form-control" })
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="PrimaryCompanyFilter">Primary Company</label>
+                                @Html.DropDownList("PrimaryCompanyFilter", new SelectList(ViewBag.PrimaryCompany, "CompanyId", "CompanyName"), "Please Select", new { @class = "form-control"})
+                            </div>
+                        </div>
+                    <div id="viewAll" class="table-responsive"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+            $('#UserMainMenu').addClass('active');
+            $('#UsersMenu').addClass('active');
+            $('#UsersMenu').parent().closest('ul').parent().addClass('menu-open');
+            $('#Status').prop("checked", true);
+            loadData();
+            $("#NameFilter").change(function () {
+                loadData();
+            });
+            $("#RoleFilter").change(function () {
+                loadData();
+            });
+            $("#PrimaryCompanyFilter").change(function () {
+                loadData();
+            });
+        });
+
+        function checkPasswordMatch() {
+            var password = $("#UserPassword").val();
+            var confirmPassword = $("#ConfirmPassword").val();
+
+            if (password != confirmPassword)
+                $("#divCheckPasswordMatch").html("Passwords do not match!").css("color", "red");
+            else
+                $("#divCheckPasswordMatch").html("Passwords match.").css("color", "green");
+        }
+
+        function onUserChange(val, inputVal) {
+            if (inputVal == 1) {
+                $('#FirstName').css("border", "1px solid #ced4da");
+            }
+            else if (inputVal == 2) {
+                $('#LastName').css("border", "1px solid #ced4da");
+            }
+            else if (inputVal == 3) {
+                $('#EmployCode').css("border", "1px solid #ced4da");
+            }
+            else if (inputVal == 4) {
+                $('#UserPassword').css("border", "1px solid #ced4da");
+            }
+            else if (inputVal == 5) {
+                $('#MobileNo').css("border", "1px solid #ced4da");
+            }
+        }
+
+        function userSave() {
+            var Status = false;
+            if ($('#Status').is(":checked")) {
+                Status = true;
+            }
+            var users;
+
+            users = {
+                "ID": $('#UserId').val(),
+                "Salutation": $('#Salutation').val(),
+
+                "FirstName": $('#FirstName').val(),
+                "LastName": $('#LastName').val(),
+                "EmployCode": $('#EmployCode').val(),
+                "UserPassword": $('#UserPassword').val(),
+                "MobileNo": $('#MobileNo').val(),
+                "RoleID": $('#Role').val(),
+                "PrimaryCompanyId": $('#PrimaryCompany').val(),
+                "SecondaryCompanyId": $('#SecondaryCompany').val(),
+                "UserStatus": Status
+            }
+            if ($('#Salutation').val() == "") {
+                toastr.error("Please select salutation.", 'Error Alert');
+            }
+            else if ($('#FirstName').val() == "") {
+                toastr.error("Please enter first name.", 'Error Alert');
+                $('#FirstName').css("border-color", "Red");
+            }
+            else if ($('#LastName').val() == "") {
+                toastr.error("Please enter last name.", 'Error Alert');
+                $('#LastName').css("border-color", "Red");
+            }
+            else if ($('#EmployCode').val() == "") {
+                toastr.error("Please enter employ code.", 'Error Alert');
+                $('#EmployCode').css("border-color", "Red");
+            }
+            else if ($('#UserPassword').val() == "") {
+                toastr.error("Please enter user password .", 'Error Alert');
+                $('#UserPassword').css("border-color", "Red");
+            }
+            else if ($('#MobileNo').val() == "") {
+                toastr.error("Please enter mobile no", 'Error Alert');
+                $('#MobileNo').css("border-color", "Red");
+            }
+            else if ($('#PrimaryCompany').val() == "") {
+                toastr.error("Please primary company.", 'Error Alert');
+                $('#PrimaryCompany').css("border-color", "Red");
+            }
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/User/UserSave",
+                    data: users,
+                    success: function (data) {
+                        if (!data.proceed) {
+                            return;
+                        }
+                        else {
+                            loadData();
+                        }
+
+                    },
+                    error: function () {
+                    }
+                });
+                $('#UserId').val("");
+                $('#Salutation').val("");
+                $('#FirstName').val("");
+                $('#LastName').val("");
+                $('#EmployCode').val("");
+                $('#UserPassword').val("");
+                $('#MobileNo').val("");
+                $('#Role').val("");
+
+                $('#PrimaryCompany').val("");
+            }
+        }
+
+
+
+        function deleteUser(id) {
+
+            var user;
+
+            user = {
+                "ID": id,
+                "FirstName": $('#FirstName').val(),
+                "LastName": $('#LastName').val(),
+                "EmployCode": $('#EmployCode').val(),
+                "UserPassword": $('#UserPassword').val(),
+                "MobileNo": $('#MobileNo').val(),
+                "Salutation": $('#Salutation').val(),
+                "RoleID": $('#Role').val(),
+                //"UserStatus": Status
+
+
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/User/DeleteUser",
+                data: user,
+                success: function (data) {
+                    loadData();
+                },
+                error: function () {
+                }
+            });
+
+        }
+
+
+
+
+        function editUser(id) {
+            //Id
+            $('#UserId').val(id);
+
+            var user;
+
+            user = {
+                "ID": $('#UserId').val(),
+                "FirstName": $('#FirstName').val(),
+                "LastName": $('#LastName').val(),
+                "EmployCode": $('#EmployCode').val(),
+                "UserPassword": $('#UserPassword').val(),
+                "MobileNo": $('#MobileNo').val(),
+                "Salutation": $('#Salutation').val(),
+                "RoleID": $('#Role').val(),
+                "PrimaryCompanyId": $('#PrimaryCompany').val(),
+                "secondaryCompanyId": $('#SecondaryCompany').val()
+
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/User/EditFullUser",
+                //url: "/Admin/User/EditUser",
+                data: user,
+                success: function (data) {
+                    debugger;
+                    $('#FirstName').val(data.user.firstName);
+                    $('#LastName').val(data.user.lastName);
+                    $('#EmployCode').val(data.user.employCode);
+                    $('#UserPassword').val(data.user.userPassword);
+                    $('#MobileNo').val(data.user.mobileNo);
+                    $('#Salutation').val(data.user.salutation);
+                    $('#Role').val(data.user.roleId);
+                    $('#PrimaryCompany').val(data.user.primaryCompanyId);
+                    $('#SecondaryCompany').val(data.user.secondaryCompanyId);
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function loadData() {
+            var user;
+            debugger
+            user = {
+                "Salutation": $('#Salutation').val(),
+                "FirstName": $('#FirstName').val(),
+                "LastName": $('#LastName').val(),
+                "RoleID": $('#RoleFilter').val(),
+                "PrimaryCompanyId": $('#PrimaryCompanyFilter').val()
+
+            }
+            //$('#viewAll').load('/User/LoadAll');
+            $.ajax({
+                type: "GET",
+                url: "/Admin/User/LoadAll",
+                data:user,
+                dataType: "HTML",
+                success: function (data) {
+                    $("#viewAll").html(data);
+                },
+                error: function () {
+                }
+            });
+        }
+
+    </script>
+
+}

@@ -1,0 +1,2 @@
+﻿<label for="State">State<span class="text-danger">*</span></label>
+@Html.DropDownList("State", new SelectList(ViewBag.State, "ID", "StateName"), "Please select", new { @class = "form-control", @onchange = "callChangefunc(this.value)" })

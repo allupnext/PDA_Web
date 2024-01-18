@@ -1,0 +1,386 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+<style>
+    .form-check-label {
+        margin-right: 20px;
+    }
+</style>
+
+
+
+
+<style>
+    .form-check-label {
+        padding-right: 10px;
+    }
+</style>
+<link href="~/plugins/jquery-ui/jquery-ui.min.css" rel="stylesheet" />
+<link href="~/plugins/jquery-ui/jquery-ui.structure.min.css" rel="stylesheet" />
+<link href="~/plugins/jquery-ui/jquery-ui.structure.css" rel="stylesheet" />
+<link href="~/plugins/jquery-ui/jquery-ui.theme.min.css" rel="stylesheet" />
+<link href="~/plugins/jquery-ui/jquery-ui.theme.css" rel="stylesheet" />
+<link href="~/plugins/jquery-ui/jquery-ui.css" rel="stylesheet" />
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Tax</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Tax</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+            
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Add Tax </h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <!-- form start -->
+                        <div class="card-body">
+                            <input type="hidden" id="TaxID" name="TaxID" value="">
+                            <div class="row">
+
+                                <div class="col-sm-6">
+
+                                    <div class="form-group">
+                                    <label for="PortName">Tax Name<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="TaxName" placeholder="Tax Name" onchange="onTaxChange(this.val,1)">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+
+                                    <div class="form-group">
+                                    <label for="PortName">Tax Rate (%)<span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="TaxRate" placeholder="Enter Tax Rate" onchange="onTaxChange(this.val,2)">
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            
+                            <div class="row">
+
+                                <div class="col-sm-6">
+
+                                    <div class="form-group">
+                                    <label for="FromDate">From Date<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="FromDate" onchange="onTaxChange(this.val,4)">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+
+                                    <div class="form-group">
+                                    <label for="ToDate">To Date<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="ToDate" onchange="onTaxChange(this.val,5)">
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
+                            <div class="row">
+                                <div class="col-sm-6">
+
+                                    <div class="form-group">
+                                    <label for="CombineTax" class="form-check-label">CombineTax@*<span class="text-danger">*</span>*@</label>
+                                    <input type="checkbox" class="form-check-input" id="CombineTax" onclick="toggleDropdown()"> <br />
+                                   
+                                    </div>
+                                </div>
+
+                       
+                                <div class="col-sm-6">
+
+                                    <div class="form-group">
+                                    <label for="PortName">CombineTax@*<span class="text-danger">*</span>*@</label>
+                                        @Html.DropDownList("CombineTaxId", new SelectList(ViewBag.Taxs, "ID", "TaxName"), new { @class="form-control", id="CombineTaxId" })
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- /.card-body -->
+                        </div>
+
+
+
+                        <div class="card-footer">
+                            <button class="btn btn-primary" onclick="taxSave()">Submit</button>
+                        </div>
+
+                    </div>
+              
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Tax List</h3>
+                    </div>
+                    <div class="card-body">
+                        <label for="">Filters:</label>
+                        <div class="row" style="padding-bottom: 10px;">
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="TaxNameFilter">Tax Name</label>
+                                <input type="text" class="form-control" id="TaxNameFilter" placeholder="Tax Name">
+                            </div>
+                        </div>
+                    <div id="viewAll" class="table-responsive"></div>
+                </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+
+@section Scripts
+    {
+    <script>
+
+        $(function () {
+            $("#FromDate").datepicker({
+                dateFormat: 'dd/mm/yy',//check change
+                changeMonth: true,
+                changeYear: true
+            });
+
+            $("#ToDate").datepicker({
+                dateFormat: 'dd/mm/yy',//check change
+                changeMonth: true,
+                changeYear: true
+            });
+        });
+        $(document).ready(function () {
+            $('#FinanceMaster').addClass('active');
+            $('#TaxMenu').addClass('active');
+            $('#TaxMenu').parent().closest('ul').parent().addClass('menu-open');
+            $('#CombineTax').prop("checked", false);
+            var dropdown = $("#CombineTaxId").closest(".col-sm-6");
+            dropdown.hide();
+            loadData();
+            $("#TaxNameFilter").change(function () {
+                loadData();
+            });
+        });
+
+        function toggleDropdown() {
+            var checkbox = document.getElementById("CombineTax");
+            var dropdown = $("#CombineTaxId").closest(".col-sm-6");
+          
+            if (checkbox.checked) {
+                dropdown.show();
+            } else {
+                dropdown.hide();
+            }
+        }
+
+        function onTaxChange(val,inputVal) {
+            if(inputVal==1){
+                $('#TaxName').css("border", "1px solid #ced4da");
+            }
+            else if(inputVal==2){
+                $('#TaxRate').css("border", "1px solid #ced4da");
+            }
+            else if(inputVal==3){
+                $('#CombineTaxID').css("border", "1px solid #ced4da");
+            }
+            else if(inputVal==4){
+                $('#FromDate').css("border", "1px solid #ced4da");
+            }
+            else if(inputVal==5){
+                $('#ToDate').css("border", "1px solid #ced4da");
+            }
+        }
+
+        function taxSave() {
+            debugger
+            var taxs;
+            taxs = {
+                "ID": $('#TaxID').val(),
+                "TaxName": $('#TaxName').val(),
+                "TaxRate": $('#TaxRate').val(),
+                "CombineTaxID": $('#CombineTaxId').val(),
+                //"FromDate": $('#FromDate').val(),
+                //"ToDate": $('#ToDate').val()
+                "FromDate_String": $("#FromDate").val(),
+                "ToDate_String": $("#ToDate").val(),
+            }
+
+            if ($('#TaxName').val() == "") {
+                toastr.error("Please enter tax name.", 'Error Alert');
+                $('#TaxName').css("border-color", "Red");
+            }
+            else if ($('#TaxRate').val() == "") {
+                toastr.error("Please enter tax rate.", 'Error Alert');
+                $('#TaxRate').css("border-color", "Red");
+            }
+            //else if ($('#CombineTaxID').val() == "") {
+            //    toastr.error("Please enter combine taxid.", 'Error Alert');
+            //    $('#CombineTaxID').css("border-color", "Red");
+            //}
+            else if ($('#FromDate').val() == "") {
+                toastr.error("Please select from date.", 'Error Alert');
+                $('#FromDate').css("border-color", "Red");
+            }
+            else if ($('#ToDate').val() == "") {
+                toastr.error("Please select to date.", 'Error Alert');
+                $('#ToDate').css("border-color", "Red");
+            }
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/Tax/TaxSave",
+                    data: taxs,
+                    success: function (data) {
+                        if (!data.proceed) {
+                            return;
+                        }
+                        else {
+                            loadData();
+                        }
+
+                    },
+                    error: function () {
+                    }
+                });
+                $('#TaxID').val("");
+                $('#TaxName').val("");
+                $('#TaxRate').val("");
+                $('#CombineTaxId').val("");
+                $('#FromDate').val("");
+                $('#ToDate').val("");
+            }
+        }
+
+        function deleteTax(id) {
+
+            var taxs;
+
+            taxs = {
+                "ID": id,
+                "TaxName": $('#TaxName').val(),
+                "TaxRate": $('#TaxRate').val(),
+                "CombineTaxID": $('#CombineTaxId').val(),
+                "FromDate": $('#FromDate').val(),
+                "ToDate": $('#ToDate').val()
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Tax/DeleteTax",
+                data: taxs,
+                success: function (data) {
+                    loadData();
+                },
+                error: function () {
+                }
+            });
+
+        }
+
+
+        function editTax(id) {
+            $('#TaxID').val(id);
+
+            var taxs;
+
+            taxs = {
+                "ID": id,
+                "TaxName": $('#TaxName').val(),
+                "TaxRate": $('#TaxRate').val(),
+                "CombineTaxID": $('#CombineTaxId').val(),
+
+                //"CombineTaxID": $('#TaxName').val(),
+                 "FromDate": $('#FromDate').val(),
+                 "ToDate": $('#ToDate').val()
+
+            }
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Tax/EditTax",
+                data: taxs,
+                success: function (data) {
+                    debugger;
+                    $('#TaxName').val(data.taxs.taxName);
+                    $('#TaxRate').val(data.taxs.taxRate);
+                    $('#CombineTaxId').val(data.taxs.combineTaxID);
+                    // $('#FromDate').val(data.taxs.fromDate);
+                    // $('#ToDate').val(data.taxs.toDate);
+                    var fromDate = new Date(data.taxs.fromDate);
+                    var formattedDate = formatDate(fromDate);
+                    $("#FromDate").val(formattedDate);
+                    var toDate = new Date(data.taxs.toDate);
+                    var formattedtoDate = formatDate(toDate);
+                    $('#ToDate').val(formattedtoDate);
+
+                },
+                error: function () {
+                }
+            });
+        }
+        function formatDate(date) {
+            alert("hii");
+            var day = date.getDate();
+            var month = date.getMonth() + 1; //Months are zero-based
+            var year = date.getFullYear();
+
+            // Pad the day and month with leading zeros, if necessary
+            day = (day < 10) ?'0' + day : day;
+            month = (month < 10) ?'0' + month : month;
+
+            return day + '/' + month + '/' + year;
+        }
+
+
+        function loadData() {
+            var tax;
+
+            tax = {
+                "TaxName": $("#TaxNameFilter").val()
+            }
+            //$('#viewAll').load('/Tax/LoadAll');
+            $.ajax({
+                type: "GET",
+                url: "/Admin/Tax/LoadAll",
+                data:tax,
+                dataType: "HTML",
+                success: function (data) {
+                    $("#viewAll").html(data);
+                },
+                error: function () {
+                }
+            });
+        }
+
+    </script>
+
+}

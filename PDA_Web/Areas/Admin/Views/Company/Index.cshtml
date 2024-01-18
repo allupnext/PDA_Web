@@ -1,0 +1,493 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Company</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Company</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Form for Adding/Editing CompanyMaster -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Add Company Details</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Form start -->
+                    <div class="card-body">
+                        <input type="hidden" id="CompanyId" name="CompanyId" value="">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="CompanyName">Company Name<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="CompanyName" placeholder="Company Name">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="CompanyLog">Company Logo<span class="text-danger">*</span></label>
+                                    <input type="file" class="" id="CompanyLog" onchange="uploadFiles('CompanyLog');">
+                                    @*<input type="file" class="form-control" id="" placeholder="Company Logo">*@
+                                    <input type="hidden" id="ResumeFileName" name="ResumeFileName" />
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="Address1">Address 1<span class="text-danger">*</span></label>
+                                    <textarea type="text" cols="2" rows="3" class="form-control" id="Address1" placeholder="Address Line 1"></textarea>
+                                    @*<input type="text" class="form-control" id="Address1" placeholder="Address 1">*@
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="Address2">Address 2</label>
+                                    <textarea type="text" cols="2" rows="3" class="form-control" id="Address2" placeholder="Address Line 2"></textarea>
+                                    @*<input type="text" class="form-control" id="Address2" placeholder="Address 2">*@
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="Country">Country<span class="text-danger">*</span></label>
+                                    @Html.DropDownList("Country", new SelectList(ViewBag.Country, "ID", "CountryName"), "Please Select", new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group" id="Countrydrop">
+                                    <label for="State">State<span class="text-danger">*</span></label>
+                                    @Html.DropDownList("State", new SelectList(ViewBag.State, "ID", "StateName"), "Please select", new { @class = "form-control", @onchange = "callChangefunc(this.value)" })
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group" id="Statedrop">
+                                    <label for="PortName">City<span class="text-danger">*</span></label>
+                                    @Html.DropDownList("City", new SelectList(ViewBag.City, "ID", "CityName"), "Please select", new { @class = "form-control" })
+
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="Telephone">Telephone<span class="text-danger">*</span></label>
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            @Html.DropDownList("CountryCode",new SelectList(ViewBag.CountryCode,"CountryCode"), new { @class = "form-control", style= "width:80px;"})
+                                        </div>
+                                        <div class="col-sm-7">
+                                            <input type="tel" class="form-control" id="Telephone" placeholder="Mobile Number">
+                                        </div>
+                                    </div>
+                                    @*<input type="text" class="form-control" id="Telephone" placeholder="Telephone">*@
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="AlterTel">Alternate Telephone</label>
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            @Html.DropDownList("CountryCode",new SelectList(ViewBag.CountryCode,"CountryCode"), new { @class = "form-control", style= "width:80px;"})
+                                        </div>
+                                        <div class="col-sm-7">
+                                            <input type="tel" class="form-control" id="AlterTel" placeholder="Mobile Number">
+                                        </div>
+                                    </div>
+                                    @*<input type="text" class="form-control" id="AlterTel" placeholder="Alternate Telephone">*@
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="Email">Email<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="Email" placeholder="Email">
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="FormulaAttributeStatus">
+                                    <label class="form-check-label" for="FormulaAttributeStatus">Status</label>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer">
+                        <button class="btn btn-primary" onclick="companySave()">Submit</button>
+                    </div>
+                </div>
+                <!-- End Form for Adding/Editing CompanyMaster -->
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Company List</h3>
+                    </div>
+                    <div class="card-body">
+                        <label for="">Filters:</label>
+                        <div class="row" style="padding-bottom: 10px;">
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="CompanyNameFilter">Company Name</label>
+                                <input type="text" class="form-control" id="CompanyNameFilter" placeholder="Company Name">
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="CompanyNameFilter">Country</label>
+                                @Html.DropDownList("CountryFilter", new SelectList(ViewBag.Country, "ID", "CountryName"), "Please Select", new { @class = "form-control" })
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="CompanyNameFilter">State</label>
+                                @Html.DropDownList("StateFilter", new SelectList(ViewBag.State, "ID", "StateName"), "Please select", new { @class = "form-control", @onchange = "callChangefunc(this.value)" })
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="CompanyNameFilter">City</label>
+                                @Html.DropDownList("CityFilter", new SelectList(ViewBag.City, "ID", "CityName"), "Please select", new { @class = "form-control" })
+                            </div>
+                        </div>
+                    <div id="viewAll" class="table-responsive"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts
+{
+    <script>
+
+        function uploadFiles(inputId) {
+            debugger
+            var input = document.getElementById(inputId);
+            var files = input.files;
+            var formData = new FormData();
+
+            for (var i = 0; i !== files.length; i++) {
+                formData.append("files", files[i]);
+            }
+            $.ajax(
+                {
+                    url: "/Admin/Company/uploadfiles",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    type: "POST",
+                    success: function (data) {
+                        // Set the property of the Model.
+                        $("#ResumeFileName").val(data.fileName);
+                    }
+                }
+            );
+        }
+
+        function callChangefunc(val) {
+            var Stateid = val;
+            var Customer;
+            Customer = {
+                "State": Stateid,
+                "City": $('#City').val(),
+            }
+
+            $.ajax({
+
+                type: "GET",
+                url: "/Admin/Customer/StateOnchange",
+                data: Customer,
+                dataType: "HTML",
+                success: function (data) {
+
+                    $("#Statedrop").html(data);
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+
+        $(document).ready(function () {
+            // Set up your initial state or any other initialization logic here
+            $('#Comney_Master').addClass('active');
+            $('#Compney').addClass('active');
+            $('#Compney').parent().closest('ul').parent().addClass('menu-open');
+            $('#CompanyStatus').prop("checked", true);
+            loadData();
+            $('#FormulaAttributeStatus').prop("checked", true);
+            $("#CompanyNameFilter").change(function () {
+                loadData();
+            });
+            $("#CountryFilter").change(function () {
+                loadData();
+            });
+            $("#StateFilter").change(function () {
+                loadData();
+            });
+            $("#CityFilter").change(function () {
+                loadData();
+            });
+
+            $("#Country").change(function () {
+                var countryid = $('option:selected', this).val();
+
+                var Customer;
+                Customer = {
+                    "Country": countryid,
+                    "State": $("#State").val(),
+                    "City": $('#City').val(),
+
+                }
+
+                $.ajax({
+                    type: "GET",
+                    url: "/Admin/Customer/CountryOnchange",
+                    data: Customer,
+                    dataType: "HTML",
+                    success: function (data) {
+
+                        $("#Countrydrop").html(data);
+                        $.ajax({
+                            type: "GET",
+                            url: "/Admin/Customer/CountryOnchangeforCity",
+                            data: Customer,
+                            dataType: "HTML",
+                            success: function (data) {
+                                debugger;
+                                $("#Statedrop").html(data);
+
+                            },
+                            error: function () {
+                            }
+                        });
+                    },
+                    error: function () {
+                    }
+                });
+            });
+        });
+
+        function onCompanyChange(val) {
+            // Your logic for handling changes in the Company form
+            $('#CompanyName').css("border", "1px solid #ced4da");
+        }
+
+        function companySave() {
+            var status = false;
+            if ($('#CompanyStatus').is(":checked")) {
+                status = true;
+            }
+            debugger
+            var companyData = {
+                "CompanyId": $('#CompanyId').val(),
+                "CompanyName": $('#CompanyName').val(),
+                "CompanyLog": $('#ResumeFileName').val(),
+                "Address1": $('#Address1').val(),
+                "Address2": $('#Address2').val(),
+                "Country": $('#Country').val(),
+                "State": $('#State').val(),
+                "City": $('#City').val(),
+                "Telephone": $('#Telephone').val(),
+                "CountryCode": $('#CountryCode').val(),
+                "AlterTel": $('#AlterTel').val(),
+                "Email": $('#Email').val(),
+                "CompanyStatus": status
+            };
+
+            if ($('#CompanyName').val() == "") {
+                toastr.error("Please enter Company Name.", 'Error Alert');
+                $('#CompanyName').css("border-color", "Red");
+            }
+            else if ($('#ResumeFileName').val() == "") {
+                toastr.error("Please select Company Log.", 'Error Alert');
+                $('#ResumeFileName').css("border-color", "Red");
+            }
+            else if ($('#Address1').val() == "") {
+                toastr.error("Please select Address1.", 'Error Alert');
+                $('#Address1').css("border-color", "Red");
+            }
+            else if ($('#Country').val() == "") {
+                toastr.error("Please select Country.", 'Error Alert');
+                $('#Country').css("border-color", "Red");
+            }
+            else if ($('#State').val() == "") {
+                toastr.error("Please select State.", 'Error Alert');
+                $('#State').css("border-color", "Red");
+            }
+            else if ($('#City').val() == "") {
+                toastr.error("Please select City.", 'Error Alert');
+                $('#City').css("border-color", "Red");
+            }
+            else if ($('#Telephone').val() == "") {
+                toastr.error("Please enter Telephone.", 'Error Alert');
+                $('#Telephone').css("border-color", "Red");
+            }
+            else if ($('#Email').val() == "") {
+                toastr.error("Please enter Email.", 'Error Alert');
+                $('#Email').css("border-color", "Red");
+            }
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/Company/CompanyMasterSave",
+                    data: companyData,
+                    success: function (data) {
+                        if (!data.proceed) {
+                            return;
+                        } else {
+                            loadData();
+                        }
+                    },
+                    error: function () {
+                        // Handle error
+                    }
+                });
+                $('#CompanyId').val("");
+                $('#CompanyName').val("");
+                $('#ResumeFileName').val("");
+                $('#Address1').val("");
+                $('#Address2').val("");
+                $('#Country').val("");
+                $('#State').val("");
+                $('#City').val("");
+                $('#Telephone').val("");
+                $('#AlterTel').val("");
+                $('#Email').val("");
+            }
+        }
+
+        function deleteCompany(id) {
+            var companyData = {
+                "CompanyId": id,
+                "CompanyName": $('#CompanyName').val(),
+                "CompanyLog": $('#CompanyLog').val(),
+                "Address1": $('#Address1').val(),
+                "Address2": $('#Address2').val(),
+                "Country": $('#Country').val(),
+                "State": $('#State').val(),
+                "City": $('#City').val(),
+                "Telephone": $('#Telephone').val(),
+                "AlterTel": $('#AlterTel').val(),
+                "Email": $('#Email').val(),
+                "CompanyStatus": $('#Status').val()
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Company/DeleteCompanyMaster",
+                data: companyData,
+                success: function (data) {
+                    loadData();
+                },
+                error: function () {
+                    // Handle error
+                }
+            });
+        }
+
+        function editCompany(id) {
+            $('#CompanyId').val(id);
+
+            var companyData = {
+                "CompanyId": $('#CompanyId').val(),
+                "CompanyName": $('#CompanyName').val(),
+                "CompanyLog": $('#CompanyLog').val(),
+                "Address1": $('#Address1').val(),
+                "Address2": $('#Address2').val(),
+                "Country": $('#Country').val(),
+                "State": $('#State').val(),
+                "City": $('#City').val(),
+                "Telephone": $('#Telephone').val(),
+                "AlterTel": $('#AlterTel').val(),
+                "Email": $('#Email').val(),
+                "CompanyStatus": status
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Company/EditCompanyMaster",
+                data: companyData,
+                success: function (data) {
+                    $('#CompanyName').val(data.company.companyName);
+                    $('#CompanyLogo').val(data.company.companyLogo);
+                    $('#Address1').val(data.company.address1);
+                    $('#Address2').val(data.company.address2);
+                    $('#Country').val(data.company.country);
+                    $('#State').val(data.company.state);
+                    $('#City').val(data.company.city);
+                    $('#Telephone').val(data.company.telephone);
+                    var a = $('#Telephone').val().split("-");
+                    $('#Telephone').val(a[1]);
+                    $('#AlternateTelephone').val(data.company.alternateTelephone);
+                    var a = $('#AlternateTelephone').val().split("-");
+                    $('#AlternateTelephone').val(a[1]);
+                    $('#Email').val(data.company.email);
+                    // Set values for other fields as needed
+                },
+                error: function () {
+                    // Handle error
+                }
+            });
+        }
+
+        function loadData() {
+            var compnies;
+            
+            debugger;
+            compnies = {
+                "CompanyId": $('#CompanyId').val(),
+                "CompanyName": $("#CompanyNameFilter").val(),
+                "Country": $("#CountryFilter").val(),
+                "State": $("#StateFilter").val(),
+                "City": $("#CityFilter").val(),
+            }
+            $.ajax({
+                type: "GET",
+                url: "/Admin/Company/LoadAll",
+                data:compnies,
+                dataType: "HTML",
+                success: function (data) {
+                    $("#viewAll").html(data);
+                    
+                },
+                error: function () {
+                    // Handle error
+                }
+            });
+        }
+
+    </script>
+}

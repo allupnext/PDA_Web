@@ -1,0 +1,90 @@
+﻿@model IEnumerable<PDAEstimator_Domain.Entities.ROERates>
+<style>
+    table td {
+        width: 110px;
+        word-wrap: break-word;
+    }
+</style>
+<table class="table table-bordered table-striped" id="ROERateTable">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Roename)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CurrencyName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ROERate)
+            </th>
+            @*<th>
+                    @Html.DisplayNameFor(model => model.UserId)
+            </th>
+            <th>
+                    @Html.DisplayNameFor(model => model.CreationDate)
+            </th>*@
+            
+            
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <th>
+                    @Html.DisplayFor(modelitem => item.Roename)
+                </th>
+                <th>
+                    @Html.DisplayFor(modelitem => item.CurrencyName)
+                </th>
+                <th>
+                    @Html.DisplayFor(modelitem => item.ROERate)
+                </th>
+              
+            </tr>
+        }
+    </tbody>
+</table>
+<!-- jQuery -->
+<script src="~/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/plugins/datatables/jquery.datatables.js"></script>
+<script src="~/plugins/datatables/jquery.datatables.min.js"></script>
+<script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="~/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="~/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="~/plugins/jszip/jszip.min.js"></script>
+<script src="~/plugins/pdfmake/pdfmake.min.js"></script>
+<script src="~/plugins/pdfmake/vfs_fonts.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+<script>
+
+
+    $(function () {
+        $("#ROERateTable").DataTable({
+            "columns": [
+                { "width": "30%" },
+                { "width": "30%" },
+
+                { "width": "40%" }
+            ],
+            "responsive": true, "lengthChange": false, "autoWidth": false,
+            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        }).buttons().container().appendTo('#ROERateTable_wrapper .col-md-6:eq(0)');
+    });
+
+        //$('#portDetailsTable').DataTable({
+        //    "paging": true,
+        //    "lengthChange": false,
+        //    "searching": false,
+        //    "ordering": true,
+        //    "info": true,
+        //    "autoWidth": false,
+        //    "responsive": true,
+        //});
+  </script>

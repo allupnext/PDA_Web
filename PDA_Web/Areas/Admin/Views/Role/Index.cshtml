@@ -1,0 +1,229 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Role</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Role</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Add Role </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <div class="card-body">
+                        <input type="hidden" id="RoleId" name="RoleId" value="">
+                        <div class="row">
+
+                            <div class="col-sm-6">
+
+                                <div class="form-group">
+                                    <label for="PortName">Role Name<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="RoleName" placeholder="Role Name" onchange="onRoleChange(this.val)">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="RoleStatus">
+                                    <label class="form-check-label" for="RoleStatus">Status</label>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                        <!-- /.card-body -->
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary" onclick="roleSave()">Submit</button>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Role List</h3>
+                    </div>
+                    <div class="card-body">
+                        <label for="">Filters:</label>
+                        <div class="row" style="padding-bottom: 10px;">                            
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="RoleNameFilter">Role Name</label>
+                                <input type="text" class="form-control" id="RoleNameFilter" placeholder="Role Name">
+                            </div>
+                        </div>
+                    <div id="viewAll" class="table-responsive"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            $('#RoleMainMenu').addClass('active');
+            $('#RoleTypeMenu').addClass('active');
+            $('#RoleTypeMenu').parent().closest('ul').parent().addClass('menu-open');
+            $('#RoleTypeStatus').prop("checked", true);
+            //$("#").DataTable();
+            loadData();
+            $("#RoleNameFilter").change(function () {
+                loadData();
+            });
+            //$('#reload').on('click', function () {
+            //    loadData();
+            //});
+        });
+
+        function onRoleChange(val) {
+            $('#RoleName').css("border", "1px solid #ced4da");
+        }
+        function roleSave() {
+
+            var Status = false;
+            if ($('#RoleStatus').is(":checked")) {
+                Status = true;
+            }
+            var Roles;
+
+            Roles = {
+                "RoleId": $('#RoleId').val(),
+                "RoleName": $('#RoleName').val(),
+                "RoleStatus": Status
+            }
+            if ($('#RoleName').val() == "") {
+                toastr.error("Please enter Role name.", 'Error Alert');
+                $('#RoleName').css("border-color", "Red");
+            }
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/Role/RoleSave",
+                    data: Roles,
+                    success: function (data) {
+                        if (!data.proceed) {
+                            return;
+                        }
+                        else {
+                            loadData();
+                        }
+
+                    },
+                    error: function () {
+                    }
+                });
+                $('#RoleId').val("");
+                $('#RoleName').val("");
+            }
+        }
+
+        function deleteRole(id) {
+            debugger
+
+            var Roles;
+
+            Roles = 
+            {
+                "RoleId": id,
+                "RoleName": $('#RoleName').val(),
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Role/deleteRole",
+                data: Roles,
+                success: function (data) {
+                    loadData();
+                },
+                error: function () {
+                }
+            });
+
+        }
+
+        function editRole(id) {
+            //Id
+            $('#RoleId').val(id);
+
+            var Roles;
+
+            Roles = {
+                "RoleId": $('#RoleId').val(),
+                "RoleName": $('#RoleName').val(),
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Role/editRole",
+                data: Roles,
+                success: function (data) {
+                    debugger;
+                    $('#RoleName').val(data.roles.roleName);
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function loadData() {
+            var roles;
+            roles = {
+                "RoleName": $('#RoleNameFilter').val(),
+            }
+            //$('#viewAll').load('/CargoType/LoadAll');
+            $.ajax({
+                type: "GET",
+                url: "/Admin/Role/LoadAll",
+                data:roles,
+                dataType: "HTML",
+                success: function (data) {
+                    $("#viewAll").html(data);
+                },
+                error: function () {
+                }
+            });
+        }
+
+    </script>
+
+}

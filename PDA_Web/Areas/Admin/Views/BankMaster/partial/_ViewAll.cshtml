@@ -1,0 +1,126 @@
+﻿@model IEnumerable<PDAEstimator_Domain.Entities.BankMaster>
+<style>
+    table td {
+        width: 110px;
+        word-wrap: break-word;
+    }
+</style>
+<table class="table table-bordered table-striped" id="BankMasterTable">
+    <thead>
+        <tr>
+@*            @Html.HiddenFor(model => model.CountryId)
+*@            <th>
+                @Html.DisplayNameFor(model => model.NameofBeneficiary)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BeneficiaryAddress)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AccountNo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Beneficiary_Bank_Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Beneficiary_Bank_Address)
+            </th>
+            @*<th>
+                @Html.DisplayNameFor(model => model.Beneficiary_RTGS_NEFT_IFSC_Code)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Beneficiary_Bank_Swift_Code)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Intermediary_Bank)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Intermediary_Bank_Swift_Code)
+            </th>*@
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NameofBeneficiary)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BeneficiaryAddress)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AccountNo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Beneficiary_Bank_Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Beneficiary_Bank_Address)
+                </td>
+               @* <td>
+                    @Html.DisplayFor(modelItem => item.Beneficiary_RTGS_NEFT_IFSC_Code)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Beneficiary_Bank_Swift_Code)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Intermediary_Bank)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Intermediary_Bank_Swift_Code)
+                </td>*@
+                <td>
+
+                    <a class="btn btn-info btn-sm" onclick="editState(@item.BankId)">
+                        <i class="fas fa-pencil-alt">
+                        </i>
+                        Edit
+                    </a>
+                    <a class="btn btn-danger btn-sm" onclick="deleteState(@item.BankId)">
+                        <i class="fas fa-trash">
+                        </i>
+                        Delete
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<!-- jQuery -->
+<script src="~/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/plugins/datatables/jquery.datatables.js"></script>
+<script src="~/plugins/datatables/jquery.datatables.min.js"></script>
+<script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="~/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="~/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="~/plugins/jszip/jszip.min.js"></script>
+<script src="~/plugins/pdfmake/pdfmake.min.js"></script>
+<script src="~/plugins/pdfmake/vfs_fonts.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+<script>
+
+
+    $(function () {
+        $("#BankMasterTable").DataTable({
+            "responsive": true, "lengthChange": false, "autoWidth": false,
+            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        }).buttons().container().appendTo('#BankMasterTable_wrapper .col-md-6:eq(0)');
+
+        //$('#portDetailsTable').DataTable({
+        //    "paging": true,
+        //    "lengthChange": false,
+        //    "searching": false,
+        //    "ordering": true,
+        //    "info": true,
+        //    "autoWidth": false,
+        //    "responsive": true,
+        //});
+    });</script>

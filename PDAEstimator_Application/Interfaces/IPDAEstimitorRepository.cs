@@ -1,0 +1,18 @@
+﻿using PDAEstimator_Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace PDAEstimator_Application.Interfaces
+{
+    public interface IPDAEstimitorRepository :IGenericRepository<PDAEstimator>
+    {
+        Task<List<CargoDetails>> GetCargoByTerminalAndPortAsync(int terminalId, int portId);
+        Task<List<PDAEstimatorList>> GetAlllistAsync();
+        Task<List<PDATariffRateList>> GetAllPDA_Tariff(int portId);
+        Task<List<Notes>> GetNotes();
+
+    }
+}

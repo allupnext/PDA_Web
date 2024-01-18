@@ -1,0 +1,245 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>ChargeCode</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">ChargeCode </li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+              
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Add ChargeCode</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <!-- form start -->
+                        <div class="card-body">
+                            <input type="hidden" id="ChargeCodeId" name="ChargeCodeId" value="">
+                            <div class="row">
+                                <div class="col-sm-6">
+
+                                    <div class="form-group">
+                                    <label for="PortName">Expense Category<span class="text-danger">*</span></label>
+                                        @Html.DropDownList("ExpenseCategory", new SelectList(ViewBag.Expenses, "ID", "ExpenseName"), "Please Select" ,new { @class="form-control" })
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+
+                                    <div class="form-group">
+                                    <label for="PortName">ChargeCode Name<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="ChargeCodeName" placeholder="ChargeCode Name" onchange="onChargeCodeChange(this.val)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="Status">
+                                            <label class="form-check-label" for="Status">Status</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- /.card-body -->
+                            </div>
+                            <div class="card-footer">
+                                <button class="btn btn-primary" onclick="chargeCodeSave()">Submit</button>
+                            </div>
+
+                        </div>
+                    </div>
+              
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Charge Code List</h3>
+                    </div>
+                    <div class="card-body">
+                        <label for="">Filters:</label>
+                        <div class="row" style="padding-bottom: 10px;">
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="ChargeCodeNameFilter">ChargeCode Name</label>
+                                <input type="text" class="form-control" id="ChargeCodeNameFilter" placeholder="ChargeCode Name">
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="ExpensesCategoryFilter">Expense Category</label>
+                                @Html.DropDownList("ExpensesCategoryFilter", new SelectList(ViewBag.Expenses, "ID", "ExpenseName"), "Please Select", new { @class = "form-control" })
+                            </div>
+                        </div>
+                    <div id="viewAll" class="table-responsive"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+            $('#TariffMainMenu').addClass('active');
+            $('#ChargeCodeMenu').addClass('active');
+            $('#ChargeCodeMenu').parent().closest('ul').parent().addClass('menu-open');
+            $('#Status').prop("checked", true);
+            //$("#").DataTable();
+            loadData();
+            $("#ChargeCodeNameFilter").change(function () {
+                loadData();
+            });
+            $("#ExpensesCategoryFilter").change(function () {
+                loadData();
+            });
+            //$('#reload').on('click', function () {
+            //    loadData();
+            //});
+        });
+
+        function onChargeCodeChange(val) {
+            $('#ChargeCodeName').css("border", "1px solid #ced4da");
+        }
+
+        function chargeCodeSave() {
+            debugger
+            var ChargeCodes;
+
+            ChargeCodes = {
+                "ID": $('#ChargeCodeId').val(),
+                "ExpenseCategoryID": $('#ExpenseCategory').val(),
+                "ChargeCodeName": $('#ChargeCodeName').val(),
+
+            }
+
+            if ($('#ExpenseCategory').val() == "") {
+                toastr.error("Please select expense category.", 'Error Alert');
+            }
+            else if ($('#ChargeCodeName').val() == "") {
+                toastr.error("Please enter chargecode name.", 'Error Alert');
+                $('#ChargeCodeName').css("border", "1px solid red");
+            }
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/ChargeCode/ChargeCodeSave",
+                    data: ChargeCodes,
+                    success: function (data) {
+                        if (!data.proceed) {
+                            return;
+                        }
+                        else {
+                            loadData();
+                        }
+
+                    },
+                    error: function () {
+                    }
+                });
+            }
+        }
+
+        function deleteChargeCode(id) {
+
+            var ChargeCodes;
+
+            ChargeCodes = {
+                "ID": id,
+                "ExpenseCategoryID": $('#ExpenseName').val(),
+                "ChargeCodeName": $('#ChargeCodeName').val(),
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/ChargeCode/DeleteChargeCode",
+                data: ChargeCodes,
+                success: function (data) {
+                    loadData();
+                },
+                error: function () {
+                }
+            });
+
+        }
+
+
+        function editChargeCode(id) {
+            $('#ChargeCodeId').val(id);
+
+            var chargeCodes;
+
+            chargeCodes = {
+               
+                "ID": $('#ChargeCodeId').val(),
+                "ExpenseCategoryID": $('#ExpenseName').val(),
+                "ChargeCodeName": $('#ChargeCodeName').val()
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/ChargeCode/EditChargeCode",
+                data: chargeCodes,
+                success: function (data) {
+                    debugger;
+                    $('#ExpenseName').val(data.chargeCodes.expenseCategoryID);
+                    $('#ChargeCodeName').val(data.chargeCodes.chargeCodeName);
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function loadData() {
+            var ChargeCodes;
+
+            ChargeCodes = {
+                "ChargeCodeName": $("#ChargeCodeNameFilter").val(),
+                "ExpenseCategoryID": $("#ExpensesCategoryFilter").val()
+            }
+            //$('#viewAll').load('/ChargeCode/LoadAll');
+            $.ajax({
+                type: "GET",
+                url: "/Admin/ChargeCode/LoadAll",
+                data: ChargeCodes,
+                dataType: "HTML",
+                success: function (data) {
+                    $("#viewAll").html(data);
+                },
+                error: function () {
+                }
+            });
+        }
+
+    </script>
+
+}

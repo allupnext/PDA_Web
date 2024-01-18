@@ -1,0 +1,234 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>CallType</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">CallType</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Add CallType </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <div class="card-body">
+                        <input type="hidden" id="CallTypeId" name="CallTypeId" value="">
+                        <div class="row">
+
+                            <div class="col-sm-6">
+
+                                <div class="form-group">
+                                    <label for="PortName">CallType Name<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="CallTypeName" placeholder="CallType Name" onchange="onCallTypeChange(this.value)">
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="Status">
+                                    <label class="form-check-label" for="Status">Status</label>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                        <!-- /.card-body -->
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary" onclick="callTypeSave()">Submit</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">CallType List</h3>
+                    </div>
+                    <div class="card-body">
+                        <label for="">Filters:</label>
+                        <div class="row" style="padding-bottom: 10px;">
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="CityNameFilter">CallType Name</label>
+                                <input type="text" class="form-control" id="CallTypeNameFilter" placeholder="CallType Name">
+                            </div>
+                        </div>
+                        <div id="viewAll" class="table-responsive"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+            $('#MasterMenu').addClass('active');
+            $('#CallTypeMenu').addClass('active');
+            $('#CallTypeMenu').parent().closest('ul').parent().addClass('menu-open');
+            $('#Status').prop("checked", true);
+            //$("#").DataTable();
+            loadData();
+            //$('#reload').on('click', function () {
+            //    loadData();
+            //});
+            $("#CallTypeNameFilter").change(function () {
+                loadData();
+            });
+        });
+
+        function onCallTypeChange(value) {
+            $('#CallTypeName').css("border", "1px solid #ced4da");
+        }
+
+        function callTypeSave() {
+            var Status = false;
+            if ($('#Status').is(":checked")) {
+                Status = true;
+            }
+            var callTypes;
+
+            callTypes = {
+                "ID": $('#CallTypeId').val(),
+                "CallTypeName": $('#CallTypeName').val(),
+                "Status": Status
+            }
+            if ($('#CallTypeName').val() == "") {
+                toastr.error("Please enter call type name.", 'Error Alert');
+                $('#CallTypeName').css("border", "1px solid red");
+            }
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/CallType/CallTypeSave",
+                    data: callTypes,
+                    success: function (data) {
+                        if (!data.proceed) {
+                            return;
+                        }
+                        else {
+                            loadData();
+                        }
+
+                    },
+                    error: function () {
+                    }
+                });
+                $('#CallTypeId').val("");
+                $('#CallTypeName').val("");
+            }
+        }
+
+        function deleteCallType(id) {
+            debugger
+
+            var callTypes;
+
+            callTypes = {
+                "ID": id,
+                "CallTypeName": $('#CallTypeName').val(),
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/CallType/deleteCallType",
+                data: callTypes,
+                success: function (data) {
+                    loadData();
+                },
+                error: function () {
+                }
+            });
+
+        }
+
+        function editCallType(id) {
+            //Id
+            $('#CallTypeId').val(id);
+
+            var callTypes;
+
+            callTypes = {
+                "ID": $('#CallTypeId').val(),
+                "CallTypeName": $('#CallTypeName').val(),
+
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/CallType/editCallType",
+                data: callTypes,
+                success: function (data) {
+                    debugger;
+                    $('#CallTypeName').val(data.callTypes.callTypeName);
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function loadData() {
+            var CallType;
+
+            CallType = {
+                "CallTypeName": $("#CallTypeNameFilter").val()
+            }
+            $.ajax({
+
+                type: "GET",
+                url: "/Admin/CallType/LoadAll",
+                data: CallType,
+                dataType: "HTML",
+                success: function (data) {
+
+                    $("#viewAll").html(data);
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+    </script>
+
+}

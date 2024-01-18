@@ -1,0 +1,760 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Port Details</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Port Details</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                @*<form>*@
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Add Port Details </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <div class="card-body">
+                        <input type="hidden" id="Id" name="Id" value="">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="PortCode">Port Code<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="PortCode" placeholder="Port Code" onchange="onPortDetailChange(this.val,1)">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+
+                                <div class="form-group">
+                                    <label for="PortName">Port Name<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="PortName" placeholder="Port Name" onchange="onPortDetailChange(this.val,2)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="Country">Country<span class="text-danger">*</span></label>
+                                    @Html.DropDownList("Country", new SelectList(ViewBag.Country, "ID", "CountryName"), "Please select", new { @class="form-control" })
+                                    @*<input type="text" class="form-control" id="Country" placeholder="Country">*@
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group" id="Countrydrop">
+                                    <label for="State">State<span class="text-danger">*</span></label>
+                                    @Html.DropDownList("State", new SelectList(ViewBag.State, "ID", "StateName"), "Please select", new { @class="form-control", @onchange="callChangefunc(this.value)"  })
+
+                                    @*<input type="text" class="form-control" id="State" placeholder="State">*@
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group" id="Statedrop">
+                                    <label for="PortName">City</label>
+                                    @Html.DropDownList("City", new SelectList(ViewBag.City, "ID", "CityName"),"Please select", new { @class="form-control" })
+
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="PortName">Port Information</label>
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="exampleInputFile" onchange="uploadFiles('exampleInputFile');">
+                                            <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                                            <input type="hidden" id="ResumeFileName" name="ResumeFileName" />
+                                        </div>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">Upload</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="Status">
+                                    <label class="form-check-label" for="Status">Status</label>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary" onclick="portdetailsSave()">Submit</button>
+                    </div>
+
+                </div>
+                @*</form>*@
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Port Details List</h3>
+                    </div>
+                    <div class="card-body">
+                        <label for="">Filters:</label>
+                        <div class="row" style="padding-bottom: 10px;">
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="PortNameFilter">Port Name</label>
+                                <input type="text" class="form-control" id="PortNameFilter" placeholder="Port Name">
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="Countryfilter">Country</label>
+                                @Html.DropDownList("Countryfilter", new SelectList(ViewBag.Country, "ID", "CountryName"), "Please select", new { @class="form-control" })
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="StateFilter">State</label>
+                                @Html.DropDownList("StateFilter", new SelectList(ViewBag.State, "ID", "StateName"), "Please select", new { @class="form-control", @onchange="callChangefunc(this.value)"  })
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="CityFilter">City</label>
+                                @Html.DropDownList("CityFilter", new SelectList(ViewBag.City, "ID", "CityName"),"Please select", new { @class="form-control" })
+                            </div>
+                        </div>
+                    <div id="viewAll" class="table-responsive"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div id="TerminalDetailsModel" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document" style="max-width: 90% !important;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">Terminal Details</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="TerminalDetailsModelclose">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div id="TerminalDetailsModelbody">
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="BerthDetailsModel" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document" style="max-width: 90% !important;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">Berth Details</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="BerthDetailsModelclose">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div id="BerthDetailsModelbody">
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@section Scripts
+    {
+    <script>
+        function callChangefunc(val) {
+            var Stateid = val;
+
+            var portdetails;
+            portdetails = {
+                "State": Stateid,
+                "City": $('#City').val(),
+            }
+
+            $.ajax({
+
+                type: "GET",
+                url: "/Admin/PortDetails/StateOnchange",
+                data: portdetails,
+                dataType: "HTML",
+                success: function (data) {
+
+                    $("#Statedrop").html(data);
+
+                },
+                error: function () {
+                }
+            });
+
+        }
+      
+
+        function uploadFiles(inputId) {
+            var input = document.getElementById(inputId);
+            var files = input.files;
+            var formData = new FormData();
+
+            for (var i = 0; i !== files.length; i++) {
+                formData.append("files", files[i]);
+            }
+            $.ajax(
+                {
+                    url: "/Admin/PortDetails/uploadfiles",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    type: "POST",
+                    success: function (data) {
+                        // Set the property of the Model.
+                        $("#ResumeFileName").val(data.fileName);
+                    }
+                }
+            );
+        }
+
+        function TerminaldetailsSave() {
+            var terminaldetails;
+            var Status = false;
+            if ($('#Status').is(":checked")) {
+                Status = true;
+            }
+            debugger;
+            terminaldetails = {
+                "ID": $('#TerminalId').val(),
+                "TerminalCode": $('#TerminalCode').val(),
+                "TerminalName": $("#TerminalName").val(),
+
+                "Status": Status,
+                "PortID": $('#Port').val()
+            }
+            if ($('#TerminalCode').val() == "") {
+                toastr.error("Please enter terminal code.", 'Error Alert');
+                $('#TerminalCode').css("border-color", "Red");
+            }
+            else if ($('#TerminalName').val() == "") {
+                toastr.error("Please enter terminal name.", 'Error Alert');
+                $('#TerminalName').css("border-color", "Red");
+            }
+            //else if ($('#Country').val() == "") {
+            //    toastr.error("Please select country.", 'Error Alert');
+            //    $('#Country').css("border-color", "Red");
+            //}
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/PortDetails/terminaldetailsSave",
+                    data: terminaldetails,
+                    success: function (data) {
+                        if (!data.proceed) {
+                            return;
+                        }
+                        else {
+                            OpenTerminalDetails($('#Port').val());
+                        }
+
+                    },
+                    error: function () {
+                    }
+                });
+                $('#TerminalId').val("");
+                $('#TerminalCode').val("");
+                $('#TerminalName').val("");
+                //$('#Port').val("");
+            }
+        }
+
+        function BerthsdetailsSave() {
+            var berthdetails;
+            var Status = false;
+            if ($('#BerthStatus').is(":checked")) {
+                Status = true;
+            }
+
+            berthdetails = {
+                "ID": $('#BerthId').val(),
+                "BerthCode": $('#BerthCode').val(),
+                "BerthName": $("#BerthName").val(),
+                "BerthStatus": Status,
+                "TerminalID": $('#Terminal').val()
+            }
+
+            if ($('#BerthCode').val() == "") {
+                toastr.error("Please enter berth code.", 'Error Alert');
+                $('#BerthCode').css("border-color", "Red");
+            }
+            else if ($('#BerthName').val() == "") {
+                toastr.error("Please enter berth name.", 'Error Alert');
+                $('#BerthName').css("border-color", "Red");
+            }
+            else if ($('#Port').val() == "") {
+                toastr.error("Please enter port .", 'Error Alert');
+                //$('#Port').css("border-color", "Red");
+            }
+            else if ($('#Terminal').val() == "") {
+                toastr.error("Please enter terminal.", 'Error Alert');
+                //$('#Terminal').css("border-color", "Red");
+            }
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/PortDetails/berthdetailsSave",
+                    data: berthdetails,
+                    success: function (data) {
+                        if (!data.proceed) {
+                            return;
+                        }
+                        else {
+                            OpenBerthDetails($('#Port').val());
+                        }
+
+                    },
+                    error: function () {
+                    }
+                });
+                $('#BerthId').val("");
+                $('#BerthCode').val("");
+                $('#BerthName').val("");
+                $('#Terminal').val("");
+            }
+        }
+
+        function deleteTerminalDetails(id) {
+            var terminaldetails;
+            var Status = false;
+            if ($('#Status').is(":checked")) {
+                Status = true;
+            }
+            terminaldetails = {
+                "ID": id,
+                "TerminalCode": $('#TerminalCode').val(),
+                "TerminalName": $("#TerminalName").val(),
+                "Status": Status,
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/PortDetails/deleteTerminalDetails",
+                data: terminaldetails,
+                success: function (data) {
+                    OpenTerminalDetails($('#Port').val());
+                },
+                error: function () {
+                }
+            });
+
+        }
+
+        function deleteBerthDetails(id) {
+            var berthDetails;
+
+            berthDetails = {
+                "ID": id,
+                "TerminalID": $('#Terminal').val(),
+                "BerthCode": $('#BerthCode').val(),
+                "BerthName": $("#BerthName").val(),
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/PortDetails/deleteBerthDetails",
+                data: berthDetails,
+                success: function (data) {
+                    OpenBerthDetails($('#Port').val());
+                },
+                error: function () {
+                }
+            });
+
+        }
+
+        function OpenTerminalDetails(id) {
+            debugger;
+
+            portdetails = {
+                "ID": id,
+                "PortName": $("#PortName").val(),
+                "City": $('#City').val(),
+                "State": $("#State").val(),
+                "Country": $('#Country').val()
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/PortDetails/OpenTerminalDetails",
+                data: portdetails,
+                dataType: "html",
+                success: function (data) {
+                    $("#TerminalDetailsModel").modal('hide');
+                    $("#TerminalDetailsModel").modal('show');
+                    $("#TerminalDetailsModel").find(".modal-body").html(data);
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function OpenBerthDetails(id) {
+           
+            portdetails = {
+                "ID": id,
+                "PortName": $("#PortName").val(),
+                "City": $('#City').val(),
+                "State": $("#State").val(),
+                "Country": $('#Country').val()
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/PortDetails/OpenBerthDetails",
+                data: portdetails,
+                dataType: "html",
+                success: function (data) {
+                    $("#BerthDetailsModel").modal('hide');
+                    $("#BerthDetailsModel").modal('show');
+                    $("#BerthDetailsModel").find(".modal-body").html(data);
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function onPortDetailChange(val, inputVal) {
+            if (inputVal == 1) {
+                $('#PortCode').css("border", "1px solid #ced4da");
+            }
+            else if (inputVal == 2) {
+                $('#PortName').css("border", "1px solid #ced4da");
+            }
+            //else if(inputVal==3){
+            //    $('#Country').css("border", "1px solid #ced4da");
+            //}
+            //else if(inputVal==4){
+            //    $('#State').css("border", "1px solid #ced4da");
+            //}
+            //else if(inputVal==5){
+            //    $('#City').css("border", "1px solid #ced4da");
+            //}
+        }
+
+        function portdetailsSave() {
+            var portdetails;
+            var Status = false;
+            if ($('#Status').is(":checked")) {
+                Status = true;
+            }
+
+            portdetails = {
+                "ID": $('#Id').val(),
+                "PortCode": $('#PortCode').val(),
+                "PortName": $("#PortName").val(),
+                "City": $('#City').val(),
+                "State": $("#State").val(),
+                "Country": $('#Country').val(),
+                "PortFile": $("#ResumeFileName").val(),
+                "Status": Status,
+            }
+            if ($('#PortCode').val() == "") {
+                toastr.error("Please enter port code.", 'Error Alert');
+                $('#PortCode').css("border-color", "Red");
+            }
+            else if ($('#PortName').val() == "") {
+                toastr.error("Please enter port name.", 'Error Alert');
+                $('#PortName').css("border-color", "Red");
+            }
+            else if ($('#Country').val() == "") {
+                toastr.error("Please select country.", 'Error Alert');
+                //$('#Country').css("border-color", "Red");
+            }
+            else if ($('#State').val() == "") {
+                toastr.error("Please select state.", 'Error Alert');
+                //$('#State').css("border-color", "Red");
+            }
+            else if ($('#City').val() == "") {
+                toastr.error("Please select city.", 'Error Alert');
+                //$('#City').css("border-color", "Red");
+            }
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/PortDetails/portdetailsSave",
+                    data: portdetails,
+                    success: function (data) {
+                        if (!data.proceed) {
+                            return;
+                        }
+                        else {
+                            loadData();
+                        }
+
+                    },
+                    error: function () {
+                    }
+                });
+                $('#Id').val("");
+                $('#PortCode').val("");
+                $('#PortName').val("");
+                $('#City').val("");
+                $('#State').val("");
+                $('#Country').val("");
+                $('#ResumeFileName').val("");
+            }
+        }
+
+        function deletePortDetails(id) {
+            $('#Id').val(id);
+            var portdetails;
+            var Status = false;
+            if ($('#Status').is(":checked")) {
+                Status = true;
+            }
+            portdetails = {
+                "ID": id,
+                "PortCode": $('#PortCode').val(),
+                "PortName": $("#PortName").val(),
+                "City": $('#City').val(),
+                "State": $("#State").val(),
+                "Country": $('#Country').val(),
+                "Status": Status,
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/PortDetails/deletePortDetails",
+                data: portdetails,
+                success: function (data) {
+                    loadData();
+                },
+                error: function () {
+                }
+            });
+
+        }
+
+        function editTerminalDetails(id) {
+            //Id
+            $('#TerminalId').val(id);
+            var terminaldetails;
+            var Status = false;
+            if ($('#Status').is(":checked")) {
+                Status = true;
+            }
+
+            terminaldetails = {
+                "ID": id,
+                "TerminalCode": $('#TerminalCode').val(),
+                "TerminalName": $("#TerminalName").val(),
+                "Status": Status,
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/PortDetails/editTerminalDetails",
+                data: terminaldetails,
+                success: function (data) {
+                    debugger;
+                    $('#TerminalCode').val(data.terminalDetails.terminalCode);
+                    $('#TerminalName').val(data.terminalDetails.terminalName);
+                    $('#Port').val(data.terminalDetails.portID);
+                    //alert(data.portDetails.portCode);
+                    //if (!data.proceed) {
+                    //    return;
+                    //}
+                    //else {
+
+                    //    loadData();
+                    //}
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function editBerthDetails(id) {
+            //Id
+            $('#BerthId').val(id);
+            var berthdetails;
+            var Status = false;
+            if ($('#Status').is(":checked")) {
+                Status = true;
+            }
+
+            berthdetails = {
+                "ID": id,
+                "TerminalID": $('#Terminal').val(),
+                "BerthCode": $('#BerthCode').val(),
+                "BerthName": $("#BerthName").val(),
+                "Status": Status,
+            }
+
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/PortDetails/editBerthDetails",
+                data: berthdetails,
+                success: function (data) {
+                    debugger;
+                    $('#BerthCode').val(data.berthdetails.berthCode);
+                    $('#BerthName').val(data.berthdetails.berthName);
+                    //$('#Port').val(data.berthdetails.portID);
+                    $('#Terminal').val(data.berthdetails.terminalID);
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function editPortDetails(id) {
+            //Id
+            $('#Id').val(id);
+            var portdetails;
+            var Status = false;
+            if ($('#Status').is(":checked")) {
+                Status = true;
+            }
+            portdetails = {
+                "ID": id,
+                "PortCode": $('#PortCode').val(),
+                "PortName": $("#PortName").val(),
+                "City": $('#City').val(),
+                "State": $("#State").val(),
+                "Country": $('#Country').val(),
+                "Status": Status,
+            }
+            $.ajax({
+                type: "POST",
+                url: "/Admin/PortDetails/editPortDetails",
+                data: portdetails,
+                success: function (data) {
+                    debugger;
+                    $('#PortCode').val(data.portDetails.portCode);
+                    $('#PortName').val(data.portDetails.portName);
+                    $('#City').val(data.portDetails.city);
+                    $('#State').val(data.portDetails.state);
+                    $('#Country').val(data.portDetails.country);
+                    
+                    if (!portDetails.proceed) {
+                        return;
+                    }
+                    else {
+
+                        loadData();
+                    }
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            $('#PortMainMenu').addClass('active');
+            $('#PortMenu').addClass('active');
+            $('#PortMenu').parent().closest('ul').parent().addClass('menu-open');
+
+            $('#Status').prop("checked", true);
+            loadData();
+            $("#Countryfilter").change(function () {
+                loadData();
+            });
+            $("#StateFilter").change(function () {
+                loadData();
+            });
+            $("#CityFilter").change(function () {
+                loadData();
+            });
+            $("#PortNameFilter").change(function () {
+                loadData();
+            });
+
+            $("#Country").change(function () {
+                var countryid = $('option:selected', this).val();
+
+                var portdetails;
+                portdetails = {
+                    "Country": countryid,
+                    "State": $("#State").val(),
+                    "City": $('#City').val(),
+
+                }
+
+                $.ajax({
+
+                    type: "GET",
+                    url: "/Admin/PortDetails/CountryOnchange",
+                    data: portdetails,
+                    dataType: "HTML",
+                    success: function (data) {
+
+                        $("#Countrydrop").html(data);
+
+                    },
+                    error: function () {
+                    }
+                });
+            });
+        });
+
+
+
+        function loadData() {
+            var portDetail;
+
+            portDetail = {
+                "PortName": $("#PortNameFilter").val(),
+                "Country": $("#Countryfilter").val(),
+                "State": $("#StateFilter").val(),
+                "City": $("#CityFilter").val()
+            }
+            $.ajax({
+                type: "GET",
+                url: "/Admin/PortDetails/LoadAll",
+                data:portDetail,
+                dataType: "HTML",
+                success: function (data) {
+
+                    $("#viewAll").html(data);
+
+                },
+                error: function () {
+                }
+            });
+            //$('#viewAll').load('/PortDetails/LoadAll');
+        }
+
+
+    </script>
+
+}

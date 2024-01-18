@@ -1,0 +1,22 @@
+﻿.user-profile img {
+    height: auto;
+    width: 2.6rem;
+}
+
+.user-profile .image {
+    display: inline-block;
+    padding-left: .8rem;
+}
+
+.dataTables_filter {
+    float: right;
+}
+
+.pagination {
+    float: right;
+}
+/*
+.bootstrap-datetimepicker-widget {
+    z-index: -1;
+}*/
+

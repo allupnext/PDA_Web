@@ -1,0 +1,372 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Bank Master</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Bank Master</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+               
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Add Bank Master </h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <!-- form start -->
+                        <div class="card-body">
+                        <input type="hidden" id="BankId" name="BankId" value="">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                    <label for="Company">Company<span class="text-danger">*</span></label>
+                                    @Html.DropDownList("Company", new SelectList(ViewBag.Company, "CompanyId", "CompanyName"),"Please Select" ,new { @class="form-control" })
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                    <label for="NameofBeneficiary">Name of Beneficiary<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="NameofBeneficiary" placeholder="Name of Beneficiary" onchange="onStateChange(this.val)">
+                                    </div>
+                                </div>
+                            </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="BeneficiaryAddress">Beneficiary Address<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="BeneficiaryAddress" placeholder="Beneficiary Address" onchange="onStateChange(this.val)">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="AccountNo">Account No<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="AccountNo" placeholder="Account No" onchange="onStateChange(this.val)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="Beneficiary_Bank_Name">Beneficiary_Bank_Name<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="Beneficiary_Bank_Name" placeholder="Beneficiary_Bank_Name " onchange="onStateChange(this.val)">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="Beneficiary_Bank_Address">Beneficiary_Bank_Address<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="Beneficiary_Bank_Address" placeholder="Beneficiary_Bank_Address" onchange="onStateChange(this.val)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="Beneficiary_RTGS_NEFT_IFSC_Code">Beneficiary_RTGS_NEFT_IFSC_Code<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="Beneficiary_RTGS_NEFT_IFSC_Code" placeholder="Beneficiary_RTGS_NEFT_IFSC_Code" onchange="onStateChange(this.val)">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="Beneficiary_Bank_Swift_Code">Beneficiary_Bank_Swift_Code<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="Beneficiary_Bank_Swift_Code" placeholder="Beneficiary_Bank_Swift_Code Address" onchange="onStateChange(this.val)">
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="Intermediary_Bank">Intermediary_Bank<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="Intermediary_Bank" placeholder="Intermediary_Bank" onchange="onStateChange(this.val)">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="Intermediary_Bank_Swift_Code">Intermediary_Bank_Swift_Code<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="Intermediary_Bank_Swift_Code" placeholder="Intermediary_Bank_Swift_Code Address" onchange="onStateChange(this.val)">
+                                </div>
+                            </div>
+                           
+                        </div>
+                        <div class="row">
+                            @*<div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="Intermediary_Bank_Swift_Code">Intermediary_Bank_Swift_Code</label>
+                                    <input type="text" class="form-control" id="Intermediary_Bank_Swift_Code" placeholder="Intermediary_Bank_Swift_Code" onchange="onStateChange(this.val)">
+                                </div>
+                            </div>*@
+                            <div class="col-sm-6">
+                                
+                                <div class="form-check">
+                                    <label for="IsDefault">IsDefault</label>
+                                    <input type="checkbox" class="form-check-label" id="IsDefault" placeholder="IsDefault" onchange="onStateChange(this.val)">
+                                </div>
+                            </div>
+                        </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-primary" onclick="Save()">Submit</button>
+                        </div>
+
+                    </div>
+              
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Bank Master List</h3>
+                    </div>
+                    <div class="card-body">
+                        <label for="">Filters:</label>
+                        <div class="row" style="padding-bottom: 10px;">
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="CompanyFilter">Company</label>
+                                @Html.DropDownList("CompanyFilter", new SelectList(ViewBag.Company, "CompanyId", "CompanyName"),"Please Select" ,new { @class="form-control" })
+
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="NameofBeneficiaryfilter">Name of Beneficiary</label>
+                                <input type="text" class="form-control" id="NameofBeneficiaryfilter" placeholder="Name of Beneficiary">
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="Beneficiary_Bank_NameFilter">Beneficiary_Bank_Name</label>
+                                <input type="text" class="form-control" id="Beneficiary_Bank_NameFilter" placeholder="Beneficiary Bank Name">
+                            </div>
+                        </div>
+                    <div id="viewAll" class="card-body table-responsive"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+            $('#Comney_Master').addClass('active');
+            $('#BankMasterMenu').addClass('active');
+            $('#BankMasterMenu').parent().closest('ul').parent().addClass('menu-open');
+            loadData();
+
+            $("#CompanyFilter").change(function () {
+                loadData();
+            });
+            $("#NameofBeneficiaryfilter").change(function () {
+                loadData();
+            });
+            $("#Beneficiary_Bank_NameFilter").change(function () {
+                loadData();
+            });
+        });
+
+        function onStateChange(val){
+            $('#StateName').css("border", "1px solid #ced4da");
+        }
+        function Save() {
+
+            var IsDefault = false;
+            if ($('#IsDefault').is(":checked")) {
+                IsDefault = true;
+            }
+            var states;
+            debugger
+            states = {
+                "BankId": $('#BankId').val(),
+                "CompanyId": $('#Company').val(),
+                "NameofBeneficiary": $('#NameofBeneficiary').val(),
+                "BeneficiaryAddress": $('#BeneficiaryAddress').val(),
+                "AccountNo": $('#AccountNo').val(),
+                "Beneficiary_Bank_Name": $('#Beneficiary_Bank_Name').val(),
+                "Beneficiary_Bank_Address": $('#Beneficiary_Bank_Address').val(),
+                "Beneficiary_RTGS_NEFT_IFSC_Code": $('#Beneficiary_RTGS_NEFT_IFSC_Code').val(),
+                "Beneficiary_Bank_Swift_Code": $('#Beneficiary_Bank_Swift_Code').val(),
+                "Intermediary_Bank": $('#Intermediary_Bank').val(),
+                "Intermediary_Bank_Swift_Code": $('#Intermediary_Bank_Swift_Code').val(),
+                "IsDefault": IsDefault
+
+            }
+            if ($('#Company').val() == "") {
+                toastr.error("Please select Company.", 'Error Alert');
+                $('#Company').css("border-color", "Red");
+            }
+            else if ($('#NameofBeneficiary').val() == "") {
+                toastr.error("Please enter Name of Beneficiary.", 'Error Alert');
+                $('#NameofBeneficiary').css("border-color", "Red");
+            }
+            else if ($('#BeneficiaryAddress').val() == "") {
+                toastr.error("Please enter Beneficiary Address.", 'Error Alert');
+                $('#BeneficiaryAddress').css("border-color", "Red");
+            }
+            else if ($('#AccountNo').val() == "") {
+                toastr.error("Please enter Account No.", 'Error Alert');
+                $('#AccountNo').css("border-color", "Red");
+            }
+            else if ($('#Beneficiary_Bank_Name').val() == "") {
+                toastr.error("Please enter Beneficiary Bank Name.", 'Error Alert');
+                $('#Beneficiary_Bank_Name').css("border-color", "Red");
+            }
+            else if ($('#Beneficiary_Bank_Address').val() == "") {
+                toastr.error("Please enter Beneficiary Bank Address.", 'Error Alert');
+                $('#Beneficiary_Bank_Address').css("border-color", "Red");
+            }
+            else if ($('#Beneficiary_RTGS_NEFT_IFSC_Code').val() == "") {
+                toastr.error("Please enter Beneficiary RTGS NEFT IFSC Code.", 'Error Alert');
+                $('#Beneficiary_RTGS_NEFT_IFSC_Code').css("border-color", "Red");
+            }
+            else if ($('#Beneficiary_Bank_Swift_Code').val() == "") {
+                toastr.error("Please enter Beneficiary Bank Swift Code.", 'Error Alert');
+                $('#Beneficiary_Bank_Swift_Code').css("border-color", "Red");
+            }
+            else if ($('#Intermediary_Bank').val() == "") {
+                toastr.error("Please enter Intermediary Bank.", 'Error Alert');
+                $('#Intermediary_Bank').css("border-color", "Red");
+            }
+            else if ($('#Intermediary_Bank_Swift_Code').val() == "") {
+                toastr.error("Please enter Intermediary Bank Swift Code.", 'Error Alert');
+                $('#Intermediary_Bank_Swift_Code').css("border-color", "Red");
+            }
+            else{
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/BankMaster/BankMasterSave",
+                    data: states,
+                    success: function (data) {
+                        if (!data.proceed) {
+                            return;
+                        }
+                        else {
+                            loadData();
+                        }
+
+                    },
+                    error: function () {
+                    }
+                });
+                $('#BankId').val("");
+                $('#CompanyId').val("");
+                $('#NameofBeneficiary').val("");
+                $('#BaBeneficiaryAddressnkId').val("");
+                $('#AccountNo').val("");
+                $('#Beneficiary_Bank_Name').val("");
+                $('#Beneficiary_Bank_Address').val("");
+                $('#Beneficiary_RTGS_NEFT_IFSC_Code').val("");
+                $('#Beneficiary_Bank_Swift_Code').val("");
+                $('#Intermediary_Bank').val("");
+                $('#Intermediary_Bank_Swift_Code').val("");
+                $('#IsDefault').val("");
+
+            }
+        }
+
+        function deleteState(id) {
+            debugger
+            var states;
+
+            states = {
+                "BankId": id
+                
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/BankMaster/BankMasterdelete",
+                data: states,
+                success: function (data) {
+                    loadData();
+                },
+                error: function () {
+                }
+            });
+
+        }
+
+
+        function editState(id) {
+           // alert(id);
+            $('#BankId').val(id);
+            var states;
+            states = {
+                "BankId": $('#BankId').val(),
+                "CompanyId": $('#CompanyId').val(),
+                "NameofBeneficiary": $('#NameofBeneficiary').val()
+            }   
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/BankMaster/BankMasteredit",
+                data: states,
+                success: function (data) {
+                    $('#Company').val(data.states.companyId);
+                    $('#NameofBeneficiary').val(data.states.nameofBeneficiary);
+                    $('#BeneficiaryAddress').val(data.states.beneficiaryAddress);
+                    $('#AccountNo').val(data.states.accountNo);
+                    $('#Beneficiary_Bank_Name').val(data.states.beneficiary_Bank_Name);
+                    $('#Beneficiary_Bank_Address').val(data.states.beneficiary_Bank_Address);
+                    $('#Beneficiary_RTGS_NEFT_IFSC_Code').val(data.states.beneficiary_RTGS_NEFT_IFSC_Code);
+                    $('#Beneficiary_Bank_Swift_Code').val(data.states.beneficiary_Bank_Swift_Code);
+                    $('#Intermediary_Bank').val(data.states.intermediary_Bank);
+                    $('#Intermediary_Bank_Swift_Code').val(data.states.intermediary_Bank_Swift_Code);
+                    $('#IsDefault').val(data.states.isDefault);
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function loadData() {
+            var Banks;
+            Banks = {
+                "CompanyId": $('#CompanyFilter').val(),
+                "NameofBeneficiary": $('#NameofBeneficiaryfilter').val(),
+                "Beneficiary_Bank_Name": $('#Beneficiary_Bank_NameFilter').val(),
+            }
+            //$('#viewAll').load('/State/LoadAll');
+            $.ajax({
+
+                type: "GET",
+                url: "/Admin/BankMaster/LoadAll",
+                data: Banks,
+                dataType: "HTML",
+                success: function (data) {
+
+                    $("#viewAll").html(data);
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+    </script>
+
+}

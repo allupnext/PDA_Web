@@ -1,0 +1,228 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Formula Attributes</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Formula Attributes</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Add Formula Attributes </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <div class="card-body">
+                        <input type="hidden" id="FormulaId" name="FormulaId" value="">
+                        <div class="row">
+
+                            <div class="col-sm-6">
+
+                                <div class="form-group">
+                                    <label for="PortName">Formula Attributes Name<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="FormulaName" placeholder="Formula Attribute Name" onchange="onRoleChange(this.val)">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="FormulaAttributeStatus">
+                                    <label class="form-check-label" for="FormulaAttributeStatus">Status</label>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                        <!-- /.card-body -->
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary" onclick="formulaAttributeSave()">Submit</button>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Formula Attribute List</h3>
+                    </div>
+                    <div class="card-body">
+                        <label for="">Filters:</label>
+                        <div class="row" style="padding-bottom: 10px;">
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="FormulaAttributeNameFilter">Formula Attribute Name</label>
+                                <input type="text" class="form-control" id="FormulaAttributeNameFilter" placeholder="Formula Attribute Name">
+                            </div>
+                        </div>
+                    <div id="viewAll" class="table-responsive">
+                        </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            $('#RoleMainMenu').addClass('active');
+            $('#RoleTypeMenu').addClass('active');
+            $('#RoleTypeMenu').parent().closest('ul').parent().addClass('menu-open');
+            $('#RoleTypeStatus').prop("checked", true);
+            //$("#").DataTable();
+            loadData();
+            $("#FormulaAttributeNameFilter").change(function () {
+                loadData();
+            });
+            //$('#reload').on('click', function () {
+            //    loadData();
+            //});
+        });
+
+        function onRoleChange(val) {
+            $('#FormulaAttributeName').css("border", "1px solid #ced4da");
+        }
+        function formulaAttributeSave() {
+
+            var Status = false;
+            if ($('#FormulaAttributeStatus').is(":checked")) {
+                Status = true;
+            }
+            var FormatAttribute;
+
+            FormatAttribute = {
+                "FormulaId": $('#FormulaId').val(),
+                "FormulaName": $('#FormulaName').val(),
+                "FormulaAttributeStatus": Status
+            }
+            if ($('#FormulaName').val() == "") {
+                toastr.error("Please enter Formula Atribute name.", 'Error Alert');
+                $('#FormulaName').css("border-color", "Red");
+            }
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/Formulaattributes/FormulaattributesSave",
+                    data: FormatAttribute,
+                    success: function (data) {
+                        if (!data.proceed) {
+                            return;
+                        }
+                        else {
+                            loadData();
+                        }
+
+                    },
+                    error: function () {
+                    }
+                });
+            }
+        }
+
+        function deleteFormula(id) {
+            debugger
+
+            var FormatAttribute;
+
+            FormatAttribute =
+            {
+                "FormulaId": id,
+                "FormulaName": $('#FormulaName').val(),
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Formulaattributes/deleteFormulaattributes",
+                data: FormatAttribute,
+                success: function (data) {
+                    loadData();
+                },
+                error: function () {
+                }
+            });
+
+        }
+
+        function editFormula(id) {
+            //Id
+            $('#FormulaId').val(id);
+
+            var FormatAttribute;
+
+            FormatAttribute = {
+                "FormulaId": $('#FormulaId').val(),
+                "FormulaName": $('#FormulaName').val(),
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Formulaattributes/editFormulaattributes",
+                data: FormatAttribute,
+                success: function (data) {
+                    debugger;
+                    $('#FormulaName').val(data.formatAttribute.formulaName);
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function loadData() {
+            var FormulaAttributes;
+
+            FormulaAttributes = {
+                "FormulaName": $("#FormulaAttributeNameFilter").val()
+            }
+            //$('#viewAll').load('/CargoType/LoadAll');
+            $.ajax({
+                type: "GET",
+                url: "/Admin/Formulaattributes/LoadAll",
+                data: FormulaAttributes,
+                dataType: "HTML",
+                success: function (data) {
+                    $("#viewAll").html(data);
+                },
+                error: function () {
+                }
+            });
+        }
+
+    </script>
+
+}

@@ -1,0 +1,319 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Cargo Details</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Cargo Details</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+             
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Add Cargo Details </h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <!-- form start -->
+                        <div class="card-body">
+                            <input type="hidden" id="CargoDetailsId" name="CargoDetailsId" value="">
+                            <div class="row">
+                                <div class="col-sm-6">
+
+                                    <div class="form-group">
+                                    <label for="PortName">Cargo Type<span class="text-danger">*</span></label>
+                                        @Html.DropDownList("CargoType", new SelectList(ViewBag.CargoType, "ID", "CargoTypeName"),"Please Select" ,new { @class="form-control" })
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+
+                                    <div class="form-group">
+                                    <label for="PortName">Cargo Name<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="CargoName" placeholder="Cargo Name" onchange="onCargoChange(this.val,1)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+
+                                    <div class="form-group">
+                                    <label for="PortName">Cargo Family<span class="text-danger">*</span></label>
+                                    @Html.DropDownList("CargoFamily", new SelectList(ViewBag.CargoFamilys, "ID", "CargoFamilyName"),"Please Select", new { @class="form-control" })
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                    <label for="PortName">Cargo Information</label>
+                                        <div class="input-group">
+                                            <div class="custom-file">
+                                                <input type="file" class="custom-file-input" id="exampleInputFile" onchange="uploadFiles('exampleInputFile');">
+                                                <label class="custom-file-label" for="exampleInputFile" >Choose file</label>
+                                                <input type="hidden" id="ResumeFileName" name="ResumeFileName" />
+
+                                            </div>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">Upload</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="Status">
+                                        <label class="form-check-label" for="Status">Status</label>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+                            <!-- /.card-body -->
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-primary" onclick="cargoDetailsSave()">Submit</button>
+                        </div>
+
+                    </div>
+               
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Cargo Details List</h3>
+                    </div>
+                    <div class="card-body">
+                        <label for="">Filters:</label>
+                        <div class="row" style="padding-bottom: 10px;">
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="CargoNameFilter">Cargo Name</label>
+                                <input type="text" class="form-control" id="CargoNameFilter" placeholder="Cargo Name">
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="CargoTypeFilter">CargoType</label>
+                                @Html.DropDownList("CargoTypeFilter", new SelectList(ViewBag.CargoType, "ID", "CargoTypeName"),"Please Select" ,new { @class="form-control" })
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="CargoFamilyFilter">CargoFamily</label>
+                                @Html.DropDownList("CargoFamilyFilter", new SelectList(ViewBag.CargoFamilys, "ID", "CargoFamilyName"),"Please Select", new { @class="form-control" })
+                            </div>
+                        </div>
+                    <div id="viewAll" class="table-responsive"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+@section Scripts
+    {
+    <script>
+        
+        $(document).ready(function () {
+            $('#CargoMainMenu').addClass('active');
+            $('#CargoDetailsMenu').addClass('active');
+            $('#CargoDetailsMenu').parent().closest('ul').parent().addClass('menu-open');
+            $('#Status').prop("checked", true);
+            //$("#").DataTable();
+            loadData();
+            $("#CargoNameFilter").change(function () {
+                loadData();
+            });
+            $("#CargoTypeFilter").change(function () {
+                loadData();
+            });
+            $("#CargoFamilyFilter").change(function () {
+                loadData();
+            });
+            //$('#reload').on('click', function () {
+            //    loadData();
+            //});
+        });
+
+        function onCargoChange(val, inputVal) {
+            if(inputVal==1){
+                $('#CargoName').css("border", "1px solid #ced4da");
+            }
+            else if(inputVal==2){
+                $('#CargoName').css("border", "1px solid #ced4da");
+            }
+        }
+
+        function uploadFiles(inputId) {
+            var input = document.getElementById(inputId);
+            var files = input.files;
+            var formData = new FormData();
+
+            for (var i = 0; i !== files.length; i++) {
+                formData.append("files", files[i]);
+            }
+
+            $.ajax(
+                {
+                    url: "/Admin/CargoDetails/uploadfiles",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    type: "POST",
+                    success: function (data) {
+                        // Set the property of the Model.
+                        $("#ResumeFileName").val(data.fileName);
+                    }
+                }
+            );
+        }
+
+        function cargoDetailsSave() {
+            var cargoDetails;
+
+            cargoDetails = {
+                "ID": $('#CargoDetailsId').val(),
+                "CargoTypeID": $('#CargoType').val(),
+                "CargoName": $('#CargoName').val(),
+                "CargoFamilyID": $('#CargoFamily').val(),
+                "CargoFile": $("#ResumeFileName").val()
+            }
+
+            if ($('#CargoName').val() == "") {
+                toastr.error("Please enter cargo name.", 'Error Alert');
+                $('#CargoName').css("border-color", "Red");
+            }
+            else if ($('#CargoType').val() == "") {
+                toastr.error("Please enter cargo type.", 'Error Alert');
+                //$('#CargoType').css("border-color", "Red");
+            }
+            else if ($('#CargoFamily').val() == "") {
+                toastr.error("Please enter cargo family.", 'Error Alert');
+                //$('#CargoType').css("border-color", "Red");
+            }
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/CargoDetails/CargoDetailsSave",
+                    data: cargoDetails,
+                    success: function (data) {
+                        if (!data.proceed) {
+                            return;
+                        }
+                        else {
+                            loadData();
+                        }
+
+                    },
+                    error: function () {
+                    }
+                });
+                $('#CargoDetailsId').val("");
+                $('#CargoType').val("");
+                $('#CargoName').val("");
+                $('#CargoFamily').val("");
+                $('#ResumeFileName').val("");
+            }
+        }
+
+        function deleteCargoDetails(id) {
+
+            var countrys;
+
+            countrys = {
+                "ID": id,
+                "CargoTypeID": $('#CargoType').val(),
+                "CargoName": $('#CargoName').val()
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/CargoDetails/DeleteCargoDetails",
+                data: countrys,
+                success: function (data) {
+                    loadData();
+                },
+                error: function () {
+                }
+            });
+
+        }
+
+
+        function editCargoDetails(id) {
+            //Id
+            $('#CargoDetailsId').val(id);
+
+            var countrys;
+
+            countrys = {
+                "ID": $('#CargoDetailsId').val(),
+                "CargoTypeID": $('#CargoType').val(),
+                "CargoName": $('#CargoName').val()
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/CargoDetails/EditCargoDetails",
+                data: countrys,
+                success: function (data) {
+                    debugger;
+                    $('#CargoType').val(data.cargoDetails.cargoTypeID);
+                    $('#CargoName').val(data.cargoDetails.cargoName);
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function loadData() {
+             var cargodetails;
+            debugger
+            cargodetails = {
+                "CargoName": $('#CargoNameFilter').val(),
+                "CargoTypeID": $('#CargoTypeFilter').val(),
+                "CargoFamilyID": $('#CargoFamilyFilter').val()
+            }
+            //$('#viewAll').load('/CargoDetails/LoadAll');
+            $.ajax({
+                type: "GET",
+                url: "/Admin/CargoDetails/LoadAll",
+                data: cargodetails,
+                dataType: "HTML",
+                success: function (data) {
+                    $("#viewAll").html(data);
+                },
+                error: function () {
+                }
+            });
+        }
+
+    </script>
+
+}

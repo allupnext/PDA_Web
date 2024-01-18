@@ -1,0 +1,521 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Formula</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Formula</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Add Formula </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <div class="card-body">
+                        <input type="hidden" id="formulaMasterID" name="formulaMasterID" value="">
+                        <input type="hidden" id="formulaTrasID" name="formulaTrasID" value="">
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="FormulaName">Formula Name<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="FormulaName" placeholder="Formula Name">
+
+
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="FormulaName">Port@*<span class="text-danger">*</span>*@</label>
+                                    @Html.DropDownList("Port", new SelectList(ViewBag.Ports, "ID", "PortName"), "Please Select", new { @class = "form-control" })
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="FormulaAttribute">Formula Attribute@*<span class="text-danger">*</span>*@</label>
+                                    <div class="input-group">
+                                        @Html.DropDownList("FormulaAttribute", new SelectList(ViewBag.FormulaAttribute, "FormulaId", "FormulaName"), "Please Select", new { @class = "form-control" })
+                                        <div class="input-group-append" style="margin-left: 10px;">
+                                            <button type="button" class="btn btn-success" onclick="addFormulaAttribute()">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                           @* <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="FormulaSlab">Formula Slab</label>
+                                    <div class="input-group">
+                                        @Html.DropDownList("FormulaSlab", new SelectList(ViewBag.FormulaSlab, "TariffSegmentID", "TariffSegmentName"), "Please Select", new { @class = "form-control", @onchange="onFormulaSlabChange(this.value)"  })
+                                        <div class="input-group-append" style="margin-left: 10px;">
+                                            <button type="button" class="btn btn-success" onclick="addFormulaSlab()">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>*@
+
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="FormulaOprator">Formula Oprator@*<span class="text-danger">*</span>*@</label>
+                                    <div class="input-group">
+                                        @Html.DropDownList("FormulaOprator", new SelectList(ViewBag.FormulaOprator, "formulaOperatorID", "formulaOperator"), "Please Select", new { @class = "form-control" })
+                                        <div class="input-group-append" style="margin-left: 10px;">
+                                            <button type="button" class="btn btn-success" onclick="addFormulaOprator()">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="FormulaValue">Formula Value@*<span class="text-danger">*</span>*@</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="FormulaValue" placeholder="Formula Value">
+                                        <div class="input-group-append" style="margin-left: 10px;">
+                                            <button type="button" class="btn btn-success" onclick="addFormulaValue()">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="Formula">Formula@*<span class="text-danger">*</span>*@</label>
+                                    <div class="input-group">
+                                        <textarea class="form-control" id="Formula" placeholder="formula " disabled></textarea>
+                                        <div class="input-group-append" style="margin-left: 40px;">
+                                            <button type="button" class="btn btn-danger" onclick="clearFormula()">Clear</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="FormulaStatus">
+                                    <label class="form-check-label" for="FormulaStatus">Status</label>
+                                </div>
+                            </div>
+                        </div>
+                              
+                        <div class="card-footer">
+                            <button class="btn btn-primary" onclick="FormulaSave()">Submit</button>
+                        </div>
+
+                    </div>
+
+                </div>
+                <!-- /.card-body -->
+                @*  <div class="card-footer">
+                <button class="btn btn-primary" onclick="StateSave()">Submit</button>
+                </div> *@
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Formula List</h3>
+                    </div>
+                    <div id="viewAll" class="card-body table-responsive"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</section>
+
+
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+            $('#TariffMainMenu').addClass('active');
+            $('#FormulasMenu').addClass('active');
+            $('#FormulasMenu').parent().closest('ul').parent().addClass('menu-open');
+            $('#FormulaStatus').prop("checked", true);
+
+            loadData();
+        });
+        function deleteTariffMaster(id) {
+            debugger;
+            var Formula;
+
+            Formula = {
+
+                "formulaMasterID": id,
+                "formulaName": $('#FormulaName').val(),
+
+            }
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Tariff/formulaDelete",
+                data: Formula,
+                success: function (data) {
+                    if (!data.proceed) {
+
+                        return;
+                    }
+                    else {
+                        loadData();
+                        $('#formulaMasterID').val('')
+                        $('#FormulaAttribute').val('')
+                        $('#FormulaValue').val('')
+                        $('#FormulaOprator').val('')
+                        $('#FormulaSlab').val('')
+                        $('#Formula').val('')
+                        $('#Port').val('');
+                    }
+
+                },
+                error: function () {
+                }
+            });
+
+        }
+
+
+        function clearFormula() {
+            debugger;
+            var Formula;
+
+            Formula = {
+
+                "formulaMasterID": $('#formulaMasterID').val(),
+                "formulaName": $('#FormulaName').val(),         
+            }
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Tariff/formulaClear",
+                data: Formula,
+                success: function (data) {
+                    if (!data.proceed) {
+
+                        return;
+                    }
+                    else {
+                        loadData();
+                        $('#formulaMasterID').val('')
+                        $('#FormulaAttribute').val('')
+                        $('#FormulaValue').val('')
+                        $('#FormulaOprator').val('')
+                        $('#FormulaSlab').val('')
+                        $('#Formula').val('')
+                        $('#Port').val('')
+                    }
+
+                },
+                error: function () {
+                }
+            });
+
+        }
+
+        function FormulaSave() {
+            var Formula;
+            var FormulaStatus = false;
+            if ($('#FormulaStatus').is(":checked")) {
+                FormulaStatus = true;
+            }
+            Formula = {
+
+                "formulaMasterID": $('#formulaMasterID').val(),
+                "formulaName": $('#FormulaName').val(),
+                "formulaStatus": FormulaStatus
+
+            }
+
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Tariff/formulaSave",
+                data: Formula,
+                success: function (data) {
+                    if (!data.proceed) {
+
+                        return;
+                    }
+                    else {
+                        loadData();
+                        $('#formulaMasterID').val('')
+                        $('#FormulaAttribute').val('')
+                        $('#FormulaValue').val('')
+                        $('#FormulaOprator').val('')
+                        $('#FormulaSlab').val('')
+                        $('#Formula').val('')
+                        $('#FormulaName').val('')
+                        $('#Port').val('')
+                    }
+
+                },
+                error: function () {
+                }
+            });
+
+        }
+
+        function onFormulaSlabChange(val) {
+            $('#FormulaSlab').css("border", "1px solid #ced4da");
+        }
+
+        function addFormulaSlab() {
+            if ($('#FormulaSlab').val() == "") {
+                toastr.error("Please select formula slab.", 'Error Alert');
+                $('#FormulaSlab').css("border-color", "Red");
+                return;
+            }
+
+            if ($('#Formula').val() == '') {
+                var formulatext = $('#FormulaSlab option:selected').text();
+                $('#Formula').val(formulatext);
+            }
+            else {
+                var formulatext = $('#Formula').val() + ' ' + $('#FormulaSlab option:selected').text();
+                $('#Formula').val(formulatext);
+            }
+
+            var FormulaStatus = false;
+            if ($('#FormulaStatus').is(":checked")) {
+                FormulaStatus = true;
+            }
+
+            var FormulaMasterTransSave;
+            FormulaMasterTransSave = {
+                "formulaName": $('#FormulaName').val(),
+                "formulaTrasID": $('#formulaTrasID').val(),
+                "formulaID": $('#formulaMasterID').val(),
+                "formulaSlabID": $('#FormulaSlab').val(),
+                "PortID": $('#Port').val(),
+                "formulaStatus": FormulaStatus
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Tariff/formulaTransationSave",
+                data: FormulaMasterTransSave,
+                success: function (data) {
+                    if (!data.proceed) {
+                        return;
+                    }
+                    else {
+                        $('#formulaMasterID').val(data.formulaid);
+                       
+                    }
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function addFormulaAttribute() {
+            if ($('#FormulaAttribute').val() == "") {
+                toastr.error("Please select formula Attribute.", 'Error Alert');
+                $('#FormulaAttribute').css("border-color", "Red");
+                return;
+            }
+
+
+            if ($('#Formula').val() == '') {
+                var formulatext = $('#FormulaAttribute option:selected').text();
+                $('#Formula').val(formulatext);
+            }
+            else {
+                var formulatext = $('#Formula').val() + ' ' + $('#FormulaAttribute option:selected').text();
+                $('#Formula').val(formulatext);
+            }
+
+            var FormulaStatus = false;
+            if ($('#FormulaStatus').is(":checked")) {
+                FormulaStatus = true;
+            }
+
+            var FormulaMasterTransSave;
+            FormulaMasterTransSave = {
+                "formulaName": $('#FormulaName').val(),
+                "formulaTrasID": $('#formulaTrasID').val(),
+                "formulaID": $('#formulaMasterID').val(),
+                "formulaAttributeID": $('#FormulaAttribute').val(),
+                "PortID": $('#Port').val(),
+                "formulaStatus": FormulaStatus
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Tariff/formulaTransationSave",
+                data: FormulaMasterTransSave,
+                success: function (data) {
+                    if (!data.proceed) {
+                        return;
+                    }
+                    else {
+                        $('#formulaMasterID').val(data.formulaid);
+                       
+                    }
+
+                },
+                error: function () {
+                }
+            });
+
+        }
+
+        function addFormulaValue() {
+            var FormulaTransaction;
+            if ($('#FormulaValue').val() == "") {
+                toastr.error("Please select formula Value.", 'Error Alert');
+                $('#FormulaValue').css("border-color", "Red");
+                return;
+            }
+
+
+            if ($('#Formula').val() == '') {
+                var formulatext = $('#FormulaValue').val();
+                $('#Formula').val(formulatext);
+            }
+            else {
+                var formulatext = $('#Formula').val() + ' ' + $('#FormulaValue').val();
+                $('#Formula').val(formulatext);
+            }
+
+            var FormulaStatus = false;
+            if ($('#FormulaStatus').is(":checked")) {
+                FormulaStatus = true;
+            }
+
+            var FormulaMasterTransSave;
+            FormulaMasterTransSave = {
+                "formulaName": $('#FormulaName').val(),
+                "formulaTrasID": $('#formulaTrasID').val(),
+                "formulaID": $('#formulaMasterID').val(),
+                "formulaValue": $('#FormulaValue').val(),
+                "PortID": $('#Port').val(),
+                "formulaStatus": FormulaStatus
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Tariff/formulaTransationSave",
+                data: FormulaMasterTransSave,
+                success: function (data) {
+                    if (!data.proceed) {
+                        return;
+                    }
+                    else {
+                        $('#formulaMasterID').val(data.formulaid);
+                     
+                    }
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function addFormulaOprator() {
+            if ($('#FormulaOprator').val() == "") {
+                toastr.error("Please select formula Operator.", 'Error Alert');
+                $('#FormulaOprator').css("border-color", "Red");
+                return;
+            }
+
+            if ($('#Formula').val() == '') {
+                var formulatext = $('#FormulaOprator option:selected').text();
+                $('#Formula').val(formulatext);
+            }
+            else {
+                var formulatext = $('#Formula').val() + ' ' + $('#FormulaOprator option:selected').text();
+                $('#Formula').val(formulatext);
+
+            }
+            var FormulaStatus = false;
+            if ($('#FormulaStatus').is(":checked")) {
+                FormulaStatus = true;
+            }
+
+            var FormulaMasterTransSave;
+            FormulaMasterTransSave = {
+                "formulaName": $('#FormulaName').val(),
+                "formulaTrasID": $('#formulaTrasID').val(),
+                "formulaID": $('#formulaMasterID').val(),
+                "formulaOperatorID": $('#FormulaOprator').val(),
+                "PortID": $('#Port').val(),
+                "formulaStatus": FormulaStatus
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Tariff/formulaTransationSave",
+                data: FormulaMasterTransSave,
+                success: function (data) {
+                    if (!data.proceed) {
+                        return;
+                    }
+                    else {
+                        $('#formulaMasterID').val(data.formulaid);
+                       
+                    }
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function loadData() {
+            //$('#viewAll').load('/State/LoadAll');
+            $.ajax({
+
+                type: "GET",
+                url: "/Admin/Tariff/LoadAllFormula",
+                dataType: "HTML",
+                success: function (data) {
+
+                    $("#viewAll").html(data);
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+
+    </script>
+
+}

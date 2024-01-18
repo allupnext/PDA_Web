@@ -1,0 +1,881 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+<link href="~/plugins/jquery-ui/jquery-ui.min.css" rel="stylesheet" />
+<link href="~/plugins/jquery-ui/jquery-ui.structure.min.css" rel="stylesheet" />
+<link href="~/plugins/jquery-ui/jquery-ui.structure.css" rel="stylesheet" />
+<link href="~/plugins/jquery-ui/jquery-ui.theme.min.css" rel="stylesheet" />
+<link href="~/plugins/jquery-ui/jquery-ui.theme.css" rel="stylesheet" />
+<link href="~/plugins/jquery-ui/jquery-ui.css" rel="stylesheet" />
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Tariff Master</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Tariff Master</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Add Tariff Master</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <div class="card-body" style="overflow-x:scroll; overflow-y:hidden;">
+                        <input type="hidden" id="TariffID" name="TariffID" value="">
+                        <input type="hidden" id="TariffRateID" name="TariffRateID" value="">
+
+                        <div class="row">
+                            <div class="col-sm-6">
+
+                                <div class="form-group">
+                                    <label for="PortName">Port<span class="text-danger">*</span></label>
+                                    @Html.DropDownList("PortName", new SelectList(ViewBag.Port, "ID", "PortName"), "Please select", new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row" style="flex-wrap: nowrap !important;">
+
+                            <div class="col-sm-2" style="max-width: 12%;">
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                            </div>
+                            <div class="col-sm-2" style="max-width: 12%;">
+                            </div>
+                            <div class="col-sm-2" style="max-width: 12%;">
+                            </div>
+                            <div class="col-sm-2" style="max-width: 10%;">
+                            </div>
+                            <div class="col-sm-1" style="max-width: 10%;">
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                            </div>
+
+                            <div class="col-sm-2" style="max-width: 15%;"></div>
+                            <div class="col-sm-2" style="max-width: 10%;"></div>
+                            <div class="col-sm-2" style="max-width: 10%;"></div>
+                            <div class="col-sm-2" style="max-width: 10%;"></div>
+                            <div class="col-sm-2" style="max-width: 10%;"></div>
+                            <div class="col-sm-2" style="max-width: 10%;"></div>
+
+                            <div class="col-sm-2" style="max-width: 10%;"></div>
+                            <div class="col-sm-4" style="max-width: 30%;">
+                                <lable id="formulastring" value="">
+                            </div>
+                        </div>
+                        <div class="row" style="flex-wrap: nowrap !important;">
+
+                            <div class="col-sm-2" style="max-width: 12%;">
+                                Terminal<span class="text-danger">*</span>
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                Berth<span class="text-danger">*</span>
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                Cargo<span class="text-danger">*</span>
+                            </div>
+                            <div class="col-sm-2" style="max-width: 12%;">
+                                Validate From<span class="text-danger">*</span>
+                            </div>
+                            <div class="col-sm-2" style="max-width: 12%;">
+                                Validate To<span class="text-danger">*</span>
+                            </div>
+                            <div class="col-sm-2" style="max-width: 10%;">
+                                Status<span class="text-danger">*</span>
+                            </div>
+                            <div class="col-sm-1" style="max-width: 10%;">
+                                Call Type<span class="text-danger">*</span>
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                Expenses<span class="text-danger">*</span>
+                            </div>
+
+                            <div class="col-sm-2" style="max-width: 15%;">Charge Codes<span class="text-danger">*</span></div>
+                            <div class="col-sm-2" style="max-width: 15%;">Vessel Ballast<span class="text-danger">*</span></div>
+
+                            <div class="col-sm-2" style="max-width: 10%;">Tax<span class="text-danger">*</span></div>
+                            <div class="col-sm-2" style="max-width: 10%;">Slab<span class="text-danger">*</span></div>
+                            <div class="col-sm-2" style="max-width: 10%;">Slab Increemental<span class="text-danger">*</span></div>
+                            <div class="col-sm-2" style="max-width: 10%;">Slab From<span class="text-danger">*</span></div>
+                            <div class="col-sm-2" style="max-width: 10%;">Slab To<span class="text-danger">*</span></div>
+                            <div class="col-sm-2" style="max-width: 10%;">Rate<span class="text-danger">*</span></div>
+                            <div class="col-sm-2" style="max-width: 10%;">Currency<span class="text-danger">*</span></div>
+                            <div class="col-sm-2" style="max-width: 15%;">Formula<span class="text-danger">*</span></div>
+                            <div class="col-sm-2" style="max-width: 10%;">Remarks<span class="text-danger">*</span></div>
+                        </div>
+                        <div class="row" style="flex-wrap: nowrap !important;">
+
+                            <div class="col-sm-2" style="max-width: 12%;" id="terminaldrop">
+                                @Html.DropDownList("TerminalName", new SelectList(ViewBag.Terminal, "ID", "TerminalName"), "ALL", new { @class = "form-control" , @onchange = "TerminalOnChange(this.value)" })
+
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;" id="berthdrop">
+                                @Html.DropDownList("BerthName", new SelectList(ViewBag.Berth, "ID", "BerthName"), "ALL", new { @class = "form-control" })
+
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;" id="cargodrop">
+                                @Html.DropDownList("CargoName", new SelectList(ViewBag.Cargo, "ID", "CargoName"), "ALL", new { @class = "form-control" })
+
+                            </div>
+                            <div class="col-sm-2" style="max-width: 12%;" id="FromDataDiv">
+                                <input type="text" class="form-control" id="FromDate" autocomplete="off">
+                            </div>
+                            <div class="col-sm-2" style="max-width: 12%;" id="ToDateDiv">
+                                <input type="text" class="form-control" id="ToDate" autocomplete="off">
+                            </div>
+                            <div class="col-sm-2" style="max-width: 10%;" id="StatusDiv">
+                                @Html.DropDownList("Status", new List<SelectListItem>
+                                {
+                                new SelectListItem{ Text="Active", Value = "1" },
+                                new SelectListItem{ Text="Expired", Value = "2" },
+                                new SelectListItem{ Text="Pending", Value = "3" }
+                                }, new { @class = "form-control" })
+                            </div>
+                            <div class="col-sm-1" style="max-width: 10%;">
+                                @Html.DropDownList("CallType", new SelectList(ViewBag.CallTypes, "ID", "CallTypeName"), "ALL", new { @class = "form-control" })
+
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                @Html.DropDownList("Expenses", new SelectList(ViewBag.Expenses, "ID", "ExpenseName"), "Please Select", new { @class = "form-control" })
+
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;" id="ChargeCodeDiv">
+                                @Html.DropDownList("ChargeCodes", new SelectList(ViewBag.ChargeCodes, "ID", "ChargeCodeName"), "Please Select", new { @class = "form-control" })
+
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                @Html.DropDownList("VesselBallast", new List<SelectListItem>
+                                {
+                                new SelectListItem{ Text="Not-Applicable", Value = "0" },
+                                new SelectListItem{ Text="No", Value = "1" },
+                                new SelectListItem{ Text="Yes", Value = "2" },
+                                }, new { @class = "form-control" })
+
+                            </div>
+                            <div class="col-sm-2" style="max-width: 10%;">
+                                @Html.DropDownList("Texs", new SelectList(ViewBag.Texs, "ID", "TaxName"), "Not Applicable", new { @class = "form-control" })
+
+                            </div>
+                            <div class="col-sm-2" style="max-width: 10%;">
+                                @Html.DropDownList("Slabs", new SelectList(ViewBag.Slabs, "TariffSegmentID", "TariffSegmentName"), "Please Select", new { @class = "form-control" })
+
+                            </div>
+                            <div class="col-sm-2" style="max-width: 10%;">
+                                @Html.DropDownList("SlabIncreemental", new List<SelectListItem>
+                                {
+                                new SelectListItem{ Text="Increemental", Value = "1" },
+                                new SelectListItem{ Text="Not-Increemental", Value = "2" },
+                                }, new { @class = "form-control" })
+                              
+                            </div>
+
+                            <div class="col-sm-2" style="max-width: 10%;">
+                                <input type="text" class="form-control" id="SlabFrom" value="" name="SlabFrom" placeholder="Enter Slab From">
+
+                            </div>
+                            <div class="col-sm-2" style="max-width: 10%;">
+                                <input type="text" class="form-control" id="SlabTo" value="" name="SlabTo" placeholder="Enter Slab To">
+                            </div>
+
+                            <div class="col-sm-2" style="max-width: 10%;">
+                                <input type="text" class="form-control" id="Rate" value="" name="Rate" placeholder="Enter Rate">
+
+                            </div>
+                            <div class="col-sm-2" style="max-width: 10%;">
+                                @Html.DropDownList("Currency", new SelectList(ViewBag.Currency, "ID", "CurrencyCode"), new { @class = "form-control" })
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;" id="formuladiv">
+                                @Html.DropDownList("Formulas", new SelectList(ViewBag.Formulas, "formulaMasterID", "formulaName"), "Please Select", new { @class = "form-control" , @onchange="onFormulaChange(this.value)"  })
+
+                            </div>
+                            <div class="col-sm-2" style="max-width: 30%;">
+                                <input type="text" class="form-control" id="Remarks" value="" name="Remarks" placeholder="Enter Remark">
+                            </div>
+                            <div class="col-sm-2" style="max-width: 20%;">
+                                <div style="display: flex;">
+                                    <button class="btn btn-primary" id="AddTariffRate" onclick="AddTariffRate()">Add</button>
+                                    <button class="btn btn-primary" id="UpdateTariffRate" style="display:none" onclick="UpdateTariffRate()">UPDATE</button>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Tariff List</h3>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="">
+                            <label for="">Filters:</label>
+
+
+                        </div>
+                        <div class="row" style="padding-bottom: 10px;">
+                            <div class="col-sm-2" style="max-width: 10%;">
+                                <label for="TerminalNameFilter">Terminal</label>
+                                @Html.DropDownList("TerminalNameFilter", new SelectList(ViewBag.Terminal, "ID", "TerminalName"), "Please select", new { @class = "form-control" })
+                            </div>
+                            <div class="col-sm-2" style="max-width: 10%;">
+                                <label for="BerthNameFilter">Berth</label>
+                                @Html.DropDownList("BerthNameFilter", new SelectList(ViewBag.Berth, "ID", "BerthName"), "ALL", new { @class = "form-control" })
+                            </div>
+                            <div class="col-sm-2" style="max-width: 10%;">
+                                <label for="CargoNameFilter">Cargo</label>
+                                @Html.DropDownList("CargoNameFilter", new SelectList(ViewBag.Cargo, "ID", "CargoName"), "ALL", new { @class = "form-control" })
+                            </div>
+                            <div class="col-sm-2" style="max-width: 10%;">
+                                <label for="FromDateFilter">FromDate</label>
+                                <input type="date" class="form-control" id="FromDateFilter">
+                            </div>
+                            <div class="col-sm-2" style="max-width: 10%;">
+                                <label for="ToDateFilter">ToDate</label>
+                                <input type="date" class="form-control" id="ToDateFilter">
+                            </div>
+                            <div class="col-sm-2" style="max-width: 10%;">
+                                <label for="StatusFilter">Status</label>
+                                @Html.DropDownList("StatusFilter", new List<SelectListItem>
+                                {
+                                new SelectListItem{ Text="ALL" },
+                                new SelectListItem{ Text="Active", Value = "1" },
+                                new SelectListItem{ Text="Expired", Value = "2" },
+                                new SelectListItem{ Text="Pending", Value = "3" }
+                                }, new { @class = "form-control", id = "StatusFilter" })
+                            </div>
+                            <div class="col-sm-2" style="max-width: 10%;">
+                                <label for="CallTypeFilter">CallTypes</label>
+                                @Html.DropDownList("CallTypeFilter", new SelectList(ViewBag.CallTypes, "ID", "CallTypeName"), "ALL", new { @class = "form-control" })
+                            </div>
+                            <div class="col-sm-2" style="max-width: 10%;">
+                                <label for="ExpensesFilter">Expenses</label>
+                                @Html.DropDownList("ExpensesFilter", new SelectList(ViewBag.Expenses, "ID", "ExpenseName"), "Please Select", new { @class = "form-control" })
+                            </div>
+                            <div class="col-sm-2" style="max-width: 10%;">
+
+                                <label for="ChargeCodesFilter">ChargeCodes</label>
+                                @Html.DropDownList("ChargeCodesFilter", new SelectList(ViewBag.ChargeCodes, "ID", "ChargeCodeName"), "Please Select", new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div id="viewAllTariffRate"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+@section Scripts
+    {
+    <script>
+
+        function onFormulaChange(val) {
+            debugger;
+            var Formula;
+
+            Formula = {
+
+                "formulaMasterID": val,
+                "formulaName": "",
+
+            }
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Tariff/formulaByFormulaId",
+                data: Formula,
+                success: function (data) {
+                    if (!data.proceed) {
+
+                        return;
+                    }
+                    else {
+                        $('#formulastring').text(data.formulastring);
+                    }
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+        $(function () {
+            $("#FromDate").datepicker({
+                dateFormat: 'dd/mm/yy',//check change
+                changeMonth: true,
+                changeYear: true
+            });
+
+            $("#ToDate").datepicker({
+                dateFormat: 'dd/mm/yy',//check change
+                changeMonth: true,
+                changeYear: true
+            });
+        });
+
+        $(document).ready(function () {
+            $('#AddTariffRate').show();
+            $('#UpdateTariffRate').hide();
+            $('#TariffMainMenu').addClass('active');
+            $('#TariffMenu').addClass('active');
+            $('#TariffMenu').parent().closest('ul').parent().addClass('menu-open');
+
+            //loadDataTariffMaster();
+            loadData();
+
+            $("#TerminalNameFilter").change(function () {
+                loadData();
+            });
+
+            $("#BerthNameFilter").change(function () {
+                loadData();
+            });
+            $("#CargoNameFilter").change(function () {
+                loadData();
+            });
+            $("#FromDateFilter").change(function () {
+                loadData();
+            });
+            $("#ToDateFilter").change(function () {
+
+                loadData();
+            });
+            $("#CallTypeFilter").change(function () {
+                loadData();
+            });
+            $("#ExpensesFilter").change(function () {
+                loadData();
+            });
+            $("#ChargeCodesFilter").change(function () {
+                loadData();
+            });
+            $("#StatusFilter").change(function () {
+                loadData();
+            });
+
+
+
+            $("#PortName").change(function () {
+                $('#PortName').css("border", "1px solid #ced4da");
+                var portid = $('option:selected', this).val();
+
+                var cargoHandled;
+                cargoHandled = {
+                    "PortID": portid,
+                    "TerminalID": $('#TerminalName').val(),
+                    "BerthID": $('#BerthName').val(),
+                    "CargoID": $('#CargoName').val(),
+                }
+                $.ajax({
+                    type: "GET",
+                    url: "/Admin/Tariff/PortNameOnchange",
+                    data: cargoHandled,
+                    dataType: "HTML",
+                    success: function (data) {
+                        $("#terminaldrop").html(data);
+                        $.ajax({
+                            type: "GET",
+                            url: "/Admin/Tariff/PortNameOnchangeForumla",
+                            data: cargoHandled,
+                            dataType: "HTML",
+                            success: function (data) {
+                                $("#formuladiv").html(data);
+                                loadData();
+                            },
+                            error: function () {
+                            }
+                        });
+                       // alert(cargoHandled)
+                        $.ajax({
+                            type: "GET",
+                            url: "/Admin/Tariff/CargoLoad",
+                            data: cargoHandled,
+                            dataType: "HTML",
+                            success: function (data) {
+                                $("#cargodrop").html(data);
+                                loadData();
+                            },
+                            error: function () {
+                            }
+                        });
+                        loadData();
+                    },
+                    error: function () {
+                    }
+                });
+            });
+
+
+        });
+
+        function TerminalOnChange(val) {
+            var portid = $('option:selected', this).val();
+
+            var cargoHandled;
+            cargoHandled = {
+                "PortID": portid,
+                "TerminalID": $('#TerminalName').val(),
+                "BerthID": $('#BerthName').val(),
+                "CargoID": $('#CargoName').val(),
+            }
+
+            $.ajax({
+                type: "GET",
+                url: "/Admin/Tariff/TerminalNameOnchange",
+                data: cargoHandled,
+                dataType: "HTML",
+                success: function (data) {
+                    $("#berthdrop").html(data);
+                },
+                error: function () {
+                }
+            });
+        }
+
+        $(function () {
+            
+
+            $("#Expenses").change(function () {
+              
+
+                $.ajax({
+                    type: "GET",
+                    url: "/Admin/Tariff/ExpensesOnchange?Id=" + $('#Expenses').val(),
+                    dataType: "HTML",
+                    success: function (data) {
+                        $("#ChargeCodeDiv").html(data);
+                    },
+                    error: function () {
+                    }
+                });
+            });
+        });
+        function onselectDate(val, inVal) {
+            if (inVal == 1) {
+                $('#FromDate').css("border", "1px solid #ced4da");
+            }
+            else if (inVal == 2) {
+                $('#ToDate').css("border", "1px solid #ced4da");
+            }
+        }
+        function AddTariffRate() {
+            var TariffMasters;
+            debugger;
+            TariffMasters = {
+                // "TariffID": $('#TariffID').val(),
+                "TariffRateID": $('#TariffRateID').val(),
+                "PortID": $("#PortName").val(),
+                "TerminalID": $('#TerminalName').val(),
+                "BerthID": $("#BerthName").val(),
+                "CargoID": $('#CargoName').val(),
+                "CallTypeID": $('#CallType').val(),
+                "ExpenseCategoryID": $('#Expenses').val(),
+                "ChargeCodeID": $('#ChargeCodes').val(),
+                "SlabID": $('#Slabs').val(),
+                "SlabFrom": $('#SlabFrom').val(),
+                "SlabTo": $('#SlabTo').val(),
+                "StringValidity_From": $("#FromDate").val(),
+                "StringValidity_To": $("#ToDate").val(),
+                "Rate": $("#Rate").val(),
+                "CurrencyID": $("#Currency").val(),
+                "Status": $("#Status").val(),
+                "FormulaID": $("#Formulas").val(),
+                "Remark": $("#Remarks").val(),
+                "TaxID": $("#Texs").val(),
+                "SlabIncreemental": $("#SlabIncreemental").val(),
+                "VesselBallast" : $("#VesselBallast").val()
+
+            }
+            if ($('#PortName').val() == "") {
+                toastr.error("Please select port.", 'Error Alert');
+                $('#PortName').css("border", "1px solid red");
+                return;
+            }
+            if ($('#FromDate').val() == "") {
+                toastr.error("Please endter validity from.", 'Error Alert');
+                $('#FromDate').css("border", "1px solid red");
+                return;
+            }
+            if ($('#ToDate').val() == "") {
+                toastr.error("Please endter validity to.", 'Error Alert');
+                $('#ToDate').css("border", "1px solid red");
+                return;
+            }
+            if ($('#Expenses').val() == "") {
+                toastr.error("Please select expenses category.", 'Error Alert');
+                $('#Expenses').css("border", "1px solid red");
+                return;
+            }
+            if ($('#ChargeCodes').val() == "") {
+                toastr.error("Please select charge codes.", 'Error Alert');
+                $('#ChargeCodes').css("border", "1px solid red");
+                return;
+            }
+            if ($('#Rate').val() == "") {
+                toastr.error("Please enter rate.", 'Error Alert');
+                $('#Rate').css("border", "1px solid red");
+                return;
+            }
+
+            if ($('#Slabs').val() != "") {
+                if ($('#SlabFrom').val() == "") {
+                    toastr.error("Please enter slab from.", 'Error Alert');
+                    $('#ChargeCodes').css("border", "1px solid red");
+                    return;
+                }
+                if ($('#SlabTo').val() == "") {
+                    toastr.error("Please enter slab trom.", 'Error Alert');
+                    $('#ChargeCodes').css("border", "1px solid red");
+                    return;
+                }
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Tariff/TariffRateSave",
+                data: TariffMasters,
+                success: function (data) {
+                    if (!data.proceed) {
+                        return;
+                    }
+                    else {
+                        clear();
+                        loadData();
+
+                    }
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function UpdateTariffRate() {
+            debugger;
+            // $('#TariffRateID').val(id);
+            var TariffMasters;
+
+            TariffMasters = {
+                "PortID": $('#PortName').val(),
+                "TariffRateID": $('#TariffRateID').val(),
+                "TerminalID": $('#TerminalName').val(),
+                "BerthID": $("#BerthName").val(),
+                "CargoID": $('#CargoName').val(),
+                "CallTypeID": $('#CallType').val(),
+                "ExpenseCategoryID": $('#Expenses').val(),
+                "ChargeCodeID": $('#ChargeCodes').val(),
+                "StringValidity_From": $("#FromDate").val(),
+                "StringValidity_To": $("#ToDate").val(),
+                "Rate": $("#Rate").val(),
+                "CurrencyID": $("#Currency").val(),
+                "Status": $("#Status").val(),
+                "FormulaID": $("#Formulas").val(),
+                "Remark": $("#Remarks").val(),
+                "TaxID": $("#Texs").val(),
+                "SlabID": $('#Slabs').val(),
+                "SlabFrom": $('#SlabFrom').val(),
+                "SlabTo": $('#SlabTo').val(),
+                "SlabIncreemental": $("#SlabIncreemental").val(),
+                "VesselBallast": $("#VesselBallast").val()
+            }
+            if ($('#PortName').val() == "") {
+                toastr.error("Please select port.", 'Error Alert');
+                $('#PortName').css("border", "1px solid red");
+                return;
+            }
+            if ($('#FromDate').val() == "") {
+                toastr.error("Please enter validity from.", 'Error Alert');
+                $('#FromDate').css("border", "1px solid red");
+                return;
+            }
+            if ($('#ToDate').val() == "") {
+                toastr.error("Please enter validity to.", 'Error Alert');
+                $('#ToDate').css("border", "1px solid red");
+                return;
+            }
+            if ($('#Expenses').val() == "") {
+                toastr.error("Please select expenses category.", 'Error Alert');
+                $('#Expenses').css("border", "1px solid red");
+                return;
+            }
+            if ($('#ChargeCodes').val() == "") {
+                toastr.error("Please select charge codes.", 'Error Alert');
+                $('#ChargeCodes').css("border", "1px solid red");
+                return;
+            }
+            if ($('#Rate').val() == "") {
+                toastr.error("Please enter rate.", 'Error Alert');
+                $('#Rate').css("border", "1px solid red");
+                return;
+            }
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Tariff/TariffRateSave",
+                data: TariffMasters,
+                success: function (data) {
+                    if (!data.proceed) {
+                        return;
+                    }
+                    else {
+                        clear();
+                        $('#AddTariffRate').show();
+                        $('#UpdateTariffRate').hide();
+                        loadData();
+
+                    }
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+
+        function editTariff(id) {
+            $('#AddTariffRate').hide();
+            $('#UpdateTariffRate').show();
+            //Id
+            $('#TariffRateID').val(id);
+            var TariffRates;
+            var Status = false;
+            if ($('#Status').is(":checked")) {
+                Status = true;
+            }
+            TariffRates = {
+                "TariffRateID": $('#TariffRateID').val(),
+                "PortID": $("#PortName").val(),
+                "TerminalID": $('#TerminalName').val(),
+                "BerthID": $("#BerthName").val(),
+                "CargoID": $('#CargoName').val(),
+                "CallTypeID": $('#CallType').val(),
+                "ExpenseCategoryID": $('#Expenses').val(),
+                "ChargeCodeID": $('#ChargeCodes').val(),
+                "SlabID": $('#Slabs').val(),
+                "SlabFrom": $('#SlabFrom').val(),
+                "SlabTo": $('#SlabTo').val(),
+                "Rate": $("#Rate").val(),
+                "CurrencyID": $("#Currency").val(),
+                "Validity_From": $("#FromDate").val(),
+                "Validity_To": $("#ToDate").val(),
+                "Remark": $("#Remarks").val(),
+                "TaxID": $("#Texs").val()
+                // "FromDate": $("#FromDate").val(),
+                // "ToDate": $("#ToDate").val(),
+            }
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Tariff/EditTTariffRate",
+                data: TariffRates,
+                success: function (data) {
+                    debugger;
+                    $('#PortName').val(data.tariffRates.portID);
+                    if(data.tariffRates.terminalID == 0)
+                        $('#TerminalName').val('');
+                    else
+                        $('#TerminalName').val(data.tariffRates.terminalID);
+
+                     //TerminalOnChange(1);
+
+                    $('#CargoName').val(data.tariffRates.cargoID);
+                    $('#CallType').val(data.tariffRates.callTypeID);
+                    $('#Expenses').val(data.tariffRates.expenseCategoryID);
+                    $('#ChargeCodes').val(data.tariffRates.chargeCodeID);
+                    $('#Rate').val(data.tariffRates.rate);
+                    $('#Currency').val(data.tariffRates.currencyID);
+                    $('#Status').val(data.tariffRates.status);
+                    $('#Texs').val(data.tariffRates.taxID);
+                    $('#Remarks').val(data.tariffRates.remark);
+                    $('#SlabIncreemental').val(data.tariffRates.slabIncreemental);
+                    $('#VesselBallast').val(data.tariffRates.vesselBallast);
+                    $('#Slabs').val(data.tariffRates.slabID);
+                    $('#SlabFrom').val(data.tariffRates.slabFrom);
+                    $('#SlabTo').val(data.tariffRates.slabTo);
+
+                    //$('#FromDate').val(data.tariffRates.validity_From);
+                    //$('#ToDate').val(data.tariffRates.validity_To);
+                    debugger;
+                    var fromDate = new Date(data.tariffRates.validity_From);
+                    var formattedDate = formatDate(fromDate);
+                    $("#FromDate").val(formattedDate);
+                    var toDate = new Date(data.tariffRates.validity_To);
+                    var formattedtoDate = formatDate(toDate);
+                    $('#ToDate').val(formattedtoDate);
+                    $('#Formulas').val(data.tariffRates.formulaID);
+
+
+                    var cargoHandled;
+                    cargoHandled = {
+                        "PortID": 0,
+                        "TerminalID": $('#TerminalName').val(),
+                        "BerthID": $('#BerthName').val(),
+                        "CargoID": $('#CargoName').val(),
+                    }
+
+                    $.ajax({
+                        type: "GET",
+                        url: "/Admin/Tariff/TerminalNameOnchange",
+                        data: cargoHandled,
+                        dataType: "HTML",
+                        success: function (data1) {
+                            $("#berthdrop").html(data1);
+                            if (data.tariffRates.berthID == 0)
+                                $('#BerthName').val('');
+                            else
+                                $('#BerthName').val(data.tariffRates.berthID);
+                        },
+                        error: function () {
+                        }
+                    });
+
+                    //alert(data.portDetails.portCode);
+                    if (!data.proceed) {
+                        return;
+                    }
+                    else {
+
+                        loadData();
+                    }
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function formatDate(date) {
+            var day = date.getDate();
+            var month = date.getMonth() + 1; //Months are zero-based
+            var year = date.getFullYear();
+
+            // Pad the day and month with leading zeros, if necessary
+            day = (day < 10) ?'0' + day : day;
+            month = (month < 10) ?'0' + month : month;
+
+            return day + '/' + month + '/' + year;
+        }
+        function clear() {
+            $('#TerminalName').val('');
+            $("#BerthName").val('');
+            $('#CargoName').val('');
+            $('#CallType').val('');
+            $('#Expenses').val('');
+            $('#ChargeCodes').val('');
+            $('#Slabs').val('');
+            $('#SlabFrom').val('');
+            $('#SlabTo').val('');
+            $("#Rate").val('');
+            $("#Currency").val(1);
+            $("#FromDate").val('');
+            $("#ToDate").val('');
+            $("#Formulas").val('');
+            $('#formulastring').text('');
+            $('#Remarks').val('');
+        }
+
+        function deleteTariff(id) {
+
+            var TariffRates;
+            var Status = false;
+            if ($('#Status').is(":checked")) {
+                Status = true;
+            }
+            TariffRates = {
+                "TariffRateID": id,
+
+                "TerminalID": $('#TerminalName').val(),
+                "BerthID": $("#BerthName").val(),
+                "CargoID": $('#CargoName').val(),
+                "CallTypeID": $('#CallType').val(),
+                "ExpenseCategoryID": $('#Expenses').val(),
+                "ChargeCodeID": $('#ChargeCodes').val(),
+                "Rate": $("#Rate").val(),
+                "CurrencyID": $("#Currency").val(),
+                "Status": $("#Status").val(),
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Tariff/deleteTariffRate",
+                data: TariffRates,
+                success: function (data) {
+                    loadData();
+                },
+                error: function () {
+                }
+            });
+
+        }
+
+
+        function loadData() {
+            var TariffMasters;
+
+            TariffMasters = {
+                "TariffID": 0,
+                "PortID": $("#PortName").val(),
+                "TerminalID": $('#TerminalNameFilter').val(),
+                "BerthID": $("#BerthNameFilter").val(),
+                "CargoID": $('#CargoNameFilter').val(),
+                "CallTypeID": $('#CallTypeFilter').val(),
+                "ExpenseCategoryID": $('#ExpensesFilter').val(),
+                "ChargeCodeID": $('#ChargeCodesFilter').val(),
+                "StatusFilter": parseInt($('#StatusFilter').val()),
+                "Validity_From": $('#FromDateFilter').val(),
+                "Validity_To": $("#ToDateFilter").val(),
+                "status": $("#StatusFilter").val(),
+
+            }
+
+            $.ajax({
+
+                type: "GET",
+                url: "/Admin/Tariff/LoadAll",
+                data: TariffMasters,
+                dataType: "HTML",
+                success: function (data) {
+
+                    $("#viewAllTariffRate").html(data);
+
+                },
+                error: function () {
+                }
+            });
+            //$('#viewAllTariffRate').load('/Tariff/LoadAll');
+        }
+
+
+
+    </script>
+}

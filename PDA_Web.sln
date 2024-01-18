@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PDA_Web", "PDA_Web\PDA_Web.csproj", "{FFD20673-1532-48CC-AD01-02771BF60F81}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PDAEstimator_Application", "PDAEstimator_Application\PDAEstimator_Application.csproj", "{FE97E74D-8809-44A0-A942-174830E02C60}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PDAEstimator_Domain", "PDAEstimator_Domain\PDAEstimator_Domain.csproj", "{A7519303-A993-4E61-8181-26575A2C721D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PDAEstimator_Infrastructure", "PDAEstimator_Infrastructure\PDAEstimator_Infrastructure.csproj", "{CCEEE922-B3BD-4B7C-ADEE-0CFBFE1CD2AD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PDAEstimator_Infrastructure_Shared", "PDAEstimator_Infrastructure_Shared\PDAEstimator_Infrastructure_Shared.csproj", "{AF402F9C-6249-4226-93D7-9C1F2363BAF7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FFD20673-1532-48CC-AD01-02771BF60F81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFD20673-1532-48CC-AD01-02771BF60F81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFD20673-1532-48CC-AD01-02771BF60F81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFD20673-1532-48CC-AD01-02771BF60F81}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE97E74D-8809-44A0-A942-174830E02C60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE97E74D-8809-44A0-A942-174830E02C60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE97E74D-8809-44A0-A942-174830E02C60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE97E74D-8809-44A0-A942-174830E02C60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7519303-A993-4E61-8181-26575A2C721D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7519303-A993-4E61-8181-26575A2C721D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7519303-A993-4E61-8181-26575A2C721D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7519303-A993-4E61-8181-26575A2C721D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCEEE922-B3BD-4B7C-ADEE-0CFBFE1CD2AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCEEE922-B3BD-4B7C-ADEE-0CFBFE1CD2AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCEEE922-B3BD-4B7C-ADEE-0CFBFE1CD2AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCEEE922-B3BD-4B7C-ADEE-0CFBFE1CD2AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF402F9C-6249-4226-93D7-9C1F2363BAF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF402F9C-6249-4226-93D7-9C1F2363BAF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF402F9C-6249-4226-93D7-9C1F2363BAF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF402F9C-6249-4226-93D7-9C1F2363BAF7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D08FA59C-853D-4C63-A269-6FD8837EE991}
+	EndGlobalSection
+EndGlobal

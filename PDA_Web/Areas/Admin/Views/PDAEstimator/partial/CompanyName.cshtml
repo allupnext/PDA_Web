@@ -1,0 +1,2 @@
+﻿<label for="Company"> Company</label>
+@Html.DropDownList("Company", new SelectList(ViewBag.Customers, "CompanyId", "CompanyName"), "Please select", new { @class = "form-control" })

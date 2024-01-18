@@ -1,0 +1,249 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Expense Category</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Expense Category</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Add Expense Category</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <div class="card-body">
+                        <input type="hidden" id="ExpenseId" name="ExpenseId" value="">
+                        <div class="row">
+
+                            <div class="col-sm-6">
+
+                                <div class="form-group">
+                                    <label for="PortName">Expense Category<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="ExpenseName" placeholder="Expense Category Name" onchange="onExpenseChange(this.val)">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="PortName">Sequence<span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="Sequence" placeholder="Sequence Code" onchange="onNoteChange(this.val,2)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="Status">
+                                        <label class="form-check-label" for="Status">Status</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- /.card-body -->
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-primary" onclick="expenseSave()">Submit</button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Expense Category List</h3>
+                    </div>
+                    <div class="card-body">
+                        <label for="">Filters:</label>
+                        <div class="row" style="padding-bottom: 10px;">
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="ExpenseCategoryNameFilter">Expense Category</label>
+                                <input type="text" class="form-control" id="ExpenseCategoryNameFilter" placeholder="Expense Category">
+                            </div>
+                          @*  <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="SequenceCodeFilter">Sequence Code</label>
+                                <input type="text" class="form-control" id="SequenceCodeFilter" placeholder="Sequence Code">
+                            </div>*@
+                        </div>
+                    <div id="viewAll" class="table-responsive"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+            $('#TariffMainMenu').addClass('active');
+            $('#ExpenseMenu').addClass('active');
+            $('#ExpenseMenu').parent().closest('ul').parent().addClass('menu-open');
+
+            $('#Status').prop("checked", true);
+            //$("#").DataTable();
+            loadData();
+            $("#ExpenseCategoryNameFilter").change(function () {
+                loadData();
+            });
+            $("#SequenceCodeFilter").change(function () {
+                loadData();
+            });
+            //$('#reload').on('click', function () {
+            //    loadData();
+            //});
+        });
+        function onExpenseChange(val, inputVal) {
+            if (inputVal == 1) {
+                $('#ExpenseName').css("border", "1px solid #ced4da");
+            }   
+                     else if (inputVal == 2) {
+                $('#sequnce').css("border", "1px solid #ced4da");
+            }
+        }
+        function expenseSave() {
+            var expenses;
+
+            expenses = {
+                "ID": $('#ExpenseId').val(),
+                "CargoID": $('#CargoDetails').val(),
+                "ExpenseName": $('#ExpenseName').val(),
+                "sequnce": $('#Sequence').val(),
+
+            }
+            if ($('#ExpenseName').val() == "") {
+                toastr.error("Please enter expense name.", 'Error Alert');
+                $('#ExpenseName').css("border", "1px solid red");
+            }
+            else if ($('#Sequence').val() == "") {
+                toastr.error("Please enter sequnce.", 'Error Alert');
+                $('#Sequence').css("border-color", "Red");
+            }
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "Expense/ExpenseSave",
+                    data: expenses,
+                    success: function (data) {
+                        if (!data.proceed) {
+                            return;
+                        }
+                        else {
+                            loadData();
+                        }
+
+                    },
+                    error: function () {
+                    }
+                });
+                $('#Sequence').val("");
+            }
+        }
+
+        function deleteExpense(id) {
+
+            var expenses;
+
+            expenses = {
+                "ID": id,
+                "ExpenseName": $('#ExpenseName').val(),
+                "sequnce": $('#Sequence').val()
+
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Expense/DeleteExpense",
+                data: expenses,
+                success: function (data) {
+                    loadData();
+                },
+                error: function () {
+                }
+            });
+
+        }
+
+        function editExpense(id) {
+            $('#ExpenseId').val(id);
+
+            var expenses;
+
+            expenses = {
+                "ID": id,
+                "ExpenseName": $('#ExpenseName').val(),
+                "sequnce": $('#Sequence').val()
+
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Expense/EditExpense",
+                data: expenses,
+                success: function (data) {
+                    debugger;
+                    $('#ExpenseName').val(data.expenses.expenseName);
+                    $('#Sequence').val(data.notes.sequence);
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function loadData() {
+            var Expense;
+
+            Expense = {
+                "ExpenseName": $("#ExpenseCategoryNameFilter").val(),
+                "sequnce": $("#SequenceCodeFilter").val()
+            }
+            //$('#viewAll').load('/Expense/LoadAll');
+            $.ajax({
+                type: "GET",
+                url: "/Admin/Expense/LoadAll",
+                data: Expense,
+                dataType: "HTML",
+                success: function (data) {
+                    $("#viewAll").html(data);
+                },
+                error: function () {
+                }
+            });
+        }
+
+    </script>
+
+}

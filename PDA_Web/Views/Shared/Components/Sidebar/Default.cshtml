@@ -1,0 +1,351 @@
+﻿  <!-- Main Sidebar Container -->
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="index3.html" class="brand-link">
+        <img src="/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+        <span class="brand-text font-weight-light">PDA Estimator</span>
+    </a>
+    <!-- Sidebar -->
+    <div class="sidebar">
+
+        <!-- SidebarSearch Form -->
+        <div class="form-inline">
+            <div class="input-group" data-widget="sidebar-search">
+                <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+                <div class="input-group-append">
+                    <button class="btn btn-sidebar">
+                        <i class="fas fa-search fa-fw"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <!-- Add icons to the links using the .nav-icon class
+                with font-awesome or any other icon font library -->
+                <li class="nav-item">
+                    <a href="../kanban.html" class="nav-link">
+                        <i class="nav-icon fas fa-tachometer-alt"></i>
+                        <p>
+                            Dashboard
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a asp-area="" asp-controller="PDAEstimator" asp-action="Index" class="nav-link" id="PDAMenu">
+                        <i class="nav-icon  fas fa-percent"></i>
+                        <p>
+                            PDA Estimator
+                        </p>
+                    </a>
+                </li>
+                <li href="#" class="nav-item">
+                    <a href="#" class="nav-link" id="TariffMainMenu">
+                        <i class="nav-icon fas fa-percent"></i>
+                        <p>
+                            Tariff
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="Tariff" asp-action="Index" class="nav-link" id="TariffMenu">
+                                <i class="far fa-circle11 nav-icon"></i>
+                                <p>Add Tariff</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="TariffSegment" asp-action="Index" class="nav-link" id="TariffSlabsMenu">
+                                <i class="far fa-circle11 nav-icon"></i>
+                                <p>Tariff Slabs</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="Expense" asp-action="Index" class="nav-link" id="ExpenseMenu">
+                                <i class="far fa-circle11 nav-icon"></i>
+                                <p>Expense Category</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="ChargeCode" asp-action="Index" class="nav-link" id="ChargeCodeMenu">
+                                <i class="far fa-circle11 nav-icon"></i>
+                                <p>Charge Code</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="Formulaattributes" asp-action="Index" class="nav-link" id="FormulaattributesMenu">
+                                <i class="far fa-circle11 nav-icon"></i>
+                                <p>Formula Attributes</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="Tariff" asp-action="Formula" class="nav-link" id="FormulasMenu">
+                                <i class="far fa-circle11 nav-icon"></i>
+                                <p>Formulas</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+             
+                <li class="nav-item">
+                    <a asp-area="" asp-controller="Customer" class="nav-link" id="Customer_Menu">
+                        <i class="far fa-user-circle nav-icon"></i>
+                        <p>
+                            Customer
+                        </p>
+                     </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-chart-pie"></i>
+                        <p>
+                            Reports
+                        </p>
+                    </a>
+                </li>
+                <li href="#" class="nav-item">
+                    <a href="#" class="nav-link" id="FinanceMaster">
+                        <i class="nav-icon fas fa-hand-holding-usd"></i>
+                        <p>
+                            Finance Master
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="Tax" asp-action="Index" class="nav-link" id="TaxMenu">
+                                <i class="far fa-circle11 nav-icon"></i>
+                                <p>
+                                    Tax Master
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="Currency" asp-action="Index" class="nav-link" id="CurrencyMenu">
+                                <i class="far fa-circle11 nav-icon"></i>
+                                <p>Currency</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="ROERate" asp-action="Index" class="nav-link" id="ROERateMenu">
+                                <i class="far fa-circle11 nav-icon"></i>
+                                <p>ROE</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="ROEName" asp-action="Index" class="nav-link" id="ROENameMenu">
+                                <i class="far fa-circle11 nav-icon"></i>
+                                <p>ROEName</p>
+                            </a>
+                        </li>
+                       
+                    </ul>
+                </li>
+                <li href="#" class="nav-item">
+                    <a href="#" class="nav-link" id="PortMainMenu">
+                        <i class="nav-icon fas fa-ship"></i>
+                        <p>
+                            Port
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="PortDetails" asp-action="Index" class="nav-link" id="PortMenu">
+                                <i class="far fa-circle11 nav-icon"></i>
+                                <p>
+                                    Port Master
+                                </p>
+                            </a>
+                        </li>
+                     @*   <li class="nav-item">
+                            <a asp-area="" asp-controller="Berth" asp-action="Index" class="nav-link" id="BerthMenu">
+                                <i class="far fa-circle11 nav-icon"></i>
+                                <p>
+                                    Berthing Type
+                                </p>
+                            </a>
+                        </li>*@
+                      
+                    </ul>
+                </li>
+               
+                <li href="#" class="nav-item">
+                    <a href="#" class="nav-link" id="CargoMainMenu">
+                        <i class="nav-icon fas fa-truck"></i>
+                        <p>
+                            Cargo
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="CargoDetails" asp-action="Index" class="nav-link" id="CargoDetailsMenu">
+                                <i class="far fa-circle11 nav-icon"></i>
+                                <p>
+                                    Cargo Master
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="CargoType" asp-action="Index" class="nav-link" id="CargoTypeMenu">
+                                <i class="far fa-circle11 nav-icon"></i>
+                                <p>
+                                    Cargo Type
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="CargoFamily" asp-action="Index" class="nav-link" id="CargoFamilyMenu">
+                                <i class="far fa-circle11 nav-icon"></i>
+                                <p>
+                                    Cargo Family
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="CargoHandled" asp-action="Index" class="nav-link" id="CargoHandledMenu">
+                                <i class="far fa-circle11 nav-icon"></i>
+                                <p>
+                                    Cargo Handled
+                                </p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" id="MasterMenu">
+                        <i class="nav-icon fas fa-edit"></i>
+                        <p>
+                            Masters
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="Country" asp-action="Index" class="nav-link" id="CountryMenu">
+                                <i class="far fa-circle11 nav-icon"></i>
+                                <p>Country</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="State" asp-action="Index" class="nav-link" id="StateMenu">
+                                <i class="far fa-circle11 nav-icon"></i>
+                                <p>State</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="City" asp-action="Index" class="nav-link" id="CityMenu">
+                                <i class="far fa-circle11 nav-icon"></i>
+                                <p>City</p>
+                            </a>
+                        </li>
+                     
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="CallType" asp-action="Index" class="nav-link" id="CallTypeMenu">
+                                <i class="far fa-circle11 nav-icon"></i>
+                                <p>Call Type</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="Notes" asp-action="Index" class="nav-link" id="NotesMenu">
+                                <i class="far fa-circle11 nav-icon"></i>
+                                <p>Notes</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="PortActivityType" asp-action="Index" class="nav-link" id="PortActivityTypeMenu">
+                                <i class="far fa-circle11 nav-icon"></i>
+                                <p>Port Operation Type</p>
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>
+
+
+                <li href="#" class="nav-item">
+                    <a href="#" class="nav-link" id="UserMainMenu">
+                        <i class="nav-icon fa fa-users"></i>
+                        <p>
+                            User Master
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="User" asp-action="Index" class="nav-link" id="UsersMenu">
+                                <i class="far fa-circle11 nav-icon"></i>
+                                <p>
+                                    Users
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="Role" class="nav-link" id="UserRolesMenu">
+                                <i class="far fa-circle11 nav-icon"></i>
+                                <p>
+                                    User Roles
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="Customer" class="nav-link" id="UserRolesMenu">
+                                <i class="far fa-circle11 nav-icon"></i>
+                                <p>
+                                    Customer 
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="Users" asp-action="RolePermission" class="nav-link" id="RolePermissionMenu">
+                                <i class="far fa-circle11 nav-icon"></i>
+                                <p>
+                                    Role Permission
+                                </p>
+                            </a>
+                        </li>
+                       
+                    </ul>
+                </li>
+
+                <li href="#" class="nav-item">
+                    <a href="#" class="nav-link" id="Comney_Master">
+                        <i class="nav-icon fa fa-users"></i>
+                        <p>
+                            Company Master
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="Company" asp-action="Index" class="nav-link" id="Compney">
+                                <i class="nav-icon fas"></i>
+                                <p>
+                                    Company
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="BankMaster" asp-action="Index" class="nav-link" id="BankMasterMenu">
+                                <i class="far fa-circle11 nav-icon"></i>
+                                <p>
+                                    Bank Master
+                                </p>
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>
+            </ul>
+
+
+        </nav>
+    </div>
+
+   
+</aside>

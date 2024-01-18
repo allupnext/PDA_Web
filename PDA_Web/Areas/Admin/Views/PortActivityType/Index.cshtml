@@ -1,0 +1,218 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Port Operation Type</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Port Operation Type</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Add Port Operation Type </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <div class="card-body">
+                        <input type="hidden" id="ID" name="ID" value="">
+                        <div class="row">
+
+                            <div class="col-sm-6">
+
+                                <div class="form-group">
+                                    <label for="ActivityType">Port Operation Type<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="ActivityType" onchange="onCountryChange(this.value)" placeholder="Port Operation Type" required>
+                                </div>
+                            </div>
+
+                            @*<div class="col-sm-6">
+
+                            <div class="form-group">
+                            <label for="CountryCode">Country Code</label>
+                            <input type="text" class="form-control" id="CountryCode" placeholder="Country Code" required>
+                            </div>
+                            </div>*@
+                        </div>
+
+
+
+                        <!-- /.card-body -->
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary" onclick="PortActivityTypeSave()">Submit</button>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Port Operation Type List</h3>
+                    </div>
+                    <div class="card-body">
+                        <label for="">Filters:</label>
+                        <div class="row" style="padding-bottom: 10px;">
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="PortActivityTypeFilter">Port Operation Type</label>
+                                <input type="text" class="form-control" id="PortActivityTypeFilter" placeholder="Port Operation Type">
+                            </div>
+                        </div>
+                        <div id="viewAll" class="table-responsive"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+            $('#MasterMenu').addClass('active');
+            $('#PortActivityTypeMenu').addClass('active');
+            $('#PortActivityTypeMenu').parent().closest('ul').parent().addClass('menu-open');
+            loadData();
+            $("#PortActivityTypeFilter").change(function () {
+                loadData();
+            });
+        });
+
+        function onCountryChange(val) {
+            $('#ActivityType').css("border", "1px solid #ced4da");
+        }
+        function PortActivityTypeSave() {
+            var countrys;
+
+            countrys = {
+                "ID": $('#ID').val(),
+                "ActivityType": $('#ActivityType').val()
+
+
+            }
+            if ($('#ActivityType').val() == "") {
+                toastr.error("Please enter Port Activity Type.", 'Error Alert');
+                $('#ActivityType').css("border-color", "Red");
+            }
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/PortActivityType/PortActivityTypeSave",
+                    data: countrys,
+                    success: function (data) {
+                        if (!data.proceed) {
+                            return;
+                        }
+                        else {
+                            loadData();
+                        }
+
+                    },
+                    error: function () {
+                    }
+                });
+            }
+            $('#ID').val("");
+            $('#ActivityType').val("");
+        }
+
+        function deletePortActivityType(ID) {
+            var countrys;
+
+            countrys = {
+                "ID": ID,
+                "ActivityType": $('#ActivityType').val()
+
+
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/PortActivityType/deletePortActivityType",
+                data: countrys,
+                success: function (data) {
+                    loadData();
+                },
+                error: function () {
+                }
+            });
+
+        }
+
+
+        function editPortActivityType(ID) {
+            //Id
+            $('#ID').val(ID);
+
+            var countrys;
+
+            countrys = {
+                "ID": $('#ID').val(),
+                "ActivityType": $('#ActivityType').val()
+            }
+            $.ajax({
+                type: "POST",
+                url: "/Admin/PortActivityType/editPortActivityType",
+                data: countrys,
+                success: function (data) {
+                    debugger;
+                    $('#ActivityType').val(data.countrys.activityType);
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function loadData() {
+            var PortActivityType;
+
+            PortActivityType = {
+                "ActivityType": $("#PortActivityTypeFilter").val()
+            }
+            //$('#viewAll').load('/Country/LoadAll');
+            $.ajax({
+                type: "GET",
+                url: "/Admin/PortActivityType/LoadAll",
+                dataType: "HTML",
+                data: PortActivityType,
+                success: function (data) {
+                    $("#viewAll").html(data);
+                },
+                error: function () {
+                }
+            });
+        }
+
+    </script>
+
+}

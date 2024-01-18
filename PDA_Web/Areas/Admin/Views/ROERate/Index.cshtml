@@ -1,0 +1,225 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>ROERate</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">ROERate</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <form method="post" enctype="multipart/form-data" asp-action="ROERateSave">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Add ROE </h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+
+                        <!-- /.card-header -->
+                        <!-- form start -->
+
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group" style="display: inline-flex;">
+                                        <label for="searchDate1" style="width: 100%; margin-right: 15px;"> Date:<span class="text-danger">*</span></label>
+                                        <input type="date" class="form-control" id="Date" name="Date" style="margin-right: 15px;" readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <input type="hidden" id="ROERateId" name="ROERateId" value="">
+                            <div class="row">
+                                @foreach (var rorname in ViewBag.ROENames)
+                                {
+                                    <div class="col-sm-12">
+                                        <div class="form-group" style="margin-bottom: 0px !important; margin-top:10px !important">
+                                            <label for="ROERateName" >@rorname.ROEName:</label>
+                                            <input type="hidden" id="@rorname.ID" value="@rorname.ID" name="ROENameinsertedvalue">
+
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-12" style="padding-left: 50px">
+                                        <div class="row">
+                                            @foreach (var currency in ViewBag.rates)
+                                            {
+                                                <div class="col-sm-2">
+                                                    <label for="ROERateName">@currency.CurrencyName</label>
+                                                    <input name="Currencyinsertedvalue" type="hidden" id="@currency.ID" value="@currency.ID">
+                                                    <input type="text" class="form-control" id="@currency.CurrencyId" value="@currency.ROERate" name="ROEinsertedvalue">
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+
+                        </div>
+                        <div class="card-footer">
+                           <button class="btn btn-primary" >Submit</button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- Search form -->
+
+        <div class="row">
+            <div class="col-md-6">
+
+                <div class="form-group" style="display: inline-flex;">
+                    <label for="searchDate" style="width: 100%; margin-right: 15px;">Search Date:</label>
+                    <input type="date" class="form-control" id="searchDate" name="searchDate" style="margin-right: 15px;">
+                
+
+                    <button class="btn btn-primary" onclick="searchDatan()">Search</button>
+
+                    </div>
+
+            </div>
+        </div>
+       
+                  
+           
+              
+       
+       
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">ROE List</h3>
+                    </div>
+                    <div id="viewAll" class="card-body table-responsive"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<script>
+    function getCurrentDate() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = (now.getMonth() + 1).toString().padStart(2, '0'); 
+        const day = now.getDate().toString().padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    document.getElementById('Date').value = getCurrentDate();
+</script>
+<script>
+    function setCurrentDate() {
+        const currentDate = getCurrentDate();
+        document.getElementById('searchDate').value = currentDate;
+    }
+    function getCurrentDate() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = (now.getMonth() + 1).toString().padStart(2, '0'); 
+        const day = now.getDate().toString().padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+    function searchDatan()
+    {
+        
+        var searchDate = $('#searchDate').val();
+        $.ajax
+        ({
+            type: "GET",
+            url: "/Admin/ROERate/Search",
+            data: { searchDate: searchDate },
+            success: function (data) {
+                $('#viewAll').html(data);
+            },
+            error: function () {
+                console.error("Error in searching data.");
+            }
+        });
+    }
+    setCurrentDate();
+
+</script>
+
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+            $('#FinanceMaster').addClass('active');
+            $('#ROERateMenu').addClass('active');
+            $('#ROERateMenu').parent().closest('ul').parent().addClass('menu-open');
+            loadData();
+        });
+
+        function ROERateSave() {
+            debugger
+            var rOERate;
+
+            rOERate = {
+                "ID": $('#ROERateId').val(),
+                "ROENameID": $('#ROENameinsertedvalue').val(),
+                "CurrencyId": $('#Currencyinsertedvalue').val(),
+                "ROERate": $('#ROEinsertedvalue').val()
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/ROERate/ROERateSave",
+                data: rOERate,
+                success: function (data) {
+                    if (!data.proceed) {
+                        return;
+                    }
+                    else {
+                        loadData();
+                    }
+
+                },
+                error: function () {
+                }
+            });
+        }
+       
+        function loadData() {
+            //$('#viewAll').load('/ROERate/LoadAll');
+            $.ajax({
+                type: "GET",
+                url: "/Admin/ROERate/LoadAll",
+                dataType: "HTML",
+                success: function (data) {
+                    $("#viewAll").html(data);
+                },
+                error: function () {
+                }
+            });
+        }
+
+    </script>
+
+}

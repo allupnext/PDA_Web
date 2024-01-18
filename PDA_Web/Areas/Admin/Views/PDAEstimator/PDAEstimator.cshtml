@@ -1,0 +1,1020 @@
+﻿@model PDAEstimator_Domain.Entities.PDAEstimatorOutPutView
+<!DOCTYPE html>
+@{
+    Layout = null;
+}
+<html lang="en">
+<head>
+    <title>Merchant Shipping Services </title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
+
+    <!-- css -->
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&family=Roboto+Slab:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+</head>
+
+
+
+<body>
+
+    <header>
+        <div class="logo_main">
+            @*<div class="logo_img">
+            <img src="/companylogo/@ViewBag.CompanyLogo"
+            height="80" width="80" id="DownloadFile"
+            asp-append-version="true">
+            </div>*@
+            <div class="logo_name">
+                <img src="/companylogo/@Model.CompanyLogo"
+                     id="DownloadFile"
+                     asp-append-version="true">
+            </div>
+        </div>
+        <div class="company_detail">
+            <ul class="company_name_address">
+                <li class="valuefont">@Model.CompanyName</li>
+                <li class="valuefont">@Model.CompanyAddress1 <br>@Model.CompanyAddress2</li>
+            </ul>
+
+            <ul class="company_contact">
+                <li class="lablebold">TEL: <a href="#" class="valuefont">@Model.CompanyTelephone </a></li>
+                <li class="lablebold">TEL: <a href="#" class="valuefont">@Model.CompanyAlterTel</a></li>
+                <li class="lablebold">EMAIL: <a href="#" class="valuefont">@Model.CompanyEmail</a> </li>
+            </ul>
+        </div>
+
+    </header>
+
+    <section class="port_disb_account">
+        <h2>PROFORMA DISBURSEMENT ACCOUNT</h2>
+        <ul>
+            <li class="lablebold"> OWNERS/OPERATORS/CUSTOMER</li>
+            <li class="valuefont">@Model.FirstName.ToUpper()</li>
+            <li class="lablebold">DATE</li>
+            <li class="valuefont">@DateTime.Now.ToString("dd-MM-yyyy")</li>
+        </ul>
+        <ul>
+            <li class="lablebold">VESSEL</li>
+            @if (Model.VesselName == null)
+            {
+                <li class="valuefont"> SR </li>
+            }
+            else
+            {
+                <li class="valuefont">
+                    @Model.VesselName.ToUpper()
+                </li>
+            }
+            <li class="lablebold">PORT/TERMINAL</li>
+            @if (Model.PortName == null)
+            {
+                <li class="valuefont"> SR </li>
+            }
+            else
+            {
+                <li class="valuefont">
+                    @Model.PortName.ToUpper() / @Model.TerminalName.ToUpper()
+                </li>
+            }
+        </ul>
+        <ul>
+            @*  <li class="lablebold">TERMINAL</li>
+            @if (Model.TerminalName == null)
+            {
+            <li class="valuefont"> SR </li>
+            }
+            else
+            {
+            <li class="valuefont">
+            @Model.TerminalName.ToUpper()
+            </li>
+            }*@
+            <li class="lablebold">DWT</li>
+
+            @if (Model.DWT == null)
+            {
+                <li class="valuefont"> SR </li>
+            }
+            else
+            {
+                <li class="valuefont">@Model.DWT </li>
+            }
+
+            <li class="lablebold">PORT OPERATION TYPE</li>
+            @if (Model.ActivityType == null)
+            {
+                <li class="valuefont"> SR </li>
+            }
+            else
+            {
+                <li class="valuefont">
+                    @Model.ActivityType.ToUpper()
+                </li>
+            }
+        </ul>
+        <ul>
+            <li class="lablebold">DRAFT / ARRIVAL DRAFT (M)</li>
+            @if (Model.ArrivalDraft == null)
+            {
+                <li class="valuefont"> SR </li>
+            }
+            else
+            {
+                <li class="valuefont">@Model.ArrivalDraft</li>
+            }
+            <li class="lablebold">CALL TYPE</li>
+            @if (Model.CallTypeName == null)
+            {
+                <li class="valuefont"> SR </li>
+            }
+            else
+            {
+                <li class="valuefont">
+                    @Model.CallTypeName.ToUpper()
+                </li>
+            }
+        </ul>
+        <ul>
+            <li class="lablebold">GRT</li>
+            <li class="valuefont">@Model.GRT</li>
+            <li class="lablebold">CARGO</li>
+            @if (Model.CargoName == null)
+            {
+                <li class="valuefont"> SR </li>
+            }
+            else
+            {
+                <li class="valuefont">
+                    @Model.CargoName.ToUpper()
+                </li>
+            }
+        </ul>
+        <ul>
+            <li class="lablebold">NRT</li>
+            <li class="valuefont">@Model.NRT</li>
+            <li class="lablebold">QUANTITY/ CARGO QTY (UOM)</li>
+            <li class="valuefont">@Model.CargoQty (@Model.CargoUnitofMasurement.ToUpper())</li>
+        </ul>
+        <ul>
+            <li class="lablebold">LOA</li>
+            @if (Model.LOA == null)
+            {
+                <li class="valuefont"> SR </li>
+            }
+            else
+            {
+                <li class="valuefont">@Model.LOA</li>
+            }
+            <li class="lablebold">LOAD/DISCHARGE RATE</li>
+            @if (Model.LoadDischargeRate == null)
+            {
+                <li class="valuefont"> SR </li>
+            }
+            else
+            {
+                <li class="valuefont">@Model.LoadDischargeRate</li>
+            }
+        </ul>
+        <ul>
+            <li class="lablebold">BEAM</li>
+            @if (Model.Beam == null)
+            {
+                <li class="valuefont"> SR </li>
+            }
+            else
+            {
+                <li class="valuefont">@Model.Beam</li>
+            }
+            @if (Model.CallTypeName == "Foreign")
+            {
+                <li class="lablebold">BERTH STAY Foreign (DAY/HOUR/SHIFT)</li>
+                <li class="valuefont">@Model.BerthStayDay/@Model.BerthStay/@Model.BerthStayShift</li>
+            }
+            else
+            {
+                <li class="lablebold">BERTH STAY Coastal (DAY/HOUR/SHIFT)</li>
+                <li class="valuefont">@Model.BerthStayDayCoastal/@Model.BerthStayHoursCoastal/@Model.BerthStayShiftCoastal</li>
+            }
+        </ul>
+        <ul>
+            <li class="lablebold">ETA</li>
+            @if (Model.ETA == null)
+            {
+                <li class="valuefont"> SR </li>
+            }
+            else
+            {
+                <li class="valuefont">
+                    @Convert.ToDateTime(Model.ETA).ToString("dd-MM-yyyy")
+                </li>
+            }
+            <li class="lablebold">ANCHORAGE STAY (HOURS)</li>
+            <li class="valuefont">@Model.AnchorageStay</li>
+        </ul>
+        <ul>
+            <li class="lablebold">ETC</li>
+            @if (Model.ETA == null)
+            {
+                <li class="valuefont"> SR </li>
+            }
+            else
+            {
+                <li class="valuefont">
+                    @if (Model.CallTypeName == "Foreign")
+                    {
+                        @Convert.ToDateTime(Model.ETA).AddDays((long)Model.BerthStayDay).ToString("dd-MM-yyyy")
+                    }
+                    else
+                    {
+                        @Convert.ToDateTime(Model.ETA).AddDays((long)Model.BerthStayDayCoastal).ToString("dd-MM-yyyy")
+                    }
+                </li>
+            }
+            <li class="lablebold">ROE (CURRENCY)</li>
+            <li class="valuefont">@Model.ROE (@Model.CurrencyName.ToUpper())</li>
+            @* <li class="lablebold">CARGO UNIT OF MASUREMENT</li>
+            @if (Model.CargoUnitofMasurement == null)
+            {
+            <li class="valuefont"> SR </li>
+            }
+            else
+            {
+            <li class="valuefont">
+            @Model.CargoUnitofMasurement.ToUpper()
+            </li>
+            }*@
+
+
+
+        </ul>
+    </section>
+
+    <section class="expense_items">
+        <ul class="expense_items_row">
+            <li class="lablebold">NO</li>
+            <li class="lablebold">EXPENSE ITEMS</li>
+            <li class="lablebold">
+                TARIFF
+                <ul>
+                    @if (@Model.BaseCurrencyCode != null)
+                    {
+                        <li>@Model.BaseCurrencyCode.ToUpper()</li>
+                    }
+                    @if (@Model.DefaultCurrencyCode != null)
+                    {
+                        <li>@Model.DefaultCurrencyCode.ToUpper()</li>
+                    }
+                </ul>
+            </li>
+            <li class="lablebold">UNITS</li>
+            <li class="lablebold">
+                AMOUNT
+                <ul>
+                    @if (@Model.BaseCurrencyCode != null)
+                    {
+                        <li>@Model.BaseCurrencyCode.ToUpper()</li>
+                    }
+                    @if (@Model.DefaultCurrencyCode != null)
+                    {
+                        <li>@Model.DefaultCurrencyCode.ToUpper()</li>
+                    }
+                </ul>
+            </li>
+            <li class="lablebold">REMARKS</li>
+        </ul>
+        @{
+
+            if (Model.Expenses != null)
+            {
+                decimal Grandtotalbaseamount = 0, Grandtotaldefaultamount = 0;
+                foreach (var expitem in Model.Expenses.Where(x => Model.TariffRateList.Any(y => y.ExpenseCategoryID == x.ID)))
+                {
+                    decimal gstbasevalue = 0, gstdefaultvalue = 0;
+                    decimal subtotalbaseamount = 0, subtotaldefaultamount = 0, subtotalbasewithgst = 0, subtotaldefaultwithgst = 0;
+                    var charcodecount = 1;
+                    <div class="expenses_info">
+                        <ul class="expenses_head">
+
+                            <li class="valuefont">@expitem.ExpenseName</li>
+                        </ul>
+                        <div class="all_expenses">
+                            @foreach (var chargecodeitem in Model.TariffRateList.Where(x => x.ExpenseCategoryID == expitem.ID))
+                            {
+                                <ul>
+                                    <li class="valuefont">@charcodecount</li>
+                                    <li class="valuefont">@chargecodeitem.ChargeCodeName</li>
+                                    @if (@chargecodeitem.CurrencyID == Model.BaseCurrencyCodeID)
+                                    {
+                                        <li class="valuefont">₹ @chargecodeitem.Rate.ToString("#,##0.#######")</li>
+                                    }
+                                    else
+                                    {
+                                        <li class="valuefont">-</li>
+                                    }
+                                    @if (@chargecodeitem.CurrencyID == Model.DefaultCurrencyCodeID)
+                                    {
+                                        <li class="valuefont">$ @chargecodeitem.Rate.ToString("#,##0.#######")</li>
+                                    }
+                                    else
+                                    {
+                                        <li class="valuefont">-</li>
+                                    }
+                                    @if (chargecodeitem.UNITS != null)
+                                    {
+                                        <li class="valuefont">@Convert.ToDecimal(chargecodeitem.UNITS).ToString("#,##0.##")</li>
+                                    }
+                                    else
+                                    {
+                                        <li class="valuefont">0.00</li>
+                                    }
+                                    @if (@chargecodeitem.CurrencyID == Model.BaseCurrencyCodeID)
+                                    {
+                                        <li class="valuefont">₹ @chargecodeitem.Amount.ToString("#,##0.##")</li>
+                                        subtotalbaseamount += chargecodeitem.Amount;
+                                    }
+                                    else
+                                    {
+                                        decimal amountconvtbase = 0;
+                                        amountconvtbase = @chargecodeitem.Amount * Model.ROE;
+                                        <li class="valuefont">₹ @amountconvtbase.ToString("#,##0.##")</li>
+                                        subtotalbaseamount += amountconvtbase;
+                                    }
+                                    @if (@chargecodeitem.CurrencyID == Model.DefaultCurrencyCodeID)
+                                    {
+                                        <li class="valuefont">$ @chargecodeitem.Amount.ToString("#,##0.##")</li>
+                                        subtotaldefaultamount += chargecodeitem.Amount;
+                                    }
+                                    else
+                                    {
+                                        decimal amountconvtdefault = 0;
+                                        amountconvtdefault = @chargecodeitem.Amount / Model.ROE;
+                                        <li class="valuefont">$ @amountconvtdefault.ToString("#,##0.##")</li>
+                                        subtotaldefaultamount += amountconvtdefault;
+                                    }
+                                    @if (@chargecodeitem.Remark != null && @chargecodeitem.Remark != "")
+                                    {
+                                        <li class="valuefont remarks"> @chargecodeitem.Remark</li>
+                                    }
+                                    else
+                                    {
+                                        <li class="valuefont">-</li>
+                                    }
+                                </ul>
+
+
+
+                                charcodecount++;
+                            }
+                            @{
+                                gstbasevalue += (subtotalbaseamount * Model.Taxrate) / 100;
+                                gstdefaultvalue += (subtotaldefaultamount * Model.Taxrate) / 100;
+                            }
+
+                            <ul>
+                                <li></li>
+                                <li class="valuefont">GOODS AND SERVICE TAX ON ABOVE ACTIVITIES</li>
+                                <li></li>
+                                <li></li>
+                                <li class="valuefont">@Model.Taxrate%</li>
+                                <li class="valuefont">₹ @gstbasevalue.ToString("#,##0.##")</li>
+                                <li class="valuefont">$ @gstdefaultvalue.ToString("#,##0.##")</li>
+
+                                <li>-</li>
+                            </ul>
+
+
+
+
+                            <ul class="sub_total">
+                                @{
+                                    Grandtotalbaseamount += subtotalbaseamount + gstbasevalue;
+                                    Grandtotaldefaultamount += subtotaldefaultamount + gstdefaultvalue;
+                                    subtotalbasewithgst = subtotalbaseamount + gstbasevalue;
+                                    subtotaldefaultwithgst = subtotaldefaultamount + gstdefaultvalue;
+                                }
+                                <li class="lablebold">SUB TOTAL</li>
+                                <li class="lablebold">₹ @subtotalbasewithgst.ToString("#,##0.##")</li>
+                                <li class="lablebold">$ @subtotaldefaultwithgst.ToString("#,##0.##")</li>
+                                <li></li>
+                            </ul>
+
+                        </div>
+                    </div>
+                }
+
+                <div class="grand_total">
+                    <ul>
+                        <li class="lablebold">GRAND TOTAL</li>
+                        <li class="lablebold">₹ @Grandtotalbaseamount.ToString("#,##0.##")</li>
+                        <li class="lablebold">$ @Grandtotaldefaultamount.ToString("#,##0.##")</li>
+                        <li class="lablebold"></li>
+                    </ul>
+
+                    <ul>
+                        <li class="lablebold">REMMITTANCE RECEIVED</li>
+                        <li class="lablebold">-</li>
+                        <li class="lablebold">-</li>
+                        <li class="lablebold">-</li>
+                    </ul>
+
+                    <ul>
+                        <li class="lablebold">BALANCE DUE</li>
+                        <li class="lablebold">-</li>
+                        <li class="lablebold">-</li>
+                        <li class="lablebold">-</li>
+                    </ul>
+                </div>
+            }
+        }
+
+
+
+
+    </section>
+    <section class="notes">
+        <h4>NOTES</h4>
+        <ul>
+            @if (Model.NotesData != null)
+            {
+                foreach (var lstnotes in Model.NotesData)
+                {
+                    <li class="valuefont"> @lstnotes.Note.ToUpper()</li>
+                }
+
+            }
+            else
+            {
+                <li class="valuefont"> </li>
+            }
+            @*<li>ALL PORT EXPENSES WILL BE AS PER ACTUALS AND AT RULING TARIFF</li>
+            <li>GOODS AND SERVICE TAX IS SATUTORY LEVY , SHALL BE APPLICABLE AS PER RULING RATE</li>
+            <li>EXCHANGE RATE IS MENTIONED AS CURRENT RATE FOR ESTIMATION PURPOSE ONLY, HOWEVER IT SHALL BE AT ACTUALS IN FINAL DA</li>*@
+
+        </ul>
+    </section>
+
+    <section class="bank_detail">
+        <ul>
+
+            <li><p style="font-size: 15px;">PARTICULARS</p></li>
+            <li><p style="font-size: 15px;">BANK DETAILS</p></li>
+        </ul>
+        <ul>
+            <li class="lablebold"><p>NAME OF BENEFICIARY</p> </li>
+            @if (Model.BankMaster != null)
+            {
+                <li class="valuefont"><p>@Model.BankMaster.NameofBeneficiary.ToUpper()</p></li>
+            }
+            else
+            {
+                <li class="valuefont"><p>-</p></li>
+            }
+        </ul>
+        <ul>
+            <li class="lablebold"><p>ACCOUNT NO</p></li>
+            @if (Model.BankMaster != null)
+            {
+                <li class="valuefont"><p>@Model.BankMaster.AccountNo.ToUpper()</p></li>
+            }
+            else
+            {
+                <li class="valuefont"><p>-</p></li>
+            }
+        </ul>
+        <ul>
+            <li class="lablebold"><p>BENEFICIARY BANK NAME</p></li>
+            @if (Model.BankMaster != null)
+            {
+                <li class="valuefont">
+                    <p>
+                        @Model.BankMaster.Beneficiary_Bank_Name.ToUpper()
+                    </p>
+                </li>
+            }
+            else
+            {
+                <li class="valuefont"><p>-</p></li>
+            }
+        </ul>
+        <ul>
+            <li class="lablebold"><p>BENEFICIARY BANK ADDRESS</p></li>
+            @if (Model.BankMaster != null)
+            {
+                <li class="valuefont">
+                    <p>
+                        @Model.BankMaster.Beneficiary_Bank_Address.ToUpper()
+                    </p>
+                </li>
+            }
+            else
+            {
+                <li><p>-</p></li>
+            }
+        </ul>
+        <ul>
+            <li class="lablebold"><p>RTGS / NEFT IFSC CODE (FOR REMITTANCE RECEIVABLE WITHIN INDIA)</p></li>
+            @if (Model.BankMaster != null)
+            {
+                <li class="valuefont"><p> @Model.BankMaster.Beneficiary_RTGS_NEFT_IFSC_Code.ToUpper()</p></li>
+            }
+            else
+            {
+                <li><p>-</p></li>
+            }
+        </ul>
+        <ul>
+            <li class="lablebold"><p>BENEFICIARY BANK SWIFT CODE (FOR REMITTANCE RECEIVABLE FROM OUTSIDE INDIA)</p></li>
+            @if (Model.BankMaster != null)
+            {
+                <li class="valuefont"><p> @Model.BankMaster.Beneficiary_Bank_Swift_Code.ToUpper()</p></li>
+            }
+            else
+            {
+                <li class="valuefont"><p>-</p></li>
+            }
+        </ul>
+        <ul>
+            <li class="lablebold"><p>INTERMEDIARY BANK</p></li>
+            @if (Model.BankMaster != null)
+            {
+                <li class="valuefont"><p> @Model.BankMaster.Intermediary_Bank.ToUpper()</p></li>
+            }
+            else
+            {
+                <li class="valuefont"><p>-</p></li>
+            }
+        </ul>
+        <ul>
+            <li class="lablebold"><p>INTERMEDIARY BANK SWIFT CODE</p></li>
+            @if (Model.BankMaster != null)
+            {
+                <li class="valuefont"><p> @Model.BankMaster.Intermediary_Bank_Swift_Code.ToUpper()</p></li>
+            }
+            else
+            {
+                <li class="valuefont"><p>-</p></li>
+            }
+        </ul>
+
+        <div class="agent">
+            <h3>@Model.CompanyName<br> (AS AGENTS ONLY)</h3>
+        </div>
+
+    </section>
+
+
+    <style>
+
+        html {
+            overflow-x: hidden;
+        }
+
+        body {
+            margin: 0px;
+            padding: 0px;
+            background: #fff;
+            color: #333;
+            font-size: 15px;
+            line-height: 24px;
+            font-weight: 300;
+            font-family: Calibri,'Roboto Slab', serif;
+        }
+
+        img {
+            max-width: 100%;
+            height: 80px;
+        }
+
+
+        /* Selection */
+
+        ::-moz-selection {
+            background: #28a8e0;
+            color: #fff;
+        }
+
+        ::-webkit-selection {
+            background: #28a8e0;
+            color: #fff;
+        }
+
+        .lablebold {
+            font-weight: bold;
+        }
+
+        .valuefont {
+            font-weight: 400;
+        }
+
+        a {
+            color: #282828;
+            text-decoration: none;
+        }
+
+            a:hover,
+            a:focus {
+                text-decoration: none;
+                color: #28a8e0;
+                outline: 0;
+            }
+
+        p,
+        li {
+            font-size: 15px;
+            line-height: 24px;
+            /*font-weight: 400;*/
+            color: #000;
+            font-family: Calibri !important;
+        }
+
+        li {
+            list-style: none;
+        }
+
+        p,
+        ol,
+        ul,
+        blockquote {
+            margin: 0 0;
+            padding: 0;
+        }
+
+        .logo_main {
+            background: #fff;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            text-align: center;
+        }
+
+            .logo_main .logo_img {
+                float: left;
+                width: 5%;
+                background: #fff;
+                padding: 5px 25px;
+            }
+
+            .logo_main .logo_name {
+                text-align: center;
+                width: 95%;
+            }
+
+                .logo_main .logo_name h1 {
+                    color: #000;
+                    text-transform: uppercase;
+                }
+
+        .company_detail {
+            padding: 15px 15px;
+            overflow: hidden;
+        }
+
+            .company_detail .company_name_address {
+                float: left;
+                width: 55%
+            }
+
+            .company_detail .company_contact {
+                float: left;
+                width: 45%;
+            }
+
+            .company_detail ul li {
+                position: relative;
+                text-transform: uppercase;
+            }
+
+                .company_detail ul li a {
+                    position: absolute;
+                    top: 0;
+                    left: 80px;
+                }
+
+        .port_disb_account {
+            margin-bottom: 50px;
+            overflow: hidden;
+        }
+
+            .port_disb_account h2 {
+                text-align: center;
+                background: #99c0dd;
+                color: #000;
+                padding: 15px 0;
+                text-decoration: underline;
+                font-weight: 600;
+                font-size: 24px;
+            }
+
+            .port_disb_account ul {
+                padding: 4px 15px;
+                border-bottom: 1px solid rgba(0,0,0,0.2);
+                overflow: hidden;
+            }
+
+                .port_disb_account ul li {
+                    float: left;
+                    width: 25%;
+                    padding-bottom: 0px;
+                }
+
+        ul.expense_items_row {
+            background: #99c0dd;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            padding: 0px 15px;
+        }
+
+            ul.expense_items_row li {
+                float: left;
+                text-align: center;
+                position: relative;
+                height: 60px;
+                font-size: 15px;
+            }
+
+                ul.expense_items_row li::after {
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    bottom: 0;
+                    height: 60px;
+                    width: 1px;
+                    background: rgba(255,255,255,1);
+                }
+
+                ul.expense_items_row li:nth-child(1) {
+                    width: 2%;
+                }
+
+                ul.expense_items_row li:nth-child(2),
+                ul.expense_items_row li:nth-child(6) {
+                    width: 27%;
+                }
+
+                ul.expense_items_row li:nth-child(3),
+                ul.expense_items_row li:nth-child(5) {
+                    width: 18%;
+                }
+
+                ul.expense_items_row li:nth-child(4) {
+                    width: 10%;
+                }
+                /*
+                                                                                                ul.expense_items_row li:last-child {
+                                                                                                    color: #ff0000 !important;
+                                                                                                }*/
+
+                ul.expense_items_row li ul li {
+                    border-top: 1px solid #fff;
+                    position: relative;
+                }
+
+                    ul.expense_items_row li ul li:after {
+                        content: "";
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        bottom: 0;
+                        height: 60px;
+                        width: 1px;
+                        background: rgba(255,255,255,1);
+                    }
+
+                    ul.expense_items_row li ul li,
+                    ul.expense_items_row li ul li:last-child {
+                        width: 50% !important;
+                        color: #000 !important;
+                        height: auto;
+                    }
+
+        .expenses_info {
+            margin-top: 30px;
+        }
+
+        ul.expenses_head {
+            overflow: hidden;
+            padding: 8px 15px;
+            background: #c0c0c0;
+        }
+
+            ul.expenses_head li {
+                float: left;
+                text-align: center;
+            }
+
+                ul.expenses_head li:first-child {
+                    width: 2%;
+                }
+
+                ul.expenses_head li:last-child {
+                    width: 98%;
+                    text-align: left;
+                }
+
+        .all_expenses {
+            overflow: hidden;
+        }
+
+            .all_expenses ul {
+                overflow: hidden;
+                padding: 0 15px;
+                border-bottom: 1px solid rgba(0,0,0,0.2);
+                padding-bottom: 0px;
+            }
+
+                .all_expenses ul li {
+                    float: left;
+                    padding: 5px 0;
+                    position: relative;
+                }
+
+                    .all_expenses ul li::after {
+                        content: "";
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        bottom: 0;
+                        height: 50px;
+                        width: 1px;
+                        background: rgba(0,0,0,0.5);
+                    }
+
+                    .all_expenses ul li:nth-child(1) {
+                        width: 2%;
+                        text-align: center;
+                    }
+
+                    .all_expenses ul li:nth-child(2) {
+                        width: 26%;
+                    }
+
+                    .all_expenses ul li:nth-child(3) {
+                        width: 9%;
+                        text-align: center;
+                    }
+
+                    .all_expenses ul li:nth-child(4) {
+                        width: 9%;
+                        text-align: center;
+                    }
+
+                    .all_expenses ul li:nth-child(5) {
+                        width: 10%;
+                        text-align: center;
+                    }
+
+                    .all_expenses ul li:nth-child(6) {
+                        width: 9%;
+                        text-align: center;
+                    }
+
+                    .all_expenses ul li:nth-child(7) {
+                        width: 9%;
+                        text-align: center;
+                    }
+
+                    .all_expenses ul li:nth-child(8) {
+                        width: 25%;
+                        text-align: center;
+                    }
+
+                .all_expenses ul.sub_total {
+                    background: #c0c0c0;
+                    border-bottom: none;
+                }
+
+                    .all_expenses ul.sub_total li:nth-child(1) {
+                        width: 56%;
+                    }
+
+                    .all_expenses ul.sub_total li:nth-child(2) {
+                        width: 9%;
+                        text-align: center;
+                    }
+
+                    .all_expenses ul.sub_total li:nth-child(3) {
+                        width: 9%;
+                    }
+
+                    .all_expenses ul.sub_total li:nth-child(4) {
+                        width: 25%;
+                    }
+
+
+        .grand_total {
+            margin-top: 30px;
+            overflow: hidden;
+        }
+
+            .grand_total ul {
+                overflow: hidden;
+                background: #c0c0c0;
+                border-bottom: 1px solid #fff;
+            }
+
+                .grand_total ul:first-child {
+                    background: #99c0dd;
+                }
+
+                .grand_total ul li {
+                    float: left;
+                    text-align: center;
+                    margin: 5px 0;
+                    position: relative;
+                }
+
+                    .grand_total ul li:after {
+                        content: "";
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        bottom: 0;
+                        height: 60px;
+                        width: 1px;
+                        background: rgba(255,255,255,1);
+                    }
+
+                    .grand_total ul li:nth-child(1) {
+                        width: 56%;
+                    }
+
+                    .grand_total ul li:nth-child(2) {
+                        width: 9%;
+                    }
+
+                    .grand_total ul li:nth-child(3) {
+                        width: 9%;
+                    }
+
+                    .grand_total ul li:nth-child(4) {
+                        width: 25%;
+                    }
+
+
+
+
+        .notes {
+            padding: 0 15px;
+        }
+
+            .notes h4 {
+                color: #000;
+                font-size: 15px;
+                margin: 20px 0 10px 0;
+            }
+
+            .notes ul li {
+                list-style: decimal;
+                margin: 8px 0;
+            }
+
+            .notes ul {
+                padding-left: 40px;
+            }
+
+            .bank_detail {
+                overflow: hidden;
+                margin-top: 25px;
+            }
+
+            .bank_detail ul {
+                overflow: hidden;
+                border-bottom: 1px solid rgba(0,0,0,0.2);
+                padding: 5px 0;
+            }
+
+            .bank_detail ul li {
+                float: left;
+                width: 50%;
+                align-items: center;
+            }
+
+            .bank_detail ul li p {
+                padding: 0 15px;
+            }
+
+            .bank_detail ul:nth-child(1) li,
+            .bank_detail ul:nth-child(2) li {
+                background: #66a0cc;
+                font-weight: 600;
+                padding: 10px 0;
+            }
+
+        .agent {
+            margin: 30px 0 0;
+            padding: 0 15px;
+        }
+
+        .remarks {
+            text-align: left;
+            padding-left: 2px;
+        }
+    </style>
+
+</body>
+</html>

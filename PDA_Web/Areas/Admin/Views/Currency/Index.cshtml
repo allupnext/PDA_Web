@@ -1,0 +1,291 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Currency</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Currency</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Add Currency </h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <!-- form start -->
+                        <div class="card-body">
+                            <input type="hidden" id="CurrencyId" name="CurrencyId" value="">
+                            <div class="row">
+
+                                <div class="col-sm-6">
+
+                                    <div class="form-group">
+                                    <label for="PortName">Currency Name<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="CurrencyName" placeholder="Currency Name" onchange="onCurrencyChange(this.val,1)">
+                                    </div>
+                                </div>
+                                  <div class="col-sm-6">
+                                    <div class="form-group">
+                                    <label for="PortName">Currency Code<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="CurrencyCode" placeholder="Currency Code" onchange="onCurrencyChange(this.val,2)">
+                                    </div>
+                                  </div>
+                               
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="CurrencyStatus">
+                                        <label class="form-check-label" for="CurrencyStatus">Status</label>
+                                    </div>
+
+                                </div>
+                            <div class="col-sm-4">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="BaseCurrency">
+                                    <label class="form-check-label" for="BaseCurrency">Base Currency</label>
+                                </div>
+
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="DefaultCurrecny">
+                                    <label class="form-check-label" for="DefaultCurrecny">Default Currency</label>
+                                </div>
+
+                            </div>
+
+                            </div>
+
+                            <!-- /.card-body -->
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-primary" onclick="currencySave()">Submit</button>
+                        </div>
+
+                    </div>
+               
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Currency List</h3>
+                    </div>
+                    <div class="card-body">
+                        <label for="">Filters:</label>
+                        <div class="row" style="padding-bottom: 10px;">
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="CurrencyNameFilter">Currency Name</label>
+                                <input type="text" class="form-control" id="CurrencyNameFilter" placeholder="Currency Name">
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="CurrencyCodeFilter">Currency Code</label>
+                                <input type="text" class="form-control" id="CurrencyCodeFilter" placeholder="Currency Code">
+                            </div>
+                        </div>
+                    <div id="viewAll" class="table-responsive"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+@section Scripts
+    {
+    <script>
+         $(document).ready(function () {
+            $('#FinanceMaster').addClass('active');
+            $('#CurrencyMenu').addClass('active');
+            $('#CurrencyMenu').parent().closest('ul').parent().addClass('menu-open');
+            $('#CurrencyStatus').prop("checked", true);
+            $('#BaseCurrency').prop('checked', false);
+            $('#DefaultCurrecny').prop('checked', false);
+            loadData();
+            $("#CurrencyNameFilter").change(function () {
+                loadData();
+            });
+
+            $("#CurrencyCodeFilter").change(function () {
+                loadData();
+            });
+        });
+
+        function onCurrencyChange(val,inputVal) {
+            if(inputVal==1){
+                $('#CurrencyName').css("border", "1px solid #ced4da");
+            }
+            else if(inputVal==2){
+                $('#CurrencyCode').css("border", "1px solid #ced4da");
+            }
+        }
+
+        function currencySave() {
+            var Status = false;
+            if ($('#CurrencyStatus').is(":checked")) {
+                Status = true;
+            }
+
+            var BaseCurrency = false;
+            if ($('#BaseCurrency').is(":checked")) {
+                BaseCurrency = true;
+            }
+
+            var DefaultCurrecny = false;
+            if ($('#DefaultCurrecny').is(":checked")) {
+                DefaultCurrecny = true;
+            }
+            
+            var currencys;
+
+            currencys = {
+                "ID": $('#CurrencyId').val(),
+                "CurrencyName": $('#CurrencyName').val(),
+                "CurrencyCode": $('#CurrencyCode').val(),
+                "CurrencyStatus": Status,
+                "BaseCurrency": BaseCurrency,
+                "DefaultCurrecny": DefaultCurrecny
+            }
+
+            if ($('#CurrencyName').val() == "") {
+                toastr.error("Please enter currency name.",'Error Alert');
+                $('#CurrencyName').css("border-color", "Red");
+            }
+            else if ($('#CurrencyCode').val() == "") {
+                toastr.error("Please enter currency code.",'Error Alert');
+                $('#CurrencyCode').css("border-color", "Red");
+            }
+            else{
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/Currency/currencySave",
+                    data: currencys,
+                    success: function (data) {
+                        if (!data.proceed) {
+                            return;
+                        }
+                        else {
+                            loadData();
+                        }
+
+                    },
+                    error: function () {
+                    }
+                });
+                $('#CurrencyId').val("");
+                $('#CurrencyName').val("");
+                $('#CurrencyCode').val("");
+                $('#BaseCurrency').prop('checked', false);
+                $('#DefaultCurrecny').prop('checked', false);
+            }
+        }
+
+        function deleteCurrency(id) {
+            debugger
+
+            var currencys;
+
+            currencys = {
+                "ID": id,
+                "CurrencyName": $('#CurrencyName').val(),
+               "CurrencyCode": $('#CurrencyCode').val()
+
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Currency/deleteCurrency",
+                data: currencys,
+                success: function (data) {
+                    loadData();
+                },
+                error: function () {
+                }
+            });
+
+        }
+
+        function editCurrency(id) {
+            //Id
+            $('#CurrencyId').val(id);
+
+            var currencys;
+
+            currencys = {
+                "ID": $('#CurrencyId').val(),
+                "CurrencyName": $('#CurrencyName').val(),
+                "CurrencyCode": $('#CurrencyCode').val()
+
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Currency/editCurrency",
+                data: currencys,
+                success: function (data) {
+                    debugger;
+                    $('#CurrencyName').val(data.currencys.currencyName);
+                    $('#CurrencyCode').val(data.currencys.currencyCode);
+                    $('#BaseCurrency').prop('checked', data.currencys.baseCurrency);
+                    $('#DefaultCurrecny').prop('checked', data.currencys.defaultCurrecny);
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function loadData() {
+            var tax;
+            debugger
+            tax = {
+                "CurrencyName": $("#CurrencyNameFilter").val(),
+                "CurrencyCode": $("#CurrencyCodeFilter").val()
+            }
+            //$('#viewAll').load('/Currency/LoadAll');
+            $.ajax({
+                type: "GET",
+                url: "/Admin/Currency/LoadAll",
+                dataType: "HTML",
+                data:tax,
+                success: function (data) {
+                    $("#viewAll").html(data);
+                },
+                error: function () {
+                }
+            });
+        }
+
+    </script>
+
+}

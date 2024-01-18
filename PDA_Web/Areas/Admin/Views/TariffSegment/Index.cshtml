@@ -1,0 +1,233 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Tariff Segment</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Tariff Slab</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Add Tariff Slab</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <div class="card-body">
+                        <input type="hidden" id="TariffSegmentId" name="TariffSegmentId" value="">
+                        <div class="row">
+
+                            <div class="col-sm-6">
+
+                                <div class="form-group">
+                                    <label for="PortName">TariffSegment Name<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="TariffSegmentName" placeholder="Slab Name" onchange="onTariffSegmentChange(this.value)">
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="Status">
+                                    <label class="form-check-label" for="Status">Status</label>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                        <!-- /.card-body -->
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary" onclick="tariffSegmentSave()">Submit</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Slab List</h3>
+                    </div>
+                    <div class="card-body">
+                        <label for="">Filters:</label>
+                        <div class="row" style="padding-bottom: 10px;">
+                        <div class="col-sm-2" style="max-width: 15%;">
+                            <label for="TariffSegmentNameFilter">TariffSegment Name</label>
+                            <input type="text" class="form-control" id="TariffSegmentFilter" placeholder="TariffSegment Name">
+                        </div>
+                    </div>
+                    <div id="viewAll" class="table-responsive"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+
+            $('#TariffMainMenu').addClass('active');
+            $('#TariffSlabsMenu').addClass('active');
+            $('#TariffSlabsMenu').parent().closest('ul').parent().addClass('menu-open');
+
+            $('#Status').prop("checked", true);
+            //$("#").DataTable();
+            loadData();
+            $("#TariffSegmentFilter").change(function () {
+                loadData();
+            });
+            //$('#reload').on('click', function () {
+            //    loadData();
+            //});
+        });
+        function onTariffSegmentChange(val){
+            $('#TariffSegmentName').css("border", "1px solid #ced4da");
+        }
+        function tariffSegmentSave() {
+            debugger
+            var Status = false;
+            if ($('#Status').is(":checked")) {
+                Status = true;
+            }
+            var tariffSegment;
+
+            tariffSegment = {
+                "TariffSegmentId": $('#TariffSegmentId').val(),
+                "TariffSegmentName": $('#TariffSegmentName').val(),
+                "Status": Status
+            }
+            if ($('#TariffSegmentName').val() == "") {
+                toastr.error("Please enter call type name.", 'Error Alert');
+                $('#TariffSegmentName').css("border", "1px solid red");
+            }
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/TariffSegment/TariffSegmentSave",
+                    data: tariffSegment,
+                    success: function (data) {
+                        if (!data.proceed) {
+                            return;
+                        }
+                        else {
+                            loadData();
+                        }
+
+                    },
+                    error: function () {
+                    }
+                });
+            }
+        }
+
+        function deleteTariffSegment(id) {
+            debugger
+
+            var tariffSegment;
+
+            tariffSegment = {
+                "TariffSegmentID": id,
+
+                "TariffSegmentName": $('#TariffSegmentName').val(),
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/TariffSegment/deleteTariffSegment",
+                data: tariffSegment,
+                success: function (data) {
+                    loadData();
+                },
+                error: function () {
+                }
+            });
+
+        }
+        function editTariffSegment(id) {
+            //Id
+            $('#TariffSegmentId').val(id);
+
+            var tariffSegment;
+
+            tariffSegment = {
+                "TariffSegmentId": $('#TariffSegmentId').val(),
+                "TariffSegmentName": $('#TariffSegmentName').val(),
+
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/TariffSegment/editTariffSegment",
+                data: tariffSegment,
+                success: function (data) {
+                    debugger;
+                    $('#TariffSegmentName').val(data.tariffSegment.tariffSegmentName);
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+      
+        function loadData() {
+            var TariffSegment;
+            debugger;
+            TariffSegment= {
+                "TariffSegmentName": $("#TariffSegmentFilter").val(),
+            }
+            $.ajax({
+
+                type: "GET",
+                url: "/Admin/TariffSegment/LoadAll",
+                data: TariffSegment,
+                dataType: "HTML",
+                success: function (data) {
+
+                    $("#viewAll").html(data);
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+    </script>
+
+}

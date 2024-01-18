@@ -1,0 +1,233 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>City</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">City</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+              
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Add City </h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <!-- form start -->
+                        <div class="card-body">
+                            <input type="hidden" id="CityId" name="CityId" value="">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                    <label for="State">State<span class="text-danger">*</span></label>
+                                        @Html.DropDownList("State", new SelectList(ViewBag.State, "ID", "StateName"), "Please Select",new { @class="form-control" })
+
+                                        @*<input type="text" class="form-control" id="State" placeholder="State">*@
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                    <label for="PortName">City Name<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="CityName" placeholder="City Name" onchange="onCityChange(this.value)">
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <!-- /.card-body -->
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-primary" onclick="CitySave()">Submit</button>
+                        </div>
+
+                    </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">City List</h3>
+                    </div>
+                    <div class="card-body">
+                        <label for="">Filters:</label>
+                        <div class="row" style="padding-bottom: 10px;">
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="CityNameFilter">City Name</label>
+                                <input type="text" class="form-control" id="CityNameFilter" placeholder="City Name">
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="CityNameFilter">State</label>
+                                @Html.DropDownList("StateFilter", new SelectList(ViewBag.State, "ID", "StateName"), "Please Select",new { @class="form-control" })
+                            </div>
+                        </div>
+                    <div id="viewAll" class="table-responsive"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+            $('#MasterMenu').addClass('active');
+            $('#CityMenu').addClass('active');
+            $('#CityMenu').parent().closest('ul').parent().addClass('menu-open');
+            loadData();
+            $("#CityNameFilter").change(function () {
+                loadData();
+            });
+            $("#StateFilter").change(function () {
+                loadData();
+            });
+        });
+        
+
+        function onCityChange(val){
+            $('#CityName').css("border", "1px solid #ced4da");
+        }
+        function CitySave() {
+            var citys;
+
+            citys = {
+                "StateId": $('#State').val(),
+                "ID": $('#CityId').val(),
+                "CityName": $('#CityName').val()
+            }
+            if ($('#CityName').val()=="") {
+                toastr.error("Please enter city name.", 'Error Alert');
+                $('#CityName').css("border", "1px solid red");
+            }
+            else if ($('#State').val() == "") {
+                toastr.error("Please select state.", 'Error Alert');
+            }
+            else{
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/City/citySave",
+                    data: citys,
+                    success: function (data) {
+                        if (!data.proceed) {
+                            return;
+                        }
+                        else {
+                            loadData();
+                        }
+
+                    },
+                    error: function () {
+                    }
+                });
+                $('#State').val("");
+                $('#CityId').val("");
+                $('#CityName').val("");
+            }
+        }
+
+        function deleteCity(id) {
+            debugger
+            var citys;
+
+            citys = {
+                "StateId": $('#State').val(),
+                "ID": id,
+                "CityName": $('#CityName').val()
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/City/deleteCity",
+                data: citys,
+                success: function (data) {
+                    loadData();
+                },
+                error: function () {
+                }
+            });
+
+        }
+
+
+        function editCity(id) {
+            //Id
+            debugger
+            $('#CityId').val(id);
+            $('#StateId').val(id);
+
+            var citys;
+
+            citys = {
+                "StateId": $('#State').val(),
+                "ID": $('#CityId').val(),
+                "CityName": $('#CityName').val()
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/City/editCity",
+                data: citys,
+                success: function (data) {
+                    debugger;
+                    $('#CityName').val(data.citys.cityName);
+                    $('#State').val(data.citys.stateId);
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function loadData() {
+            //$('#viewAll').load('/City/LoadAll');
+            var City;
+
+            City = {
+                "CityName": $("#CityNameFilter").val(),
+                "StateId": $("#StateFilter").val()
+            }
+            $.ajax({
+                type: "GET",
+                url: "/Admin/City/LoadAll",
+                data: City,
+                dataType: "HTML",
+                success: function (data) {
+                    $("#viewAll").html(data);
+                },
+                error: function () {
+                }
+            });
+        }
+
+    </script>
+
+}

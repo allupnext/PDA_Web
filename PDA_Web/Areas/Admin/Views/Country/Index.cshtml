@@ -1,0 +1,237 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Country</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Country</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+               
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Add Country </h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <!-- form start -->
+                        <div class="card-body">
+                            <input type="hidden" id="CountryId" name="CountryId" value="">
+                            <div class="row">
+                              
+                                <div class="col-sm-6">
+
+                                    <div class="form-group">
+                                    <label for="PortName">Country Name<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="CountryName" onchange="onCountryChange(this.value)" placeholder="Country Name" required>
+                                    </div>
+                                </div>
+
+                            <div class="col-sm-6">
+
+                                <div class="form-group">
+                                    <label for="CountryCode">Country Code<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="CountryCode" placeholder="Country Code" required>
+                                </div>
+                            </div>
+                            </div>
+                         
+                          
+                         
+                            <!-- /.card-body -->
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-primary" onclick="countrySave()">Submit</button>
+                        </div>
+
+                    </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Country List</h3>
+                    </div>
+                    <div class="card-body">
+                        <label for="">Filters:</label>
+                        <div class="row" style="padding-bottom: 10px;">
+                        <div class="col-sm-2" style="max-width: 15%;">
+                            <label for="CountryNameFilter">Country Name</label>
+                            <input type="text" class="form-control" id="CountryNameFilter" placeholder="Country Name">
+                        </div>
+                        <div class="col-sm-2" style="max-width: 15%;">
+                            <label for="CountryCodeFilter">Country Code</label>
+                            <input type="text" class="form-control" id="CountryCodeFilter" placeholder="Country Code">
+                        </div>
+                    </div>
+                    <div id="viewAll" class="table-responsive"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+  
+</section>
+
+
+@section Scripts
+    {
+    <script>
+          $(document).ready(function () {
+            $('#MasterMenu').addClass('active');
+            $('#CountryMenu').addClass('active');
+            $('#CountryMenu').parent().closest('ul').parent().addClass('menu-open');
+            loadData();
+
+            $("#CountryNameFilter").change(function () {
+                loadData();
+            });
+
+            $("#CountryCodeFilter").change(function () {
+                loadData();
+            });
+        });
+        
+
+
+        function onCountryChange(val) {
+            $('#CountryName').css("border", "1px solid #ced4da");
+        }
+        function countrySave() {
+            var countrys;
+
+            countrys = {
+                "ID": $('#CountryId').val(),
+                "CountryName": $('#CountryName').val(),
+                "CountryCode": $('#CountryCode').val()
+
+            }
+            if ($('#CountryName').val() == "") {
+                toastr.error("Please enter country name.", 'Error Alert');
+                $('#CountryName').css("border-color", "Red");
+            }
+            else{
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/country/countrySave",
+                    data: countrys,
+                    success: function (data) {
+                        if (!data.proceed) {
+                            return;
+                        }
+                        else {
+                            loadData();
+                        }
+
+                    },
+                    error: function () {
+                    }
+                });
+            }
+            $('#CountryId').val("");
+            $('#CountryName').val("");
+            $('#CountryCode').val("");
+        }
+
+        function deleteCountry(id) {
+           
+            var countrys;
+
+            countrys = {
+                "ID": id,
+                "CountryName": $('#CountryName').val(),
+                "CountryCode": $('#CountryCode').val()
+
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Country/deletecountry",
+                data: countrys,
+                success: function (data) {
+                    loadData();
+                },
+                error: function () {
+                }
+            });
+
+        }
+
+
+        function editCountry(id) {
+            //Id
+            $('#CountryId').val(id);
+           
+           var countrys;
+           
+            countrys = {
+                "ID": $('#CountryId').val(),
+                "CountryName": $('#CountryName').val(),
+                "CountryCode": $('#CountryCode').val()
+
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Country/editCountry",
+                data: countrys,
+                success: function (data) {
+                    debugger;
+                    $('#CountryName').val(data.countrys.countryName);
+                    $('#CountryCode').val(data.countrys.countryCode);
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function loadData() {
+            //$('#viewAll').load('/Country/LoadAll');
+            var Country;
+            debugger;
+            Country = {
+                "CountryId": $('#CustomerId').val(),
+                "CountryName": $("#CountryNameFilter").val(),
+                "CountryCode": $("#CountryCodeFilter").val()
+            }
+
+            $.ajax({
+                type: "GET",
+                url: "/Admin/Country/LoadAll",
+                data: Country,
+                dataType: "HTML",
+                success: function (data) {
+                    $("#viewAll").html(data);
+                },
+                error: function () {
+                }
+            });
+        }
+
+    </script>
+
+}
