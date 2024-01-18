@@ -31,7 +31,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             }
             else
             {
-                return RedirectToAction("index", "login");
+                return RedirectToAction("index", "AdminLogin");
             }
         }
 

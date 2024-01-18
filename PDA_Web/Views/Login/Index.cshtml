@@ -2,7 +2,7 @@
 @{
     Layout = null;
 }
-@model PDAEstimator_Domain.Entities.UserAuth
+@model PDAEstimator_Domain.Entities.CustomerAuth
 
 <html lang="en">
 <head>
@@ -34,7 +34,7 @@
 
                 <form method="post">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="User Name" asp-for="@Model.EmployCode">
+                        <input type="email" class="form-control" placeholder="Email" asp-for="@Model.Email">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-envelope"></span>
@@ -42,7 +42,7 @@
                         </div>
                     </div>
                     <div class="input-group mb-3">
-                        <input type="password" class="form-control" placeholder="Password" asp-for="@Model.UserPassword">
+                        <input type="password" class="form-control" placeholder="Password" asp-for="@Model.CustomerPassword">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock"></span>

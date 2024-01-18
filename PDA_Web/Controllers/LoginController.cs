@@ -20,15 +20,15 @@ namespace PDA_Web.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Index(UserAuth user)
+        public async Task<ActionResult> Index(CustomerAuth customerAuth)
         {
-            if (user != null)
+            if (customerAuth != null)
             {
-                User isAuthenticated = await unitOfWork.User.Authenticate(user.EmployCode, user.UserPassword);
+                Customer isAuthenticated = await unitOfWork.Customer.Authenticate(customerAuth.Email, customerAuth.CustomerPassword);
                 if (isAuthenticated != null)
                 {
-                    HttpContext.Session.SetString("UserID", isAuthenticated.ID.ToString());
-                    return RedirectToAction("Index", "Home");
+                    HttpContext.Session.SetString("CustID", isAuthenticated.CustomerId.ToString());
+                    return RedirectToAction("Index", "Dashboard");
                 }
                 else
                 {
@@ -43,7 +43,7 @@ namespace PDA_Web.Controllers
 
         public async Task<ActionResult> Logout()
         {
-            HttpContext.Session.SetString("UserID", "");
+            HttpContext.Session.SetString("CustID", "");
             return RedirectToAction("Index", "Login");
         }
 

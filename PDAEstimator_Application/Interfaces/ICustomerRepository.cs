@@ -9,6 +9,7 @@ namespace PDAEstimator_Application.Interfaces
 {
     public interface ICustomerRepository : IGenericRepository<Customer>
     {
+        Task<Customer> Authenticate(string email, string password);
         Task<List<CustomerList>> GetAlllistAsync();
         Task<string> AddCustomer_Company_MappingAsync(Company_Customer_Mapping entity);
 

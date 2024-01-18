@@ -20,6 +20,18 @@ namespace PDAEstimator_Infrastructure.Repositories
             this.configuration = configuration;
         }
 
+        public async Task<Customer> Authenticate(string email, string password)
+        {
+            var sql = "SELECT * FROM CustomerMaster where Email=@Email and Password=@password";
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+            {
+                connection.Open();
+                //var result = await connection.QueryAsync<User>(sql);
+                //return result.FirstOrDefault();
+                var customer = connection.Query<Customer>(sql, new { Email = email, password = password }).FirstOrDefault();
+                return customer;
+            }
+        }
         public async Task<string> AddAsync(Customer entity)
         {
             try

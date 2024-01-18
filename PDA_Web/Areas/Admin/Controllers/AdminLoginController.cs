@@ -45,7 +45,7 @@ namespace PDA_Web.Areas.Admin.Controllers
         public async Task<ActionResult> Logout()
         {
             HttpContext.Session.SetString("UserID", "");
-            return RedirectToAction("Index", "Login");
+            return RedirectToAction("Index", "AdminLogin");
         }
 
         public IActionResult Index()
