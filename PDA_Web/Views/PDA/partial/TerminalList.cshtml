@@ -1,0 +1,2 @@
+﻿<label for="PortName">Terminal<span class="text-danger">*</span></label>
+@Html.DropDownList("TerminalName", new SelectList(ViewBag.Terminal, "ID", "TerminalName"), "Please Select", new { @class = "form-control" , @onchange = "callChangefunc(this.value)" })

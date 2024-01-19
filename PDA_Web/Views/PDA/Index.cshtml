@@ -1,0 +1,811 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<link href="~/plugins/jquery-ui/jquery-ui.min.css" rel="stylesheet" />
+<link href="~/plugins/jquery-ui/jquery-ui.structure.min.css" rel="stylesheet" />
+<link href="~/plugins/jquery-ui/jquery-ui.structure.css" rel="stylesheet" />
+<link href="~/plugins/jquery-ui/jquery-ui.theme.min.css" rel="stylesheet" />
+<link href="~/plugins/jquery-ui/jquery-ui.theme.css" rel="stylesheet" />
+<link href="~/plugins/jquery-ui/jquery-ui.css" rel="stylesheet" />
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>PDAEstimator</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">PDAEstimator</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Add PDAEstimator </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <div class="card-body">
+                        <input type="hidden" id="PDAEstimatorId" name="PDAEstimatorId" value="">
+                       @* <div class="row">
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="Customer">Customer <span class="text-danger">*</span></label>
+                                    @Html.DropDownList("FirstName", new SelectList(ViewBag.Customers, "CustomerId", "Company"), "Please select", new {id="customerid", @class = "form-control" , @onchange="callCustomerfunc(this.value)" })
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group" id="Companydiv">
+                                    <label for="Company"> Internal Company<span class="text-danger">*</span></label>
+                                    @Html.DropDownList("Company", new SelectList(ViewBag.Companys, "CompanyId", "CompanyName"), "Please select", new { @class = "form-control" })
+
+                                </div>
+                            </div>
+
+
+
+                        </div>
+*@
+
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="PortName">Port<span class="text-danger">*</span></label>
+                                    @Html.DropDownList("PortName", new SelectList(ViewBag.Port, "ID", "PortName"), "Please Select", new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="PortName">Port Operation Type<span class="text-danger">*</span></label>
+                                    @Html.DropDownList("PortActivityName", new SelectList(ViewBag.PortActivity, "ID", "ActivityType"), "Please Select", new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="CallType">Call Type<span class="text-danger">*</span></label>
+                                    @Html.DropDownList("CallTypeName", new SelectList(ViewBag.CallType, "ID", "CallTypeName"), "Please select", new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group" id="cargodrop">
+                                    <label for="Cargo">Cargo<span class="text-danger">*</span></label>
+                                    @Html.DropDownList("CargoName", new SelectList(ViewBag.Cargo, "ID", "CargoName"), "Please select", new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group" id="terminaldrop">
+                                    <label for="PortName">Terminal<span class="text-danger">*</span></label>
+                                    @Html.DropDownList("TerminalName", new SelectList(ViewBag.Terminal, "ID", "TerminalName"), "Please Select", new { @class = "form-control" , @onchange = "callChangefunc(this.value)" })
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group" id="berthdrop">
+                                    <label for="PortName">Berth<span class="text-danger">*</span></label>
+                                    @Html.DropDownList("BerthName", new SelectList(ViewBag.Berth, "ID", "BerthName"), "Please Select", new { @class="form-control" })
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="CargoQty">Cargo Qty<span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="CargoQty" placeholder="Cargo Qty">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="CargoUnitofMasurement">Cargo Unit of Masurement</label>
+                                    <select class="form-control" id="CargoUnitofMasurement">
+
+                                        <option value="MT">MT</option>
+                                        <option value="KGs">KGs</option>
+                                        <option value="CBM">CBM</option>
+                                        <option value="Nos/Units">Nos/Units</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="LoadDischargeRate">Load/Discharge Rate<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="LoadDischargeRate" placeholder="Load/Discharge Rate">
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="Currency">Currency<span class="text-danger">*</span></label>
+                                    @Html.DropDownList("Currency",new SelectList( ViewBag.Currency ,"ID","CurrencyCode"), "Please select", new{@class ="form-control" , @onchange="callCurrencyfunc(this.value)" })
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="ROERate">ROE<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="ROERate" placeholder="ROERate Rate" disable>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="VesselName">Vessel Name<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="VesselName" placeholder="Vessel Name">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="DWT">DWT</label>
+                                    <input type="number" class="form-control" id="DWT" placeholder="DWT">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="ArrivalDraft">Arrival Draft (M)</label>
+                                    <input type="number" class="form-control" id="ArrivalDraft" placeholder="Arrival Draft">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="GRT">GRT<span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="GRT" placeholder="GRT">
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="NRT">NRT<span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="NRT" placeholder="NRT">
+                                </div>
+                            </div>
+                            <div class="col-sm-1">
+                                <div class="form-group">
+                                    <label for="LOA">LOA<span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="LOA" placeholder="LOA">
+                                </div>
+                            </div>
+                            <div class="col-sm-1">
+                                <div class="form-group">
+                                    <label for="Beam">Beam<span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="Beam" placeholder="Beam">
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <div class="row" id="BerthStayForeign">
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="BerthStay">Berth Stay Foreign (Hour)</label>
+                                    <input type="number" class="form-control" id="BerthStay" placeholder="Berth Stay Foreign Hour" readonly>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="BerthStayDay">Berth Stay Foreign (Day)</label>
+                                    <input type="number" class="form-control" id="BerthStayDay" placeholder="Berth Stay Foreign Day" readonly>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="BerthStayShift">Berth Stay Foreign (Shift)</label>
+                                    <input type="number" class="form-control" id="BerthStayShift" placeholder="Berth Stay Foreign Shift" readonly>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row" id="BerthStayCoastal" style="display:none;">
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="BerthStay">Berth Stay Coastal (Hour)</label>
+                                    <input type="number" class="form-control" id="BerthStayhourCoastal" placeholder="Berth Stay Coastal Hour" readonly>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="BerthStayDay">Berth Stay Coastal (Day)</label>
+                                    <input type="number" class="form-control" id="BerthStayDayCoastal" placeholder="Berth Stay Coastal Day" readonly>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="BerthStayShift">Berth Stay Coastal (Shift)</label>
+                                    <input type="number" class="form-control" id="BerthStayShiftCoastal" placeholder="Berth Stay Coastal Shift" readonly>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="AnchorageStay">Anchorage Stay (Hours)</label>
+                                    <input type="number" class="form-control" id="AnchorageStay" placeholder="Anchorage Stay" value="0">
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    @*                                     <label for="ETA">ETA<span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" id="ETA" placeholder="ETA"> *@
+                                    <label for="ETA">ETA<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="ETA" onchange="onTaxChange(this.val,5)">
+
+                                </div>
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <div class="form-group">
+                                    <label for="VesselBallast">VesselBallast<span class="text-danger">*</span></label>
+                                    @Html.DropDownList("VesselBallast", new List<SelectListItem>
+                                    {
+                                    // new SelectListItem{ Text="Not-Applicable", Value = "0" },
+                                    new SelectListItem{ Text="No", Value = "1" },
+                                    new SelectListItem{ Text="Yes", Value = "2" },
+                                    }, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary" onclick="PDAEstimatorSave()">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">PDAEstimator List</h3>
+                    </div>
+                    <div class="card-body">
+                        <label for="">Filters:</label>
+                        <div class="row" style="padding-bottom: 10px;">
+                            @*<div class="col-sm-2">
+                                <label for="CustomerFilter">Customer <span class="text-danger">*</span></label>
+                                @Html.DropDownList("CustomerFilter", new SelectList(ViewBag.Customers, "CustomerId", "Company"), "Please select", new { @class = "form-control" })
+                            </div>*@
+                            <div class="col-sm-2">
+                                <label for="PortName">Port<span class="text-danger">*</span></label>
+                                @Html.DropDownList("PortFilter", new SelectList(ViewBag.Port, "ID", "PortName"), "Please Select", new { @class = "form-control" })
+                                @*//@Html.DropDownList("CustomerFilter", new SelectList(ViewBag.Customers, "CustomerId", ""), "Please select")*@
+                            </div>
+                            <div class="col-sm-2">
+                                <label for="PortName">Terminal<span class="text-danger">*</span></label>
+                                @Html.DropDownList("TerminalFilter", new SelectList(ViewBag.Terminal, "ID", "TerminalName"), "Please Select", new { @class = "form-control" , @onchange = "callChangefunc(this.value)" })
+                                @*//@Html.DropDownList("CustomerFilter", new SelectList(ViewBag.Customers, "CustomerId", ""), "Please select")*@
+                            </div>
+                            <div class="col-sm-2">
+                                <label for="CallType">Call Type<span class="text-danger">*</span></label>
+                                @Html.DropDownList("CallTypeFilter", new SelectList(ViewBag.CallType, "ID", "CallTypeName"), "Please select", new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div id="viewAll" class="table-responsive"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+</section>
+
+
+@section Scripts
+    {
+    <script>
+
+        $(function () {
+            $("#ETA").datepicker({
+                dateFormat: 'dd/mm/yy',//check change
+                changeMonth: true,
+                changeYear: true
+            });
+        });
+
+        $(document).ready(function () {
+
+            //$("#").DataTable();
+            loadData();
+            $('#PDAMenu').addClass('active');
+            $('#CustomerFilter').change(function () {
+                debugger
+                loadData();
+            });
+            $('#PortFilter').change(function () {
+                debugger
+                loadData();
+            });
+            $('#TerminalFilter').change(function () {
+                debugger
+                loadData();
+            });
+            $('#CallTypeFilter').change(function () {
+                debugger
+                loadData();
+            });
+            $("#CargoQty, #LoadDischargeRate").on("input", function () {
+                var cargoQty = parseFloat($("#CargoQty").val()) || 0;
+                var loadDischargeRate = parseFloat($("#LoadDischargeRate").val()) || 0;
+
+                var berthStayHrs = Math.ceil((cargoQty / loadDischargeRate * 24) + 4);
+                var berthStayDay = Math.ceil((cargoQty / loadDischargeRate));
+                var berthStayShift = Math.ceil((cargoQty / loadDischargeRate) * 3);
+
+
+                $("#BerthStayhourCoastal").val(berthStayHrs);
+                $("#BerthStayDayCoastal").val(berthStayDay);
+                $("#BerthStayShiftCoastal").val(berthStayShift);
+                if ($("#CallTypeName option:selected").text() == 'Foreign') {
+                    $("#BerthStay").val(berthStayHrs);
+                    $("#BerthStayDay").val(berthStayDay);
+                    $("#BerthStayShift").val(berthStayShift);
+                }
+            });
+
+            $('#Currency').val(@ViewBag.CurrencyDefault);
+            callCurrencyfunc($('#Currency').val());
+
+            $("#CallTypeName").change(function () {
+                var calltype = $("#CallTypeName option:selected").text();
+                if (calltype == 'Coastal') {
+                    $("#BerthStayForeign").hide();
+
+                    $("#BerthStayCoastal").show();
+                }
+                else if (calltype == 'Foreign') {
+                    $("#BerthStayForeign").show();
+
+                    $("#BerthStayCoastal").hide();
+                }
+                else if (calltype == 'Coastal In Foreign Out') {
+                    $("#BerthStayForeign").show();
+
+                    $("#BerthStayCoastal").show();
+
+                    $("#BerthStay").val(6);
+                    $("#BerthStayDay").val(1);
+                    $("#BerthStayShift").val(1);
+                }
+                else if (calltype == 'Foreign In Coastal Out') {
+                    $("#BerthStayForeign").show();
+
+                    $("#BerthStayCoastal").show();
+
+                    $("#BerthStay").val(6);
+                    $("#BerthStayDay").val(1);
+                    $("#BerthStayShift").val(1);
+                }
+            });
+
+            $("#PortName").change(function () {
+                var portid = $('option:selected', this).val();
+                var PDAEstimitor;
+                PDAEstimitor = {
+                    "PortID": portid,
+                    "TerminalID": $('#TerminalName').val(),
+                    "BerthID": $('#BerthName').val(),
+                    //"CargoID": $('#CargoName').val(),
+                }
+
+                $.ajax({
+
+                    type: "GET",
+                    url: "/PDA/PortNameOnchange",
+                    data: PDAEstimitor,
+                    dataType: "HTML",
+                    success: function (data) {
+
+                        $("#terminaldrop").html(data);
+                        $.ajax({
+                            type: "GET",
+                            url: "/PDA/CargoLoad",
+                            data: { selectedPortId: portid },
+                            dataType: "HTML",
+                            success: function (data) {
+                                $("#cargodrop").html(data);
+                            },
+                            error: function () {
+                            }
+                        });
+                    },
+                    error: function () {
+                    }
+                });
+            });
+
+
+        });
+
+        function callChangefunc(val) {
+            var portid = $('option:selected', this).val();
+            debugger;
+            var cargoHandled;
+            cargoHandled = {
+
+                "TerminalID": $('#TerminalName').val()
+            }
+            $.ajax({
+                type: "GET",
+                url: "/PDA/TerminalNameOnchange",
+                data: cargoHandled,
+                dataType: "HTML",
+                success: function (data) {
+
+                    $("#berthdrop").html(data);
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function ViewPDAEstimator(id) {
+
+        }
+
+        function callCustomerfunc(id) {
+            debugger;
+            $.ajax({
+                type: "GET",
+                url: "/PDA/CustomerOnchange?CustomerId=" + id,
+                dataType: "json",
+                success: function (data) {
+                    $("#Company").val(data.primarycustomer);
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function callCurrencyfunc(val) {
+
+            $.ajax({
+
+                type: "GET",
+                url: "/PDA/CurrencyOnchange?Currency=" + val,
+                success: function (data) {
+                    $('#ROERate').val(data.roeRate);
+                },
+                error: function () {
+                }
+            });
+        }
+
+
+        function PDAEstimatorSave() {
+            var PDAEstimitor;
+
+            PDAEstimitor = {
+                "PDAEstimatorId": $('#PDAEstimatorId').val(),
+                "CustomerId": $('#customerid').val(),
+                "VesselName": $('#VesselName').val(),
+                "PortID": $('#PortName').val(),
+                "ActivityTypeId": $('#PortActivityName').val(),
+                "TerminalID": $('#TerminalName').val(),
+                "BerthId": $('#BerthName').val(),
+                "CallTypeID": $('#CallTypeName').val(),
+                "CargoID": $('#CargoName').val(),
+                "CargoQty": $('#CargoQty').val(),
+                "CargoUnitofMasurement": $('#CargoUnitofMasurement').val(),
+                "LoadDischargeRate": $('#LoadDischargeRate').val(),
+                "CurrencyID": $('#Currency').val(),
+                "ROE": $('#ROERate').val(),
+                "DWT": $('#DWT').val(),
+                "ArrivalDraft": $('#ArrivalDraft').val(),
+                "GRT": $('#GRT').val(),
+                "NRT": $('#NRT').val(),
+                "BerthStay": $("#CallTypeName option:selected").text() != 'Coastal' ? $('#BerthStay').val() : null,
+                "BerthStayDay": $("#CallTypeName option:selected").text() != 'Coastal' ? $('#BerthStayDay').val() : null,
+                "AnchorageStay": $('#AnchorageStay').val(),
+                "LOA": $('#LOA').val(),
+                "Beam": $('#Beam').val(),
+                //"ETA": $('#ETA').val(),
+                "ETA_String": $("#ETA").val(),
+                "InternalCompanyID": $('#Company').val(),
+                "BerthStayShift": $("#CallTypeName option:selected").text() != 'Coastal' ? $('#BerthStayShift').val() : null,
+                "VesselBallast": $("#VesselBallast").val(),
+                "BerthStayHoursCoastal": $("#CallTypeName option:selected").text() != 'Foreign' ? $('#BerthStayhourCoastal').val() : null,
+                "BerthStayDayCoastal": $("#CallTypeName option:selected").text() != 'Foreign' ? $('#BerthStayDayCoastal').val() : null,
+                "BerthStayShiftCoastal": $("#CallTypeName option:selected").text() != 'Foreign' ? $('#BerthStayShiftCoastal').val() : null,
+            }
+
+            if ($('#customerid').val() == "") {
+                toastr.error("Please select customer.", 'Error Alert');
+            }
+            else if ($('#Company').val() == "") {
+                toastr.error("Please Select InternalCompany.", 'Error Alert');
+
+            }
+            else if ($('#VesselName').val() == "") {
+                toastr.error("Please enter VesselName.", 'Error Alert');
+                $('#VesselName').css("border-color", "Red");
+            }
+            else if ($('#PortName').val() == "") {
+                toastr.error("Please Select PortName.", 'Error Alert');
+            }
+            else if ($('#PortActivityName').val() == "") {
+                toastr.error("Please enter PortOperationType.", 'Error Alert');
+            }
+            else if ($('#TerminalName').val() == "") {
+                toastr.error("Please Select TerminalName.", 'Error Alert');
+            }
+            else if ($('#CallTypeName').val() == "") {
+                toastr.error("Please Select CallTypeName.", 'Error Alert');
+            }
+            else if ($('#CargoName').val() == "") {
+                toastr.error("Please Select CargoName.", 'Error Alert');
+            }
+            else if ($('#CargoQty').val() == "") {
+                toastr.error("Please Enter CargoName.", 'Error Alert');
+                $('#CargoQty').css("border-color", "Red");
+            }
+            else if ($('#LoadDischargeRate').val() == "") {
+                toastr.error("Please Enter LoadDischargeRate.", 'Error Alert');
+                $('#LoadDischargeRate').css("border-color", "Red");
+            }
+            else if ($('#Currency').val() == "") {
+                toastr.error("Please Enter Currency.", 'Error Alert');
+            }
+            else if ($('#ROERate').val() == "") {
+                toastr.error("Please Enter ROERate.", 'Error Alert');
+                $('#ROERate').css("border-color", "Red");
+            }
+            else if ($('#GRT').val() == "") {
+                toastr.error("Please Enter GRT.", 'Error Alert');
+                $('#GRT').css("border-color", "Red");
+            }
+            else if ($('#NRT').val() == "") {
+                toastr.error("Please Enter NRT.", 'Error Alert');
+                $('#NRT').css("border-color", "Red");
+            }
+            else if ($('#LOA').val() == "") {
+                toastr.error("Please Enter LOA.", 'Error Alert');
+                $('#LOA').css("border-color", "Red");
+            }
+            else if ($('#Beam').val() == "") {
+                toastr.error("Please Enter Beam.", 'Error Alert');
+                $('#Beam').css("border-color", "Red");
+            }
+            else if ($('#ETA').val() == "") {
+                toastr.error("Please Enter ETA.", 'Error Alert');
+                $('#ETA').css("border-color", "Red");
+            }
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "/PDA/PDAEstimitorSave",
+                    data: PDAEstimitor,
+                    success: function (data) {
+                        if (!data.proceed) {
+                            return;
+                        }
+                        else {
+                            loadData();
+                        }
+
+                    },
+                    error: function () {
+                    }
+                });
+            }
+
+        }
+
+
+        function EditPDAEstimator(id) {
+            $('#PDAEstimatorId').val(id);
+
+            var PDAEstimitor;
+
+            PDAEstimitor = {
+                "PDAEstimatorId": $('#PDAEstimatorId').val(),
+                "CustomerId": $('#customerid').val(),
+                "VesselName": $('#VesselName').val(),
+                "PortID": $('#PortName').val(),
+                "ActivityTypeId": $('#PortActivityName').val(),
+                "TerminalID": $('#TerminalName').val(),
+                "BerthId": $('#BerthName').val(),
+                "CallTypeID": $('#CallTypeName').val(),
+                "CargoID": $('#CargoName').val(),
+                "CargoQty": $('#CargoQty').val(),
+                "CargoUnitofMasurement": $('#CargoUnitofMasurement').val(),
+                "LoadDischargeRate": $('#LoadDischargeRate').val(),
+                "CurrencyID": $('#Currency').val(),
+                "ROERate": $('#ROERate').val(),
+                "DWT": $('#DWT').val(),
+                "ArrivalDraft": $('#ArrivalDraft').val(),
+                "GRT": $('#GRT').val(),
+                "NRT": $('#NRT').val(),
+                "BerthStay": $('#BerthStay').val(),
+                "BerthStayDay": $('#BerthStayDay').val(),
+                "AnchorageStay": $('#AnchorageStay').val(),
+                "LOA": $('#LOA').val(),
+                "Beam": $('#Beam').val(),
+                "ETA": $('#ETA').val(),
+                "VesselBallast": $("#VesselBallast").val()
+            }
+            $.ajax({
+                type: "POST",
+                url: "/PDA/editPDAEstimator",
+                data: PDAEstimitor,
+                success: function (data) {
+                    debugger
+                    $('#customerid').val(data.pdaEstimitor.customerID);
+                    $('#VesselName').val(data.pdaEstimitor.vesselName);
+                    $('#PortName').val(data.pdaEstimitor.portID);
+                    $('#PortActivityName').val(data.pdaEstimitor.activityTypeId);
+                    $('#TerminalName').val(data.pdaEstimitor.terminalID);
+                    debugger;
+                    $('#BerthName').val(data.pdaEstimitor.berthId);
+                    $('#CallTypeName').val(data.pdaEstimitor.callTypeID);
+                    $('#CargoName').val(data.pdaEstimitor.cargoID);
+                    $('#CargoQty').val(data.pdaEstimitor.cargoQty);
+                    $('#CargoUnitofMasurement').val(data.pdaEstimitor.cargoUnitofMasurement);
+                    $('#LoadDischargeRate').val(data.pdaEstimitor.loadDischargeRate);
+                    $('#Currency').val(data.pdaEstimitor.currencyID);
+                    $('#ROERate').val(data.pdaEstimitor.roe);
+                    $('#DWT').val(data.pdaEstimitor.dwt);
+                    $('#ArrivalDraft').val(data.pdaEstimitor.arrivalDraft);
+                    $('#GRT').val(data.pdaEstimitor.grt);
+                    $('#NRT').val(data.pdaEstimitor.nrt);
+                    $('#BerthStay').val(data.pdaEstimitor.berthStay);
+                    $('#BerthStayDay').val(data.pdaEstimitor.berthStayDay);
+                    $('#AnchorageStay').val(data.pdaEstimitor.anchorageStay);
+                    $('#LOA').val(data.pdaEstimitor.loa);
+                    $('#Beam').val(data.pdaEstimitor.beam);
+                    //$('#ETA').val(data.pdaEstimitor.eta);
+                    var fromDate = new Date(data.pdaEstimitor.eta);
+                    var formattedDate = formatDate(fromDate);
+                    $("#ETA").val(formattedDate);
+                    $('#Company').val(data.pdaEstimitor.internalCompanyID);
+                    $('#BerthStayShift').val(data.pdaEstimitor.berthStayShift);
+                    $('#VesselBallast').val(data.pdaEstimitor.vesselBallast);
+                },
+                error: function () {
+                }
+            });
+        }
+        function formatDate(date) {
+            var day = date.getDate();
+            var month = date.getMonth() + 1; //Months are zero-based
+            var year = date.getFullYear();
+
+            // Pad the day and month with leading zeros, if necessary
+            day = (day < 10) ? '0' + day : day;
+            month = (month < 10) ? '0' + month : month;
+
+            return day + '/' + month + '/' + year;
+
+        }
+
+
+        function deletePDAEstimator(id) {
+
+            var PDAEstimitor;
+
+            PDAEstimitor = {
+                "PDAEstimatorId": id,
+                "CustomerId": $('#customerid').val(),
+                "VesselName": $('#VesselName').val(),
+                "PortName": $('#PortName').val(),
+                "PortActivityName": $('#PortActivityName').val(),
+                "TerminalName": $('#TerminalName').val(),
+                "CallTypeName": $('#CallTypeName').val(),
+                "CargoName": $('#CargoName').val(),
+                "CargoQty": $('#CargoQty').val(),
+                "CargoUnitofMasurement": $('#CargoUnitofMasurement').val(),
+                "LoadDischargeRate": $('#LoadDischargeRate').val(),
+                "Currency": $('#Currency').val(),
+                "ROERate": $('#ROERate').val(),
+                "DWT": $('#DWT').val(),
+                "ArrivalDraft": $('#ArrivalDraft').val(),
+                "GRT": $('#GRT').val(),
+                "NRT": $('#NRT').val(),
+                "BerthStay": $('#BerthStay').val(),
+                "BerthStayDay": $('#BerthStayDay').val(),
+                "AnchorageStay": $('#AnchorageStay').val(),
+                "LOA": $('#LOA').val(),
+                "Beam": $('#Beam').val(),
+                "ETA": $('#ETA').val()
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/PDA/deletePDAEstimitor",
+                data: PDAEstimitor,
+                success: function (data) {
+                    loadData();
+                },
+                error: function () {
+                }
+            });
+
+        }
+
+        function pdaEstimatorRedirect() {
+            var customerId = $('#PDAEstimatorId').val()
+
+            var customerName = $('#customerid').val()
+
+            $.ajax({
+                type: "POST",
+                url: "/PDA/PdaEstimatorRedirect" + customerId,
+                data: PDAEstimitor,
+                success: function (data) {
+                    if (!data.proceed) {
+                        return;
+                    }
+                    else {
+                        loadData();
+                    }
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+
+        function loadData() {
+            var Padestimator;
+            debugger
+            Padestimator = {
+                "CustomerId": $('#CustomerFilter').val(),
+                "PortID": $('#PortFilter').val(),
+                "TerminalID": $('#TerminalFilter').val(),
+                "CallTypeID": $('#CallTypeFilter').val(),
+            };
+
+            $.ajax({
+                type: "GET",
+                url: "/PDA/LoadAll",
+                data: Padestimator,
+                dataType: "HTML",
+                success: function (data) {
+                    $("#viewAll").html(data);
+                },
+                error: function () {
+                }
+            });
+        }
+
+
+                                //function ViewPDAEstimator(PDAEstimatorID) {
+                                //    alert('hi')
+                                //    $.ajax({
+                                //        url: "/PDA/PDAEstimator?id=" + PDAEstimatorID,
+                                //        dataType: "html",
+                                //        success: function (data) {
+                                //            var url = "https://jsonplaceholder.typicode.com/users/" + userId;
+                                //            window.open(url, "_blank");
+                                //        },
+                                //        error: function (error) {
+                                //            debugger;
+                                //            alert("Error:" + error);
+                                //        }
+                                //    })
+                                //}
+
+    </script>
+}
