@@ -247,7 +247,7 @@
                                     @*                                     <label for="ETA">ETA<span class="text-danger">*</span></label>
                                     <input type="date" class="form-control" id="ETA" placeholder="ETA"> *@
                                     <label for="ETA">ETA<span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="ETA" onchange="onTaxChange(this.val,5)">
+                                    <input type="text" class="form-control" id="ETA">
 
                                 </div>
                             </div>
@@ -615,6 +615,7 @@
 
 
         function EditPDAEstimator(id) {
+            $(window).scrollTop(150);
             $('#PDAEstimatorId').val(id);
 
             var PDAEstimitor;
