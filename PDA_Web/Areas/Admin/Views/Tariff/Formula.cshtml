@@ -248,46 +248,41 @@
         }
 
         function FormulaSave() {
+           
             var Formula;
             var FormulaStatus = false;
             if ($('#FormulaStatus').is(":checked")) {
                 FormulaStatus = true;
             }
             Formula = {
-
                 "formulaMasterID": $('#formulaMasterID').val(),
                 "formulaName": $('#FormulaName').val(),
                 "formulaStatus": FormulaStatus
-
             }
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/Tariff/formulaSave",
+                    data: Formula,
+                    success: function (data) {
+                        if (!data.proceed) {
 
-
-            $.ajax({
-                type: "POST",
-                url: "/Admin/Tariff/formulaSave",
-                data: Formula,
-                success: function (data) {
-                    if (!data.proceed) {
-
-                        return;
+                            return;
+                        }
+                        else {
+                            loadData();
+                            $('#formulaMasterID').val('')
+                            $('#FormulaAttribute').val('')
+                            $('#FormulaValue').val('')
+                            $('#FormulaOprator').val('')
+                            $('#FormulaSlab').val('')
+                            $('#Formula').val('')
+                            $('#FormulaName').val('')
+                            $('#Port').val('')
+                        }
+                    },
+                    error: function () {
                     }
-                    else {
-                        loadData();
-                        $('#formulaMasterID').val('')
-                        $('#FormulaAttribute').val('')
-                        $('#FormulaValue').val('')
-                        $('#FormulaOprator').val('')
-                        $('#FormulaSlab').val('')
-                        $('#Formula').val('')
-                        $('#FormulaName').val('')
-                        $('#Port').val('')
-                    }
-
-                },
-                error: function () {
-                }
-            });
-
+                });
         }
 
         function onFormulaSlabChange(val) {
