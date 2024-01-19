@@ -96,6 +96,8 @@ app.MapControllerRoute(
     name: "MyArea",
     pattern: "{area:exists}/{controller=AdminLogin}/{action=Index}/{id?}");
 
+app.UseNToastNotify();
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Dashboard}/{action=Index}/{id?}");

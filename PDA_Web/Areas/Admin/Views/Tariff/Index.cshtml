@@ -125,7 +125,7 @@
                             <div class="col-sm-2" style="max-width: 10%;">Rate<span class="text-danger">*</span></div>
                             <div class="col-sm-2" style="max-width: 10%;">Currency<span class="text-danger">*</span></div>
                             <div class="col-sm-2" style="max-width: 15%;">Formula<span class="text-danger">*</span></div>
-                            <div class="col-sm-2" style="max-width: 10%;">Remarks<span class="text-danger">*</span></div>
+                            <div class="col-sm-2" style="max-width: 10%;">Remarks@* <span class="text-danger">*</span> *@</div>
                         </div>
                         <div class="row" style="flex-wrap: nowrap !important;">
 
@@ -218,6 +218,7 @@
                             <div class="col-sm-2" style="max-width: 20%;">
                                 <div style="display: flex;">
                                     <button class="btn btn-primary" id="AddTariffRate" onclick="AddTariffRate()">Add</button>
+
                                     <button class="btn btn-primary" id="UpdateTariffRate" style="display:none" onclick="UpdateTariffRate()">UPDATE</button>
                                 </div>
 
@@ -491,6 +492,7 @@
             }
         }
         function AddTariffRate() {
+           
             var TariffMasters;
             debugger;
             TariffMasters = {
@@ -548,6 +550,11 @@
                 $('#Rate').css("border", "1px solid red");
                 return;
             }
+            if ($('#Formulas').val() == "") {
+                toastr.error("Please select Formulas.", 'Error Alert');
+                $('#Formulas').css("border", "1px solid red");
+                return;
+            }
 
             if ($('#Slabs').val() != "") {
                 if ($('#SlabFrom').val() == "") {
@@ -585,6 +592,7 @@
         function UpdateTariffRate() {
             debugger;
             // $('#TariffRateID').val(id);
+         
             var TariffMasters;
 
             TariffMasters = {
@@ -663,9 +671,19 @@
         }
 
 
-        function editTariff(id) {
-            $('#AddTariffRate').hide();
-            $('#UpdateTariffRate').show();
+        function editTariff(id , para) {
+            if (para == "copy")
+            {
+                $('#AddTariffRate').show();
+                $('#UpdateTariffRate').hide();
+               
+            }
+            else
+            {
+                $('#AddTariffRate').hide();
+                $('#UpdateTariffRate').show();
+              
+            }
             //Id
             $('#TariffRateID').val(id);
             var TariffRates;
@@ -758,7 +776,10 @@
                         error: function () {
                         }
                     });
-
+                    if (para == "copy")
+                    {
+                        $('#TariffRateID').val(0);
+                    }
                     //alert(data.portDetails.portCode);
                     if (!data.proceed) {
                         return;
