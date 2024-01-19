@@ -11,9 +11,6 @@ namespace PDAEstimator_Domain.Entities
     {
         public int CustomerId { get; set; }
 
-        public int PortID { get; set; }
-        public int TerminalID { get; set; }
-        public int CallTypeID { get; set; }
         public string Salutation { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

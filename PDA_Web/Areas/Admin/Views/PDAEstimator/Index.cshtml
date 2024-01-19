@@ -281,32 +281,32 @@
                     <div class="card-body">
                         <label for="">Filters:</label>
                         <div class="row" style="padding-bottom: 10px;">
-                            <div class="col-sm-2" style="max-width: 10%;">
+                            <div class="col-sm-2" >
                                 <label for="CustomerFilter">Customer <span class="text-danger">*</span></label>
                                 @Html.DropDownList("CustomerFilter", new SelectList(ViewBag.Customers, "CustomerId", "Company"), "Please select", new { @class = "form-control" })
-                               @*//@Html.DropDownList("CustomerFilter", new SelectList(ViewBag.Customers, "CustomerId", ""), "Please select")*@
+                                @*//@Html.DropDownList("CustomerFilter", new SelectList(ViewBag.Customers, "CustomerId", ""), "Please select")*@
                             </div>
-                            <div class="col-sm-2" style="max-width: 10%;">
+                            <div class="col-sm-2" >
                                 <label for="PortName">Port<span class="text-danger">*</span></label>
                                 @Html.DropDownList("PortFilter", new SelectList(ViewBag.Port, "ID", "PortName"), "Please Select", new { @class = "form-control" })
                                 @*//@Html.DropDownList("CustomerFilter", new SelectList(ViewBag.Customers, "CustomerId", ""), "Please select")*@
                             </div>
-                            <div class="col-sm-2" style="max-width: 10%;">
+                            <div class="col-sm-2">
                                 <label for="PortName">Terminal<span class="text-danger">*</span></label>
                                 @Html.DropDownList("TerminalFilter", new SelectList(ViewBag.Terminal, "ID", "TerminalName"), "Please Select", new { @class = "form-control" , @onchange = "callChangefunc(this.value)" })
                                 @*//@Html.DropDownList("CustomerFilter", new SelectList(ViewBag.Customers, "CustomerId", ""), "Please select")*@
                             </div>
-                            <div class="col-sm-2" style="max-width: 10%;">
+                            <div class="col-sm-2" >
                                 <label for="CallType">Call Type<span class="text-danger">*</span></label>
                                 @Html.DropDownList("CallTypeFilter", new SelectList(ViewBag.CallType, "ID", "CallTypeName"), "Please select", new { @class = "form-control" })
                             </div>
+                        </div>
+                        <div id="viewAll" class="table-responsive"></div>
                     </div>
-                    <div id="viewAll" class="card-body table-responsive"></div>
                 </div>
             </div>
-        </div>
 
-    </div>
+        </div>
 
 </section>
 
@@ -352,7 +352,7 @@
                 var berthStayDay = Math.ceil((cargoQty / loadDischargeRate));
                 var berthStayShift = Math.ceil((cargoQty / loadDischargeRate) * 3);
 
-              
+
                 $("#BerthStayhourCoastal").val(berthStayHrs);
                 $("#BerthStayDayCoastal").val(berthStayDay);
                 $("#BerthStayShiftCoastal").val(berthStayShift);
@@ -368,8 +368,7 @@
 
             $("#CallTypeName").change(function () {
                 var calltype = $("#CallTypeName option:selected").text();
-                if (calltype == 'Coastal')
-                {
+                if (calltype == 'Coastal') {
                     $("#BerthStayForeign").hide();
 
                     $("#BerthStayCoastal").show();
@@ -517,19 +516,19 @@
                 "ArrivalDraft": $('#ArrivalDraft').val(),
                 "GRT": $('#GRT').val(),
                 "NRT": $('#NRT').val(),
-                "BerthStay": $("#CallTypeName option:selected").text() != 'Coastal' ? $('#BerthStay').val(): null,
-                "BerthStayDay": $("#CallTypeName option:selected").text() != 'Coastal' ? $('#BerthStayDay').val(): null,
-                "AnchorageStay":  $('#AnchorageStay').val(),
+                "BerthStay": $("#CallTypeName option:selected").text() != 'Coastal' ? $('#BerthStay').val() : null,
+                "BerthStayDay": $("#CallTypeName option:selected").text() != 'Coastal' ? $('#BerthStayDay').val() : null,
+                "AnchorageStay": $('#AnchorageStay').val(),
                 "LOA": $('#LOA').val(),
                 "Beam": $('#Beam').val(),
                 //"ETA": $('#ETA').val(),
                 "ETA_String": $("#ETA").val(),
                 "InternalCompanyID": $('#Company').val(),
-                "BerthStayShift": $("#CallTypeName option:selected").text() != 'Coastal' ? $('#BerthStayShift').val(): null,
+                "BerthStayShift": $("#CallTypeName option:selected").text() != 'Coastal' ? $('#BerthStayShift').val() : null,
                 "VesselBallast": $("#VesselBallast").val(),
                 "BerthStayHoursCoastal": $("#CallTypeName option:selected").text() != 'Foreign' ? $('#BerthStayhourCoastal').val() : null,
-                "BerthStayDayCoastal": $("#CallTypeName option:selected").text() != 'Foreign' ? $('#BerthStayDayCoastal').val(): null,
-                "BerthStayShiftCoastal": $("#CallTypeName option:selected").text() != 'Foreign' ? $('#BerthStayShiftCoastal').val(): null,
+                "BerthStayDayCoastal": $("#CallTypeName option:selected").text() != 'Foreign' ? $('#BerthStayDayCoastal').val() : null,
+                "BerthStayShiftCoastal": $("#CallTypeName option:selected").text() != 'Foreign' ? $('#BerthStayShiftCoastal').val() : null,
             }
 
             if ($('#customerid').val() == "") {
@@ -793,21 +792,21 @@
         }
 
 
-                //function ViewPDAEstimator(PDAEstimatorID) {
-                //    alert('hi')
-                //    $.ajax({
-                //        url: "/Admin/PDAEstimator/PDAEstimator?id=" + PDAEstimatorID,
-                //        dataType: "html",
-                //        success: function (data) {
-                //            var url = "https://jsonplaceholder.typicode.com/users/" + userId;
-                //            window.open(url, "_blank");
-                //        },
-                //        error: function (error) {
-                //            debugger;
-                //            alert("Error:" + error);
-                //        }
-                //    })
-                //}
+                        //function ViewPDAEstimator(PDAEstimatorID) {
+                        //    alert('hi')
+                        //    $.ajax({
+                        //        url: "/Admin/PDAEstimator/PDAEstimator?id=" + PDAEstimatorID,
+                        //        dataType: "html",
+                        //        success: function (data) {
+                        //            var url = "https://jsonplaceholder.typicode.com/users/" + userId;
+                        //            window.open(url, "_blank");
+                        //        },
+                        //        error: function (error) {
+                        //            debugger;
+                        //            alert("Error:" + error);
+                        //        }
+                        //    })
+                        //}
 
     </script>
 }

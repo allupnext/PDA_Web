@@ -90,7 +90,14 @@ namespace PDA_Web.Areas.Admin.Controllers
             });
         }
 
-
+        public async Task<IActionResult> CargoLoad(CargoHandleds cargoHandleds)
+        {
+            var TerminalId = cargoHandleds.TerminalID;
+            var PortId = cargoHandleds.PortID;
+            var cargoList = await unitOfWork.PDAEstimitor.GetCargoByTerminalAndPortAsync(TerminalId, PortId);
+            ViewBag.Cargo = cargoList;
+            return PartialView("partial/_CargoList");
+        }
 
         public async Task<ActionResult> formulaByFormulaId(FormulaMaster formula)//Master Save
         {
@@ -204,14 +211,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             ViewBag.Terminal = TerminalDetailData;
             return PartialView("partial/TerminalList");
         }
-        public async Task<IActionResult> CargoLoad(CargoHandleds cargoHandleds)
-        {
-            var TerminalId = cargoHandleds.TerminalID;
-            var PortId = cargoHandleds.PortID;
-            var cargoList = await unitOfWork.PDAEstimitor.GetCargoByTerminalAndPortAsync(TerminalId, PortId);
-            ViewBag.Cargo = cargoList;
-            return PartialView("partial/_CargoList");
-        }
+      
 
         public IActionResult PortNameOnchangeForumla(CargoHandleds cargoHandleds)
         {
