@@ -148,53 +148,53 @@ namespace PDA_Web.Areas.Admin.Controllers
                                     string FormulaAttributedata = formularTransList.formulaAttributeName;
                                     if (FormulaAttributedata.Contains("GRT"))
                                     {
-                                        triff.UNITS = UnitCalculation(triff, pDAEstimatorOutPut.GRT);
+                                         UnitCalculation(triff, pDAEstimatorOutPut.GRT);
                                         formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
                                     }
                                     else if (FormulaAttributedata.Contains("NRT"))
                                     {
-                                        triff.UNITS = UnitCalculation(triff, pDAEstimatorOutPut.NRT);
+                                        UnitCalculation(triff, pDAEstimatorOutPut.NRT);
                                         formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
                                     }
                                     else if (FormulaAttributedata.Contains("BSTH") || FormulaAttributedata.Contains("BSTHF"))
                                     {
-                                        triff.UNITS = UnitCalculation(triff, pDAEstimatorOutPut.BerthStay);
-                                        formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        //UnitCalculation(triff, pDAEstimatorOutPut.BerthStay);
+                                        formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.BerthStay.ToString() : pDAEstimatorOutPut.BerthStay.ToString();
                                     }
                                     else if (FormulaAttributedata.Contains("BSTS") || FormulaAttributedata.Contains("BSTSF"))
                                     {
-                                        triff.UNITS = UnitCalculation(triff, pDAEstimatorOutPut.BerthStayShift);
-                                        formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        //UnitCalculation(triff, pDAEstimatorOutPut.BerthStayShift);
+                                        formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.BerthStayShift.ToString() : pDAEstimatorOutPut.BerthStayShift.ToString();
                                     }
                                     else if (FormulaAttributedata.Contains("BSTD") || FormulaAttributedata.Contains("BSTDF"))
                                     {
-                                        triff.UNITS = UnitCalculation(triff, pDAEstimatorOutPut.BerthStayDay);
-                                        formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        //UnitCalculation(triff, pDAEstimatorOutPut.BerthStayDay);
+                                        formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.BerthStayDay.ToString() : pDAEstimatorOutPut.BerthStayDay.ToString();
                                     }
                                     else if (FormulaAttributedata.Contains("BSTHC"))
                                     {
-                                        triff.UNITS = UnitCalculation(triff, pDAEstimatorOutPut.BerthStayHoursCoastal);
-                                        formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        //UnitCalculation(triff, pDAEstimatorOutPut.BerthStayHoursCoastal);
+                                        formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.BerthStayHoursCoastal.ToString() : pDAEstimatorOutPut.BerthStayHoursCoastal.ToString();
                                     }
                                     else if (FormulaAttributedata.Contains("BSTSC"))
                                     {
-                                        triff.UNITS = UnitCalculation(triff, pDAEstimatorOutPut.BerthStayShiftCoastal);
-                                        formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        //UnitCalculation(triff, pDAEstimatorOutPut.BerthStayShiftCoastal);
+                                        formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.BerthStayShiftCoastal.ToString() : pDAEstimatorOutPut.BerthStayShiftCoastal.ToString();
                                     }
                                     else if (FormulaAttributedata.Contains("BSTDC"))
                                     {
-                                        triff.UNITS = UnitCalculation(triff, pDAEstimatorOutPut.BerthStayDayCoastal);
-                                        formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        //UnitCalculation(triff, pDAEstimatorOutPut.BerthStayDayCoastal);
+                                        formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.BerthStayDayCoastal.ToString() : pDAEstimatorOutPut.BerthStayDayCoastal.ToString();
                                     }
                                     else if (FormulaAttributedata.Contains("AST"))
                                     {
-                                        triff.UNITS = UnitCalculation(triff, pDAEstimatorOutPut.AnchorageStay);
-                                        formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        //UnitCalculation(triff, pDAEstimatorOutPut.AnchorageStay);
+                                        formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.AnchorageStay.ToString() : pDAEstimatorOutPut.AnchorageStay.ToString();
                                     }
                                     else if (FormulaAttributedata.Contains("CQTY"))
                                     {
-                                        triff.UNITS = UnitCalculation(triff, pDAEstimatorOutPut.CargoQty);
-                                        formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        //UnitCalculation(triff, pDAEstimatorOutPut.CargoQty);
+                                        formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.CargoQty.ToString() : pDAEstimatorOutPut.CargoQty.ToString();
                                     }
                                     else
                                     {
@@ -309,7 +309,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             return View(pDAEstimatorOutPut);
         }
 
-        public decimal? UnitCalculation(PDATariffRateList triff, long? attributvalue)
+        public PDATariffRateList UnitCalculation(PDATariffRateList triff, long? attributvalue)
         {
             decimal? units = 0;
             if (triff.SlabID != null && triff.SlabID > 0)
@@ -334,7 +334,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                 }
                 else
                 {
-                    if (triff.SlabFrom <= attributvalue && triff.SlabTo > attributvalue)
+                    if (triff.SlabFrom <= attributvalue && (triff.SlabTo == 0 || triff.SlabTo > attributvalue))
                     {
                         units = attributvalue;
                         units = Math.Abs(Convert.ToDecimal(units));
@@ -352,7 +352,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                 units = attributvalue;
             }
 
-            return units;
+            triff.UNITS = units;
+            return triff;
         }
 
         public async Task<IActionResult> Index()
