@@ -18,6 +18,7 @@ namespace PDAEstimator_Domain.Entities
         public DateTime? lastmodifiedon { get; set; }
         public string IPAddress { get; set; }
         public bool IsDeleted { get; set; }
+        public int Sequence { get; set; }
 
 
     }

@@ -23,7 +23,7 @@ namespace PDAEstimator_Infrastructure.Repositories
         {
             try
             {
-                var sql = "Insert into ChargeCodeMaster (ChargeCodeName, ExpenseCategoryID, Status, CreationDate, IPAddress, IsDeleted) VALUES ( @ChargeCodeName, @ExpenseCategoryID, @Status, getdate(), 1, 0)";
+                var sql = "Insert into ChargeCodeMaster (ChargeCodeName, ExpenseCategoryID, Status, CreationDate, IPAddress, IsDeleted,Sequence) VALUES ( @ChargeCodeName, @ExpenseCategoryID, @Status, getdate(), 1, 0,@Sequence)";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
                     connection.Open();
@@ -63,7 +63,7 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<List<ChargeCodeList>> GetAlllistAsync()
         {
-            var sql = "SELECT ChargeCodeMaster.ID as ID, ChargeCodeName, ChargeCodeMaster.ExpenseCategoryID as ExpenseCategoryID,ExpenseMaster.ExpenseName FROM ChargeCodeMaster left join ExpenseMaster on ExpenseMaster.ID =  ChargeCodeMaster.ExpenseCategoryID WHERE ChargeCodeMaster.IsDeleted != 1";
+            var sql = "SELECT ChargeCodeMaster.ID as ID, ChargeCodeName, ChargeCodeMaster.ExpenseCategoryID as ExpenseCategoryID,ExpenseMaster.ExpenseName,Sequence FROM ChargeCodeMaster left join ExpenseMaster on ExpenseMaster.ID =  ChargeCodeMaster.ExpenseCategoryID WHERE ChargeCodeMaster.IsDeleted != 1";
 
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
@@ -85,13 +85,20 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<int> UpdateAsync(ChargeCode entity)
         {
-            var sql = "UPDATE ChargeCodeMaster SET ChargeCodeName = @ChargeCodeName, ExpenseCategoryID = @ExpenseCategoryID ,Status=@Status WHERE ID = @Id";
-
-            using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+            try
             {
-                connection.Open();
-                var result = await connection.ExecuteAsync(sql, entity);
-                return result;
+                var sql = "UPDATE ChargeCodeMaster SET ChargeCodeName = @ChargeCodeName, ExpenseCategoryID = @ExpenseCategoryID ,Status=@Status,Sequence = @Sequence WHERE ID = @Id";
+
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                {
+                    connection.Open();
+                    var result = await connection.ExecuteAsync(sql, entity);
+                    return result;
+                }
+            }
+            catch(Exception ex)
+            {
+                throw ex;
             }
         }
 
