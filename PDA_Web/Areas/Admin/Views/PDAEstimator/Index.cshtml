@@ -808,21 +808,20 @@
         }
 
 
-                                //function ViewPDAEstimator(PDAEstimatorID) {
-                                //    alert('hi')
-                                //    $.ajax({
-                                //        url: "/Admin/PDAEstimator/PDAEstimator?id=" + PDAEstimatorID,
-                                //        dataType: "html",
-                                //        success: function (data) {
-                                //            var url = "https://jsonplaceholder.typicode.com/users/" + userId;
-                                //            window.open(url, "_blank");
-                                //        },
-                                //        error: function (error) {
-                                //            debugger;
-                                //            alert("Error:" + error);
-                                //        }
-                                //    })
-                                //}
+        function ViewPDAEstimator(PDAEstimatorID) {
+            $.ajax({
+                url: "/Admin/PDAEstimator/PdaEstimatorRedirect?id=" + PDAEstimatorID,
+                dataType: "html",
+                success: function (data) {
+                    var url = "https://jsonplaceholder.typicode.com/users/" + userId;
+                    window.open(url, "_blank");
+                },
+                error: function (error) {
+                    debugger;
+                    alert("Error:" + error);
+                }
+            })
+        }
 
     </script>
 }

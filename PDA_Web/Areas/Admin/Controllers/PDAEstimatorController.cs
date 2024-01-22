@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.DotNet.Scaffolding.Shared;
-using Microsoft.Identity.Client;
 using NToastNotify;
+using PDA_Web.Models;
 using PDAEstimator_Application.Interfaces;
 using PDAEstimator_Domain.Entities;
-using PDA_Web.Models;
+using SelectPdf;
 using System.Data;
 using System.Globalization;
 
@@ -284,7 +283,16 @@ namespace PDA_Web.Areas.Admin.Controllers
             //// Convert the HTML page from URL to memory
             //var htmlvaleu = View("PDAEstimator", pDAEstimatorOutPut);
             var viewHtml = await this.RenderViewAsync("PDAEstimator", pDAEstimatorOutPut);
-
+            //using (MemoryStream stream = new System.IO.MemoryStream())
+            //{
+            //    StringReader sr = new StringReader(viewHtml);
+            //    Document pdfDoc = new Document(PageSize.A4, 10f, 10f, 100f, 0f);
+            //    PdfWriter writer = PdfWriter.GetInstance(pdfDoc, stream);
+            //    pdfDoc.Open();
+            //    XMLWorkerHelper.GetInstance().ParseXHtml(writer, pdfDoc, sr);
+            //    pdfDoc.Close();
+            //    return File(stream.ToArray(), "application/pdf", "Grid.pdf");
+            //}
             //byte[] pdfData = converter.ConvertUrlToMemory(viewHtml.ToString());
 
             ////// Save the PDF data to a file
@@ -677,10 +685,64 @@ namespace PDA_Web.Areas.Admin.Controllers
 
         public async Task<ActionResult> PdaEstimatorRedirect(int id)
         {
+            // read parameters from the webpage
+            string htmlString = "<html>\r\n <body>\r\n  Hello World from selectpdf.com.\r\n </body>\r\n</html>\r\n";
+            string baseUrl = "";
+
+            string pdf_page_size = "A4";
+            PdfPageSize pageSize = (PdfPageSize)Enum.Parse(typeof(PdfPageSize),
+                pdf_page_size, true);
+
+            string pdf_orientation = "Portrait";
+            PdfPageOrientation pdfOrientation =
+                (PdfPageOrientation)Enum.Parse(typeof(PdfPageOrientation),
+                pdf_orientation, true);
+
+            int webPageWidth = 1024;
+            try
+            {
+                webPageWidth = Convert.ToInt32(1024);
+            }
+            catch { }
+
+            int webPageHeight = 0;
+            try
+            {
+                webPageHeight = Convert.ToInt32(1024);
+            }
+            catch { }
+
+            // instantiate a html to pdf converter object
+            HtmlToPdf converter = new HtmlToPdf();
+
+            // set converter options
+            converter.Options.PdfPageSize = pageSize;
+            converter.Options.PdfPageOrientation = pdfOrientation;
+            converter.Options.WebPageWidth = webPageWidth;
+            converter.Options.WebPageHeight = webPageHeight;
+
+            // create a new pdf document converting an url
+            SelectPdf.PdfDocument doc = converter.ConvertHtmlString(htmlString, baseUrl);
+
+            // save pdf document
+            doc.Save("Sample.pdf");
+
+            // close pdf document
+            doc.Close();
             var CustomerList = await unitOfWork.PDAEstimitor.GetByIdAsync(id);
             return PartialView("PDAEstimatorOutput", CustomerList);
 
         }
+
+        protected void BtnCreatePdf_Click(object sender, EventArgs e)
+        {
+
+        }
+        //[HttpPost]
+        //public FileResult Export(string GridHtml)
+        //{
+
+        //}
     }
 
 
