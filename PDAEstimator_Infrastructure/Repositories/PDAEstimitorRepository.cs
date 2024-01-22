@@ -69,6 +69,17 @@ namespace PDAEstimator_Infrastructure.Repositories
             }
         }
 
+        public async Task<Company_Customer_Mapping> GetbyCustIdasync(int id)
+        {
+            var sql = "SELECT TOP (1000) [CompanyID],[CustomerID],[IsPrimary] FROM [Company_Customer_Mapping] where [CustomerID] = @CustomerID  and [IsPrimary] = 1";
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+            {
+                connection.Open();
+                var result = await connection.QuerySingleOrDefaultAsync<Company_Customer_Mapping>(sql, new { CustomerID = id });
+                return  result;
+
+            }
+        }
 
         public async Task<List<PDATariffRateList>> GetAllPDA_Tariff(int portId)
         {

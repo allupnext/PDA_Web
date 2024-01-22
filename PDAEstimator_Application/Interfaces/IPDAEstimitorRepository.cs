@@ -13,6 +13,7 @@ namespace PDAEstimator_Application.Interfaces
         Task<List<PDAEstimatorList>> GetAlllistAsync();
         Task<List<PDATariffRateList>> GetAllPDA_Tariff(int portId);
         Task<List<Notes>> GetNotes();
+        Task<Company_Customer_Mapping> GetbyCustIdasync(int id);
 
     }
 }

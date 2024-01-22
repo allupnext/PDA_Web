@@ -44,7 +44,7 @@
                     <!-- form start -->
                     <div class="card-body">
                         <input type="hidden" id="PDAEstimatorId" name="PDAEstimatorId" value="">
-                       @* <div class="row">
+                      @*   <div class="row">
                             <div class="col-sm-2">
                                 <div class="form-group">
                                     <label for="Customer">Customer <span class="text-danger">*</span></label>
@@ -61,8 +61,8 @@
 
 
 
-                        </div>
-*@
+                        </div> *@
+
 
                         <div class="row">
                             <div class="col-sm-2">
@@ -247,7 +247,7 @@
                                     @*                                     <label for="ETA">ETA<span class="text-danger">*</span></label>
                                     <input type="date" class="form-control" id="ETA" placeholder="ETA"> *@
                                     <label for="ETA">ETA<span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="ETA" onchange="onTaxChange(this.val,5)">
+                                    <input type="text" class="form-control" id="ETA">
 
                                 </div>
                             </div>
@@ -281,10 +281,11 @@
                     <div class="card-body">
                         <label for="">Filters:</label>
                         <div class="row" style="padding-bottom: 10px;">
-                            @*<div class="col-sm-2">
+                            <div class="col-sm-2">
                                 <label for="CustomerFilter">Customer <span class="text-danger">*</span></label>
                                 @Html.DropDownList("CustomerFilter", new SelectList(ViewBag.Customers, "CustomerId", "Company"), "Please select", new { @class = "form-control" })
-                            </div>*@
+                                @*//@Html.DropDownList("CustomerFilter", new SelectList(ViewBag.Customers, "CustomerId", ""), "Please select")*@
+                            </div>
                             <div class="col-sm-2">
                                 <label for="PortName">Port<span class="text-danger">*</span></label>
                                 @Html.DropDownList("PortFilter", new SelectList(ViewBag.Port, "ID", "PortName"), "Please Select", new { @class = "form-control" })
@@ -491,6 +492,39 @@
                 }
             });
         }
+        function clear() {
+            $('#PDAEstimatorId').val("");
+            $('#customerid').val("");
+            $('#VesselName').val("");
+            $('#PortName').val("");
+            $('#BerthName').val("");
+            $('#PortActivityName').val("");
+            $('#TerminalName').val("");
+            $('#CallTypeName').val("");
+            $('#CargoName').val("");
+            $('#CargoQty').val("");
+            $('#CargoUnitofMasurement').val("");
+            $('#LoadDischargeRate').val("");
+            $('#Currency').val("");
+            $('#ROERate').val("");
+            $('#DWT').val("");
+            $('#GRT').val("");
+            $('#ArrivalDraft').val("");
+            $('#NRT').val("");
+            $('#BerthStay').val("");
+            $('#BerthStayDay').val("");
+            $('#AnchorageStay').val("");
+            $('#LOA').val("");
+            $('#Beam').val("");
+            $('#ETA').val("");
+            $('#Company').val("");
+            $('#BerthStayShift').val("");
+            $('#VesselBallast').val("");
+            $('#BerthStayhourCoastal').val("");
+            $('#BerthStayDayCoastal').val("");
+            $('#BerthStayShiftCoastal').val("");
+
+        }
 
 
         function PDAEstimatorSave() {
@@ -498,7 +532,7 @@
 
             PDAEstimitor = {
                 "PDAEstimatorId": $('#PDAEstimatorId').val(),
-                "CustomerId": $('#customerid').val(),
+                "CustomerId": 0,
                 "VesselName": $('#VesselName').val(),
                 "PortID": $('#PortName').val(),
                 "ActivityTypeId": $('#PortActivityName').val(),
@@ -601,6 +635,7 @@
                             return;
                         }
                         else {
+                            clear();
                             loadData();
                         }
 
@@ -614,13 +649,14 @@
 
 
         function EditPDAEstimator(id) {
+            $(window).scrollTop(150);
             $('#PDAEstimatorId').val(id);
 
             var PDAEstimitor;
 
             PDAEstimitor = {
                 "PDAEstimatorId": $('#PDAEstimatorId').val(),
-                "CustomerId": $('#customerid').val(),
+                "CustomerId":0,
                 "VesselName": $('#VesselName').val(),
                 "PortID": $('#PortName').val(),
                 "ActivityTypeId": $('#PortActivityName').val(),
@@ -706,7 +742,7 @@
 
             PDAEstimitor = {
                 "PDAEstimatorId": id,
-                "CustomerId": $('#customerid').val(),
+                "CustomerId": 0,
                 "VesselName": $('#VesselName').val(),
                 "PortName": $('#PortName').val(),
                 "PortActivityName": $('#PortActivityName').val(),
@@ -794,7 +830,7 @@
                                 //function ViewPDAEstimator(PDAEstimatorID) {
                                 //    alert('hi')
                                 //    $.ajax({
-                                //        url: "/PDA/PDAEstimator?id=" + PDAEstimatorID,
+                                //        url: "/PDA/PDA?id=" + PDAEstimatorID,
                                 //        dataType: "html",
                                 //        success: function (data) {
                                 //            var url = "https://jsonplaceholder.typicode.com/users/" + userId;

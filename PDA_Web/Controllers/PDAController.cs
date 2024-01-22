@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
 using NToastNotify;
 using PDA_Web.Models;
 using PDAEstimator_Application.Interfaces;
@@ -467,143 +468,156 @@ namespace PDA_Web.Controllers
             return PartialView("partial/BerthList");
         }
 
+
         public async Task<ActionResult> PDAEstimitorSave(PDAEstimator PDAEstimitor)
         {
-            CultureInfo provider = CultureInfo.InvariantCulture;
-            string ETA_String = PDAEstimitor.ETA_String + " " + "12:00:00 AM";
-            DateTime Validity_To = DateTime.ParseExact(ETA_String, new string[] { "dd.M.yyyy hh:mm:ss tt", "dd-M-yyyy hh:mm:ss tt", "dd/M/yyyy hh:mm:ss tt" }, provider, DateTimeStyles.None);
+            var CustID = HttpContext.Session.GetString("CustID");
 
-            PDAEstimitor.ETA = Validity_To;
-            if (PDAEstimitor.PDAEstimatorID > 0)
+
+            if (!string.IsNullOrEmpty(CustID))
             {
-                await unitOfWork.PDAEstimitor.UpdateAsync(PDAEstimitor);
-                _toastNotification.AddSuccessToastMessage("Updated Successfully");
+                PDAEstimitor.CustomerID = Convert.ToInt32(CustID);
+                var internalCmpnayId = unitOfWork.PDAEstimitor.GetbyCustIdasync(Convert.ToInt32(CustID));
+                PDAEstimitor.InternalCompanyID = internalCmpnayId.Result.CompanyID;
+                CultureInfo provider = CultureInfo.InvariantCulture;
+                string ETA_String = PDAEstimitor.ETA_String + " " + "12:00:00 AM";
+                DateTime Validity_To = DateTime.ParseExact(ETA_String, new string[] { "dd.M.yyyy hh:mm:ss tt", "dd-M-yyyy hh:mm:ss tt", "dd/M/yyyy hh:mm:ss tt" }, provider, DateTimeStyles.None);
+
+                PDAEstimitor.ETA = Validity_To;
+                if (PDAEstimitor.PDAEstimatorID > 0)
+                {
+                    await unitOfWork.PDAEstimitor.UpdateAsync(PDAEstimitor);
+                    _toastNotification.AddSuccessToastMessage("Updated Successfully");
+                }
+                else
+                {
+                    var id = await unitOfWork.PDAEstimitor.AddAsync(PDAEstimitor);
+                    //if (id != "" && Convert.ToInt64(id) > 0)
+                    //{
+                    //    PDAEstimatorOutPut pDAEstimatorOutPut = new PDAEstimatorOutPut();
+                    //    //var PDAData = unitOfWork.PDAEstimitor.GetAlllistAsync().Result.Where(x => x.PDAEstimatorID == Convert.ToInt64(id)).FirstOrDefault();
+
+                    //    var CompanyData = unitOfWork.Company.GetAlllistAsync().Result.Where(x => x.CompanyId == PDAEstimitor.InternalCompanyID).FirstOrDefault();
+                    //    var TaxData = unitOfWork.Taxs.GetAllAsync().Result;
+
+                    //    string Addressline2 = "";
+                    //    pDAEstimatorOutPut.PDAEstimatorID = Convert.ToInt64(id);
+                    //    if (CompanyData != null)
+                    //    {
+                    //        if (CompanyData.Address2 != null)
+                    //        {
+                    //            Addressline2 = CompanyData.Address1.ToUpper() + ", " + CompanyData.Address2.ToUpper() + ", ";
+                    //        }
+                    //        else
+                    //        {
+                    //            Addressline2 = CompanyData.Address1.ToUpper() + ", ";
+                    //        }
+
+                    //        pDAEstimatorOutPut.CompanyName = CompanyData.CompanyName;
+                    //        pDAEstimatorOutPut.CompanyAddress1 = Addressline2;
+                    //        pDAEstimatorOutPut.CompanyAddress2 = CompanyData.CityName.ToUpper() + ", " + CompanyData.StateName.ToUpper() + ", " + CompanyData.CountryName.ToUpper();
+                    //        pDAEstimatorOutPut.CompanyTelephone = CompanyData.Telephone;
+                    //        pDAEstimatorOutPut.CompanyAlterTel = CompanyData.AlterTel;
+                    //        pDAEstimatorOutPut.CompanyEmail = CompanyData.Email.ToUpper();
+                    //        pDAEstimatorOutPut.CompanyLogo = CompanyData.CompanyLog;
+                    //    }
+                    //    else
+                    //    {
+                    //        pDAEstimatorOutPut.CompanyAddress1 = "";
+                    //        pDAEstimatorOutPut.CompanyAddress2 = "";
+                    //        pDAEstimatorOutPut.CompanyTelephone = "";
+                    //        pDAEstimatorOutPut.CompanyAlterTel = "";
+                    //        pDAEstimatorOutPut.CompanyEmail = "";
+                    //        pDAEstimatorOutPut.CompanyLogo = "";
+                    //    }
+
+                    //    var custdata = unitOfWork.Customer.GetByIdAsync(PDAEstimitor.CustomerID).Result;
+                    //    if (custdata != null && custdata.BankID != null)
+                    //    {
+                    //        var BankMaster = unitOfWork.BankMaster.GetByIdAsync(custdata.BankID).Result;
+                    //        if (BankMaster != null)
+                    //        {
+                    //            pDAEstimatorOutPut.NameofBeneficiary = BankMaster.NameofBeneficiary;
+                    //            pDAEstimatorOutPut.BeneficiaryAddress = BankMaster.BeneficiaryAddress;
+                    //            pDAEstimatorOutPut.AccountNo = BankMaster.AccountNo;
+                    //            pDAEstimatorOutPut.Beneficiary_Bank_Name = BankMaster.Beneficiary_Bank_Name;
+                    //            pDAEstimatorOutPut.Beneficiary_Bank_Address = BankMaster.Beneficiary_Bank_Address;
+                    //            pDAEstimatorOutPut.Beneficiary_RTGS_NEFT_IFSC_Code = BankMaster.Beneficiary_Bank_Name;
+                    //            pDAEstimatorOutPut.Beneficiary_Bank_Swift_Code = BankMaster.Beneficiary_Bank_Name;
+                    //            pDAEstimatorOutPut.Intermediary_Bank = BankMaster.Intermediary_Bank;
+                    //            pDAEstimatorOutPut.Intermediary_Bank_Swift_Code = BankMaster.Intermediary_Bank;
+                    //        }
+                    //    }
+
+                    //    var currencyData = unitOfWork.Currencys.GetAllAsync().Result;
+                    //    pDAEstimatorOutPut.BaseCurrencyCode = currencyData.Where(x => x.BaseCurrency == true) != null ? currencyData.Where(x => x.BaseCurrency == true).FirstOrDefault().CurrencyCode : "";
+                    //    pDAEstimatorOutPut.DefaultCurrencyCode = currencyData.Where(x => x.DefaultCurrecny == true) != null ? currencyData.Where(x => x.DefaultCurrecny == true).FirstOrDefault().CurrencyCode : "";
+                    //    var taxrate = TaxData.Where(x => x.TaxName.Contains("GST")).Select(x => x.TaxRate).FirstOrDefault();
+                    //    pDAEstimatorOutPut.Taxrate = taxrate;
+                    //    pDAEstimatorOutPut.PDAEstimatorOutPutDate = DateTime.Now;
+                    //    var PDAEstimitorOUTPUTid = await unitOfWork.PDAEstimitorOUTPUT.AddAsync(pDAEstimatorOutPut);
+
+                    //    if (PDAEstimitorOUTPUTid != "" && Convert.ToInt64(PDAEstimitorOUTPUTid) > 0)
+                    //    {
+                    //        var NotesData = unitOfWork.PDAEstimitor.GetNotes().Result.ToList();
+                    //        foreach (var note in NotesData)
+                    //        {
+                    //            PDAEstimatorOutPutNote pDAEstimatorOutPutNote = new PDAEstimatorOutPutNote();
+                    //            pDAEstimatorOutPutNote.PDAEstimatorOutPutID = Convert.ToInt64(PDAEstimitorOUTPUTid);
+                    //            pDAEstimatorOutPutNote.Note = note.Note;
+                    //            pDAEstimatorOutPutNote.sequnce = note.sequnce;
+                    //            // await unitOfWork.PDAEstimitorOUTNote.AddAsync(pDAEstimatorOutPutNote);
+                    //        }
+                    //    }
+
+                    //    var pDAEstimatorOutPutdata = unitOfWork.PDAEstimitorOUTPUT.GetByIdAsync(Convert.ToInt64(id)).Result;
+                    //    PDAEstimatorOutPutView pDAEstimatorOutPutView = new PDAEstimatorOutPutView()
+                    //    {
+                    //        PDAEstimatorID = pDAEstimatorOutPutdata.PDAEstimatorID,
+                    //        CompanyName = pDAEstimatorOutPutdata.CompanyName,
+                    //        CompanyAddress1 = pDAEstimatorOutPutdata.CompanyAddress1.ToUpper(),
+                    //        CompanyAddress2 = pDAEstimatorOutPutdata.CompanyAddress2.ToUpper(),
+                    //        CompanyTelephone = pDAEstimatorOutPutdata.CompanyTelephone.ToUpper(),
+                    //        CompanyAlterTel = pDAEstimatorOutPutdata.CompanyAlterTel.ToUpper(),
+                    //        CompanyEmail = pDAEstimatorOutPutdata.CompanyEmail.ToUpper(),
+                    //        CompanyLogo = pDAEstimatorOutPutdata.CompanyLogo,
+                    //    };
+
+
+                    //    BankMaster bankMaster = new BankMaster()
+                    //    {
+                    //        NameofBeneficiary = pDAEstimatorOutPutdata.NameofBeneficiary,
+                    //        BeneficiaryAddress = pDAEstimatorOutPutdata.BeneficiaryAddress,
+                    //        AccountNo = pDAEstimatorOutPutdata.AccountNo,
+                    //        Beneficiary_Bank_Name = pDAEstimatorOutPutdata.Beneficiary_Bank_Name,
+                    //        Beneficiary_Bank_Address = pDAEstimatorOutPutdata.Beneficiary_Bank_Address,
+                    //        Beneficiary_RTGS_NEFT_IFSC_Code = pDAEstimatorOutPutdata.Beneficiary_Bank_Name,
+                    //        Beneficiary_Bank_Swift_Code = pDAEstimatorOutPutdata.Beneficiary_Bank_Name,
+                    //        Intermediary_Bank = pDAEstimatorOutPutdata.Intermediary_Bank,
+                    //        Intermediary_Bank_Swift_Code = pDAEstimatorOutPutdata.Intermediary_Bank,
+                    //    };
+
+                    //    pDAEstimatorOutPutView.BankMaster = bankMaster;
+
+                    //    //var Notesdata = await unitOfWork.PDAEstimitorOUTNote.GetAllNotesByPDAEstimatorOutPutIDAsync(Convert.ToInt64(id));
+                    //    List<Notes> notes = new List<Notes>();
+
+                    //}
+
+                    _toastNotification.AddSuccessToastMessage("Submitted successfully");
+                    RedirectToAction("PDAEstimator", "PDAEstimator", id);
+                }
+                return Json(new
+                {
+                    proceed = true,
+                    msg = ""
+                });
             }
             else
             {
-                var id = await unitOfWork.PDAEstimitor.AddAsync(PDAEstimitor);
-                //if (id != "" && Convert.ToInt64(id) > 0)
-                //{
-                //    PDAEstimatorOutPut pDAEstimatorOutPut = new PDAEstimatorOutPut();
-                //    //var PDAData = unitOfWork.PDAEstimitor.GetAlllistAsync().Result.Where(x => x.PDAEstimatorID == Convert.ToInt64(id)).FirstOrDefault();
-
-                //    var CompanyData = unitOfWork.Company.GetAlllistAsync().Result.Where(x => x.CompanyId == PDAEstimitor.InternalCompanyID).FirstOrDefault();
-                //    var TaxData = unitOfWork.Taxs.GetAllAsync().Result;
-
-                //    string Addressline2 = "";
-                //    pDAEstimatorOutPut.PDAEstimatorID = Convert.ToInt64(id);
-                //    if (CompanyData != null)
-                //    {
-                //        if (CompanyData.Address2 != null)
-                //        {
-                //            Addressline2 = CompanyData.Address1.ToUpper() + ", " + CompanyData.Address2.ToUpper() + ", ";
-                //        }
-                //        else
-                //        {
-                //            Addressline2 = CompanyData.Address1.ToUpper() + ", ";
-                //        }
-
-                //        pDAEstimatorOutPut.CompanyName = CompanyData.CompanyName;
-                //        pDAEstimatorOutPut.CompanyAddress1 = Addressline2;
-                //        pDAEstimatorOutPut.CompanyAddress2 = CompanyData.CityName.ToUpper() + ", " + CompanyData.StateName.ToUpper() + ", " + CompanyData.CountryName.ToUpper();
-                //        pDAEstimatorOutPut.CompanyTelephone = CompanyData.Telephone;
-                //        pDAEstimatorOutPut.CompanyAlterTel = CompanyData.AlterTel;
-                //        pDAEstimatorOutPut.CompanyEmail = CompanyData.Email.ToUpper();
-                //        pDAEstimatorOutPut.CompanyLogo = CompanyData.CompanyLog;
-                //    }
-                //    else
-                //    {
-                //        pDAEstimatorOutPut.CompanyAddress1 = "";
-                //        pDAEstimatorOutPut.CompanyAddress2 = "";
-                //        pDAEstimatorOutPut.CompanyTelephone = "";
-                //        pDAEstimatorOutPut.CompanyAlterTel = "";
-                //        pDAEstimatorOutPut.CompanyEmail = "";
-                //        pDAEstimatorOutPut.CompanyLogo = "";
-                //    }
-
-                //    var custdata = unitOfWork.Customer.GetByIdAsync(PDAEstimitor.CustomerID).Result;
-                //    if (custdata != null && custdata.BankID != null)
-                //    {
-                //        var BankMaster = unitOfWork.BankMaster.GetByIdAsync(custdata.BankID).Result;
-                //        if (BankMaster != null)
-                //        {
-                //            pDAEstimatorOutPut.NameofBeneficiary = BankMaster.NameofBeneficiary;
-                //            pDAEstimatorOutPut.BeneficiaryAddress = BankMaster.BeneficiaryAddress;
-                //            pDAEstimatorOutPut.AccountNo = BankMaster.AccountNo;
-                //            pDAEstimatorOutPut.Beneficiary_Bank_Name = BankMaster.Beneficiary_Bank_Name;
-                //            pDAEstimatorOutPut.Beneficiary_Bank_Address = BankMaster.Beneficiary_Bank_Address;
-                //            pDAEstimatorOutPut.Beneficiary_RTGS_NEFT_IFSC_Code = BankMaster.Beneficiary_Bank_Name;
-                //            pDAEstimatorOutPut.Beneficiary_Bank_Swift_Code = BankMaster.Beneficiary_Bank_Name;
-                //            pDAEstimatorOutPut.Intermediary_Bank = BankMaster.Intermediary_Bank;
-                //            pDAEstimatorOutPut.Intermediary_Bank_Swift_Code = BankMaster.Intermediary_Bank;
-                //        }
-                //    }
-
-                //    var currencyData = unitOfWork.Currencys.GetAllAsync().Result;
-                //    pDAEstimatorOutPut.BaseCurrencyCode = currencyData.Where(x => x.BaseCurrency == true) != null ? currencyData.Where(x => x.BaseCurrency == true).FirstOrDefault().CurrencyCode : "";
-                //    pDAEstimatorOutPut.DefaultCurrencyCode = currencyData.Where(x => x.DefaultCurrecny == true) != null ? currencyData.Where(x => x.DefaultCurrecny == true).FirstOrDefault().CurrencyCode : "";
-                //    var taxrate = TaxData.Where(x => x.TaxName.Contains("GST")).Select(x => x.TaxRate).FirstOrDefault();
-                //    pDAEstimatorOutPut.Taxrate = taxrate;
-                //    pDAEstimatorOutPut.PDAEstimatorOutPutDate = DateTime.Now;
-                //    var PDAEstimitorOUTPUTid = await unitOfWork.PDAEstimitorOUTPUT.AddAsync(pDAEstimatorOutPut);
-
-                //    if (PDAEstimitorOUTPUTid != "" && Convert.ToInt64(PDAEstimitorOUTPUTid) > 0)
-                //    {
-                //        var NotesData = unitOfWork.PDAEstimitor.GetNotes().Result.ToList();
-                //        foreach (var note in NotesData)
-                //        {
-                //            PDAEstimatorOutPutNote pDAEstimatorOutPutNote = new PDAEstimatorOutPutNote();
-                //            pDAEstimatorOutPutNote.PDAEstimatorOutPutID = Convert.ToInt64(PDAEstimitorOUTPUTid);
-                //            pDAEstimatorOutPutNote.Note = note.Note;
-                //            pDAEstimatorOutPutNote.sequnce = note.sequnce;
-                //            // await unitOfWork.PDAEstimitorOUTNote.AddAsync(pDAEstimatorOutPutNote);
-                //        }
-                //    }
-
-                //    var pDAEstimatorOutPutdata = unitOfWork.PDAEstimitorOUTPUT.GetByIdAsync(Convert.ToInt64(id)).Result;
-                //    PDAEstimatorOutPutView pDAEstimatorOutPutView = new PDAEstimatorOutPutView()
-                //    {
-                //        PDAEstimatorID = pDAEstimatorOutPutdata.PDAEstimatorID,
-                //        CompanyName = pDAEstimatorOutPutdata.CompanyName,
-                //        CompanyAddress1 = pDAEstimatorOutPutdata.CompanyAddress1.ToUpper(),
-                //        CompanyAddress2 = pDAEstimatorOutPutdata.CompanyAddress2.ToUpper(),
-                //        CompanyTelephone = pDAEstimatorOutPutdata.CompanyTelephone.ToUpper(),
-                //        CompanyAlterTel = pDAEstimatorOutPutdata.CompanyAlterTel.ToUpper(),
-                //        CompanyEmail = pDAEstimatorOutPutdata.CompanyEmail.ToUpper(),
-                //        CompanyLogo = pDAEstimatorOutPutdata.CompanyLogo,
-                //    };
-
-
-                //    BankMaster bankMaster = new BankMaster()
-                //    {
-                //        NameofBeneficiary = pDAEstimatorOutPutdata.NameofBeneficiary,
-                //        BeneficiaryAddress = pDAEstimatorOutPutdata.BeneficiaryAddress,
-                //        AccountNo = pDAEstimatorOutPutdata.AccountNo,
-                //        Beneficiary_Bank_Name = pDAEstimatorOutPutdata.Beneficiary_Bank_Name,
-                //        Beneficiary_Bank_Address = pDAEstimatorOutPutdata.Beneficiary_Bank_Address,
-                //        Beneficiary_RTGS_NEFT_IFSC_Code = pDAEstimatorOutPutdata.Beneficiary_Bank_Name,
-                //        Beneficiary_Bank_Swift_Code = pDAEstimatorOutPutdata.Beneficiary_Bank_Name,
-                //        Intermediary_Bank = pDAEstimatorOutPutdata.Intermediary_Bank,
-                //        Intermediary_Bank_Swift_Code = pDAEstimatorOutPutdata.Intermediary_Bank,
-                //    };
-
-                //    pDAEstimatorOutPutView.BankMaster = bankMaster;
-
-                //    //var Notesdata = await unitOfWork.PDAEstimitorOUTNote.GetAllNotesByPDAEstimatorOutPutIDAsync(Convert.ToInt64(id));
-                //    List<Notes> notes = new List<Notes>();
-
-                //}
-
-                _toastNotification.AddSuccessToastMessage("Submitted successfully");
-                RedirectToAction("PDAEstimator", "PDAEstimator", id);
+                return RedirectToAction("index", "Login");
             }
-            return Json(new
-            {
-                proceed = true,
-                msg = ""
-            });
         }
-
         public async Task<ActionResult> editPDAEstimator(PDAEstimator PDAEstimitor)
         {
             try
