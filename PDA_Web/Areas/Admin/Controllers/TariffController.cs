@@ -22,6 +22,16 @@ namespace PDA_Web.Areas.Admin.Controllers
 
         }
 
+        public async Task<ActionResult> GetTarrifFromSelectedPorts(SelectedPortIds Ids)//Master Save
+        {
+            var InsertCopiedTarrif = await unitOfWork.TariffRates.GetTarrifFromSelectedPorts(Ids);
+            return Json(new
+            {
+                proceed = true,
+                msg = ""
+            });
+        }
+
         public async Task<IActionResult> Formula()
         {
             var FormulaAttribute = await unitOfWork.FormatAttribute.GetAllAsync();
@@ -144,6 +154,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                 msg = ""
             });
         }
+
+
         public async Task<ActionResult> formulaDelete(FormulaMaster formula)
         {
             await unitOfWork.FormulaTransaction.DeleteByFormulaIdAsync(formula.formulaMasterID);
