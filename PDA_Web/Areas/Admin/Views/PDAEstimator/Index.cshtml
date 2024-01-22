@@ -492,6 +492,40 @@
                 }
             });
         }
+        function clear()
+        {
+            $('#PDAEstimatorId').val("");
+            $('#customerid').val("");
+            $('#VesselName').val("");
+            $('#PortName').val("");
+            $('#BerthName').val("");
+            $('#PortActivityName').val("");
+            $('#TerminalName').val("");
+            $('#CallTypeName').val("");
+            $('#CargoName').val("");
+            $('#CargoQty').val("");
+            $('#CargoUnitofMasurement').val("");
+            $('#LoadDischargeRate').val("");
+            $('#Currency').val("");
+            $('#ROERate').val("");
+            $('#DWT').val("");
+            $('#GRT').val("");
+            $('#ArrivalDraft').val("");
+            $('#NRT').val("");
+            $('#BerthStay').val("");
+            $('#BerthStayDay').val("");
+            $('#AnchorageStay').val("");
+            $('#LOA').val("");
+            $('#Beam').val("");
+            $('#ETA').val("");
+            $('#Company').val("");
+            $('#BerthStayShift').val("");
+            $('#VesselBallast').val("");
+            $('#BerthStayhourCoastal').val("");
+            $('#BerthStayDayCoastal').val("");
+            $('#BerthStayShiftCoastal').val("");
+            
+        }
 
 
         function PDAEstimatorSave() {
@@ -602,6 +636,7 @@
                             return;
                         }
                         else {
+                            clear();
                             loadData();
                         }
 
@@ -808,6 +843,6 @@
                         //        }
                         //    })
                         //}
-
+                            
     </script>
 }
