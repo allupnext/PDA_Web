@@ -1,4 +1,5 @@
-﻿<section class="content">
+﻿
+<section class="content">
     <div class="container-fluid">
         <!-- Small boxes (Stat box) -->
         <div class="row">
@@ -6,12 +7,12 @@
                 <!-- small box -->
                 <div class="small-box bg-info">
                     <div class="inner">
-                        <h3>150</h3>
-
+                        <h3 id="customer">@ViewBag.CustomerCount</h3>
                         <p>Total Customers</p>
                     </div>
                     <div class="icon">
-                        <i class="ion ion-person"></i>
+                        <i class="fas fa-users"></i>
+                        <i class="fas fa-users"></i>
                     </div>
                     <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
@@ -21,8 +22,7 @@
                 <!-- small box -->
                 <div class="small-box bg-success">
                     <div class="inner">
-                        <h3>53<sup style="font-size: 20px">%</sup></h3>
-
+                        <h3>@ViewBag.pendingCustomer</h3>
                         <p>Pending Customer</p>
                     </div>
                     <div class="icon">
@@ -36,12 +36,12 @@
                 <!-- small box -->
                 <div class="small-box bg-warning">
                     <div class="inner">
-                        <h3>44</h3>
+                        <h3>@ViewBag.PDAs</h3>
 
                         <p>Total PDA</p>
                     </div>
                     <div class="icon">
-                        <i class="ion ion-stats-bars"></i>
+                        <i class="fa fa-calculator"></i>
                     </div>
                     <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
@@ -51,7 +51,7 @@
                 <!-- small box -->
                 <div class="small-box bg-danger">
                     <div class="inner">
-                        <h3>65</h3>
+                        <h3>@ViewBag.lastThrityDaysPDAs</h3>
                         <p>
                             Total Last 30 Days PDA
                         </p>
@@ -238,41 +238,28 @@
     </div><!-- /.container-fluid -->
 </section>
 
-<!-- ./wrapper -->
-<!-- jQuery -->
-<script src="plugins/jquery/jquery.min.js"></script>
-<!-- jQuery UI 1.11.4 -->
-<script src="plugins/jquery-ui/jquery-ui.min.js"></script>
-<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-<script>
-    $.widget.bridge('uibutton', $.ui.button)
-</script>
-<!-- Bootstrap 4 -->
-<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- ChartJS -->
-<script src="plugins/chart.js/Chart.min.js"></script>
-<!-- Sparkline -->
-<script src="plugins/sparklines/sparkline.js"></script>
-<!-- JQVMap -->
-<script src="plugins/jqvmap/jquery.vmap.min.js"></script>
-<script src="plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
-<!-- jQuery Knob Chart -->
-<script src="plugins/jquery-knob/jquery.knob.min.js"></script>
-<!-- daterangepicker -->
-<script src="plugins/moment/moment.min.js"></script>
-<script src="plugins/daterangepicker/daterangepicker.js"></script>
-<!-- Tempusdominus Bootstrap 4 -->
-<script src="plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
-<!-- Summernote -->
-<script src="plugins/summernote/summernote-bs4.min.js"></script>
-<!-- overlayScrollbars -->
-<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
-<!-- AdminLTE App -->
-<script src="dist/js/adminlte.js"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="dist/js/demo.js"></script>
-<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-<script src="dist/js/pages/dashboard.js"></script>
 
 
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+          loadData();
+        });
+        function loadData() {
+            $.ajax({
+                type: "GET",
+                url: "/Admin/Home/LoadAll",
+                dataType: "HTML",
+                success: function (data) {
+                    $("#customer").html(data);
+                },
+                error: function () {
+                }
+            });
+        }
+
+    </script>
+
+}
 
