@@ -44,7 +44,7 @@
                     <!-- form start -->
                     <div class="card-body">
                         <input type="hidden" id="PDAEstimatorId" name="PDAEstimatorId" value="">
-                        <div class="row">
+                       @* <div class="row">
                             <div class="col-sm-2">
                                 <div class="form-group">
                                     <label for="Customer">Customer <span class="text-danger">*</span></label>
@@ -62,7 +62,7 @@
 
 
                         </div>
-
+*@
 
                         <div class="row">
                             <div class="col-sm-2">
@@ -247,7 +247,7 @@
                                     @*                                     <label for="ETA">ETA<span class="text-danger">*</span></label>
                                     <input type="date" class="form-control" id="ETA" placeholder="ETA"> *@
                                     <label for="ETA">ETA<span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="ETA">
+                                    <input type="text" class="form-control" id="ETA" onchange="onTaxChange(this.val,5)">
 
                                 </div>
                             </div>
@@ -281,12 +281,11 @@
                     <div class="card-body">
                         <label for="">Filters:</label>
                         <div class="row" style="padding-bottom: 10px;">
-                            <div class="col-sm-2" >
+                            @*<div class="col-sm-2">
                                 <label for="CustomerFilter">Customer <span class="text-danger">*</span></label>
                                 @Html.DropDownList("CustomerFilter", new SelectList(ViewBag.Customers, "CustomerId", "Company"), "Please select", new { @class = "form-control" })
-                                @*//@Html.DropDownList("CustomerFilter", new SelectList(ViewBag.Customers, "CustomerId", ""), "Please select")*@
-                            </div>
-                            <div class="col-sm-2" >
+                            </div>*@
+                            <div class="col-sm-2">
                                 <label for="PortName">Port<span class="text-danger">*</span></label>
                                 @Html.DropDownList("PortFilter", new SelectList(ViewBag.Port, "ID", "PortName"), "Please Select", new { @class = "form-control" })
                                 @*//@Html.DropDownList("CustomerFilter", new SelectList(ViewBag.Customers, "CustomerId", ""), "Please select")*@
@@ -296,7 +295,7 @@
                                 @Html.DropDownList("TerminalFilter", new SelectList(ViewBag.Terminal, "ID", "TerminalName"), "Please Select", new { @class = "form-control" , @onchange = "callChangefunc(this.value)" })
                                 @*//@Html.DropDownList("CustomerFilter", new SelectList(ViewBag.Customers, "CustomerId", ""), "Please select")*@
                             </div>
-                            <div class="col-sm-2" >
+                            <div class="col-sm-2">
                                 <label for="CallType">Call Type<span class="text-danger">*</span></label>
                                 @Html.DropDownList("CallTypeFilter", new SelectList(ViewBag.CallType, "ID", "CallTypeName"), "Please select", new { @class = "form-control" })
                             </div>
@@ -411,7 +410,7 @@
                 $.ajax({
 
                     type: "GET",
-                    url: "/Admin/PDAEstimator/PortNameOnchange",
+                    url: "/PDA/PortNameOnchange",
                     data: PDAEstimitor,
                     dataType: "HTML",
                     success: function (data) {
@@ -419,7 +418,7 @@
                         $("#terminaldrop").html(data);
                         $.ajax({
                             type: "GET",
-                            url: "/Admin/PDAEstimator/CargoLoad",
+                            url: "/PDA/CargoLoad",
                             data: { selectedPortId: portid },
                             dataType: "HTML",
                             success: function (data) {
@@ -447,7 +446,7 @@
             }
             $.ajax({
                 type: "GET",
-                url: "/Admin/PDAEstimator/TerminalNameOnchange",
+                url: "/PDA/TerminalNameOnchange",
                 data: cargoHandled,
                 dataType: "HTML",
                 success: function (data) {
@@ -468,7 +467,7 @@
             debugger;
             $.ajax({
                 type: "GET",
-                url: "/Admin/PDAEstimator/CustomerOnchange?CustomerId=" + id,
+                url: "/PDA/CustomerOnchange?CustomerId=" + id,
                 dataType: "json",
                 success: function (data) {
                     $("#Company").val(data.primarycustomer);
@@ -484,7 +483,7 @@
             $.ajax({
 
                 type: "GET",
-                url: "/Admin/PDAEstimator/CurrencyOnchange?Currency=" + val,
+                url: "/PDA/CurrencyOnchange?Currency=" + val,
                 success: function (data) {
                     $('#ROERate').val(data.roeRate);
                 },
@@ -595,7 +594,7 @@
             else {
                 $.ajax({
                     type: "POST",
-                    url: "/Admin/PDAEstimator/PDAEstimitorSave",
+                    url: "/PDA/PDAEstimitorSave",
                     data: PDAEstimitor,
                     success: function (data) {
                         if (!data.proceed) {
@@ -615,7 +614,6 @@
 
 
         function EditPDAEstimator(id) {
-            $(window).scrollTop(150);
             $('#PDAEstimatorId').val(id);
 
             var PDAEstimitor;
@@ -649,7 +647,7 @@
             }
             $.ajax({
                 type: "POST",
-                url: "/Admin/PDAEstimator/editPDAEstimator",
+                url: "/PDA/editPDAEstimator",
                 data: PDAEstimitor,
                 success: function (data) {
                     debugger
@@ -734,7 +732,7 @@
 
             $.ajax({
                 type: "POST",
-                url: "/Admin/PDAEstimator/deletePDAEstimitor",
+                url: "/PDA/deletePDAEstimitor",
                 data: PDAEstimitor,
                 success: function (data) {
                     loadData();
@@ -752,7 +750,7 @@
 
             $.ajax({
                 type: "POST",
-                url: "/Admin/PDAEstimator/PdaEstimatorRedirect" + customerId,
+                url: "/PDA/PdaEstimatorRedirect" + customerId,
                 data: PDAEstimitor,
                 success: function (data) {
                     if (!data.proceed) {
@@ -781,7 +779,7 @@
 
             $.ajax({
                 type: "GET",
-                url: "/Admin/PDAEstimator/LoadAll",
+                url: "/PDA/LoadAll",
                 data: Padestimator,
                 dataType: "HTML",
                 success: function (data) {
@@ -793,21 +791,21 @@
         }
 
 
-                        //function ViewPDAEstimator(PDAEstimatorID) {
-                        //    alert('hi')
-                        //    $.ajax({
-                        //        url: "/Admin/PDAEstimator/PDAEstimator?id=" + PDAEstimatorID,
-                        //        dataType: "html",
-                        //        success: function (data) {
-                        //            var url = "https://jsonplaceholder.typicode.com/users/" + userId;
-                        //            window.open(url, "_blank");
-                        //        },
-                        //        error: function (error) {
-                        //            debugger;
-                        //            alert("Error:" + error);
-                        //        }
-                        //    })
-                        //}
+                                //function ViewPDAEstimator(PDAEstimatorID) {
+                                //    alert('hi')
+                                //    $.ajax({
+                                //        url: "/PDA/PDAEstimator?id=" + PDAEstimatorID,
+                                //        dataType: "html",
+                                //        success: function (data) {
+                                //            var url = "https://jsonplaceholder.typicode.com/users/" + userId;
+                                //            window.open(url, "_blank");
+                                //        },
+                                //        error: function (error) {
+                                //            debugger;
+                                //            alert("Error:" + error);
+                                //        }
+                                //    })
+                                //}
 
     </script>
 }

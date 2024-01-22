@@ -101,7 +101,9 @@
                             <div class="col-sm-2" style="max-width: 10%;"></div>
                             <div class="col-sm-2" style="max-width: 10%;"></div>
                             <div class="col-sm-2" style="max-width: 10%;"></div>
-
+                             <div class="col-sm-2" style="max-width: 10%;"></div>
+                              <div class="col-sm-2" style="max-width: 10%;"></div>
+                            <div class="col-sm-2" style="max-width: 10%;"></div>
                             <div class="col-sm-2" style="max-width: 10%;"></div>
                             <div class="col-sm-4" style="max-width: 30%;">
                                 <lable id="formulastring" value="">
@@ -139,7 +141,7 @@
 
                             <div class="col-sm-2" style="max-width: 10%;">Tax<span class="text-danger">*</span></div>
                             <div class="col-sm-2" style="max-width: 10%;">Slab<span class="text-danger">*</span></div>
-                            <div class="col-sm-2" style="max-width: 10%;">Slab Increemental<span class="text-danger">*</span></div>
+                            <div class="col-sm-2" style="max-width: 20%;">Slab Increemental<span class="text-danger">*</span></div>
                             <div class="col-sm-2" style="max-width: 10%;">Slab From<span class="text-danger">*</span></div>
                             <div class="col-sm-2" style="max-width: 10%;">Slab To<span class="text-danger">*</span></div>
                             <div class="col-sm-2" style="max-width: 10%;">Rate<span class="text-danger">*</span></div>
@@ -204,7 +206,7 @@
                                 @Html.DropDownList("Slabs", new SelectList(ViewBag.Slabs, "TariffSegmentID", "TariffSegmentName"), "Please Select", new { @class = "form-control" })
 
                             </div>
-                            <div class="col-sm-2" style="max-width: 10%;">
+                            <div class="col-sm-2" style="max-width: 20%;">
                                 @Html.DropDownList("SlabIncreemental", new List<SelectListItem>
                                 {
                                 new SelectListItem{ Text="Increemental", Value = "1" },
@@ -402,7 +404,54 @@
             $('#TariffMainMenu').addClass('active');
             $('#TariffMenu').addClass('active');
             $('#TariffMenu').parent().closest('ul').parent().addClass('menu-open');
+            const currentYear = new Date().getFullYear();
+            var dateNewFormat, onlyDate, today = new  Date(currentYear, 0, 1);;
 
+            debugger;
+            onlyDate = today.getDate();
+
+            if (onlyDate.toString().length == 2) {
+                dateNewFormat =  onlyDate;
+            }
+            else {
+                dateNewFormat = '0' + onlyDate;
+            }
+
+            if((today.getMonth() + 1).toString().length == 2){
+                dateNewFormat += "/" + (today.getMonth() + 1);
+            }
+            else
+            {
+                dateNewFormat += "/0" + (today.getMonth() + 1);
+            }
+
+            dateNewFormat =  dateNewFormat + '/' + today.getFullYear() ;
+
+            $('#FromDate').val(dateNewFormat);
+          
+            dateNewFormat, onlyDate, today = new Date(currentYear, 11, 31);
+
+            debugger;
+            onlyDate = today.getDate();
+
+            if (onlyDate.toString().length == 2) {
+                dateNewFormat = onlyDate;
+            }
+            else {
+                dateNewFormat = '0' + onlyDate;
+            }
+
+            if ((today.getMonth() + 1).toString().length == 2) {
+                dateNewFormat += "/" + (today.getMonth() + 1);
+            }
+            else {
+                dateNewFormat += "/0" + (today.getMonth() + 1);
+            }
+
+            dateNewFormat = dateNewFormat + '/' + today.getFullYear();
+
+            $('#ToDate').val(dateNewFormat);
+            
             //loadDataTariffMaster();
             loadData();
 
@@ -721,8 +770,10 @@
         }
 
 
-        function editTariff(id, para) {
-            if (para == "copy") {
+        function editTariff(id , para) {
+            $(window).scrollTop(150);
+            if (para == "copy")
+            {
                 $('#AddTariffRate').show();
                 $('#UpdateTariffRate').hide();
 
