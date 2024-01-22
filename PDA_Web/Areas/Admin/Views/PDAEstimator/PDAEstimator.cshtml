@@ -4,23 +4,19 @@
     Layout = null;
 }
 <html lang="en">
-<head>
-    <title>Merchant Shipping Services </title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
-
-    <!-- css -->
-    <!-- Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&family=Roboto+Slab:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-</head>
-
-
 
 <body>
 
     <header>
+        <title>Merchant Shipping Services </title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico" />
+
+        <!-- css -->
+        <!-- Font -->
+        <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&family=Roboto+Slab:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
         <div class="logo_main">
             @*<div class="logo_img">
             <img src="/companylogo/@ViewBag.CompanyLogo"
@@ -30,13 +26,13 @@
             <div class="logo_name">
                 <img src="/companylogo/@Model.CompanyLogo"
                      id="DownloadFile"
-                     asp-append-version="true">
+                     asp-append-version="true" />
             </div>
         </div>
         <div class="company_detail">
             <ul class="company_name_address">
                 <li class="valuefont">@Model.CompanyName</li>
-                <li class="valuefont">@Model.CompanyAddress1 <br>@Model.CompanyAddress2</li>
+                <li class="valuefont">@Model.CompanyAddress1 <br/>@Model.CompanyAddress2</li>
             </ul>
 
             <ul class="company_contact">
@@ -457,7 +453,7 @@
     </section>
 
     <section class="bank_detail">
-        <ul>
+        <ul style="border-bottom: 0px solid rgba(0,0,0,0);">
 
             <li><p style="font-size: 15px;">PARTICULARS</p></li>
             <li><p style="font-size: 15px;">BANK DETAILS</p></li>
@@ -560,11 +556,15 @@
         </ul>
 
         <div class="agent">
-            <h3>@Model.CompanyName<br> (AS AGENTS ONLY)</h3>
+            <h3>@Model.CompanyName<br/> (AS AGENTS ONLY)</h3>
         </div>
 
     </section>
 
+    <div>
+        <button onclick="downloadPDA()" > Download </button>
+    </div>
+    
 
     <style>
 
@@ -998,8 +998,7 @@
                 padding: 0 15px;
             }
 
-            .bank_detail ul:nth-child(1) li,
-            .bank_detail ul:nth-child(2) li {
+            .bank_detail ul:nth-child(1) li {
                 background: #66a0cc;
                 font-weight: 600;
                 padding: 10px 0;
@@ -1016,5 +1015,8 @@
         }
     </style>
 
+    <script>
+
+    </script>
 </body>
 </html>

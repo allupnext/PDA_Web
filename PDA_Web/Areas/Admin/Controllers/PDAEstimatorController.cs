@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.DotNet.Scaffolding.Shared;
-using Microsoft.Identity.Client;
 using NToastNotify;
+using PDA_Web.Models;
 using PDAEstimator_Application.Interfaces;
 using PDAEstimator_Domain.Entities;
-using PDA_Web.Models;
+using SelectPdf;
 using System.Data;
 using System.Globalization;
 
@@ -148,53 +147,53 @@ namespace PDA_Web.Areas.Admin.Controllers
                                     string FormulaAttributedata = formularTransList.formulaAttributeName;
                                     if (FormulaAttributedata.Contains("GRT"))
                                     {
-                                        triff.UNITS = UnitCalculation(triff, pDAEstimatorOutPut.GRT);
+                                         UnitCalculation(triff, pDAEstimatorOutPut.GRT);
                                         formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
                                     }
                                     else if (FormulaAttributedata.Contains("NRT"))
                                     {
-                                        triff.UNITS = UnitCalculation(triff, pDAEstimatorOutPut.NRT);
+                                        UnitCalculation(triff, pDAEstimatorOutPut.NRT);
                                         formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
                                     }
-                                    else if (FormulaAttributedata.Contains("BSTH") || FormulaAttributedata.Contains("BSTHF"))
+                                    else if (FormulaAttributedata == "BSTH" || FormulaAttributedata == "BSTHF")
                                     {
-                                        triff.UNITS = UnitCalculation(triff, pDAEstimatorOutPut.BerthStay);
-                                        formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        //UnitCalculation(triff, pDAEstimatorOutPut.BerthStay);
+                                        formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.BerthStay.ToString() : pDAEstimatorOutPut.BerthStay.ToString();
                                     }
-                                    else if (FormulaAttributedata.Contains("BSTS") || FormulaAttributedata.Contains("BSTSF"))
+                                    else if (FormulaAttributedata == "BSTS" || FormulaAttributedata == "BSTSF")
                                     {
-                                        triff.UNITS = UnitCalculation(triff, pDAEstimatorOutPut.BerthStayShift);
-                                        formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        //UnitCalculation(triff, pDAEstimatorOutPut.BerthStayShift);
+                                        formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.BerthStayShift.ToString() : pDAEstimatorOutPut.BerthStayShift.ToString();
                                     }
-                                    else if (FormulaAttributedata.Contains("BSTD") || FormulaAttributedata.Contains("BSTDF"))
+                                    else if (FormulaAttributedata == "BSTD" || FormulaAttributedata == "BSTDF")
                                     {
-                                        triff.UNITS = UnitCalculation(triff, pDAEstimatorOutPut.BerthStayDay);
-                                        formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        //UnitCalculation(triff, pDAEstimatorOutPut.BerthStayDay);
+                                        formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.BerthStayDay.ToString() : pDAEstimatorOutPut.BerthStayDay.ToString();
                                     }
                                     else if (FormulaAttributedata.Contains("BSTHC"))
                                     {
-                                        triff.UNITS = UnitCalculation(triff, pDAEstimatorOutPut.BerthStayHoursCoastal);
-                                        formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        //UnitCalculation(triff, pDAEstimatorOutPut.BerthStayHoursCoastal);
+                                        formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.BerthStayHoursCoastal.ToString() : pDAEstimatorOutPut.BerthStayHoursCoastal.ToString();
                                     }
                                     else if (FormulaAttributedata.Contains("BSTSC"))
                                     {
-                                        triff.UNITS = UnitCalculation(triff, pDAEstimatorOutPut.BerthStayShiftCoastal);
-                                        formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        //UnitCalculation(triff, pDAEstimatorOutPut.BerthStayShiftCoastal);
+                                        formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.BerthStayShiftCoastal.ToString() : pDAEstimatorOutPut.BerthStayShiftCoastal.ToString();
                                     }
                                     else if (FormulaAttributedata.Contains("BSTDC"))
                                     {
-                                        triff.UNITS = UnitCalculation(triff, pDAEstimatorOutPut.BerthStayDayCoastal);
-                                        formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        //UnitCalculation(triff, pDAEstimatorOutPut.BerthStayDayCoastal);
+                                        formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.BerthStayDayCoastal.ToString() : pDAEstimatorOutPut.BerthStayDayCoastal.ToString();
                                     }
                                     else if (FormulaAttributedata.Contains("AST"))
                                     {
-                                        triff.UNITS = UnitCalculation(triff, pDAEstimatorOutPut.AnchorageStay);
-                                        formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        //UnitCalculation(triff, pDAEstimatorOutPut.AnchorageStay);
+                                        formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.AnchorageStay.ToString() : pDAEstimatorOutPut.AnchorageStay.ToString();
                                     }
                                     else if (FormulaAttributedata.Contains("CQTY"))
                                     {
-                                        triff.UNITS = UnitCalculation(triff, pDAEstimatorOutPut.CargoQty);
-                                        formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        //UnitCalculation(triff, pDAEstimatorOutPut.CargoQty);
+                                        formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.CargoQty.ToString() : pDAEstimatorOutPut.CargoQty.ToString();
                                     }
                                     else
                                     {
@@ -284,7 +283,16 @@ namespace PDA_Web.Areas.Admin.Controllers
             //// Convert the HTML page from URL to memory
             //var htmlvaleu = View("PDAEstimator", pDAEstimatorOutPut);
             var viewHtml = await this.RenderViewAsync("PDAEstimator", pDAEstimatorOutPut);
-
+            //using (MemoryStream stream = new System.IO.MemoryStream())
+            //{
+            //    StringReader sr = new StringReader(viewHtml);
+            //    Document pdfDoc = new Document(PageSize.A4, 10f, 10f, 100f, 0f);
+            //    PdfWriter writer = PdfWriter.GetInstance(pdfDoc, stream);
+            //    pdfDoc.Open();
+            //    XMLWorkerHelper.GetInstance().ParseXHtml(writer, pdfDoc, sr);
+            //    pdfDoc.Close();
+            //    return File(stream.ToArray(), "application/pdf", "Grid.pdf");
+            //}
             //byte[] pdfData = converter.ConvertUrlToMemory(viewHtml.ToString());
 
             ////// Save the PDF data to a file
@@ -309,7 +317,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             return View(pDAEstimatorOutPut);
         }
 
-        public decimal? UnitCalculation(PDATariffRateList triff, long? attributvalue)
+        public PDATariffRateList UnitCalculation(PDATariffRateList triff, long? attributvalue)
         {
             decimal? units = 0;
             if (triff.SlabID != null && triff.SlabID > 0)
@@ -325,7 +333,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                         units = (triff.SlabTo - triff.SlabFrom) + 1;
                         units = Math.Abs(Convert.ToDecimal(units));
                     }
-                    else
+                    else if(attributvalue >= triff.SlabFrom)
                     {
                         units = (attributvalue - triff.SlabFrom) + 1;
                         units = Math.Abs(Convert.ToDecimal(units));
@@ -334,7 +342,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                 }
                 else
                 {
-                    if (triff.SlabFrom <= attributvalue && triff.SlabTo > attributvalue)
+                    if (triff.SlabFrom <= attributvalue && (triff.SlabTo == 0 || triff.SlabTo > attributvalue))
                     {
                         units = attributvalue;
                         units = Math.Abs(Convert.ToDecimal(units));
@@ -352,7 +360,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                 units = attributvalue;
             }
 
-            return units;
+            triff.UNITS = units;
+            return triff;
         }
 
         public async Task<IActionResult> Index()
@@ -478,6 +487,42 @@ namespace PDA_Web.Areas.Admin.Controllers
             DateTime Validity_To = DateTime.ParseExact(ETA_String, new string[] { "dd.M.yyyy hh:mm:ss tt", "dd-M-yyyy hh:mm:ss tt", "dd/M/yyyy hh:mm:ss tt" }, provider, DateTimeStyles.None);
 
             PDAEstimitor.ETA = Validity_To;
+
+            decimal berthStayHrs = PDAEstimitor.LoadDischargeRate != 0? Math.Ceiling(Convert.ToDecimal((PDAEstimitor.CargoQty / PDAEstimitor.LoadDischargeRate * 24) + 4)) : 0;
+            decimal berthStayDay = PDAEstimitor.LoadDischargeRate != 0 ? Math.Ceiling(Convert.ToDecimal((PDAEstimitor.CargoQty / PDAEstimitor.LoadDischargeRate))): 0;
+            decimal berthStayShift = PDAEstimitor.LoadDischargeRate != 0 ?  Math.Ceiling(Convert.ToDecimal((PDAEstimitor.CargoQty / PDAEstimitor.LoadDischargeRate) * 3)) :0;
+
+           var calltype = unitOfWork.CallTypes.GetByIdAsync(PDAEstimitor.CallTypeID).Result;
+
+            if (calltype.CallTypeName.ToUpper() == "FOREIGN")
+            {
+                PDAEstimitor.BerthStay = Convert.ToInt64(berthStayHrs);
+                PDAEstimitor.BerthStayDay = Convert.ToInt64(berthStayDay);
+                PDAEstimitor.BerthStayShift = Convert.ToInt64(berthStayShift);
+            }
+            if(calltype.CallTypeName.ToUpper() == "COASTAL IN FOREIGN OUT" || calltype.CallTypeName.ToUpper() == "FOREIGN IN COASTAL OUT")
+            {
+                PDAEstimitor.BerthStay = Convert.ToInt64(berthStayHrs);
+                PDAEstimitor.BerthStayDay = Convert.ToInt64(berthStayDay);
+                PDAEstimitor.BerthStayShift = Convert.ToInt64(berthStayShift);
+
+                PDAEstimitor.BerthStayHoursCoastal = Convert.ToInt64(6);
+                PDAEstimitor.BerthStayDayCoastal = Convert.ToInt64(1);
+                PDAEstimitor.BerthStayShiftCoastal = Convert.ToInt64(1);
+            }
+            else if (calltype.CallTypeName.ToUpper() == "COASTAL")
+            {
+                PDAEstimitor.BerthStayHoursCoastal = Convert.ToInt64(berthStayHrs);
+                PDAEstimitor.BerthStayDayCoastal = Convert.ToInt64(berthStayDay);
+                PDAEstimitor.BerthStayShiftCoastal = Convert.ToInt64(berthStayShift);
+            }
+            else
+            {
+                PDAEstimitor.BerthStay = Convert.ToInt64(berthStayHrs);
+                PDAEstimitor.BerthStayDay = Convert.ToInt64(berthStayDay);
+                PDAEstimitor.BerthStayShift = Convert.ToInt64(berthStayShift);
+            }
+
             if (PDAEstimitor.PDAEstimatorID > 0)
             {
                 await unitOfWork.PDAEstimitor.UpdateAsync(PDAEstimitor);
@@ -640,10 +685,64 @@ namespace PDA_Web.Areas.Admin.Controllers
 
         public async Task<ActionResult> PdaEstimatorRedirect(int id)
         {
+            // read parameters from the webpage
+            string htmlString = "<html>\r\n <body>\r\n  Hello World from selectpdf.com.\r\n </body>\r\n</html>\r\n";
+            string baseUrl = "";
+
+            string pdf_page_size = "A4";
+            PdfPageSize pageSize = (PdfPageSize)Enum.Parse(typeof(PdfPageSize),
+                pdf_page_size, true);
+
+            string pdf_orientation = "Portrait";
+            PdfPageOrientation pdfOrientation =
+                (PdfPageOrientation)Enum.Parse(typeof(PdfPageOrientation),
+                pdf_orientation, true);
+
+            int webPageWidth = 1024;
+            try
+            {
+                webPageWidth = Convert.ToInt32(1024);
+            }
+            catch { }
+
+            int webPageHeight = 0;
+            try
+            {
+                webPageHeight = Convert.ToInt32(1024);
+            }
+            catch { }
+
+            // instantiate a html to pdf converter object
+            HtmlToPdf converter = new HtmlToPdf();
+
+            // set converter options
+            converter.Options.PdfPageSize = pageSize;
+            converter.Options.PdfPageOrientation = pdfOrientation;
+            converter.Options.WebPageWidth = webPageWidth;
+            converter.Options.WebPageHeight = webPageHeight;
+
+            // create a new pdf document converting an url
+            SelectPdf.PdfDocument doc = converter.ConvertHtmlString(htmlString, baseUrl);
+
+            // save pdf document
+            doc.Save("Sample.pdf");
+
+            // close pdf document
+            doc.Close();
             var CustomerList = await unitOfWork.PDAEstimitor.GetByIdAsync(id);
             return PartialView("PDAEstimatorOutput", CustomerList);
 
         }
+
+        protected void BtnCreatePdf_Click(object sender, EventArgs e)
+        {
+
+        }
+        //[HttpPost]
+        //public FileResult Export(string GridHtml)
+        //{
+
+        //}
     }
 
 

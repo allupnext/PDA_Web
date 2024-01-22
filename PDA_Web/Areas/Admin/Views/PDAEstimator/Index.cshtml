@@ -281,12 +281,12 @@
                     <div class="card-body">
                         <label for="">Filters:</label>
                         <div class="row" style="padding-bottom: 10px;">
-                            <div class="col-sm-2" >
+                            <div class="col-sm-2">
                                 <label for="CustomerFilter">Customer <span class="text-danger">*</span></label>
                                 @Html.DropDownList("CustomerFilter", new SelectList(ViewBag.Customers, "CustomerId", "Company"), "Please select", new { @class = "form-control" })
                                 @*//@Html.DropDownList("CustomerFilter", new SelectList(ViewBag.Customers, "CustomerId", ""), "Please select")*@
                             </div>
-                            <div class="col-sm-2" >
+                            <div class="col-sm-2">
                                 <label for="PortName">Port<span class="text-danger">*</span></label>
                                 @Html.DropDownList("PortFilter", new SelectList(ViewBag.Port, "ID", "PortName"), "Please Select", new { @class = "form-control" })
                                 @*//@Html.DropDownList("CustomerFilter", new SelectList(ViewBag.Customers, "CustomerId", ""), "Please select")*@
@@ -296,7 +296,7 @@
                                 @Html.DropDownList("TerminalFilter", new SelectList(ViewBag.Terminal, "ID", "TerminalName"), "Please Select", new { @class = "form-control" , @onchange = "callChangefunc(this.value)" })
                                 @*//@Html.DropDownList("CustomerFilter", new SelectList(ViewBag.Customers, "CustomerId", ""), "Please select")*@
                             </div>
-                            <div class="col-sm-2" >
+                            <div class="col-sm-2">
                                 <label for="CallType">Call Type<span class="text-danger">*</span></label>
                                 @Html.DropDownList("CallTypeFilter", new SelectList(ViewBag.CallType, "ID", "CallTypeName"), "Please select", new { @class = "form-control" })
                             </div>
@@ -345,6 +345,10 @@
                 loadData();
             });
             $("#CargoQty, #LoadDischargeRate").on("input", function () {
+                berthstaycalculation();
+            });
+
+            function berthstaycalculation() {
                 var cargoQty = parseFloat($("#CargoQty").val()) || 0;
                 var loadDischargeRate = parseFloat($("#LoadDischargeRate").val()) || 0;
 
@@ -361,12 +365,21 @@
                     $("#BerthStayDay").val(berthStayDay);
                     $("#BerthStayShift").val(berthStayShift);
                 }
-            });
+                if ($("#CallTypeName option:selected").text() == 'Coastal In Foreign Out' || $("#CallTypeName option:selected").text() == 'Foreign In Coastal Out') {
+                    $("#BerthStay").val(6);
+                    $("#BerthStayDay").val(1);
+                    $("#BerthStayShift").val(1);
+                }
+            }
 
             $('#Currency').val(@ViewBag.CurrencyDefault);
             callCurrencyfunc($('#Currency').val());
 
             $("#CallTypeName").change(function () {
+                calltypebasehideshowberthstay();
+            });
+
+            function calltypebasehideshowberthstay() {
                 var calltype = $("#CallTypeName option:selected").text();
                 if (calltype == 'Coastal') {
                     $("#BerthStayForeign").hide();
@@ -396,7 +409,7 @@
                     $("#BerthStayDay").val(1);
                     $("#BerthStayShift").val(1);
                 }
-            });
+            }
 
             $("#PortName").change(function () {
                 var portid = $('option:selected', this).val();
@@ -718,6 +731,8 @@
                     $('#Company').val(data.pdaEstimitor.internalCompanyID);
                     $('#BerthStayShift').val(data.pdaEstimitor.berthStayShift);
                     $('#VesselBallast').val(data.pdaEstimitor.vesselBallast);
+                    calltypebasehideshowberthstay();
+                    berthstaycalculation();
                 },
                 error: function () {
                 }
