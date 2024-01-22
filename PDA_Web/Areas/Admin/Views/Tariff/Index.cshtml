@@ -46,12 +46,32 @@
                         <input type="hidden" id="TariffRateID" name="TariffRateID" value="">
 
                         <div class="row">
-                            <div class="col-sm-6">
+                            <div class="col-sm-2">
 
                                 <div class="form-group">
+
                                     <label for="PortName">Port<span class="text-danger">*</span></label>
                                     @Html.DropDownList("PortName", new SelectList(ViewBag.Port, "ID", "PortName"), "Please select", new { @class = "form-control" })
                                 </div>
+                            </div>
+                            <div class="col-sm-2">
+
+                                <div style="display: flex;">
+                                    <button class="btn btn-primary" style="margin-top:33px;" onclick="ToShowFromCopyButton()">Copy From</button>
+                                </div>
+
+                            </div>
+                            <div class="col-sm-2" id="CopyFromButton" style="display: none">
+                                <div class="form-group">
+                                    <label for="PortName">FromPort</label>
+                                    @Html.DropDownList("PortNameTo", new SelectList(ViewBag.Port, "ID", "PortName"), "Please select", new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-sm-2" id="CopyButton" style="display: none">
+                                <div style="display: flex;">
+                                    <button class="btn btn-primary" style="margin-top:33px;" onclick="CopySelectedPort()">Copy</button>
+                                </div>
+
                             </div>
                         </div>
 
@@ -192,7 +212,7 @@
                                 new SelectListItem{ Text="Increemental", Value = "1" },
                                 new SelectListItem{ Text="Not-Increemental", Value = "2" },
                                 }, new { @class = "form-control" })
-                              
+
                             </div>
 
                             <div class="col-sm-2" style="max-width: 10%;">
@@ -304,6 +324,36 @@
 @section Scripts
     {
     <script>
+        function ToShowFromCopyButton() {
+            $('#CopyFromButton').show();
+            $('#CopyButton').show();
+        }
+        function CopySelectedPort() {
+            var CopyFromportid = $('#PortName').val();
+            var CopyToportid = $('#PortNameTo').val();
+            // alert(CopyFromportid);
+            // alert(CopyToportid);
+            var PortIds;
+            PortIds = {
+
+                "CopyFromportid": CopyFromportid,
+                "CopyToportid": CopyToportid
+            }
+            $.ajax({
+                type: "GET",
+                url: "/Admin/Tariff/GetTarrifFromSelectedPorts",
+                data: PortIds,
+                dataType: "HTML",
+                success: function (data) {
+                    loadData();
+                    $('#CopyFromButton').hide();
+                    $('#CopyButton').hide();
+                },
+                error: function () {
+                }
+            });
+        }
+
 
         function onFormulaChange(val) {
             debugger;
@@ -467,7 +517,7 @@
                             error: function () {
                             }
                         });
-                       // alert(cargoHandled)
+                        // alert(cargoHandled)
                         $.ajax({
                             type: "GET",
                             url: "/Admin/Tariff/CargoLoad",
@@ -515,10 +565,10 @@
         }
 
         $(function () {
-            
+
 
             $("#Expenses").change(function () {
-              
+
 
                 $.ajax({
                     type: "GET",
@@ -541,7 +591,7 @@
             }
         }
         function AddTariffRate() {
-           
+
             var TariffMasters;
             debugger;
             TariffMasters = {
@@ -566,7 +616,7 @@
                 "Remark": $("#Remarks").val(),
                 "TaxID": $("#Texs").val(),
                 "SlabIncreemental": $("#SlabIncreemental").val(),
-                "VesselBallast" : $("#VesselBallast").val()
+                "VesselBallast": $("#VesselBallast").val()
 
             }
             if ($('#PortName').val() == "") {
@@ -641,7 +691,7 @@
         function UpdateTariffRate() {
             debugger;
             // $('#TariffRateID').val(id);
-         
+
             var TariffMasters;
 
             TariffMasters = {
@@ -726,13 +776,12 @@
             {
                 $('#AddTariffRate').show();
                 $('#UpdateTariffRate').hide();
-               
+
             }
-            else
-            {
+            else {
                 $('#AddTariffRate').hide();
                 $('#UpdateTariffRate').show();
-              
+
             }
             //Id
             $('#TariffRateID').val(id);
@@ -769,12 +818,12 @@
                 success: function (data) {
                     debugger;
                     $('#PortName').val(data.tariffRates.portID);
-                    if(data.tariffRates.terminalID == 0)
+                    if (data.tariffRates.terminalID == 0)
                         $('#TerminalName').val('');
                     else
                         $('#TerminalName').val(data.tariffRates.terminalID);
 
-                     //TerminalOnChange(1);
+                    //TerminalOnChange(1);
 
                     $('#CargoName').val(data.tariffRates.cargoID);
                     $('#CallType').val(data.tariffRates.callTypeID);
@@ -826,8 +875,7 @@
                         error: function () {
                         }
                     });
-                    if (para == "copy")
-                    {
+                    if (para == "copy") {
                         $('#TariffRateID').val(0);
                     }
                     //alert(data.portDetails.portCode);
@@ -851,8 +899,8 @@
             var year = date.getFullYear();
 
             // Pad the day and month with leading zeros, if necessary
-            day = (day < 10) ?'0' + day : day;
-            month = (month < 10) ?'0' + month : month;
+            day = (day < 10) ? '0' + day : day;
+            month = (month < 10) ? '0' + month : month;
 
             return day + '/' + month + '/' + year;
         }
