@@ -156,17 +156,17 @@ namespace PDA_Web.Areas.Admin.Controllers
                                         UnitCalculation(triff, pDAEstimatorOutPut.NRT);
                                         formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
                                     }
-                                    else if (FormulaAttributedata.Contains("BSTH") || FormulaAttributedata.Contains("BSTHF"))
+                                    else if (FormulaAttributedata == "BSTH" || FormulaAttributedata == "BSTHF")
                                     {
                                         //UnitCalculation(triff, pDAEstimatorOutPut.BerthStay);
                                         formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.BerthStay.ToString() : pDAEstimatorOutPut.BerthStay.ToString();
                                     }
-                                    else if (FormulaAttributedata.Contains("BSTS") || FormulaAttributedata.Contains("BSTSF"))
+                                    else if (FormulaAttributedata == "BSTS" || FormulaAttributedata == "BSTSF")
                                     {
                                         //UnitCalculation(triff, pDAEstimatorOutPut.BerthStayShift);
                                         formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.BerthStayShift.ToString() : pDAEstimatorOutPut.BerthStayShift.ToString();
                                     }
-                                    else if (FormulaAttributedata.Contains("BSTD") || FormulaAttributedata.Contains("BSTDF"))
+                                    else if (FormulaAttributedata == "BSTD" || FormulaAttributedata == "BSTDF")
                                     {
                                         //UnitCalculation(triff, pDAEstimatorOutPut.BerthStayDay);
                                         formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.BerthStayDay.ToString() : pDAEstimatorOutPut.BerthStayDay.ToString();
@@ -325,7 +325,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                         units = (triff.SlabTo - triff.SlabFrom) + 1;
                         units = Math.Abs(Convert.ToDecimal(units));
                     }
-                    else
+                    else if(attributvalue >= triff.SlabFrom)
                     {
                         units = (attributvalue - triff.SlabFrom) + 1;
                         units = Math.Abs(Convert.ToDecimal(units));
@@ -479,6 +479,42 @@ namespace PDA_Web.Areas.Admin.Controllers
             DateTime Validity_To = DateTime.ParseExact(ETA_String, new string[] { "dd.M.yyyy hh:mm:ss tt", "dd-M-yyyy hh:mm:ss tt", "dd/M/yyyy hh:mm:ss tt" }, provider, DateTimeStyles.None);
 
             PDAEstimitor.ETA = Validity_To;
+
+            decimal berthStayHrs = PDAEstimitor.LoadDischargeRate != 0? Math.Ceiling(Convert.ToDecimal((PDAEstimitor.CargoQty / PDAEstimitor.LoadDischargeRate * 24) + 4)) : 0;
+            decimal berthStayDay = PDAEstimitor.LoadDischargeRate != 0 ? Math.Ceiling(Convert.ToDecimal((PDAEstimitor.CargoQty / PDAEstimitor.LoadDischargeRate))): 0;
+            decimal berthStayShift = PDAEstimitor.LoadDischargeRate != 0 ?  Math.Ceiling(Convert.ToDecimal((PDAEstimitor.CargoQty / PDAEstimitor.LoadDischargeRate) * 3)) :0;
+
+           var calltype = unitOfWork.CallTypes.GetByIdAsync(PDAEstimitor.CallTypeID).Result;
+
+            if (calltype.CallTypeName.ToUpper() == "FOREIGN")
+            {
+                PDAEstimitor.BerthStay = Convert.ToInt64(berthStayHrs);
+                PDAEstimitor.BerthStayDay = Convert.ToInt64(berthStayDay);
+                PDAEstimitor.BerthStayShift = Convert.ToInt64(berthStayShift);
+            }
+            if(calltype.CallTypeName.ToUpper() == "COASTAL IN FOREIGN OUT" || calltype.CallTypeName.ToUpper() == "FOREIGN IN COASTAL OUT")
+            {
+                PDAEstimitor.BerthStay = Convert.ToInt64(berthStayHrs);
+                PDAEstimitor.BerthStayDay = Convert.ToInt64(berthStayDay);
+                PDAEstimitor.BerthStayShift = Convert.ToInt64(berthStayShift);
+
+                PDAEstimitor.BerthStayHoursCoastal = Convert.ToInt64(6);
+                PDAEstimitor.BerthStayDayCoastal = Convert.ToInt64(1);
+                PDAEstimitor.BerthStayShiftCoastal = Convert.ToInt64(1);
+            }
+            else if (calltype.CallTypeName.ToUpper() == "COASTAL")
+            {
+                PDAEstimitor.BerthStayHoursCoastal = Convert.ToInt64(berthStayHrs);
+                PDAEstimitor.BerthStayDayCoastal = Convert.ToInt64(berthStayDay);
+                PDAEstimitor.BerthStayShiftCoastal = Convert.ToInt64(berthStayShift);
+            }
+            else
+            {
+                PDAEstimitor.BerthStay = Convert.ToInt64(berthStayHrs);
+                PDAEstimitor.BerthStayDay = Convert.ToInt64(berthStayDay);
+                PDAEstimitor.BerthStayShift = Convert.ToInt64(berthStayShift);
+            }
+
             if (PDAEstimitor.PDAEstimatorID > 0)
             {
                 await unitOfWork.PDAEstimitor.UpdateAsync(PDAEstimitor);
