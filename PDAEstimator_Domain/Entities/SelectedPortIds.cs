@@ -10,5 +10,7 @@ namespace PDAEstimator_Domain.Entities
     {
         public int CopyFromportid { get; set;}
         public int CopyToportid { get; set;}
+        public int CopyCallTypetid { get; set;}
+
     }
 }

@@ -114,7 +114,6 @@ namespace PDA_Web.Controllers
                 {
                     pDAEstimatorOutPut.BankMaster = unitOfWork.BankMaster.GetByIdAsync(custdata.BankID).Result;
                 }
-
                 pDAEstimatorOutPut.Expenses = unitOfWork.Expenses.GetAllAsync().Result.OrderBy(x => x.sequnce).ToList();
 
                 pDAEstimatorOutPut.ChargeCodes = unitOfWork.ChargeCodes.GetAlllistAsync().Result;

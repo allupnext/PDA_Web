@@ -40,7 +40,6 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<int> DeleteAsync(long id)
         {
-            
             var sql = "Update Notes set IsDeleted = 1 WHERE Id = @Id";
             using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
@@ -52,7 +51,7 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<List<Notes>> GetAllAsync()
         {
-            var sql = "SELECT * FROM Notes";
+            var sql = "SELECT * FROM Notes where IsDeleted != 1";
             using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
@@ -63,7 +62,7 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<Notes> GetByIdAsync(long id)
         {
-            var sql = "SELECT * FROM Notes WHERE ID = @Id";
+            var sql = "SELECT * FROM Notes WHERE ID = @Id and where IsDeleted != 1";
             using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();

@@ -67,11 +67,15 @@
                                     @Html.DropDownList("PortNameTo", new SelectList(ViewBag.Port, "ID", "PortName"), "Please select", new { @class = "form-control" })
                                 </div>
                             </div>
+                            <div class="form-group" id="CallType" style="display: none">
+                                <label for="PortName">CopyCallType</label>
+                                @Html.DropDownList("CopyCallType", new SelectList(ViewBag.CallTypes, "ID", "CallTypeName"), "ALL", new { @class = "form-control" })
+
+                            </div>
                             <div class="col-sm-2" id="CopyButton" style="display: none">
                                 <div style="display: flex;">
                                     <button class="btn btn-primary" style="margin-top:33px;" onclick="CopySelectedPort()">Copy</button>
                                 </div>
-
                             </div>
                         </div>
 
@@ -327,17 +331,17 @@
         function ToShowFromCopyButton() {
             $('#CopyFromButton').show();
             $('#CopyButton').show();
+            $('#CallType').show();
         }
         function CopySelectedPort() {
             var CopyFromportid = $('#PortName').val();
             var CopyToportid = $('#PortNameTo').val();
-            // alert(CopyFromportid);
-            // alert(CopyToportid);
+            var CopyCallTypetid = $('#CopyCallType').val();
             var PortIds;
             PortIds = {
-
                 "CopyFromportid": CopyFromportid,
-                "CopyToportid": CopyToportid
+                "CopyToportid": CopyToportid,
+                "CopyCallTypetid": CopyCallTypetid
             }
             $.ajax({
                 type: "GET",
@@ -348,6 +352,7 @@
                     loadData();
                     $('#CopyFromButton').hide();
                     $('#CopyButton').hide();
+                    $('#CallType').hide();
                 },
                 error: function () {
                 }
