@@ -323,6 +323,67 @@
             });
         });
 
+        function berthstaycalculation() {
+            var cargoQty = parseFloat($("#CargoQty").val()) || 0;
+            var loadDischargeRate = parseFloat($("#LoadDischargeRate").val()) || 0;
+
+            var berthStayHrs = Math.ceil(((cargoQty / loadDischargeRate) * 24) + 4);
+            var berthStayDay = Math.ceil((cargoQty / loadDischargeRate));
+            var berthStayShift = Math.ceil((cargoQty / loadDischargeRate) * 3);
+
+
+            $("#BerthStayhourCoastal").val(berthStayHrs);
+            $("#BerthStayDayCoastal").val(berthStayDay);
+            $("#BerthStayShiftCoastal").val(berthStayShift);
+            if ($("#CallTypeName option:selected").text() == 'Foreign') {
+                $("#BerthStay").val(berthStayHrs);
+                $("#BerthStayDay").val(berthStayDay);
+                $("#BerthStayShift").val(berthStayShift);
+            }
+            if ($("#CallTypeName option:selected").text() == 'Coastal In Foreign Out' || $("#CallTypeName option:selected").text() == 'Foreign In Coastal Out') {
+                $("#BerthStay").val(6);
+                $("#BerthStayDay").val(1);
+                $("#BerthStayShift").val(1);
+            }
+        }
+
+        function calltypebasehideshowberthstay() {
+            console.log('calltypebasehideshowberthstay')
+            var calltype = $("#CallTypeName option:selected").text();
+            console.log(calltype)
+
+            if (calltype == 'Coastal') {
+                $("#BerthStayForeign").hide();
+
+                $("#BerthStayCoastal").show();
+            }
+            else if (calltype == 'Foreign') {
+                $("#BerthStayForeign").show();
+
+                $("#BerthStayCoastal").hide();
+            }
+            else if (calltype == 'Coastal In Foreign Out') {
+                $("#BerthStayForeign").show();
+
+                $("#BerthStayCoastal").show();
+
+                $("#BerthStay").val(6);
+                $("#BerthStayDay").val(1);
+                $("#BerthStayShift").val(1);
+            }
+            else if (calltype == 'Foreign In Coastal Out') {
+                $("#BerthStayForeign").show();
+
+                $("#BerthStayCoastal").show();
+
+                $("#BerthStay").val(6);
+                $("#BerthStayDay").val(1);
+                $("#BerthStayShift").val(1);
+            }
+        }
+
+
+
         $(document).ready(function () {
 
             //$("#").DataTable();
@@ -344,72 +405,18 @@
                 debugger
                 loadData();
             });
+            
             $("#CargoQty, #LoadDischargeRate").on("input", function () {
                 berthstaycalculation();
             });
 
-            function berthstaycalculation() {
-                var cargoQty = parseFloat($("#CargoQty").val()) || 0;
-                var loadDischargeRate = parseFloat($("#LoadDischargeRate").val()) || 0;
-
-                var berthStayHrs = Math.ceil((cargoQty / loadDischargeRate * 24) + 4);
-                var berthStayDay = Math.ceil((cargoQty / loadDischargeRate));
-                var berthStayShift = Math.ceil((cargoQty / loadDischargeRate) * 3);
-
-
-                $("#BerthStayhourCoastal").val(berthStayHrs);
-                $("#BerthStayDayCoastal").val(berthStayDay);
-                $("#BerthStayShiftCoastal").val(berthStayShift);
-                if ($("#CallTypeName option:selected").text() == 'Foreign') {
-                    $("#BerthStay").val(berthStayHrs);
-                    $("#BerthStayDay").val(berthStayDay);
-                    $("#BerthStayShift").val(berthStayShift);
-                }
-                if ($("#CallTypeName option:selected").text() == 'Coastal In Foreign Out' || $("#CallTypeName option:selected").text() == 'Foreign In Coastal Out') {
-                    $("#BerthStay").val(6);
-                    $("#BerthStayDay").val(1);
-                    $("#BerthStayShift").val(1);
-                }
-            }
-
+         
             $('#Currency').val(@ViewBag.CurrencyDefault);
             callCurrencyfunc($('#Currency').val());
 
             $("#CallTypeName").change(function () {
                 calltypebasehideshowberthstay();
             });
-
-            function calltypebasehideshowberthstay() {
-                var calltype = $("#CallTypeName option:selected").text();
-                if (calltype == 'Coastal') {
-                    $("#BerthStayForeign").hide();
-
-                    $("#BerthStayCoastal").show();
-                }
-                else if (calltype == 'Foreign') {
-                    $("#BerthStayForeign").show();
-
-                    $("#BerthStayCoastal").hide();
-                }
-                else if (calltype == 'Coastal In Foreign Out') {
-                    $("#BerthStayForeign").show();
-
-                    $("#BerthStayCoastal").show();
-
-                    $("#BerthStay").val(6);
-                    $("#BerthStayDay").val(1);
-                    $("#BerthStayShift").val(1);
-                }
-                else if (calltype == 'Foreign In Coastal Out') {
-                    $("#BerthStayForeign").show();
-
-                    $("#BerthStayCoastal").show();
-
-                    $("#BerthStay").val(6);
-                    $("#BerthStayDay").val(1);
-                    $("#BerthStayShift").val(1);
-                }
-            }
 
             $("#PortName").change(function () {
                 var portid = $('option:selected', this).val();
@@ -446,7 +453,6 @@
                     }
                 });
             });
-
 
         });
 

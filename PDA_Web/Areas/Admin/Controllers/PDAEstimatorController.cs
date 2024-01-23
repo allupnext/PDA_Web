@@ -342,7 +342,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                 }
                 else
                 {
-                    if (triff.SlabFrom <= attributvalue && (triff.SlabTo == 0 || triff.SlabTo > attributvalue))
+                    if (triff.SlabFrom <= attributvalue && (triff.SlabTo == 0 || triff.SlabTo >= attributvalue))
                     {
                         units = attributvalue;
                         units = Math.Abs(Convert.ToDecimal(units));
@@ -488,9 +488,9 @@ namespace PDA_Web.Areas.Admin.Controllers
 
             PDAEstimitor.ETA = Validity_To;
 
-            decimal berthStayHrs = PDAEstimitor.LoadDischargeRate != 0? Math.Ceiling(Convert.ToDecimal((PDAEstimitor.CargoQty / PDAEstimitor.LoadDischargeRate * 24) + 4)) : 0;
-            decimal berthStayDay = PDAEstimitor.LoadDischargeRate != 0 ? Math.Ceiling(Convert.ToDecimal((PDAEstimitor.CargoQty / PDAEstimitor.LoadDischargeRate))): 0;
-            decimal berthStayShift = PDAEstimitor.LoadDischargeRate != 0 ?  Math.Ceiling(Convert.ToDecimal((PDAEstimitor.CargoQty / PDAEstimitor.LoadDischargeRate) * 3)) :0;
+            decimal berthStayHrs = PDAEstimitor.LoadDischargeRate != 0? Math.Ceiling(Convert.ToDecimal(Convert.ToDecimal(PDAEstimitor.CargoQty) / Convert.ToDecimal(PDAEstimitor.LoadDischargeRate)) * 24) + 4 : 0;
+            decimal berthStayDay = PDAEstimitor.LoadDischargeRate != 0 ? Math.Ceiling(Convert.ToDecimal(Convert.ToDecimal(PDAEstimitor.CargoQty) / Convert.ToDecimal(PDAEstimitor.LoadDischargeRate))): 0;
+            decimal berthStayShift = PDAEstimitor.LoadDischargeRate != 0 ?  Math.Ceiling(Convert.ToDecimal(Convert.ToDecimal(PDAEstimitor.CargoQty) / Convert.ToDecimal(PDAEstimitor.LoadDischargeRate) * 3)) :0;
 
            var calltype = unitOfWork.CallTypes.GetByIdAsync(PDAEstimitor.CallTypeID).Result;
 
@@ -502,13 +502,13 @@ namespace PDA_Web.Areas.Admin.Controllers
             }
             if(calltype.CallTypeName.ToUpper() == "COASTAL IN FOREIGN OUT" || calltype.CallTypeName.ToUpper() == "FOREIGN IN COASTAL OUT")
             {
-                PDAEstimitor.BerthStay = Convert.ToInt64(berthStayHrs);
-                PDAEstimitor.BerthStayDay = Convert.ToInt64(berthStayDay);
-                PDAEstimitor.BerthStayShift = Convert.ToInt64(berthStayShift);
+                PDAEstimitor.BerthStayHoursCoastal= Convert.ToInt64(berthStayHrs);
+                PDAEstimitor.BerthStayDayCoastal= Convert.ToInt64(berthStayDay);
+                PDAEstimitor.BerthStayShiftCoastal= Convert.ToInt64(berthStayShift);
 
-                PDAEstimitor.BerthStayHoursCoastal = Convert.ToInt64(6);
-                PDAEstimitor.BerthStayDayCoastal = Convert.ToInt64(1);
-                PDAEstimitor.BerthStayShiftCoastal = Convert.ToInt64(1);
+                PDAEstimitor.BerthStay = Convert.ToInt64(6);
+                PDAEstimitor.BerthStayDay = Convert.ToInt64(1);
+                PDAEstimitor.BerthStayShift = Convert.ToInt64(1);
             }
             else if (calltype.CallTypeName.ToUpper() == "COASTAL")
             {
