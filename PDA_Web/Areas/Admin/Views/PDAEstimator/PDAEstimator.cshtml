@@ -32,7 +32,7 @@
         <div class="company_detail">
             <ul class="company_name_address">
                 <li class="valuefont">@Model.CompanyName</li>
-                <li class="valuefont">@Model.CompanyAddress1 <br/>@Model.CompanyAddress2</li>
+                <li class="valuefont">@Model.CompanyAddress1 <br />@Model.CompanyAddress2</li>
             </ul>
 
             <ul class="company_contact">
@@ -186,12 +186,12 @@
             }
             @if (Model.CallTypeName == "Foreign")
             {
-                <li class="lablebold">BERTH STAY Foreign (DAY/HOUR/SHIFT)</li>
+                <li class="lablebold">BERTH STAY FOREIGN (DAY/HOUR/SHIFT)</li>
                 <li class="valuefont">@Model.BerthStayDay/@Model.BerthStay/@Model.BerthStayShift</li>
             }
             else
             {
-                <li class="lablebold">BERTH STAY Coastal (DAY/HOUR/SHIFT)</li>
+                <li class="lablebold">BERTH STAY COASTAL (DAY/HOUR/SHIFT)</li>
                 <li class="valuefont">@Model.BerthStayDayCoastal/@Model.BerthStayHoursCoastal/@Model.BerthStayShiftCoastal</li>
             }
         </ul>
@@ -246,6 +246,15 @@
 
 
         </ul>
+        @if (Model.CallTypeName != null && (Model.CallTypeName.ToUpper() == "COASTAL IN FOREIGN OUT" || Model.CallTypeName.ToUpper() == "FOREIGN IN COASTAL OUT"))
+        {
+            <ul>
+                <li class="lablebold"> - </li>
+                <li class="valuefont"> - </li>
+                <li class="lablebold">BERTH STAY FOREIGN (DAY/HOUR/SHIFT)</li>
+                <li class="valuefont">@Model.BerthStayDay/@Model.BerthStay/@Model.BerthStayShift</li>
+            </ul>
+        }
     </section>
 
     <section class="expense_items">
@@ -556,15 +565,15 @@
         </ul>
 
         <div class="agent">
-            <h3>@Model.CompanyName<br/> (AS AGENTS ONLY)</h3>
+            <h3>@Model.CompanyName<br /> (AS AGENTS ONLY)</h3>
         </div>
 
     </section>
 
     <div>
-        <button onclick="downloadPDA()" > Download </button>
+        <button onclick="downloadPDA()"> Download </button>
     </div>
-    
+
 
     <style>
 
@@ -765,9 +774,9 @@
                     width: 10%;
                 }
                 /*
-                                                                                                ul.expense_items_row li:last-child {
-                                                                                                    color: #ff0000 !important;
-                                                                                                }*/
+                                                                                                                        ul.expense_items_row li:last-child {
+                                                                                                                            color: #ff0000 !important;
+                                                                                                                        }*/
 
                 ul.expense_items_row li ul li {
                     border-top: 1px solid #fff;
@@ -977,10 +986,10 @@
                 padding-left: 40px;
             }
 
-            .bank_detail {
-                overflow: hidden;
-                margin-top: 25px;
-            }
+        .bank_detail {
+            overflow: hidden;
+            margin-top: 25px;
+        }
 
             .bank_detail ul {
                 overflow: hidden;
@@ -988,21 +997,21 @@
                 padding: 5px 0;
             }
 
-            .bank_detail ul li {
-                float: left;
-                width: 50%;
-                align-items: center;
-            }
+                .bank_detail ul li {
+                    float: left;
+                    width: 50%;
+                    align-items: center;
+                }
 
-            .bank_detail ul li p {
-                padding: 0 15px;
-            }
+                    .bank_detail ul li p {
+                        padding: 0 15px;
+                    }
 
-            .bank_detail ul:nth-child(1) li {
-                background: #66a0cc;
-                font-weight: 600;
-                padding: 10px 0;
-            }
+                .bank_detail ul:nth-child(1) li {
+                    background: #66a0cc;
+                    font-weight: 600;
+                    padding: 10px 0;
+                }
 
         .agent {
             margin: 30px 0 0;
