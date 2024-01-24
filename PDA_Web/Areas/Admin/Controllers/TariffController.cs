@@ -31,6 +31,15 @@ namespace PDA_Web.Areas.Admin.Controllers
                 msg = ""
             });
         }
+        public async Task<ActionResult> GetTarrifFromSamePorts(SelectedPortIds Ids)//Master Save
+        {
+            var InsertCopiedTarrif = await unitOfWork.TariffRates.GetTarrifFromSamePorts(Ids);
+            return Json(new
+            {
+                proceed = true,
+                msg = ""
+            });
+        }
 
         public async Task<IActionResult> Formula()
         {

@@ -56,6 +56,24 @@ namespace PDAEstimator_Infrastructure.Repositories
                 throw ex;
             }
         }
+        public async Task<string> GetTarrifFromSamePorts(SelectedPortIds Ids)
+        {
+            try
+            {
+                //var sql = "Insert into TariffRate (PortID, TerminalID, CurrencyID, BerthID, CallTypeID, CargoID,ExpenseCategoryID, SlabID, SlabFrom, SlabTo, Rate,status, ChargeCodeID, Validity_From,Validity_To, FormulaID, IsDeleted, Remark, TaxID, SlabIncreemental, VesselBallast) VALUES (@PortID, @TerminalID, @CurrencyID, @BerthID, @CallTypeID, @CargoID,@ExpenseCategoryID,@SlabID,@SlabFrom, @SlabTo, @Rate,@status, @ChargeCodeID, @Validity_From, @Validity_To, @FormulaID, 0, @Remark, @TaxID, @SlabIncreemental, @VesselBallast) SELECT CAST(SCOPE_IDENTITY() as int)";
+                var sql = "Insert Into TariffRate( PortID,TerminalID,BerthID,CargoID,CallTypeID,ExpenseCategoryID,ChargeCodeID,SlabID,SlabFrom,SlabTo,Rate,CurrencyID,CreatedBy,CreationDate,IPAddress,ModifyUserID,ModifyDate,Validity_From,Validity_To,status,FormulaID,IsDeleted,Remark,TaxID,SlabIncreemental,VesselBallast ) select " + Ids.CopyFromportid + " ,TerminalID,BerthID,CargoID, " + Ids.ToCallTypeId + ",ExpenseCategoryID,ChargeCodeID,SlabID,SlabFrom,SlabTo,Rate,CurrencyID,CreatedBy,CreationDate,IPAddress,ModifyUserID,ModifyDate,Validity_From,Validity_To,status,FormulaID,IsDeleted,Remark,TaxID,SlabIncreemental,VesselBallast from TariffRate where CallTypeId = "+ Ids.FromCallTypeId +" and  PortID = " +Ids.CopyFromportid;
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                {
+                    connection.Open();
+                    var result = await connection.ExecuteAsync(sql, Ids);
+                    return new string(Ids.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
         public async Task<int> DeleteAsync(long id)
         {

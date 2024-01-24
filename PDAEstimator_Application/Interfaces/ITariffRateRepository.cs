@@ -11,5 +11,6 @@ namespace PDAEstimator_Application.Interfaces
     {
         Task<int> DeleteByTariffIDAsync(int tariffID);
         Task<string> GetTarrifFromSelectedPorts(SelectedPortIds Ids);
+        Task<string> GetTarrifFromSamePorts(SelectedPortIds Ids);
     }
 }

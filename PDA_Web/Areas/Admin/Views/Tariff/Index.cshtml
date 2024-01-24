@@ -61,6 +61,24 @@
                                 </div>
 
                             </div>
+                            <div class="col-sm-2">
+                                <div style="display: flex;">
+                                    <button class="btn btn-primary" style="margin-top:33px;" onclick="ToShowCallTypesDropdown()">Copy Same Port</button>
+                                </div>
+
+                            </div>
+                           
+                            <div class="col-sm-2" id="FromCallTypeId" style="display: none">
+                                <div class="form-group">
+                                    <label for="PortName">FromCallType</label>
+                                    @Html.DropDownList("FromCallType", new SelectList(ViewBag.CallTypes, "ID", "CallTypeName"), "ALL", new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="form-group" id="ToCallTypeId" style="display: none">
+                                <label for="PortName">ToCallType</label>
+                                @Html.DropDownList("ToCallType", new SelectList(ViewBag.CallTypes, "ID", "CallTypeName"), "ALL", new { @class = "form-control" })
+
+                            </div>
                             <div class="col-sm-2" id="CopyFromButton" style="display: none">
                                 <div class="form-group">
                                     <label for="PortName">FromPort</label>
@@ -75,6 +93,11 @@
                             <div class="col-sm-2" id="CopyButton" style="display: none">
                                 <div style="display: flex;">
                                     <button class="btn btn-primary" style="margin-top:33px;" onclick="CopySelectedPort()">Copy</button>
+                                </div>
+                            </div>
+                            <div class="col-sm-2" id="CopySomePortButton" style="display: none">
+                                <div style="display: flex;">
+                                    <button class="btn btn-primary" style="margin-top:33px;" onclick="CopySamePort()">Copy</button>
                                 </div>
                             </div>
                         </div>
@@ -329,19 +352,34 @@
     {
     <script>
         function ToShowFromCopyButton() {
+            $('#FromCallTypeId').hide();
+            $('#ToCallTypeId').hide();
+            $('#CopySomePortButton').hide();
             $('#CopyFromButton').show();
             $('#CopyButton').show();
             $('#CallType').show();
         }
+      function ToShowCallTypesDropdown()
+        {
+            $('#CopyFromButton').hide();
+            $('#CopyButton').hide();
+            $('#CallType').hide();
+            $('#FromCallTypeId').show();
+            $('#ToCallTypeId').show();
+            $('#CopySomePortButton').show();
+        }
+
         function CopySelectedPort() {
             var CopyFromportid = $('#PortName').val();
             var CopyToportid = $('#PortNameTo').val();
             var CopyCallTypetid = $('#CopyCallType').val();
+            
             var PortIds;
             PortIds = {
                 "CopyFromportid": CopyFromportid,
                 "CopyToportid": CopyToportid,
-                "CopyCallTypetid": CopyCallTypetid
+                "CopyCallTypetid": CopyCallTypetid,
+
             }
             $.ajax({
                 type: "GET",
@@ -353,6 +391,39 @@
                     $('#CopyFromButton').hide();
                     $('#CopyButton').hide();
                     $('#CallType').hide();
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function CopySamePort() {
+             var CopyFromportid = $('#PortName').val();
+            // var CopyToportid = $('#PortNameTo').val();
+            // var CopyCallTypetid = $('#CopyCallType').val();
+            var FromCallTypeId = $('#FromCallType').val();
+            var ToCallTypeId = $('#ToCallType').val();
+     
+
+            var PortIds;
+            PortIds = {
+                 "CopyFromportid": CopyFromportid,
+                "FromCallTypeId": FromCallTypeId,
+                "ToCallTypeId": ToCallTypeId
+            }
+            $.ajax({
+                type: "GET",
+                url: "/Admin/Tariff/GetTarrifFromSamePorts",
+                data: PortIds,
+                dataType: "HTML",
+                success: function (data) {
+                    loadData();
+                    // $('#CopyFromButton').hide();
+                    // $('#CopyButton').hide();
+                    // $('#CallType').hide();
+                    $('#FromCallTypeId').hide();
+                    $('#ToCallTypeId').hide();
+                    $('#CopySomePortButton').hide();
                 },
                 error: function () {
                 }
