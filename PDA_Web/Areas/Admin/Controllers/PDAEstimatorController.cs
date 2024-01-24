@@ -119,7 +119,7 @@ namespace PDA_Web.Areas.Admin.Controllers
 
                 pDAEstimatorOutPut.Expenses = unitOfWork.Expenses.GetAllAsync().Result.OrderBy(x => x.sequnce).ToList();
 
-                pDAEstimatorOutPut.ChargeCodes = unitOfWork.ChargeCodes.GetAlllistAsync().Result;
+                pDAEstimatorOutPut.ChargeCodes = unitOfWork.ChargeCodes.GetAlllistAsync().Result.OrderBy(x=> x.Sequence).ToList();
 
                 pDAEstimatorOutPut.NotesData = unitOfWork.PDAEstimitor.GetNotes().Result.ToList();
                 var currencyData = unitOfWork.Currencys.GetAllAsync().Result;

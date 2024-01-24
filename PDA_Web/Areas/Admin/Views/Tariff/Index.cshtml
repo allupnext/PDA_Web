@@ -85,7 +85,7 @@
                                     @Html.DropDownList("PortNameTo", new SelectList(ViewBag.Port, "ID", "PortName"), "Please select", new { @class = "form-control" })
                                 </div>
                             </div>
-                            <div class="form-group" id="CallType" style="display: none">
+                            <div class="form-group" id="DivCallType" style="display: none">
                                 <label for="PortName">CopyCallType</label>
                                 @Html.DropDownList("CopyCallType", new SelectList(ViewBag.CallTypes, "ID", "CallTypeName"), "ALL", new { @class = "form-control" })
 
@@ -357,13 +357,13 @@
             $('#CopySomePortButton').hide();
             $('#CopyFromButton').show();
             $('#CopyButton').show();
-            $('#CallType').show();
+            $('#DivCallType').show();
         }
       function ToShowCallTypesDropdown()
         {
             $('#CopyFromButton').hide();
             $('#CopyButton').hide();
-            $('#CallType').hide();
+            $('#DivCallType').hide();
             $('#FromCallTypeId').show();
             $('#ToCallTypeId').show();
             $('#CopySomePortButton').show();
@@ -390,7 +390,7 @@
                     loadData();
                     $('#CopyFromButton').hide();
                     $('#CopyButton').hide();
-                    $('#CallType').hide();
+                    $('#DivCallType').hide();
                 },
                 error: function () {
                 }
