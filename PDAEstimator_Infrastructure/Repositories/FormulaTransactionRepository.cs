@@ -40,7 +40,7 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<int> DeleteFormulaIdAsync(int formulaID)
         {
-            var sql = "Update FormulaTransaction set IsDeleted = 1 WHERE formulaID = @formulaID";
+            var sql = "DELETE FROM FormulaTransaction WHERE formulaID = @formulaID";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();

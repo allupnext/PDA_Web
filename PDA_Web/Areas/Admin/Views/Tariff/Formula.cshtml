@@ -226,18 +226,14 @@
                 data: Formula,
                 success: function (data) {
                     if (!data.proceed) {
-
                         return;
                     }
                     else {
-                        loadData();
-                        $('#formulaMasterID').val('')
                         $('#FormulaAttribute').val('')
                         $('#FormulaValue').val('')
                         $('#FormulaOprator').val('')
                         $('#FormulaSlab').val('')
                         $('#Formula').val('')
-                        $('#Port').val('')
                     }
 
                 },
@@ -510,6 +506,20 @@
             });
         }
 
+         function editFormula(id) {
+             $('#formulaMasterID').val(id);
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Tariff/EditFormula?Id="+id,
+                success: function (data) {
+                    $('#Formula').val(data.formulastring);
+                    $('#FormulaName').val(data.formulaname);
+                    $('#Port').val(data.portId);
+                }
+            
+            });
+         }
 
     </script>
 
