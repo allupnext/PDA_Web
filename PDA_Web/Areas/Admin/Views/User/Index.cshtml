@@ -116,7 +116,6 @@
                                     <label for="PrimaryCompany">Primary Company<span class="text-danger">*</span></label>
                                     @Html.DropDownList("PrimaryCompany", new SelectList(ViewBag.PrimaryCompany, "CompanyId", "CompanyName"), "Please Select", new { @class = "form-control"})
                                 </div>
-
                             </div>
 
                             <div class="col-sm-3">
@@ -125,6 +124,12 @@
                                     @Html.ListBox("SecondaryCompany", new MultiSelectList(ViewBag.SecondaryCompany,  "CompanyId", "CompanyName"),  new { @class = "form-control"})
                                 </div>
 
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="PortList">Ports</label>
+                                    @Html.ListBox("PortNameId", new MultiSelectList(ViewBag.PortList,  "ID", "PortName"),  new { @class = "form-control"})
+                                </div>
                             </div>
                         </div>
                         <div class="row">
@@ -187,6 +192,7 @@
     {
     <script>
         $(document).ready(function () {
+
             $('#UserMainMenu').addClass('active');
             $('#UsersMenu').addClass('active');
             $('#UsersMenu').parent().closest('ul').parent().addClass('menu-open');
@@ -236,6 +242,7 @@
             if ($('#Status').is(":checked")) {
                 Status = true;
             }
+          
             var users;
 
             users = {
@@ -250,6 +257,7 @@
                 "RoleID": $('#Role').val(),
                 "PrimaryCompanyId": $('#PrimaryCompany').val(),
                 "SecondaryCompanyId": $('#SecondaryCompany').val(),
+                "PortId": $('#PortNameId').val(),
                 "UserStatus": Status
             }
             if ($('#Salutation').val() == "") {
@@ -279,6 +287,10 @@
                 toastr.error("Please primary company.", 'Error Alert');
                 $('#PrimaryCompany').css("border-color", "Red");
             }
+            // else if ($('#Ports').val() == "") {
+            //     toastr.error("Please Select Port.", 'Error Alert');
+            //     $('#Ports').css("border-color", "Red");
+            // }
             else {
                 $.ajax({
                     type: "POST",
@@ -306,6 +318,7 @@
                 $('#Role').val("");
 
                 $('#PrimaryCompany').val("");
+                $('#PortNameId').val("");
             }
         }
 
@@ -361,7 +374,9 @@
                 "Salutation": $('#Salutation').val(),
                 "RoleID": $('#Role').val(),
                 "PrimaryCompanyId": $('#PrimaryCompany').val(),
-                "secondaryCompanyId": $('#SecondaryCompany').val()
+                "secondaryCompanyId": $('#SecondaryCompany').val(),
+                "PortId": $('#PortNameId').val()
+
 
             }
 
@@ -379,7 +394,7 @@
                     $('#MobileNo').val(data.user.mobileNo);
                     $('#Salutation').val(data.user.salutation);
                     $('#Role').val(data.user.roleId);
-                    $('#PrimaryCompany').val(data.user.primaryCompanyId);
+                    $('#PrimaryCompany').val(data.user.primaryCompany);
                     $('#SecondaryCompany').val(data.user.secondaryCompanyId);
 
                 },

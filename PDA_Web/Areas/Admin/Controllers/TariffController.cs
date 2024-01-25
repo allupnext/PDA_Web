@@ -22,18 +22,18 @@ namespace PDA_Web.Areas.Admin.Controllers
 
         }
 
-        public async Task<ActionResult> GetTarrifFromSelectedPorts(SelectedPortIds Ids)//Master Save
+        public async Task<ActionResult> InsertTarrifFromSelectedPorts(CopyTarrifModelInput Ids)//Master Save
         {
-            var InsertCopiedTarrif = await unitOfWork.TariffRates.GetTarrifFromSelectedPorts(Ids);
+            var InsertCopiedTarrif = await unitOfWork.TariffRates.InsertTarrifFromSelectedPorts(Ids);
             return Json(new
             {
                 proceed = true,
                 msg = ""
             });
         }
-        public async Task<ActionResult> GetTarrifFromSamePorts(SelectedPortIds Ids)//Master Save
+        public async Task<ActionResult> InsertTarrifFromSamePorts(CopyTarrifModelInput Ids)//Master Save
         {
-            var InsertCopiedTarrif = await unitOfWork.TariffRates.GetTarrifFromSamePorts(Ids);
+            var InsertCopiedTarrif = await unitOfWork.TariffRates.InsertTarrifFromSamePorts(Ids);
             return Json(new
             {
                 proceed = true,

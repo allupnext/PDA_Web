@@ -23,6 +23,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.SecondaryCompany)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Ports)
+            </th>
             <th>Status</th>
 
             <th></th>
@@ -47,6 +50,9 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.SecondaryCompany)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Ports)
                 </td>
                 <td>
                     @if (item.Status == true)

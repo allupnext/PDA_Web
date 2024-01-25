@@ -38,7 +38,7 @@ namespace PDAEstimator_Infrastructure.Repositories
                 throw ex;
             }
         }
-        public async Task<string> GetTarrifFromSelectedPorts(SelectedPortIds Ids)
+        public async Task<string> InsertTarrifFromSelectedPorts(CopyTarrifModelInput Ids)
         {
             try
             {
@@ -56,7 +56,7 @@ namespace PDAEstimator_Infrastructure.Repositories
                 throw ex;
             }
         }
-        public async Task<string> GetTarrifFromSamePorts(SelectedPortIds Ids)
+        public async Task<string> InsertTarrifFromSamePorts(CopyTarrifModelInput Ids)
         {
             try
             {

@@ -202,7 +202,6 @@ namespace PDA_Web.Areas.Admin.Controllers
         }
         public async Task<ActionResult> editCustomer(Customer customer)
         {
-
             var data = await unitOfWork.Customer.GetByIdAsync(customer.CustomerId);
             if (data.SecondaryCompany != null)
                 data.SecondaryCompanyId = Array.ConvertAll(data.SecondaryCompany.Split(','), int.Parse);

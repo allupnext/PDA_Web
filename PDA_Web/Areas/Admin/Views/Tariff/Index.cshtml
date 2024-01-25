@@ -70,23 +70,23 @@
                            
                             <div class="col-sm-2" id="FromCallTypeId" style="display: none">
                                 <div class="form-group">
-                                    <label for="PortName">FromCallType</label>
+                                    <label for="FromCallType">From Call Type</label>
                                     @Html.DropDownList("FromCallType", new SelectList(ViewBag.CallTypes, "ID", "CallTypeName"), "ALL", new { @class = "form-control" })
                                 </div>
                             </div>
                             <div class="form-group" id="ToCallTypeId" style="display: none">
-                                <label for="PortName">ToCallType</label>
+                                <label for="ToCallType">To Call Type</label>
                                 @Html.DropDownList("ToCallType", new SelectList(ViewBag.CallTypes, "ID", "CallTypeName"), "ALL", new { @class = "form-control" })
 
                             </div>
                             <div class="col-sm-2" id="CopyFromButton" style="display: none">
                                 <div class="form-group">
-                                    <label for="PortName">FromPort</label>
+                                    <label for="PortNameTo">From Port</label>
                                     @Html.DropDownList("PortNameTo", new SelectList(ViewBag.Port, "ID", "PortName"), "Please select", new { @class = "form-control" })
                                 </div>
                             </div>
                             <div class="form-group" id="CallType" style="display: none">
-                                <label for="PortName">CopyCallType</label>
+                                <label for="CopyCallType">Copy Call Type</label>
                                 @Html.DropDownList("CopyCallType", new SelectList(ViewBag.CallTypes, "ID", "CallTypeName"), "ALL", new { @class = "form-control" })
 
                             </div>
@@ -391,6 +391,9 @@
                     $('#CopyFromButton').hide();
                     $('#CopyButton').hide();
                     $('#CallType').hide();
+                    $('#PortName').val("");
+                    $('#PortNameTo').val("");
+                    $('#CopyCallType').val("");
                 },
                 error: function () {
                 }
@@ -399,8 +402,6 @@
 
         function CopySamePort() {
              var CopyFromportid = $('#PortName').val();
-            // var CopyToportid = $('#PortNameTo').val();
-            // var CopyCallTypetid = $('#CopyCallType').val();
             var FromCallTypeId = $('#FromCallType').val();
             var ToCallTypeId = $('#ToCallType').val();
      
@@ -418,12 +419,12 @@
                 dataType: "HTML",
                 success: function (data) {
                     loadData();
-                    // $('#CopyFromButton').hide();
-                    // $('#CopyButton').hide();
-                    // $('#CallType').hide();
                     $('#FromCallTypeId').hide();
                     $('#ToCallTypeId').hide();
                     $('#CopySomePortButton').hide();
+                    $('#PortName').val("");
+                    $('#FromCallType').val("");
+                    $('#ToCallType').val("");
                 },
                 error: function () {
                 }

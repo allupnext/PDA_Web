@@ -33,10 +33,12 @@ namespace PDAEstimator_Domain.Entities
         public DateTime ModifyDate { get; set; }
         public bool IsDeleted { get; set; }
 
-        public string PrimaryCompany { get; set; }
-        public string SecondaryCompany { get; set; }
+        public string? PrimaryCompany { get; set; }
+        public string? SecondaryCompany { get; set; }
+        //public string Ports { get; set; }
         public int? PrimaryCompanyId { get; set; }
        // public int? CompanyId { get; set; }
         public int[]? SecondaryCompanyId { get; set; }
+        public int[]? PortId { get; set; }
     }
 }

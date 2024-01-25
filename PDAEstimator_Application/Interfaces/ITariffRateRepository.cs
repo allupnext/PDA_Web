@@ -10,7 +10,7 @@ namespace PDAEstimator_Application.Interfaces
     public interface ITariffRateRepository : IGenericRepository<TariffRate>
     {
         Task<int> DeleteByTariffIDAsync(int tariffID);
-        Task<string> GetTarrifFromSelectedPorts(SelectedPortIds Ids);
-        Task<string> GetTarrifFromSamePorts(SelectedPortIds Ids);
+        Task<string> InsertTarrifFromSelectedPorts(CopyTarrifModelInput Ids);
+        Task<string> InsertTarrifFromSamePorts(CopyTarrifModelInput Ids);
     }
 }

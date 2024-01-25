@@ -31,6 +31,9 @@ namespace PDA_Web.Areas.Admin.Controllers
             var SecondryCompanyData = await unitOfWork.Company.GetAllAsync();
             ViewBag.SecondaryCompany = SecondryCompanyData;
 
+            var PortList = await unitOfWork.PortDetails.GetAllAsync();
+            ViewBag.PortList = PortList;
+
             var userid = HttpContext.Session.GetString("UserID");
             if (!string.IsNullOrEmpty(userid))
             {
@@ -113,6 +116,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                 else
                 {
                     var userId = await unitOfWork.User.AddAsync(user);
+
                     if (!string.IsNullOrEmpty(userId))
                     {
                         if (user.PrimaryCompanyId != null)
@@ -137,6 +141,20 @@ namespace PDA_Web.Areas.Admin.Controllers
                                 await unitOfWork.User.AddCustomer_User_MappingAsync(company_User_Mapping1);
                             }
                         }
+                        if (user.PortId != null)
+                        {
+                            User_Port_Mapping user_Port_Mapping = new User_Port_Mapping();
+
+                            foreach (int i in user.PortId)
+                            {
+                                user_Port_Mapping = new User_Port_Mapping();
+                                user_Port_Mapping.UserID = Convert.ToInt32(userId);
+                                user_Port_Mapping.PortID = i;
+                               
+                                await unitOfWork.User.AddPort_User_MappingAsync(user_Port_Mapping);
+                            }
+                        }
+
                     }
                     _toastNotification.AddSuccessToastMessage("Inserted successfully");
                 }
@@ -162,7 +180,9 @@ namespace PDA_Web.Areas.Admin.Controllers
 
         public async Task<ActionResult> EditFullUser(User user)
         {
-            var data = await unitOfWork.User.GetFullUserByIdAsync(user.ID);
+            var data =  unitOfWork.User.GetAllUsersById(user.ID).Result;
+            if (data.SecondaryCompany != null)
+                data.SecondaryCompanyId = Array.ConvertAll(data.SecondaryCompany.Split(','), int.Parse);
             return Json(new
             {
                 User = data,

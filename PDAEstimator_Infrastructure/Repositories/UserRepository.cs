@@ -73,6 +73,25 @@ namespace PDAEstimator_Infrastructure.Repositories
 
 
         }
+        public async Task<string> AddPort_User_MappingAsync(User_Port_Mapping entity)
+        {
+            try
+            {
+                var sql = "INSERT INTO  User_Port_Mapping (UserID, PortID) VALUES (@UserID, @PortID)";
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                {
+                    connection.Open();
+                    var result = await connection.ExecuteAsync(sql, entity);
+                    return new string(entity.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+
+        }
 
         public async Task<int> DeleteCustomer_User_MappingAsync(long id)
         {
@@ -118,7 +137,26 @@ namespace PDAEstimator_Infrastructure.Repositories
                 return new List<UserList>(result.ToList());
             }
         }
-
+        public async Task<User>GetAllUsersById (long id)
+        {
+            try
+            {
+                //var sql = "SELECT * FROM CustomerMaster WHERE CustomerId = @Id";
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                {
+                    var dynamicParameters = new DynamicParameters();
+                    var args = new Dictionary<string, object>()
+                    {
+                        ["UserId"] = id
+                    };
+                    dynamicParameters.AddDynamicParams(args);
+                    connection.Open();
+                    var result = await connection.QuerySingleOrDefaultAsync<User>("GetAllUsersById", new { UserId = id });
+                    return result;
+                }
+            }
+            catch (Exception ex) { throw ex; }
+        }
 
         public async Task<User> GetByIdAsync(long id)
         {
@@ -133,13 +171,21 @@ namespace PDAEstimator_Infrastructure.Repositories
         }
         public async Task<User> GetFullUserByIdAsync(long id)
         {
-            var sql = "SELECT DISTINCT u.*,C.CompanyId as PrimaryCompanyId FROM UserMaster u left join Company_User_Mapping M on u.ID = M.UserID left join [CompanyMaster] C on C.CompanyId = M.CompanyID WHERE u.ID = @Id";
-            using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+            try 
             {
-                connection.Open();
-                var result = await connection.QuerySingleOrDefaultAsync<User>(sql, new { Id = id });
-                return result;
+                var sql = "SELECT DISTINCT u.*,C.CompanyId as PrimaryCompanyId FROM UserMaster u left join Company_User_Mapping M on u.ID = M.UserID left join [CompanyMaster] C on C.CompanyId = M.CompanyID WHERE u.ID = @Id";
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                {
+                    connection.Open();
+                    var result = await connection.QuerySingleOrDefaultAsync<User>(sql, new { Id = id });
+                    return result;
+                }
             }
+            catch (Exception ex) 
+            {
+                throw (ex);
+            }
+       
         }
 
         public async Task<int> UpdateAsync(User entity)

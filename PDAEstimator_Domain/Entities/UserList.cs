@@ -33,6 +33,7 @@ namespace PDAEstimator_Domain.Entities
 
         public string PrimaryCompany { get; set; }
         public string SecondaryCompany { get; set; }
+        public string Ports { get; set; }
 
     }
 }

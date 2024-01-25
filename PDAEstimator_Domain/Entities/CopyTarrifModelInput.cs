@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PDAEstimator_Domain.Entities
 {
-    public class SelectedPortIds
+    public class CopyTarrifModelInput
     {
         public int CopyFromportid { get; set;}
         public int CopyToportid { get; set;}
