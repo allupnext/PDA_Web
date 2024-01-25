@@ -101,7 +101,7 @@ namespace PDA_Web.Areas.Admin.Controllers
         }
         public async Task<ActionResult> formulaSave(FormulaMaster formula)//Master Save
         {
-            _toastNotification.AddSuccessToastMessage("Inserted successfully");
+            _toastNotification.AddSuccessToastMessage("submitted successfully");
             return Json(new
             {
                 proceed = true,
@@ -154,8 +154,8 @@ namespace PDA_Web.Areas.Admin.Controllers
         }
         public async Task<ActionResult> formulaClear(FormulaMaster formula)//Master Save
         {
-            await unitOfWork.FormulaTransaction.DeleteByFormulaIdAsync(formula.formulaMasterID);
-            await unitOfWork.Formula.DeleteAsync(formula.formulaMasterID);
+            await unitOfWork.FormulaTransaction.DeleteFormulaIdAsync(formula.formulaMasterID);
+            //await unitOfWork.Formula.DeleteAsync(formula.formulaMasterID);
 
             return Json(new
             {
@@ -436,6 +436,42 @@ namespace PDA_Web.Areas.Admin.Controllers
             return Json(new
             {
                 TariffRates = data,
+                proceed = true,
+                msg = ""
+            });
+        }
+
+        public async Task<ActionResult> EditFormula(int Id)
+        {
+            string formulastring = string.Empty, formulaname = string.Empty;
+            int? portId = 0;
+            bool status = false;
+            if (Id > 0)
+            {
+                var formulamasterdata = await unitOfWork.Formula.GetByIdAsync(Id);
+                var formulatransdata = await unitOfWork.FormulaTransaction.GetAllTransAsync((int)Id);
+                foreach (var formularTransList in formulatransdata)
+                {
+                    if (formularTransList.formulaAttributeID > 0)
+                        formulastring = formulastring != "" ? formulastring + " " + formularTransList.formulaAttributeName : formularTransList.formulaAttributeName;
+                    if (formularTransList.formulaSlabID > 0)
+                        formulastring = formulastring != "" ? formulastring + " " + formularTransList.formulaSlabName : formularTransList.formulaSlabName;
+                    if (formularTransList.formulaOperatorID > 0)
+                        formulastring = formulastring != "" ? formulastring + " " + formularTransList.formulaOperatorName : formularTransList.formulaOperatorName;
+                    if (formularTransList.formulaValue > 0)
+                        formulastring = formulastring != "" ? formulastring + " " + formularTransList.formulaValue.ToString("#,##0.#######") : formularTransList.formulaValue.ToString("#,##0.#######");
+                }
+
+                formulaname = formulamasterdata.formulaName;
+                portId = formulamasterdata.PortID;
+                status = formulamasterdata.formulaStatus;
+            }
+            return Json(new
+            {
+                formulaname = formulaname,
+                formulastring = formulastring,
+                portId = portId,
+                status = status,
                 proceed = true,
                 msg = ""
             });

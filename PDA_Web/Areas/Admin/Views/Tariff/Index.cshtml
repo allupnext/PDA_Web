@@ -85,8 +85,8 @@
                                     @Html.DropDownList("PortNameTo", new SelectList(ViewBag.Port, "ID", "PortName"), "Please select", new { @class = "form-control" })
                                 </div>
                             </div>
-                            <div class="form-group" id="CallType" style="display: none">
-                                <label for="CopyCallType">Copy Call Type</label>
+                            <div class="form-group" id="DivCallType" style="display: none">
+                                <label for="PortName">CopyCallType</label>
                                 @Html.DropDownList("CopyCallType", new SelectList(ViewBag.CallTypes, "ID", "CallTypeName"), "ALL", new { @class = "form-control" })
 
                             </div>
@@ -357,13 +357,13 @@
             $('#CopySomePortButton').hide();
             $('#CopyFromButton').show();
             $('#CopyButton').show();
-            $('#CallType').show();
+            $('#DivCallType').show();
         }
       function ToShowCallTypesDropdown()
         {
             $('#CopyFromButton').hide();
             $('#CopyButton').hide();
-            $('#CallType').hide();
+            $('#DivCallType').hide();
             $('#FromCallTypeId').show();
             $('#ToCallTypeId').show();
             $('#CopySomePortButton').show();
@@ -673,7 +673,7 @@
             debugger;
             TariffMasters = {
                 // "TariffID": $('#TariffID').val(),
-                "TariffRateID": $('#TariffRateID').val(),
+                "TariffRateID": 0,
                 "PortID": $("#PortName").val(),
                 "TerminalID": $('#TerminalName').val(),
                 "BerthID": $("#BerthName").val(),
@@ -836,6 +836,7 @@
                         clear();
                         $('#AddTariffRate').show();
                         $('#UpdateTariffRate').hide();
+                        $('#TariffRateID').val(0);
                         loadData();
 
                     }
