@@ -63,5 +63,7 @@ namespace PDAEstimator_Domain.Entities
         public bool NonIncreemental { get; set; } = true;
 
         public int VesselBallast { get; set; } = 0;
+
+        public int ChargeCodeSequence { get; set; } = 0;
     }
 }

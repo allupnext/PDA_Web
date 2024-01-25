@@ -672,7 +672,7 @@
             debugger;
             TariffMasters = {
                 // "TariffID": $('#TariffID').val(),
-                "TariffRateID": $('#TariffRateID').val(),
+                "TariffRateID": 0,
                 "PortID": $("#PortName").val(),
                 "TerminalID": $('#TerminalName').val(),
                 "BerthID": $("#BerthName").val(),
@@ -835,6 +835,7 @@
                         clear();
                         $('#AddTariffRate').show();
                         $('#UpdateTariffRate').hide();
+                        $('#TariffRateID').val(0);
                         loadData();
 
                     }
