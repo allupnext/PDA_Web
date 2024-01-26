@@ -232,7 +232,15 @@ namespace PDA_Web.Areas.Admin.Controllers
             ViewBag.Terminal = TerminalDetailData;
             return PartialView("partial/TerminalList");
         }
-      
+
+        public IActionResult PortNameOnchangeTterminalFilter(CargoHandleds cargoHandleds)
+        {
+            var TerminalDetailData = unitOfWork.TerminalDetails.GetAllAsync().Result.Where(x => x.PortID == cargoHandleds.PortID);
+
+            ViewBag.Terminal = TerminalDetailData;
+            return PartialView("partial/_TerminalFilterList");
+        }
+     
 
         public IActionResult PortNameOnchangeForumla(CargoHandleds cargoHandleds)
         {

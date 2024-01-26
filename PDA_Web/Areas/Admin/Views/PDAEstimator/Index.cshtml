@@ -68,7 +68,7 @@
                             <div class="col-sm-2">
                                 <div class="form-group">
                                     <label for="PortName">Port<span class="text-danger">*</span></label>
-                                    @Html.DropDownList("PortName", new SelectList(ViewBag.Port, "ID", "PortName"), "Please Select", new { @class = "form-control" })
+                                    @Html.DropDownList("PortName", new SelectList(ViewBag.Port, "ID", "PortName"), "Please Select", new { @class = "form-control" , @onchange = "PortOnChangefunc()" })
                                 </div>
                             </div>
                             <div class="col-sm-2">
@@ -382,8 +382,6 @@
             }
         }
 
-
-
         $(document).ready(function () {
 
             //$("#").DataTable();
@@ -418,43 +416,46 @@
                 calltypebasehideshowberthstay();
             });
 
-            $("#PortName").change(function () {
-                var portid = $('option:selected', this).val();
-                var PDAEstimitor;
-                PDAEstimitor = {
-                    "PortID": portid,
-                    "TerminalID": $('#TerminalName').val(),
-                    "BerthID": $('#BerthName').val(),
-                    //"CargoID": $('#CargoName').val(),
-                }
-
-                $.ajax({
-
-                    type: "GET",
-                    url: "/Admin/PDAEstimator/PortNameOnchange",
-                    data: PDAEstimitor,
-                    dataType: "HTML",
-                    success: function (data) {
-
-                        $("#terminaldrop").html(data);
-                        $.ajax({
-                            type: "GET",
-                            url: "/Admin/PDAEstimator/CargoLoad",
-                            data: { selectedPortId: portid },
-                            dataType: "HTML",
-                            success: function (data) {
-                                $("#cargodrop").html(data);
-                            },
-                            error: function () {
-                            }
-                        });
-                    },
-                    error: function () {
-                    }
-                });
-            });
 
         });
+
+        function PortOnChangefunc() {
+            var portid = $('#PortName').val();
+            var PDAEstimitor;
+            PDAEstimitor = {
+                "PortID": portid,
+                "TerminalID": $('#TerminalName').val(),
+                "BerthID": $('#BerthName').val(),
+                //"CargoID": $('#CargoName').val(),
+            }
+
+            $.ajax({
+
+                type: "GET",
+                url: "/Admin/PDAEstimator/PortNameOnchange",
+                data: PDAEstimitor,
+                dataType: "HTML",
+                async: false,
+                success: function (data) {
+
+                    $("#terminaldrop").html(data);
+                    $.ajax({
+                        type: "GET",
+                        url: "/Admin/PDAEstimator/CargoLoad",
+                        data: { selectedPortId: portid },
+                        async: false,
+                        dataType: "HTML",
+                        success: function (data) {
+                            $("#cargodrop").html(data);
+                        },
+                        error: function () {
+                        }
+                    });
+                },
+                error: function () {
+                }
+            });
+        };
 
         function callChangefunc(val) {
             var portid = $('option:selected', this).val();
@@ -469,6 +470,7 @@
                 url: "/Admin/PDAEstimator/TerminalNameOnchange",
                 data: cargoHandled,
                 dataType: "HTML",
+                async: false,
                 success: function (data) {
 
                     $("#berthdrop").html(data);
@@ -511,6 +513,7 @@
                 }
             });
         }
+
         function clear()
         {
             $('#PDAEstimatorId').val("");
@@ -545,7 +548,6 @@
             $('#BerthStayShiftCoastal').val("");
             
         }
-
 
         function PDAEstimatorSave() {
             var PDAEstimitor;
@@ -667,7 +669,6 @@
 
         }
 
-
         function EditPDAEstimator(id) {
             $(window).scrollTop(150);
             $('#PDAEstimatorId').val(id);
@@ -710,8 +711,10 @@
                     $('#customerid').val(data.pdaEstimitor.customerID);
                     $('#VesselName').val(data.pdaEstimitor.vesselName);
                     $('#PortName').val(data.pdaEstimitor.portID);
+                    PortOnChangefunc();
                     $('#PortActivityName').val(data.pdaEstimitor.activityTypeId);
                     $('#TerminalName').val(data.pdaEstimitor.terminalID);
+                    callChangefunc();
                     debugger;
                     $('#BerthName').val(data.pdaEstimitor.berthId);
                     $('#CallTypeName').val(data.pdaEstimitor.callTypeID);
@@ -744,6 +747,7 @@
                 }
             });
         }
+        
         function formatDate(date) {
             var day = date.getDate();
             var month = date.getMonth() + 1; //Months are zero-based
@@ -756,7 +760,6 @@
             return day + '/' + month + '/' + year;
 
         }
-
 
         function deletePDAEstimator(id) {
 
@@ -824,7 +827,6 @@
             });
         }
 
-
         function loadData() {
             var Padestimator;
             debugger
@@ -848,8 +850,7 @@
             });
         }
 
-
-                        //function ViewPDAEstimator(PDAEstimatorID) {
+        //function ViewPDAEstimator(PDAEstimatorID) {
                         //    alert('hi')
                         //    $.ajax({
                         //        url: "/Admin/PDAEstimator/PDAEstimator?id=" + PDAEstimatorID,
@@ -864,6 +865,6 @@
                         //        }
                         //    })
                         //}
-                            
+                    
     </script>
 }

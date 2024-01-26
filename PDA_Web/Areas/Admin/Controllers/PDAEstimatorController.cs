@@ -512,6 +512,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             return PartialView("partial/TerminalList");
         }
 
+        
         public IActionResult TerminalNameOnchange(PDAEstimator PDAEstimitor)
         {
             var BearthDetailData = unitOfWork.BerthDetails.GetAllAsync().Result.Where(x => x.TerminalID == PDAEstimitor.TerminalID);
