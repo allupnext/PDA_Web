@@ -21,7 +21,7 @@ namespace PDAEstimator_Infrastructure.Repositories
         {
             this.configuration = configuration;
         }
-            
+
 
         public async Task<User> Authenticate(string username, string password)
         {
@@ -139,16 +139,23 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<List<UserList>> GetAlllistAsync()
         {
-           // var sql = "SELECT UserMaster.ID as ID, FirstName,LastName,EmployCode,UserPassword,MobileNo,Salutation,EmailID,DOB,UserMaster.RoleID as RoleID,UserRole.RoleName FROM UserMaster left join UserRole on UserRole.RoleId =  UserMaster.RoleID WHERE UserMaster.IsDeleted != 1;";
-           
-            using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+            try
             {
-                connection.Open();
-                var result = await connection.QueryAsync<UserList>("GetAllUsers", commandType: System.Data.CommandType.StoredProcedure);
-                return new List<UserList>(result.ToList());
+                // var sql = "SELECT UserMaster.ID as ID, FirstName,LastName,EmployCode,UserPassword,MobileNo,Salutation,EmailID,DOB,UserMaster.RoleID as RoleID,UserRole.RoleName FROM UserMaster left join UserRole on UserRole.RoleId =  UserMaster.RoleID WHERE UserMaster.IsDeleted != 1;";
+
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                {
+                    connection.Open();
+                    var result = await connection.QueryAsync<UserList>("GetAllUsers", commandType: System.Data.CommandType.StoredProcedure);
+                    return new List<UserList>(result.ToList());
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
-        public async Task<User>GetAllUsersById (long id)
+        public async Task<User> GetAllUsersById(long id)
         {
             try
             {
@@ -171,8 +178,8 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<User> GetByIdAsync(long id)
         {
-            var sql = "SELECT * FROM UserMaster WHERE ID = @Id";
-            
+            var sql = "SELECT UserMaster.*, UserRole.RoleName as RoleName FROM UserMaster left join UserRole on UserRole.RoleId = UserMaster.RoleID WHERE ID = @Id";
+
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
@@ -182,7 +189,7 @@ namespace PDAEstimator_Infrastructure.Repositories
         }
         public async Task<User> GetFullUserByIdAsync(long id)
         {
-            try 
+            try
             {
                 var sql = "SELECT DISTINCT u.*,C.CompanyId as PrimaryCompanyId FROM UserMaster u left join Company_User_Mapping M on u.ID = M.UserID left join [CompanyMaster] C on C.CompanyId = M.CompanyID WHERE u.ID = @Id";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
@@ -192,11 +199,11 @@ namespace PDAEstimator_Infrastructure.Repositories
                     return result;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 throw (ex);
             }
-       
+
         }
 
         public async Task<int> UpdateAsync(User entity)
@@ -211,12 +218,12 @@ namespace PDAEstimator_Infrastructure.Repositories
                     return result;
                 }
             }
-        
-               catch (Exception ex)
+
+            catch (Exception ex)
             {
                 throw ex;
             }
         }
 
-    }   
+    }
 }

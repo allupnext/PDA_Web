@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using iTextSharp.text.pdf;
+using iTextSharp.tool.xml.html;
+using Microsoft.AspNetCore.Mvc;
 using NToastNotify;
 using PDA_Web.Models;
 using PDAEstimator_Application.Interfaces;
@@ -6,6 +8,7 @@ using PDAEstimator_Domain.Entities;
 using SelectPdf;
 using System.Data;
 using System.Globalization;
+using System.Linq;
 
 namespace PDA_Web.Areas.Admin.Controllers
 {
@@ -119,7 +122,7 @@ namespace PDA_Web.Areas.Admin.Controllers
 
                 pDAEstimatorOutPut.Expenses = unitOfWork.Expenses.GetAllAsync().Result.OrderBy(x => x.sequnce).ToList();
 
-                pDAEstimatorOutPut.ChargeCodes = unitOfWork.ChargeCodes.GetAlllistAsync().Result.OrderBy(x=> x.Sequence).ToList();
+                pDAEstimatorOutPut.ChargeCodes = unitOfWork.ChargeCodes.GetAlllistAsync().Result.OrderBy(x => x.Sequence).ToList();
 
                 pDAEstimatorOutPut.NotesData = unitOfWork.PDAEstimitor.GetNotes().Result.ToList();
                 var currencyData = unitOfWork.Currencys.GetAllAsync().Result;
@@ -129,7 +132,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                 pDAEstimatorOutPut.DefaultCurrencyCodeID = currencyData.Where(x => x.DefaultCurrecny == true) != null ? currencyData.Where(x => x.DefaultCurrecny == true).FirstOrDefault().ID : 0;
 
                 //var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(pDAEstimatorOutPut.PortID).Result.Where(x => (x.CallTypeID == pDAEstimatorOutPut.CallTypeID || x.CallTypeID == null) && (x.SlabFrom == null || x.SlabFrom <= pDAEstimatorOutPut.GRT)) ;
-                var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(pDAEstimatorOutPut.PortID).Result.Where(x => (x.CallTypeID == pDAEstimatorOutPut.CallTypeID || x.CallTypeID == null) && (x.TerminalID == pDAEstimatorOutPut.TerminalID || x.TerminalID == null) && (x.CargoID == pDAEstimatorOutPut.CargoID || x.CargoID == null) && (x.VesselBallast == pDAEstimatorOutPut.VesselBallast || x.VesselBallast == 0)).OrderBy(o=>o.ChargeCodeSequence).ThenBy(o => o.SlabFrom).ThenBy(o => o.TariffRateID);
+                var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(pDAEstimatorOutPut.PortID).Result.Where(x => (x.CallTypeID == pDAEstimatorOutPut.CallTypeID || x.CallTypeID == null) && (x.TerminalID == pDAEstimatorOutPut.TerminalID || x.TerminalID == null) && (x.CargoID == pDAEstimatorOutPut.CargoID || x.CargoID == null) && (x.VesselBallast == pDAEstimatorOutPut.VesselBallast || x.VesselBallast == 0)).OrderBy(o => o.ChargeCodeSequence).ThenBy(o => o.SlabFrom).ThenBy(o => o.TariffRateID);
                 List<PDATariffRateList> pDATariffRateList = new List<PDATariffRateList>();
                 decimal taxrate = 0;
                 foreach (var triff in triffdata)
@@ -147,7 +150,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                                     string FormulaAttributedata = formularTransList.formulaAttributeName;
                                     if (FormulaAttributedata.Contains("GRT"))
                                     {
-                                         UnitCalculation(triff, pDAEstimatorOutPut.GRT);
+                                        UnitCalculation(triff, pDAEstimatorOutPut.GRT);
                                         formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
                                     }
                                     else if (FormulaAttributedata.Contains("NRT"))
@@ -333,7 +336,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                         units = (triff.SlabTo - triff.SlabFrom) + 1;
                         units = Math.Abs(Convert.ToDecimal(units));
                     }
-                    else if(attributvalue >= triff.SlabFrom)
+                    else if (attributvalue >= triff.SlabFrom)
                     {
                         units = (attributvalue - triff.SlabFrom) + 1;
                         units = Math.Abs(Convert.ToDecimal(units));
@@ -378,8 +381,23 @@ namespace PDA_Web.Areas.Admin.Controllers
                 var PortActivityData = await unitOfWork.PortActivities.GetAllAsync();
                 ViewBag.PortActivity = PortActivityData;
 
-                var PortCallData = await unitOfWork.PortDetails.GetAllAsync();
-                ViewBag.Port = PortCallData;
+                List<PDAEstimator_Domain.Entities.PortDetails> portDetails = new List<PDAEstimator_Domain.Entities.PortDetails>();
+                var userdata = await unitOfWork.User.GetAllUsersById(Convert.ToInt64(userid));
+                var userwithRole = await unitOfWork.User.GetByIdAsync(Convert.ToInt64(userid));
+                if (userwithRole.RoleName == "Admin")
+                {
+                    portDetails = await unitOfWork.PortDetails.GetAllAsync();
+                    ViewBag.Port = portDetails;
+                }
+                else
+                {
+                    if (userdata.Ports != null && userdata.Ports != "")
+                    {
+                        List<int> PortIds = userdata.Ports.Split(',').Select(int.Parse).ToList();
+                        portDetails = unitOfWork.PortDetails.GetAllAsync().Result.Where(x => PortIds.Contains(x.ID)).ToList();
+                    }
+                    ViewBag.Port = portDetails;
+                }
 
                 var TerminalData = await unitOfWork.TerminalDetails.GetAllAsync();
                 ViewBag.Terminal = TerminalData;
@@ -388,7 +406,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                 ViewBag.Berth = data1;
 
                 var CargoType = await unitOfWork.CargoDetails.GetAllAsync();
-                 ViewBag.Cargo = CargoType;
+                ViewBag.Cargo = CargoType;
 
                 var dataCurrency = await unitOfWork.Currencys.GetAllwithoutBaseCurrencyAsync();
                 ViewBag.Currency = dataCurrency;
@@ -445,24 +463,45 @@ namespace PDA_Web.Areas.Admin.Controllers
 
         public async Task<IActionResult> LoadAll(PDAEstimator pDAEstimator)
         {
-            var data = await unitOfWork.PDAEstimitor.GetAlllistAsync();
-            if (pDAEstimator.CustomerID != null && pDAEstimator.CustomerID != 0)
+            List<PDAEstimatorList> pDAEstimatorLists = new List<PDAEstimatorList>();
+            var userid = HttpContext.Session.GetString("UserID");
+
+            var userdata = await unitOfWork.User.GetAllUsersById(Convert.ToInt64(userid));
+            var userwithRole = await unitOfWork.User.GetByIdAsync(Convert.ToInt64(userid));
+            if (userwithRole.RoleName == "Admin")
             {
-                data = data.Where(x => x.CustomerID == pDAEstimator.CustomerID && x.PortID == pDAEstimator.PortID).ToList();
+                pDAEstimatorLists = await unitOfWork.PDAEstimitor.GetAlllistAsync();
             }
-            if (pDAEstimator.PortID != null && pDAEstimator.PortID != 0)
+            else
             {
-                data = data.Where(x => x.PortID == pDAEstimator.PortID).ToList();
+                if (userdata.Ports != null && userdata.Ports != "")
+                {
+                    List<int> PortIds = userdata.Ports.Split(',').Select(int.Parse).ToList();
+                    pDAEstimatorLists = await unitOfWork.PDAEstimitor.GetAlllistAsync();
+                    pDAEstimatorLists = pDAEstimatorLists.Where(x => PortIds.Contains(x.PortID)).ToList();
+                }
             }
-            if (pDAEstimator.TerminalID != null && pDAEstimator.TerminalID != 0)
+
+            if (pDAEstimatorLists.Count() > 0)
             {
-                data = data.Where(x => x.TerminalID == pDAEstimator.TerminalID).ToList();
+                if (pDAEstimator.CustomerID != null && pDAEstimator.CustomerID != 0)
+                {
+                    pDAEstimatorLists = pDAEstimatorLists.Where(x => x.CustomerID == pDAEstimator.CustomerID && x.PortID == pDAEstimator.PortID).ToList();
+                }
+                if (pDAEstimator.PortID != null && pDAEstimator.PortID != 0)
+                {
+                    pDAEstimatorLists = pDAEstimatorLists.Where(x => x.PortID == pDAEstimator.PortID).ToList();
+                }
+                if (pDAEstimator.TerminalID != null && pDAEstimator.TerminalID != 0)
+                {
+                    pDAEstimatorLists = pDAEstimatorLists.Where(x => x.TerminalID == pDAEstimator.TerminalID).ToList();
+                }
+                if (pDAEstimator.CallTypeID != null && pDAEstimator.CallTypeID != 0)
+                {
+                    pDAEstimatorLists = pDAEstimatorLists.Where(x => x.CallTypeID == pDAEstimator.CallTypeID).ToList();
+                }
             }
-            if (pDAEstimator.CallTypeID != null && pDAEstimator.CallTypeID != 0)
-            {
-                data = data.Where(x => x.CallTypeID == pDAEstimator.CallTypeID).ToList();
-            }
-            return PartialView("partial/_ViewAll", data);
+            return PartialView("partial/_ViewAll", pDAEstimatorLists);
         }
 
         public IActionResult PortNameOnchange(PDAEstimator PDAEstimitor)
@@ -488,11 +527,11 @@ namespace PDA_Web.Areas.Admin.Controllers
 
             PDAEstimitor.ETA = Validity_To;
 
-            decimal berthStayHrs = PDAEstimitor.LoadDischargeRate != 0? Math.Ceiling(Convert.ToDecimal(Convert.ToDecimal(PDAEstimitor.CargoQty) / Convert.ToDecimal(PDAEstimitor.LoadDischargeRate)) * 24) + 4 : 0;
-            decimal berthStayDay = PDAEstimitor.LoadDischargeRate != 0 ? Math.Ceiling(Convert.ToDecimal(Convert.ToDecimal(PDAEstimitor.CargoQty) / Convert.ToDecimal(PDAEstimitor.LoadDischargeRate))): 0;
-            decimal berthStayShift = PDAEstimitor.LoadDischargeRate != 0 ?  Math.Ceiling(Convert.ToDecimal(Convert.ToDecimal(PDAEstimitor.CargoQty) / Convert.ToDecimal(PDAEstimitor.LoadDischargeRate) * 3)) :0;
+            decimal berthStayHrs = PDAEstimitor.LoadDischargeRate != 0 ? Math.Ceiling(Convert.ToDecimal(Convert.ToDecimal(PDAEstimitor.CargoQty) / Convert.ToDecimal(PDAEstimitor.LoadDischargeRate)) * 24) + 4 : 0;
+            decimal berthStayDay = PDAEstimitor.LoadDischargeRate != 0 ? Math.Ceiling(Convert.ToDecimal(Convert.ToDecimal(PDAEstimitor.CargoQty) / Convert.ToDecimal(PDAEstimitor.LoadDischargeRate))) : 0;
+            decimal berthStayShift = PDAEstimitor.LoadDischargeRate != 0 ? Math.Ceiling(Convert.ToDecimal(Convert.ToDecimal(PDAEstimitor.CargoQty) / Convert.ToDecimal(PDAEstimitor.LoadDischargeRate) * 3)) : 0;
 
-           var calltype = unitOfWork.CallTypes.GetByIdAsync(PDAEstimitor.CallTypeID).Result;
+            var calltype = unitOfWork.CallTypes.GetByIdAsync(PDAEstimitor.CallTypeID).Result;
 
             if (calltype.CallTypeName.ToUpper() == "FOREIGN")
             {
@@ -500,11 +539,11 @@ namespace PDA_Web.Areas.Admin.Controllers
                 PDAEstimitor.BerthStayDay = Convert.ToInt64(berthStayDay);
                 PDAEstimitor.BerthStayShift = Convert.ToInt64(berthStayShift);
             }
-            if(calltype.CallTypeName.ToUpper() == "COASTAL IN FOREIGN OUT" || calltype.CallTypeName.ToUpper() == "FOREIGN IN COASTAL OUT")
+            if (calltype.CallTypeName.ToUpper() == "COASTAL IN FOREIGN OUT" || calltype.CallTypeName.ToUpper() == "FOREIGN IN COASTAL OUT")
             {
-                PDAEstimitor.BerthStayHoursCoastal= Convert.ToInt64(berthStayHrs);
-                PDAEstimitor.BerthStayDayCoastal= Convert.ToInt64(berthStayDay);
-                PDAEstimitor.BerthStayShiftCoastal= Convert.ToInt64(berthStayShift);
+                PDAEstimitor.BerthStayHoursCoastal = Convert.ToInt64(berthStayHrs);
+                PDAEstimitor.BerthStayDayCoastal = Convert.ToInt64(berthStayDay);
+                PDAEstimitor.BerthStayShiftCoastal = Convert.ToInt64(berthStayShift);
 
                 PDAEstimitor.BerthStay = Convert.ToInt64(6);
                 PDAEstimitor.BerthStayDay = Convert.ToInt64(1);
@@ -654,7 +693,7 @@ namespace PDA_Web.Areas.Admin.Controllers
         }
 
         public async Task<ActionResult> editPDAEstimator(PDAEstimator PDAEstimitor)
-            {
+        {
             try
             {
                 var data = await unitOfWork.PDAEstimitor.GetByIdAsync(PDAEstimitor.PDAEstimatorID);

@@ -14,7 +14,7 @@ namespace PDAEstimator_Domain.Entities
         public string UserPassword { get; set; }
         public string ConfirmPasword { get; set; }
 
-        public int MobileNo { get; set; }
+        public long MobileNo { get; set; }
         public string Salutation { get; set; }
 
         public string EmailID { get; set; }
