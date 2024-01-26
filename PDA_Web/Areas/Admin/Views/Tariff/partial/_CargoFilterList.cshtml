@@ -1,0 +1,2 @@
+﻿<label for="CargoNameFilter">Cargo</label>
+@Html.DropDownList("CargoNameFilter", new SelectList(ViewBag.Cargo, "ID", "CargoName"), "ALL", new { @class = "form-control", @onchange = "onChangeCargoFilter()" })

@@ -240,7 +240,15 @@ namespace PDA_Web.Areas.Admin.Controllers
             ViewBag.Terminal = TerminalDetailData;
             return PartialView("partial/_TerminalFilterList");
         }
-     
+
+        public async Task<IActionResult> PortNameOnchangeCargoFilter(CargoHandleds cargoHandleds)
+        {
+            var TerminalId = cargoHandleds.TerminalID;
+            var PortId = cargoHandleds.PortID;
+            var cargoList = await unitOfWork.PDAEstimitor.GetCargoByTerminalAndPortAsync(TerminalId, PortId);
+            ViewBag.Cargo = cargoList;
+            return PartialView("partial/_CargoFilterList");
+        }
 
         public IActionResult PortNameOnchangeForumla(CargoHandleds cargoHandleds)
         {

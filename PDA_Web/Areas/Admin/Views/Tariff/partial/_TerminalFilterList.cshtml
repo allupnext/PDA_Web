@@ -1,2 +1,3 @@
 ﻿<label for="TerminalNameFilter">Terminal</label>
 @Html.DropDownList("TerminalNameFilter", new SelectList(ViewBag.Terminal, "ID", "TerminalName"), "Please select", new { @class = "form-control" , @onchange="onChangeTerminalNameFilter()" })
+    
