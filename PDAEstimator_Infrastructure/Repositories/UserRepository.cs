@@ -104,6 +104,17 @@ namespace PDAEstimator_Infrastructure.Repositories
             }
         }
 
+        public async Task<int> DeletePort_User_MappingAsync(long id)
+        {
+            var sql = "DELETE from User_Port_Mapping WHERE UserId = @Id";
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+            {
+                connection.Open();
+                var result = await connection.ExecuteAsync(sql, new { Id = id });
+                return result;
+            }
+        }
+
         public async Task<int> DeleteAsync(long id)
         {
             var sql = "Update Usermaster set IsDeleted = 1 WHERE Id = @Id";

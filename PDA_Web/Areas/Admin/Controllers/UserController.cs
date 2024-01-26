@@ -79,6 +79,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                 {
                     await unitOfWork.User.UpdateAsync(user);
                     await unitOfWork.User.DeleteCustomer_User_MappingAsync(user.ID);
+                    await unitOfWork.User.DeletePort_User_MappingAsync(user.ID);
 
                     if (user.PrimaryCompanyId != null)
                     {
@@ -100,6 +101,20 @@ namespace PDA_Web.Areas.Admin.Controllers
                             company_User_Mapping1.CompanyID = i;
                             company_User_Mapping1.IsPrimary = false;
                             await unitOfWork.User.AddCustomer_User_MappingAsync(company_User_Mapping1);
+                        }
+                    }
+
+                    if (user.PortIds != null)
+                    {
+                        User_Port_Mapping user_Port_Mapping = new User_Port_Mapping();
+
+                        foreach (int i in user.PortIds)
+                        {
+                            user_Port_Mapping = new User_Port_Mapping();
+                            user_Port_Mapping.UserID = Convert.ToInt32(user.ID);
+                            user_Port_Mapping.PortID = i;
+
+                            await unitOfWork.User.AddPort_User_MappingAsync(user_Port_Mapping);
                         }
                     }
                     _toastNotification.AddSuccessToastMessage("Updated Successfully..");
@@ -141,11 +156,11 @@ namespace PDA_Web.Areas.Admin.Controllers
                                 await unitOfWork.User.AddCustomer_User_MappingAsync(company_User_Mapping1);
                             }
                         }
-                        if (user.PortId != null)
+                        if (user.PortIds != null)
                         {
                             User_Port_Mapping user_Port_Mapping = new User_Port_Mapping();
 
-                            foreach (int i in user.PortId)
+                            foreach (int i in user.PortIds)
                             {
                                 user_Port_Mapping = new User_Port_Mapping();
                                 user_Port_Mapping.UserID = Convert.ToInt32(userId);
@@ -183,6 +198,9 @@ namespace PDA_Web.Areas.Admin.Controllers
             var data =  unitOfWork.User.GetAllUsersById(user.ID).Result;
             if (data.SecondaryCompany != null)
                 data.SecondaryCompanyId = Array.ConvertAll(data.SecondaryCompany.Split(','), int.Parse);
+
+            if (data.Ports != null)
+                data.PortIds = Array.ConvertAll(data.Ports.Split(','), int.Parse);
             return Json(new
             {
                 User = data,

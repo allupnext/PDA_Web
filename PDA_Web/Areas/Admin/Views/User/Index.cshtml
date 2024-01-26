@@ -257,7 +257,7 @@
                 "RoleID": $('#Role').val(),
                 "PrimaryCompanyId": $('#PrimaryCompany').val(),
                 "SecondaryCompanyId": $('#SecondaryCompany').val(),
-                "PortId": $('#PortNameId').val(),
+                "PortIds": $('#PortNameId').val(),
                 "UserStatus": Status
             }
             if ($('#Salutation').val() == "") {
@@ -396,7 +396,8 @@
                     $('#Role').val(data.user.roleId);
                     $('#PrimaryCompany').val(data.user.primaryCompany);
                     $('#SecondaryCompany').val(data.user.secondaryCompanyId);
-
+                    $('#PortNameId').val(data.user.portIds);
+                    $(window).scrollTop(150);
                 },
                 error: function () {
                 }

@@ -39,6 +39,7 @@ namespace PDAEstimator_Domain.Entities
         public int? PrimaryCompanyId { get; set; }
        // public int? CompanyId { get; set; }
         public int[]? SecondaryCompanyId { get; set; }
-        public int[]? PortId { get; set; }
+        public string? Ports { get; set; }
+        public int[]? PortIds { get; set; }
     }
 }

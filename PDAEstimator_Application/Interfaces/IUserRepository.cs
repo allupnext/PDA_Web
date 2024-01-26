@@ -15,6 +15,8 @@ namespace PDAEstimator_Application.Interfaces
 
         Task<string> AddCustomer_User_MappingAsync(Company_User_Mapping entity);
         Task<int> DeleteCustomer_User_MappingAsync(long id);
+
+        Task<int> DeletePort_User_MappingAsync(long id);
         Task<User> GetFullUserByIdAsync(long id);
         Task<User> GetAllUsersById(long id);
         Task<string> AddPort_User_MappingAsync(User_Port_Mapping entity);
