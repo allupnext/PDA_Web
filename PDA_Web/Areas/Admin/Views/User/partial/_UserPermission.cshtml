@@ -1,0 +1,26 @@
+﻿@using PDAEstimator_Domain.Entities;
+
+@foreach (var menu in ViewBag.UserRolePermissionMenu)
+{
+    <div class="row">
+        <div class="col-sm-2">
+            <div class="form-group">
+                <label>@menu.MenuName</label>
+            </div>
+        </div>
+        @{
+            List<UserRolePermissions> userRolePermissions = new List<UserRolePermissions>();
+            userRolePermissions = ViewBag.UserRolePermissions;
+        }
+        @foreach (var RolePermission in userRolePermissions.Where(x => x.UserRolePermissionMenuId == menu.UserRolePermissionMenuId))
+        {
+            <div class="col-sm-2">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="RolePermission_@RolePermission.UserRolePermissionId" onchange="RolePermission_click(@RolePermission.UserRolePermissionId)" checked="@RolePermission.IsPermission">
+                    <label class="form-check-label" for="PDAEstimatorView">@RolePermission.UserRolePermission</label>
+                </div>
+            </div>
+
+        }
+    </div>
+}

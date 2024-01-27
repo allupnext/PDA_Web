@@ -16,6 +16,7 @@ namespace PDA_Web.Areas.Admin.Controllers
         private readonly IConfiguration configuration;
 
         private readonly IUnitOfWork unitOfWork;
+
         private readonly IToastNotification _toastNotification;
         public UserController(IUnitOfWork unitOfWork, IToastNotification toastNotification, IConfiguration configuration)
         {
@@ -23,20 +24,22 @@ namespace PDA_Web.Areas.Admin.Controllers
             _toastNotification = toastNotification;
             this.configuration = configuration;
         }
+
+        #region User Methods
         public async Task<IActionResult> Index()
         {
-            var PrimaryCompanyData = await unitOfWork.Company.GetAllAsync();
-            ViewBag.PrimaryCompany = PrimaryCompanyData;
-
-            var SecondryCompanyData = await unitOfWork.Company.GetAllAsync();
-            ViewBag.SecondaryCompany = SecondryCompanyData;
-
-            var PortList = await unitOfWork.PortDetails.GetAllAsync();
-            ViewBag.PortList = PortList;
-
             var userid = HttpContext.Session.GetString("UserID");
             if (!string.IsNullOrEmpty(userid))
             {
+                var PrimaryCompanyData = await unitOfWork.Company.GetAllAsync();
+                ViewBag.PrimaryCompany = PrimaryCompanyData;
+
+                var SecondryCompanyData = await unitOfWork.Company.GetAllAsync();
+                ViewBag.SecondaryCompany = SecondryCompanyData;
+
+                var PortList = await unitOfWork.PortDetails.GetAllAsync();
+                ViewBag.PortList = PortList;
+
                 var RoleData = await unitOfWork.Roles.GetAllAsync();
                 ViewBag.Roles = RoleData;
                 return View();
@@ -51,12 +54,12 @@ namespace PDA_Web.Areas.Admin.Controllers
         {
             //string fullname = user.Salutation + " " + user.FirstName + " " + user.LastName;
             var data = await unitOfWork.User.GetAlllistAsync();
-            if (user.RoleId != null && user.RoleId != 0 )
+            if (user.RoleId != null && user.RoleId != 0)
             {
                 //data = data.Where(x => x.RoleName.Contains("%"+roles.RoleName+"%")).ToList();
                 data = data.Where(x => x.RoleId == user.RoleId).ToList();
             }
-            if (user.PrimaryCompanyId != null && user.PrimaryCompanyId != 0 )
+            if (user.PrimaryCompanyId != null && user.PrimaryCompanyId != 0)
             {
                 data = data.Where(x => x.PrimaryCompany == user.PrimaryCompany).ToList();
             }
@@ -71,7 +74,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             {
                 var EmployeeCodeupdate = data.Where(x => x.EmployCode.ToUpper() == user.EmployCode.ToUpper() && x.ID != user.ID).ToList();
                 var EmployeeNumberupdate = data.Where(x => x.EmployCode.ToUpper() == user.EmployCode.ToUpper() && x.ID != user.ID).ToList();
-                if (EmployeeCodeupdate != null && EmployeeCodeupdate.Count > 0 || EmployeeNumberupdate != null && EmployeeNumberupdate.Count> 0)
+                if (EmployeeCodeupdate != null && EmployeeCodeupdate.Count > 0 || EmployeeNumberupdate != null && EmployeeNumberupdate.Count > 0)
                 {
                     _toastNotification.AddWarningToastMessage("EmployeeCode Or MobileNumber Exist!..");
                 }
@@ -165,7 +168,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                                 user_Port_Mapping = new User_Port_Mapping();
                                 user_Port_Mapping.UserID = Convert.ToInt32(userId);
                                 user_Port_Mapping.PortID = i;
-                               
+
                                 await unitOfWork.User.AddPort_User_MappingAsync(user_Port_Mapping);
                             }
                         }
@@ -195,7 +198,7 @@ namespace PDA_Web.Areas.Admin.Controllers
 
         public async Task<ActionResult> EditFullUser(User user)
         {
-            var data =  unitOfWork.User.GetAllUsersById(user.ID).Result;
+            var data = unitOfWork.User.GetAllUsersById(user.ID).Result;
             if (data.SecondaryCompany != null)
                 data.SecondaryCompanyId = Array.ConvertAll(data.SecondaryCompany.Split(','), int.Parse);
 
@@ -219,5 +222,57 @@ namespace PDA_Web.Areas.Admin.Controllers
                 msg = ""
             });
         }
+
+        #endregion User Methods
+
+        #region User Role
+        public async Task<IActionResult> UserRolePermission()
+        {
+            var userid = HttpContext.Session.GetString("UserID");
+            if (!string.IsNullOrEmpty(userid))
+            {
+                var RoleData = await unitOfWork.Roles.GetAllAsync();
+                ViewBag.Roles = RoleData;
+
+                var UserRolePermissionMenuData = await unitOfWork.User.GetAllUserRolePermissionMenuAsync();
+                ViewBag.UserRolePermissionMenu = UserRolePermissionMenuData;
+
+                var UserRolePermissionsData = await unitOfWork.User.GetAllUserRolePermissionsAsync();
+                ViewBag.UserRolePermissions = UserRolePermissionsData;
+
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("index", "AdminLogin");
+            }
+        }
+
+        public async Task<IActionResult> RolePermission_click(UserPemissionRole_Role_Mapping userPemissionRole_Role_Mapping)
+        {
+            if (userPemissionRole_Role_Mapping.IsPermission)
+                unitOfWork.User.AddUserPemissionRole_Role_MappingAsync(userPemissionRole_Role_Mapping);
+            else
+                unitOfWork.User.DeleteUserPemissionRole_Role_MappingAsync(userPemissionRole_Role_Mapping.RoleID, userPemissionRole_Role_Mapping.UserRolePermissionId);
+
+            return Json(new
+            {
+                proceed = true,
+                msg = ""
+            });
+        }
+
+        public async Task<IActionResult> PermissionLoadAll(int RoleId)
+        {
+            var UserRolePermissionMenuData = await unitOfWork.User.GetAllUserRolePermissionMenuAsync();
+            ViewBag.UserRolePermissionMenu = UserRolePermissionMenuData;
+
+            var UserRolePermissionsData = await unitOfWork.User.GetAllUserRolePermissionsAsync();
+            ViewBag.UserRolePermissions = UserRolePermissionsData;
+
+            return PartialView("partial/_UserPermission");
+
+        }
+        #endregion
     }
 }

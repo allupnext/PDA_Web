@@ -17,11 +17,11 @@ namespace PDAEstimator_Infrastructure.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly IConfiguration configuration;
+
         public UserRepository(IConfiguration configuration)
         {
             this.configuration = configuration;
         }
-
 
         public async Task<User> Authenticate(string username, string password)
         {
@@ -187,6 +187,7 @@ namespace PDAEstimator_Infrastructure.Repositories
                 return result;
             }
         }
+
         public async Task<User> GetFullUserByIdAsync(long id)
         {
             try
@@ -224,6 +225,75 @@ namespace PDAEstimator_Infrastructure.Repositories
                 throw ex;
             }
         }
+
+        #region User Permission
+        public async Task<List<UserRolePermissionMenu>> GetAllUserRolePermissionMenuAsync()
+        {
+            try
+            {
+                var sql = "SELECT * FROM UserRolePermissionMenu";
+
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                {
+                    connection.Open();
+                    var result = await connection.QueryAsync<UserRolePermissionMenu>(sql);
+                    return new List<UserRolePermissionMenu>(result.ToList());
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<List<UserRolePermissions>> GetAllUserRolePermissionsAsync()
+        {
+            try
+            {
+                var sql = "SELECT UserRolePermissions.*, UserRolePermission, IsPermission FROM UserRolePermissions left join UserRolePermissionType on UserRolePermissionType.userRolePermissionTypeId = UserRolePermissions.userRolePermissionTypeId left join UserPemissionRole_Role_Mapping on UserPemissionRole_Role_Mapping.UserRolePermissionId = UserRolePermissions.UserRolePermissionId";
+
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                {
+                    connection.Open();
+                    var result = await connection.QueryAsync<UserRolePermissions>(sql);
+                    return new List<UserRolePermissions>(result.ToList());
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<string> AddUserPemissionRole_Role_MappingAsync(UserPemissionRole_Role_Mapping entity)
+        {
+            try
+            {
+                var sql = "INSERT INTO  UserPemissionRole_Role_Mapping (RoleID, UserRolePermissionId, IsPermission) VALUES (@RoleID, @UserRolePermissionId, @IsPermission)";
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                {
+                    connection.Open();
+                    var result = await connection.ExecuteAsync(sql, entity);
+                    return new string(entity.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<int> DeleteUserPemissionRole_Role_MappingAsync(int RoleID, int UserRolePermissionId)
+        {
+            var sql = "DELETE from UserPemissionRole_Role_Mapping WHERE RoleID = @RoleID and UserRolePermissionId = @UserRolePermissionId";
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+            {
+                connection.Open();
+                var result = await connection.ExecuteAsync(sql, new { RoleID = RoleID, UserRolePermissionId = UserRolePermissionId });
+                return result;
+            }
+        }
+        #endregion
 
     }
 }
