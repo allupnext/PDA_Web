@@ -261,6 +261,7 @@
                 url: "/Admin/CargoHandled/TerminalNameOnchange",
                 data: cargoHandled,
                 dataType: "HTML",
+                async: false,
                 success: function (data) {
 
                     $("#berthdrop").html(data);
@@ -292,7 +293,7 @@
                 loadData();
             });
             $("#PortName").change(function () {
-                var portid = $('option:selected', this).val();
+                var portid = $('#PortName').val();
                 debugger;
                 var cargoHandled;
                 cargoHandled = {
@@ -308,6 +309,7 @@
                     url: "/Admin/CargoHandled/PortNameOnchange",
                     data: cargoHandled,
                     dataType: "HTML",
+                    async: false,
                     success: function (data) {
 
                         $("#terminaldrop").html(data);
