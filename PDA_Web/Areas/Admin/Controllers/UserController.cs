@@ -270,8 +270,8 @@ namespace PDA_Web.Areas.Admin.Controllers
             var UserRolePermissionsData = await unitOfWork.User.GetAllUserRolePermissionsAsync();
             ViewBag.UserRolePermissions = UserRolePermissionsData;
 
-            return PartialView("partial/_UserPermission");
-
+            ViewBag.RollId = RoleId;
+            return PartialView("partial/_UserPermission", RoleId);
         }
         #endregion
     }
