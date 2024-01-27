@@ -45,6 +45,21 @@ namespace PDA_Web.Areas.Admin.Controllers
             
         }
 
+        public IActionResult PortNameOnchange(PDAEstimator PDAEstimitor)
+        {
+            var TerminalDetailData = unitOfWork.TerminalDetails.GetAllAsync().Result.Where(x => x.PortID == PDAEstimitor.PortID);
+
+            ViewBag.Terminal = TerminalDetailData;
+            return PartialView("partial/TerminalList");
+        }
+        public IActionResult TerminalNameOnchange(PDAEstimator PDAEstimitor)
+        {
+            var BearthDetailData = unitOfWork.BerthDetails.GetAllAsync().Result.Where(x => x.TerminalID == PDAEstimitor.TerminalID);
+            ViewBag.Berth = BearthDetailData;
+            return PartialView("partial/BerthList");
+        }
+
+
         public IActionResult PortNameOnchange(CargoHandleds cargoHandleds)
         {
             var TerminalDetailData = unitOfWork.TerminalDetails.GetAllAsync().Result.Where(x => x.PortID == cargoHandleds.PortID);

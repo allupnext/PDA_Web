@@ -41,7 +41,7 @@
 
                                 <div class="form-group">
                                     <label for="PortName">Port<span class="text-danger">*</span></label>
-                                    @Html.DropDownList("PortName", new SelectList(ViewBag.Port, "ID", "PortName"), "Please Select" ,new { @class="form-control" })
+                                    @Html.DropDownList("PortName", new SelectList(ViewBag.Port, "ID", "PortName"), "Please Select", new { @class = "form-control", @onchange = "PortOnChangefunc()" })
                                 </div>
                             </div>
 
@@ -103,11 +103,11 @@
                         <div class="row" style="padding-bottom: 10px;">
                             <div class="col-sm-2" style="max-width: 15%;">
                                 <label for="PortNameFilter">Port Name</label>
-                                @Html.DropDownList("PortNameFilter", new SelectList(ViewBag.Port, "ID", "PortName"), "Please Select" ,new { @class="form-control" })
+                                @Html.DropDownList("PortNameFilter", new SelectList(ViewBag.Port, "ID", "PortName"), "Please Select", new { @class = "form-control" })
                             </div>
                             <div class="col-sm-2" style="max-width: 15%;">
                                 <label for="TerminalNamefilter">Terminal Name</label>
-                                @Html.DropDownList("TerminalNamefilter", new SelectList(ViewBag.Terminal, "ID", "TerminalName"), "Please Select", new { @class="form-control" })
+                                @Html.DropDownList("TerminalNamefilter", new SelectList(ViewBag.Terminal, "ID", "TerminalName"), "Please Select", new { @class = "form-control", @onchange = "TerminalChange()" })
                             </div>
                             <div class="col-sm-2" style="max-width: 15%;">
                                 <label for="BerthNameFilter">Berth Name</label>
@@ -236,7 +236,9 @@
                     $('#CargoNameEdit').show();
                     $('#CargoName').hide();
                     $('#PortName').val(data.cargoHandled.portID);
+                    PortOnChangefunc();
                     $('#TerminalName').val(data.cargoHandled.terminalID);
+                    TerminalChange();
                     $('#BerthName').val(data.cargoHandled.berthID);
                     $('#CargoNameEdit').val(data.cargoHandled.cargoIDs);
 
@@ -245,6 +247,58 @@
                 }
             });
         }
+
+        function PortOnChangefunc() {
+            var portid = $('#PortName').val();
+            var PDAEstimitor;
+            PDAEstimitor = {
+                "PortID": portid,
+                "TerminalID": $('#TerminalName').val(),
+                "BerthID": $('#BerthName').val(),
+                //"CargoID": $('#CargoName').val(),
+            }
+            debugger;
+            $.ajax({
+
+                type: "GET",
+                url: "/Admin/PDAEstimator/PortNameOnchange",
+                data: PDAEstimitor,
+                dataType: "HTML",
+                async: false,
+                success: function (data) {
+
+                    $("#terminaldrop").html(data);
+                    
+                },
+                error: function () {
+                }
+            });
+        };
+
+
+        function TerminalChange() {
+            var portid = $('#PortName').val();
+            debugger;
+            var cargoHandled;
+            cargoHandled = {
+
+                "TerminalID": $('#TerminalName').val()
+            }
+            $.ajax({
+                type: "GET",
+                url: "/Admin/CargoHandled/TerminalNameOnchange",
+                data: cargoHandled,
+                dataType: "HTML",
+                async: false,
+                success: function (data) {
+
+                    $("#berthdrop").html(data);
+
+                },
+                error: function () {
+                }
+            });
+        };
 
         function callChangefunc(val) {
             var portid = $('option:selected', this).val();
@@ -292,33 +346,33 @@
             $("#CargoNameFilter").change(function () {
                 loadData();
             });
-            $("#PortName").change(function () {
-                var portid = $('#PortName').val();
-                debugger;
-                var cargoHandled;
-                cargoHandled = {
-                    "PortID": portid,
-                    "TerminalID": $('#TerminalName').val(),
-                    "BerthID": $('#BerthName').val(),
-                    "CargoID": $('#CargoName').val(),
-                }
+            // $("#PortName").change(function () {
+            //     var portid = $('#PortName').val();
+            //     debugger;
+            //     var cargoHandled;
+            //     cargoHandled = {
+            //         "PortID": portid,
+            //         "TerminalID": $('#TerminalName').val(),
+            //         "BerthID": $('#BerthName').val(),
+            //         "CargoID": $('#CargoName').val(),
+            //     }
 
-                $.ajax({
+            //     $.ajax({
 
-                    type: "GET",
-                    url: "/Admin/CargoHandled/PortNameOnchange",
-                    data: cargoHandled,
-                    dataType: "HTML",
-                    async: false,
-                    success: function (data) {
+            //         type: "GET",
+            //         url: "/Admin/CargoHandled/PortNameOnchange",
+            //         data: cargoHandled,
+            //         dataType: "HTML",
+            //         async: false,
+            //         success: function (data) {
 
-                        $("#terminaldrop").html(data);
+            //             $("#terminaldrop").html(data);
 
-                    },
-                    error: function () {
-                    }
-                });
-            });
+            //         },
+            //         error: function () {
+            //         }
+            //     });
+            // });
         });
 
 
