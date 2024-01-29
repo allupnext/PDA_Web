@@ -15,5 +15,7 @@ namespace PDAEstimator_Domain.Entities
 
         public bool IsPermission { get; set; } = false;
 
+        public int RoleID { get; set; }
+
     }
 }

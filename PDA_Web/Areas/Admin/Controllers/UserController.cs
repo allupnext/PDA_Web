@@ -287,14 +287,28 @@ namespace PDA_Web.Areas.Admin.Controllers
 
         public async Task<IActionResult> PermissionLoadAll(int RoleId)
         {
-            var UserRolePermissionMenuData = await unitOfWork.User.GetAllUserRolePermissionMenuAsync();
-            ViewBag.UserRolePermissionMenu = UserRolePermissionMenuData;
+            //var UserRolePermissionMenuData = await unitOfWork.User.GetAllUserRolePermissionMenuAsync();
+            //ViewBag.UserRolePermissionMenu = UserRolePermissionMenuData;
 
-            var UserRolePermissionsData = await unitOfWork.User.GetAllUserRolePermissionsAsync();
-            ViewBag.UserRolePermissions = UserRolePermissionsData;
+            //var UserRolePermissionsData = await unitOfWork.User.GetAllUserRolePermissionsAsync();
+            //ViewBag.UserRolePermissions = UserRolePermissionsData;
 
-            ViewBag.RollId = RoleId;
-            return PartialView("partial/_UserPermission", RoleId);
+            //ViewBag.RollId = RoleId;
+
+            var UserPemissionRole_Role_MappingData = await unitOfWork.User.GetAllUserPemissionRole_Role_Mapping();
+            UserPemissionRole_Role_MappingData =  UserPemissionRole_Role_MappingData.Where(x => x.RoleID == RoleId).ToList();
+            string UserRolePermissionIds = "";
+            if (UserPemissionRole_Role_MappingData.Count > 0)
+            {
+                var UserRolePermissionIdList = UserPemissionRole_Role_MappingData.Select(x => x.UserRolePermissionId).ToList();
+                UserRolePermissionIds = string.Join(",", UserRolePermissionIdList);
+            }
+            return Json(new
+            {
+                UserRolePermissionIds = UserRolePermissionIds,
+                proceed = true,
+                msg = ""
+            });
         }
         #endregion
     }

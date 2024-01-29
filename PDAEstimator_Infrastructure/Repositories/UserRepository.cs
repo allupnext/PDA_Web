@@ -250,13 +250,32 @@ namespace PDAEstimator_Infrastructure.Repositories
         {
             try
             {
-                var sql = "SELECT UserRolePermissions.*, UserRolePermission, IsPermission FROM UserRolePermissions left join UserRolePermissionType on UserRolePermissionType.userRolePermissionTypeId = UserRolePermissions.userRolePermissionTypeId left join UserPemissionRole_Role_Mapping on UserPemissionRole_Role_Mapping.UserRolePermissionId = UserRolePermissions.UserRolePermissionId";
+                var sql = "SELECT UserRolePermissions.*, UserRolePermission, IsPermission,RoleID FROM UserRolePermissions left join UserRolePermissionType on UserRolePermissionType.userRolePermissionTypeId = UserRolePermissions.userRolePermissionTypeId left join UserPemissionRole_Role_Mapping on UserPemissionRole_Role_Mapping.UserRolePermissionId = UserRolePermissions.UserRolePermissionId";
 
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
                     connection.Open();
                     var result = await connection.QueryAsync<UserRolePermissions>(sql);
                     return new List<UserRolePermissions>(result.ToList());
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<List<UserPemissionRole_Role_Mapping>> GetAllUserPemissionRole_Role_Mapping()
+        {
+            try
+            {
+                var sql = "SELECT * FROM UserPemissionRole_Role_Mapping";
+
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                {
+                    connection.Open();
+                    var result = await connection.QueryAsync<UserPemissionRole_Role_Mapping>(sql);
+                    return new List<UserPemissionRole_Role_Mapping>(result.ToList());
                 }
             }
             catch (Exception ex)

@@ -58,16 +58,16 @@
                                     {
                                         <div class="col-sm-2">
                                             <div class="form-check">
-                                                @if (RolePermission.IsPermission == true && ViewBag.RollId != 0 )
+                                               @* @if (RolePermission.IsPermission == true && ViewBag.RollId != 0 )
                                                 {
                                                     <input type="checkbox" class="form-check-input" id="UserRolePermission_@RolePermission.UserRolePermissionId" checked>
                                                     <label class="form-check-label" for="UserRolePermission_@RolePermission.UserRolePermissionId">@RolePermission.UserRolePermission</label>
                                                 }
                                                 else
-                                                {
-                                                    <input type="checkbox" class="form-check-input" id="UserRolePermission_@RolePermission.UserRolePermissionId" onchange="RolePermission_click(@RolePermission.UserRolePermissionId)" checked="@RolePermission.IsPermission">
+                                                {*@
+                                                <input type="checkbox" name="checkUserRolePermission" class="form-check-input" id="UserRolePermission_@RolePermission.UserRolePermissionId" onchange="RolePermission_click(@RolePermission.UserRolePermissionId)">
                                                     <label class="form-check-label" for="UserRolePermission_@RolePermission.UserRolePermissionId">@RolePermission.UserRolePermission</label>
-                                                }
+                                               @* }*@
 
                                                 @* <input type="checkbox" class="form-check-input" id="RolePermission_@RolePermission.UserRolePermissionId" onchange="RolePermission_click(@RolePermission.UserRolePermissionId)">
                                                 <label class="form-check-label" for="PDAEstimatorView">@RolePermission.UserRolePermission</label> *@
@@ -98,9 +98,18 @@
             $.ajax({
                 type: "GET",
                 url: "/Admin/User/PermissionLoadAll?RoleId=" + $('#Role').val(),
-                dataType: "HTML",
+                dataType: "JSON",
                 success: function (data) {
-                    $("#viewAll").html(data);
+                    debugger;
+                    $('input[name="checkUserRolePermission"]').each(function () {
+                        this.checked = false;
+                    });
+                    const array = data.userRolePermissionIds.split(',');
+                    for (var i = 0; i < array.length; i++) {
+                        let checkbox = document.getElementById('UserRolePermission_' + array[i]);
+                        checkbox.checked = true;
+                    }
+                    //$("#viewAll").html(data);
                 },
                 error: function () {
                 }
@@ -122,8 +131,9 @@
 
         function RolePermission_click(UserRolePermissionId) {
 
+            debugger;
             var IsPermission = false;
-            let checkbox = document.getElementById('RolePermission_' + UserRolePermissionId);
+            let checkbox = document.getElementById('UserRolePermission_' + UserRolePermissionId);
 
             if ($('#Role').val() == 0) {
                 checkbox.checked = false;
