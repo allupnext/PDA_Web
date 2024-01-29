@@ -58,8 +58,19 @@
                                     {
                                         <div class="col-sm-2">
                                             <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" id="RolePermission_@RolePermission.UserRolePermissionId" onchange="RolePermission_click(@RolePermission.UserRolePermissionId)">
-                                                <label class="form-check-label" for="PDAEstimatorView">@RolePermission.UserRolePermission</label>
+                                                @if (RolePermission.IsPermission == true && ViewBag.RollId != 0 )
+                                                {
+                                                    <input type="checkbox" class="form-check-input" id="UserRolePermission_@RolePermission.UserRolePermissionId" checked>
+                                                    <label class="form-check-label" for="UserRolePermission_@RolePermission.UserRolePermissionId">@RolePermission.UserRolePermission</label>
+                                                }
+                                                else
+                                                {
+                                                    <input type="checkbox" class="form-check-input" id="UserRolePermission_@RolePermission.UserRolePermissionId" onchange="RolePermission_click(@RolePermission.UserRolePermissionId)" checked="@RolePermission.IsPermission">
+                                                    <label class="form-check-label" for="UserRolePermission_@RolePermission.UserRolePermissionId">@RolePermission.UserRolePermission</label>
+                                                }
+
+                                                @* <input type="checkbox" class="form-check-input" id="RolePermission_@RolePermission.UserRolePermissionId" onchange="RolePermission_click(@RolePermission.UserRolePermissionId)">
+                                                <label class="form-check-label" for="PDAEstimatorView">@RolePermission.UserRolePermission</label> *@
                                             </div>
                                         </div>
 
@@ -110,36 +121,42 @@
 
             var IsPermission = false;
             let checkbox = document.getElementById('RolePermission_' + UserRolePermissionId);
-            if (checkbox.checked) {
-                IsPermission = true;
-            }
-            else {
-                IsPermission = false;
-            }
 
-            var UserPemissionRole_Role_Mapping;
-            UserPemissionRole_Role_Mapping = {
-                "RoleID": $('#Role').val(),
-                "UserRolePermissionId": UserRolePermissionId,
-                "IsPermission": IsPermission
+            if ($('#Role').val() == 0) {
+                checkbox.checked = false;
+                alert("Please select Role")
             }
-            $.ajax({
-                type: "POST",
-                url: "/Admin/User/RolePermission_click",
-                data: UserPemissionRole_Role_Mapping,
-                success: function (data) {
-                    if (!data.proceed) {
-                        return;
-                    }
-                    else {
-                        loadData();
-                    }
-
-                },
-                error: function () {
+            else{
+                if (checkbox.checked) {
+                    IsPermission = true;
                 }
-            });
+                else {
+                    IsPermission = false;
+                }
 
+                var UserPemissionRole_Role_Mapping;
+                UserPemissionRole_Role_Mapping = {
+                    "RoleID": $('#Role').val(),
+                    "UserRolePermissionId": UserRolePermissionId,
+                    "IsPermission": IsPermission
+                }
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/User/RolePermission_click",
+                    data: UserPemissionRole_Role_Mapping,
+                    success: function (data) {
+                        if (!data.proceed) {
+                            return;
+                        }
+                        else {
+                            loadData();
+                        }
+
+                    },
+                    error: function () {
+                    }
+                });
+            }
         }
     </script>
 
