@@ -17,11 +17,20 @@ namespace PDA_Web.Areas.Admin.Controllers
             _toastNotification = toastNotification;
 
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var userid = HttpContext.Session.GetString("UserID");
             if (!string.IsNullOrEmpty(userid))
             {
+                // Temp Solution START
+                var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
+                ViewBag.UserPermissionModel = UserPermissionModel;
+                var Currentuser = HttpContext.Session.GetString("UserID");
+
+                var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
+                ViewBag.UserRoleName = UserRole;
+                // Temp Solution END
+
                 return View();
             }
             else

@@ -43,6 +43,14 @@ namespace PDA_Web.Areas.Admin.Controllers
 
         public async Task<IActionResult> Formula()
         {
+            // Temp Solution START
+            var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
+            ViewBag.UserPermissionModel = UserPermissionModel;
+            var Currentuser = HttpContext.Session.GetString("UserID");
+
+            var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
+            ViewBag.UserRoleName = UserRole;
+            // Temp Solution END
             var FormulaAttribute = await unitOfWork.FormatAttribute.GetAllAsync();
             ViewBag.FormulaAttribute = FormulaAttribute;
             var FormulaSlab = await unitOfWork.tariffSegment.GetAllAsync();
@@ -183,6 +191,14 @@ namespace PDA_Web.Areas.Admin.Controllers
             var userid = HttpContext.Session.GetString("UserID");
             if (!string.IsNullOrEmpty(userid))
             {
+                // Temp Solution START
+                var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
+                ViewBag.UserPermissionModel = UserPermissionModel;
+                var Currentuser = HttpContext.Session.GetString("UserID");
+
+                var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
+                ViewBag.UserRoleName = UserRole;
+                // Temp Solution END
                 var data2 = await unitOfWork.PortDetails.GetAllAsync();
                 ViewBag.Port = data2;
 

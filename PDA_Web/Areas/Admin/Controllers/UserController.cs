@@ -31,6 +31,15 @@ namespace PDA_Web.Areas.Admin.Controllers
             var userid = HttpContext.Session.GetString("UserID");
             if (!string.IsNullOrEmpty(userid))
             {
+                // Temp Solution START
+                var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
+                ViewBag.UserPermissionModel = UserPermissionModel;
+                var Currentuser = HttpContext.Session.GetString("UserID");
+
+                var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
+                ViewBag.UserRoleName = UserRole;
+                // Temp Solution END
+
                 var PrimaryCompanyData = await unitOfWork.Company.GetAllAsync();
                 ViewBag.PrimaryCompany = PrimaryCompanyData;
 
@@ -231,6 +240,14 @@ namespace PDA_Web.Areas.Admin.Controllers
             var userid = HttpContext.Session.GetString("UserID");
             if (!string.IsNullOrEmpty(userid))
             {
+                // Temp Solution START
+                var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
+                ViewBag.UserPermissionModel = UserPermissionModel;
+                var Currentuser = HttpContext.Session.GetString("UserID");
+
+                var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
+                ViewBag.UserRoleName = UserRole;
+                // Temp Solution END
                 //Roles RolesM = new Roles();
                 //RolesM = await unitOfWork.Roles.GetAllAsync().Result.Where(x => x.RoleID == RolesM.RoleID).ToList();
                 var RoleData = await unitOfWork.Roles.GetAllAsync();
