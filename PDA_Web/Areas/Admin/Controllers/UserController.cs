@@ -231,9 +231,15 @@ namespace PDA_Web.Areas.Admin.Controllers
             var userid = HttpContext.Session.GetString("UserID");
             if (!string.IsNullOrEmpty(userid))
             {
+                //Roles RolesM = new Roles();
+                //RolesM = await unitOfWork.Roles.GetAllAsync().Result.Where(x => x.RoleID == RolesM.RoleID).ToList();
                 var RoleData = await unitOfWork.Roles.GetAllAsync();
-                ViewBag.Roles = RoleData;
+                //Roles RoleId = 
 
+                ViewBag.Roles = RoleData;
+                //ViewBag.Roles = RolesM.RoleID.ToString();
+                
+                
                 var UserRolePermissionMenuData = await unitOfWork.User.GetAllUserRolePermissionMenuAsync();
                 ViewBag.UserRolePermissionMenu = UserRolePermissionMenuData;
 

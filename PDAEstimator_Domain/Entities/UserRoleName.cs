@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace PDAEstimator_Domain.Entities
 {
-    public class UserAuth
+    public class UserRoleName
     {
-        public string EmployCode { get; set; } = string.Empty;
-        public string UserPassword { get; set; } = string.Empty;
-      
+        ///public int ID { get; set; }
+        //public int RoleID { get; set; }
+        public string RoleName { get; set; }
     }
 }

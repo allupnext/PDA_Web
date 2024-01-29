@@ -9,7 +9,6 @@ namespace PDAEstimator_Domain.Entities
     public class UserRolePermissionMenu
     {
         public int UserRolePermissionMenuId { get; set; }
-
         public string MenuName { get; set; }
         public bool IsDeleted { get; set; } = false;
     }

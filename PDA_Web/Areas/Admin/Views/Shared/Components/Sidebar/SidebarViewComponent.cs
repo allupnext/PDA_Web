@@ -6,7 +6,7 @@ namespace PDA_Web.Areas.Admin.Views.Shared.Components.Sidebar
     {
         public IViewComponentResult Invoke()
         {
-            return View();
+            return View();  
         }
     }
 }

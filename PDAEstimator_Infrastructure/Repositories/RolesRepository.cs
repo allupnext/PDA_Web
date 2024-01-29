@@ -19,6 +19,7 @@ namespace PDAEstimator_Infrastructure.Repositories
             this.configuration = configuration;
         }
 
+
         public async Task<string> AddAsync(Roles entity)
         {
             var sql = "Insert into UserRole (RoleName,Status, IsDeleted)VALUES (@RoleName, @Status, 0)";
@@ -52,6 +53,29 @@ namespace PDAEstimator_Infrastructure.Repositories
             }
         }
 
+        public async Task<List<UserPermissionRights>> GetUserPermissionRights()
+        {
+            var sql = "SELECT UserPemissionRole_Role_Mapping.*, RoleName, MenuName, UserRolePermission FROM UserPemissionRole_Role_Mapping Left join UserRole on UserRole.RoleId = UserPemissionRole_Role_Mapping.RoleId Left join UserRolePermissions on UserRolePermissions.UserRolePermissionId = UserPemissionRole_Role_Mapping.UserRolePermissionId Left join UserRolePermissionType on UserRolePermissionType.UserRolePermissionTypeID = UserRolePermissions.UserRolePermissionTypeID Left Join UserRolePermissionMenu on UserRolePermissionMenu.UserRolePermissionMenuId = UserRolePermissions.UserRolePermissionMenuId";
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+            {
+                connection.Open();
+                var result = await connection.QueryAsync<UserPermissionRights>(sql);
+                return new List<UserPermissionRights>(result.ToList());
+            }
+        }
+
+        public async Task<List<UserRoleName>> GetUserRoleName(long Currentuser)
+        {
+            //var sql = "select UserMaster.ID,UserMaster.RoleID, RoleName from UserMaster left join UserRole on UserRole.RoleId = UserMaster.RoleId where ID = "+ Currentuser +"";
+            var sql = "select RoleName from UserMaster left join UserRole on UserRole.RoleId = UserMaster.RoleId where ID = "+ Currentuser +"";
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+            {
+                connection.Open();
+                var result = await connection.QueryAsync<UserRoleName>(sql);
+                return new List<UserRoleName>(result.ToList());
+            }
+        }
+
         public async Task<Roles> GetByIdAsync(long id)
         {
             var sql = "SELECT * FROM UserRole WHERE RoleId = @Id";
@@ -62,6 +86,8 @@ namespace PDAEstimator_Infrastructure.Repositories
                 return result;
             }
         }
+
+
 
         public async Task<int> UpdateAsync(Roles entity)
         {

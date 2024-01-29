@@ -9,5 +9,7 @@ namespace PDAEstimator_Application.Interfaces
 {
     public interface IRoleRepository : IGenericRepository<Roles>
     {
+        Task<List<UserPermissionRights>> GetUserPermissionRights();
+        Task<List<UserRoleName>> GetUserRoleName(long Currentuser);
     }
 }

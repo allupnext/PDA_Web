@@ -93,6 +93,8 @@
     <script>
 
         function callRoleChangefunc() {
+            // var ROleId = $('#Role').val();
+            // alert(ROleId);
             $.ajax({
                 type: "GET",
                 url: "/Admin/User/PermissionLoadAll?RoleId=" + $('#Role').val(),
@@ -107,6 +109,7 @@
 
         function UserRolePermissionSave() {
             var UserPemissionRole_Role_Mapping;
+ 
             UserPemissionRole_Role_Mapping = {
                 "RoleID": $('#Role').val(),
                 "PortID": $('#PortName').val(),

@@ -26,9 +26,11 @@ namespace PDA_Web.Areas.Admin.Controllers
             if (user != null)
             {
                 User isAuthenticated = await unitOfWork.User.Authenticate(user.EmployCode, user.UserPassword);
+                
                 if (isAuthenticated != null)
                 {
                     HttpContext.Session.SetString("UserID", isAuthenticated.ID.ToString());
+                   
                     return RedirectToAction("Index", "Home");
                 }
                 else
