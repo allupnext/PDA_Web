@@ -21,7 +21,7 @@ namespace PDAEstimator_Domain.Entities
         public int? TerminalID { get; set; }
 
      
-        public int BerthID { get; set; }
+        public int? BerthID { get; set; }
         public int? CargoID { get; set; }
 
         public int? CallTypeID { get; set; }

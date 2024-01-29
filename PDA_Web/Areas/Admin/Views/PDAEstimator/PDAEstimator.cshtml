@@ -298,7 +298,7 @@
                 foreach (var expitem in Model.Expenses.Where(x => Model.TariffRateList.Any(y => y.ExpenseCategoryID == x.ID)))
                 {
                     decimal gstbasevalue = 0, gstdefaultvalue = 0;
-                    decimal subtotalbaseamount = 0, subtotaldefaultamount = 0, subtotalbasewithgst = 0, subtotaldefaultwithgst = 0;
+                    decimal subtotalbaseamount = 0, subtotaldefaultamount = 0, GSTsubtotalbaseamount = 0, GSTsubtotaldefaultamount = 0, subtotalbasewithgst = 0, subtotaldefaultwithgst = 0;
                     var charcodecount = 1;
                     <div class="expenses_info">
                         <ul class="expenses_head">
@@ -339,6 +339,8 @@
                                     {
                                         <li class="valuefont">₹ @chargecodeitem.Amount.ToString("#,##0.##")</li>
                                         subtotalbaseamount += chargecodeitem.Amount;
+                                        if (chargecodeitem.TaxID != null && chargecodeitem.TaxID > 0)
+                                            GSTsubtotalbaseamount += chargecodeitem.Amount;
                                     }
                                     else
                                     {
@@ -346,11 +348,15 @@
                                         amountconvtbase = @chargecodeitem.Amount * Model.ROE;
                                         <li class="valuefont">₹ @amountconvtbase.ToString("#,##0.##")</li>
                                         subtotalbaseamount += amountconvtbase;
+                                        if (chargecodeitem.TaxID != null && chargecodeitem.TaxID > 0)
+                                            GSTsubtotalbaseamount += amountconvtbase;
                                     }
                                     @if (@chargecodeitem.CurrencyID == Model.DefaultCurrencyCodeID)
                                     {
                                         <li class="valuefont">$ @chargecodeitem.Amount.ToString("#,##0.##")</li>
                                         subtotaldefaultamount += chargecodeitem.Amount;
+                                        if (chargecodeitem.TaxID != null && chargecodeitem.TaxID > 0)
+                                            GSTsubtotaldefaultamount += chargecodeitem.Amount;
                                     }
                                     else
                                     {
@@ -358,6 +364,9 @@
                                         amountconvtdefault = @chargecodeitem.Amount / Model.ROE;
                                         <li class="valuefont">$ @amountconvtdefault.ToString("#,##0.##")</li>
                                         subtotaldefaultamount += amountconvtdefault;
+                                        if (chargecodeitem.TaxID != null && chargecodeitem.TaxID > 0)
+                                            GSTsubtotaldefaultamount += amountconvtdefault;
+
                                     }
                                     @if (@chargecodeitem.Remark != null && @chargecodeitem.Remark != "")
                                     {
@@ -374,8 +383,8 @@
                                 charcodecount++;
                             }
                             @{
-                                gstbasevalue += (subtotalbaseamount * Model.Taxrate) / 100;
-                                gstdefaultvalue += (subtotaldefaultamount * Model.Taxrate) / 100;
+                                gstbasevalue += (GSTsubtotalbaseamount * Model.Taxrate) / 100;
+                                gstdefaultvalue += (GSTsubtotaldefaultamount * Model.Taxrate) / 100;
                             }
 
                             <ul>
@@ -774,9 +783,9 @@
                     width: 10%;
                 }
                 /*
-                                                                                                                        ul.expense_items_row li:last-child {
-                                                                                                                            color: #ff0000 !important;
-                                                                                                                        }*/
+                                                                                                                                ul.expense_items_row li:last-child {
+                                                                                                                                    color: #ff0000 !important;
+                                                                                                                                }*/
 
                 ul.expense_items_row li ul li {
                     border-top: 1px solid #fff;

@@ -97,5 +97,7 @@ namespace PDAEstimator_Domain.Entities
         public decimal Taxrate { get; set; }
 
         public int VesselBallast { get; set; } = 0;
+
+        public int BerthID { get; set; }
     }
 }
