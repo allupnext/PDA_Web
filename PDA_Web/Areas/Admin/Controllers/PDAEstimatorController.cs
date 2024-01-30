@@ -151,12 +151,12 @@ namespace PDA_Web.Areas.Admin.Controllers
                                     string FormulaAttributedata = formularTransList.formulaAttributeName;
                                     if (FormulaAttributedata.Contains("GRT"))
                                     {
-                                        UnitCalculation(triff, pDAEstimatorOutPut.GRT);
+                                        UnitCalculation(triff, pDAEstimatorOutPut.GRT, pDAEstimatorOutPut);
                                         formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
                                     }
                                     else if (FormulaAttributedata.Contains("NRT"))
                                     {
-                                        UnitCalculation(triff, pDAEstimatorOutPut.NRT);
+                                        UnitCalculation(triff, pDAEstimatorOutPut.NRT, pDAEstimatorOutPut);
                                         formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
                                     }
                                     else if (FormulaAttributedata == "BSTH" || FormulaAttributedata == "BSTHF")
@@ -321,9 +321,31 @@ namespace PDA_Web.Areas.Admin.Controllers
             return View(pDAEstimatorOutPut);
         }
 
-        public PDATariffRateList UnitCalculation(PDATariffRateList triff, long? attributvalue)
+        public PDATariffRateList UnitCalculation(PDATariffRateList triff, long? attributvalue, PDAEstimatorOutPutView pDAEstimatorOutPut)
         {
             decimal? units = 0;
+            //long? slabattributvalue = 0;
+            //if (triff.SlabName == "GRT")
+            //    slabattributvalue = pDAEstimatorOutPut.GRT;
+            //else if (triff.SlabName ==  "NRT")
+            //    slabattributvalue = pDAEstimatorOutPut.NRT;
+            //else if (triff.SlabName == "BSTH" || triff.SlabName == "BSTHF")
+            //    slabattributvalue = pDAEstimatorOutPut.BerthStay;
+            //else if (triff.SlabName == "BSTS" || triff.SlabName == "BSTSF")
+            //    slabattributvalue = pDAEstimatorOutPut.BerthStayShift;
+            //else if (triff.SlabName == "BSTD" || triff.SlabName == "BSTDF")
+            //    slabattributvalue = pDAEstimatorOutPut.BerthStayDay;
+            //else if (triff.SlabName == "BSTHC")
+            //    slabattributvalue = pDAEstimatorOutPut.BerthStayHoursCoastal;
+            //else if (triff.SlabName == "BSTSC")
+            //    slabattributvalue = pDAEstimatorOutPut.BerthStayShiftCoastal;
+            //else if (triff.SlabName == "BSTDC")
+            //    slabattributvalue = pDAEstimatorOutPut.BerthStayDayCoastal;
+            //else if (triff.SlabName  == "AST")
+            //    slabattributvalue = pDAEstimatorOutPut.AnchorageStay;
+            //else if (triff.SlabName == "CQTY")
+            //    slabattributvalue = pDAEstimatorOutPut.CargoQty;
+
             if (triff.SlabID != null && triff.SlabID > 0)
             {
                 if (triff.SlabIncreemental == 1)
