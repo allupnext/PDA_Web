@@ -66,6 +66,16 @@ namespace PDA_Web.Areas.Admin.Controllers
         public async Task<IActionResult> LoadAll(CompanyMaster companyMaster,Customer customer)
         {
             var data = await unitOfWork.Company.GetAlllistAsync();
+
+            // Temp Solution START
+            var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
+            ViewBag.UserPermissionModel = UserPermissionModel;
+            var Currentuser = HttpContext.Session.GetString("UserID");
+
+            var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
+            ViewBag.UserRoleName = UserRole;
+            // Temp Solution END
+
             if (companyMaster.CompanyName != null /*&& customer.FirstName != 0*/)
             {
                 data = data.Where(x => x.CompanyName.ToUpper().Contains(companyMaster.CompanyName.ToUpper())).ToList();

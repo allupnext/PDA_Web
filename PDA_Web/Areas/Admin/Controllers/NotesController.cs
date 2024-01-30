@@ -96,6 +96,15 @@ namespace PDA_Web.Areas.Admin.Controllers
         {
             var data = await unitOfWork.Notes.GetAllAsync();
 
+            // Temp Solution START
+            var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
+            ViewBag.UserPermissionModel = UserPermissionModel;
+            var Currentuser = HttpContext.Session.GetString("UserID");
+
+            var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
+            ViewBag.UserRoleName = UserRole;
+            // Temp Solution END
+
             return PartialView("partial/_ViewAll", data);
         }
         public async Task<ActionResult> editNote(Notes notes)

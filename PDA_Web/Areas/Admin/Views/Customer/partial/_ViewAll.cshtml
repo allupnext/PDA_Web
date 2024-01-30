@@ -140,14 +140,29 @@
                 <td>
                     @Html.DisplayFor(modelItem => customer.Beneficiary_Bank_Name)
                 </td>
-                <td>
-                    <a class="btn btn-info btn-sm" onclick="editCustomer(@customer.CustomerId)">
-                        <i class="fas fa-pencil-alt"></i> Edit
-                    </a>
-                    <a class="btn btn-danger btn-sm" onclick="deleteCustomer(@customer.CustomerId)">
-                        <i class="fas fa-trash"></i> Delete
-                    </a>
-                </td>
+
+                @using PDAEstimator_Domain.Entities;
+                @if (ViewBag.UserPermissionModel != null)
+                {
+                    List<UserPermissionRights> userPermissionRights = new List<UserPermissionRights>();
+                    List<UserRoleName> userRoleName = new List<UserRoleName>();
+                    userPermissionRights = ViewBag.UserPermissionModel;
+                    userRoleName = ViewBag.UserRoleName;
+                    <td>
+                        @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Customer" && x.UserRolePermission == "Edit").Count() > 0))
+                        {
+                            <a class="btn btn-info btn-sm" onclick="editCustomer(@customer.CustomerId)">
+                                <i class="fas fa-pencil-alt"></i> Edit
+                            </a>
+                        }
+                        @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Customer" && x.UserRolePermission == "Delete").Count() > 0))
+                        {
+                            <a class="btn btn-danger btn-sm" onclick="deleteCustomer(@customer.CustomerId)">
+                                <i class="fas fa-trash"></i> Delete
+                            </a>
+                        }
+                    </td>
+                }
             </tr>
         }
     </tbody>

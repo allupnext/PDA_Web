@@ -43,6 +43,16 @@ namespace PDA_Web.Areas.Admin.Controllers
         public async Task<IActionResult> LoadAll(Roles roles)
         {
             var data = await unitOfWork.Roles.GetAllAsync();
+
+            // Temp Solution START
+            var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
+            ViewBag.UserPermissionModel = UserPermissionModel;
+            var Currentuser = HttpContext.Session.GetString("UserID");
+
+            var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
+            ViewBag.UserRoleName = UserRole;
+            // Temp Solution END
+
             if (roles.RoleName != null /*&& customer.FirstName != 0*/)
             {
                 //data = data.Where(x => x.RoleName.Contains("%"+roles.RoleName+"%")).ToList();

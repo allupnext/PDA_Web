@@ -293,6 +293,16 @@ namespace PDA_Web.Areas.Admin.Controllers
             List<TariffRateList> TariffRatedata = new List<TariffRateList>();
             TariffRatedata = await unitOfWork.TariffMasters.GetAllTariffRateAsync(tariff.PortID);
 
+
+
+            var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
+            ViewBag.UserPermissionModel = UserPermissionModel;
+            var Currentuser = HttpContext.Session.GetString("UserID");
+
+            var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
+            ViewBag.UserRoleName = UserRole;
+
+
             foreach (var TariffRate in TariffRatedata)
             {
                 if (TariffRate.FormulaID != null && TariffRate.FormulaID > 0)

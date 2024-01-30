@@ -42,6 +42,16 @@ namespace PDA_Web.Areas.Admin.Controllers
         public async Task<IActionResult> LoadAll(Currency currency)
         {
             var data = await unitOfWork.Currencys.GetAllAsync();
+
+            // Temp Solution START
+            var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
+            ViewBag.UserPermissionModel = UserPermissionModel;
+            var Currentuser = HttpContext.Session.GetString("UserID");
+
+            var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
+            ViewBag.UserRoleName = UserRole;
+            // Temp Solution END
+
             if (currency.CurrencyName != null && currency.CurrencyName != "" /*&& customer.FirstName != 0*/)
             {
                 data = data.Where(x => x.CurrencyName.ToUpper().Contains(currency.CurrencyName.ToUpper())).ToList();

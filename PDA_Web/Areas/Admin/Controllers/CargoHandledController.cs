@@ -86,6 +86,16 @@ namespace PDA_Web.Areas.Admin.Controllers
         public async Task<IActionResult> LoadAll(CargoHandleds cargoHandleds)
         {
             var data = await unitOfWork.cargoHandled.GetAlllistAsync();
+
+            // Temp Solution START
+            var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
+            ViewBag.UserPermissionModel = UserPermissionModel;
+            var Currentuser = HttpContext.Session.GetString("UserID");
+
+            var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
+            ViewBag.UserRoleName = UserRole;
+            // Temp Solution END
+
             if (cargoHandleds.PortID != null && cargoHandleds.PortID != 0/*&& customer.FirstName != 0*/)
             {
                 data = data.Where(x => x.PortID==cargoHandleds.PortID).ToList();

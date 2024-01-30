@@ -44,7 +44,14 @@ namespace PDA_Web.Areas.Admin.Controllers
         public async Task<IActionResult> LoadAll(Expense expense)
         {
             var data = await unitOfWork.Expenses.GetAllAsync();
+            // Temp Solution START
+            var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
+            ViewBag.UserPermissionModel = UserPermissionModel;
+            var Currentuser = HttpContext.Session.GetString("UserID");
 
+            var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
+            ViewBag.UserRoleName = UserRole;
+            // Temp Solution END
             if (expense.ExpenseName != null /*&& customer.FirstName != 0*/)
             {
                 data = data.Where(x => x.ExpenseName.ToUpper().Contains(expense.ExpenseName.ToUpper())).ToList();

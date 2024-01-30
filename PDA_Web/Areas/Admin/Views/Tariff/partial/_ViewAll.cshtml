@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<PDAEstimator_Domain.Entities.TariffMasterList>
+@using PDAEstimator_Domain.Entities;
 <style>
     table td {
         width: 110px;
@@ -34,19 +35,36 @@
                 </td> *@
                 <td>@Html.DisplayFor(modelItem => item.TariffCount)</td>
 
-                <td>
+                @if (ViewBag.UserPermissionModel != null)
+                {
+                    List<UserPermissionRights> userPermissionRights = new List<UserPermissionRights>();
+                    List<UserRoleName> userRoleName = new List<UserRoleName>();
+                    userPermissionRights = ViewBag.UserPermissionModel;
 
-                    <a class="btn btn-info btn-sm" onclick="editTariffMaster(@item.TariffID)">
-                        <i class="fas fa-pencil-alt">
-                        </i>
-                        Edit
-                    </a>
-                    <a class="btn btn-danger btn-sm" onclick="deleteTariffMaster(@item.TariffID)">
-                        <i class="fas fa-trash">
-                        </i>
-                        Delete
-                    </a>
+
+                    userRoleName = ViewBag.UserRoleName;
+
+                    <td>
+                        @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Add Tariff" && x.UserRolePermission == "Edit").Count() > 0))
+                        {
+                            <a class="btn btn-info btn-sm" onclick="editTariffMaster(@item.TariffID)">
+                                <i class="fas fa-pencil-alt">
+                                </i>
+                                Edit
+                            </a>
+                        }
+                        @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Add Tariff" && x.UserRolePermission == "Delete").Count() > 0))
+                        {
+                            <a class="btn btn-danger btn-sm" onclick="deleteTariffMaster(@item.TariffID)">
+                                <i class="fas fa-trash">
+                                </i>
+                                Delete
+                            </a>
+                        }
+
                 </td>
+                }
+            }
             </tr>
         }
     </tbody>

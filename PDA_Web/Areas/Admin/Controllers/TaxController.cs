@@ -43,6 +43,16 @@ namespace PDA_Web.Areas.Admin.Controllers
         public async Task<IActionResult> LoadAll(Tax tax)
         {
             var data = await unitOfWork.Taxs.GetAllAsync();
+
+            // Temp Solution START
+            var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
+            ViewBag.UserPermissionModel = UserPermissionModel;
+            var Currentuser = HttpContext.Session.GetString("UserID");
+
+            var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
+            ViewBag.UserRoleName = UserRole;
+            // Temp Solution END
+
             if (tax.TaxName != null /*&& customer.FirstName != 0*/)
             {
                 data = data.Where(x => x.TaxName.Contains(tax.TaxName.ToLower())|| x.TaxName.Contains(tax.TaxName.ToUpper())).ToList();

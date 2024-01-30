@@ -24,19 +24,32 @@
                     @Html.DisplayFor(modelItem => item.StateName)
                 </td>
 
-                <td>
-
-                    <a class="btn btn-info btn-sm" onclick="editState(@item.ID)">
-                        <i class="fas fa-pencil-alt">
-                        </i>
-                        Edit
-                    </a>
-                    <a class="btn btn-danger btn-sm" onclick="deleteState(@item.ID)">
-                        <i class="fas fa-trash">
-                        </i>
-                        Delete
-                    </a>
-                </td>
+                @using PDAEstimator_Domain.Entities;
+                @if (ViewBag.UserPermissionModel != null)
+                {
+                    List<UserPermissionRights> userPermissionRights = new List<UserPermissionRights>();
+                    List<UserRoleName> userRoleName = new List<UserRoleName>();
+                    userPermissionRights = ViewBag.UserPermissionModel;
+                    userRoleName = ViewBag.UserRoleName;
+                    <td>
+                        @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "State" && x.UserRolePermission == "Edit").Count() > 0))
+                        {
+                            <a class="btn btn-info btn-sm" onclick="editState(@item.ID)">
+                                <i class="fas fa-pencil-alt">
+                                </i>
+                                Edit
+                            </a>
+                        }
+                        @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "State" && x.UserRolePermission == "Delete").Count() > 0))
+                        {
+                            <a class="btn btn-danger btn-sm" onclick="deleteState(@item.ID)">
+                                <i class="fas fa-trash">
+                                </i>
+                                Delete
+                            </a>
+                        }
+                    </td>
+                }
             </tr>
         }
     </tbody>

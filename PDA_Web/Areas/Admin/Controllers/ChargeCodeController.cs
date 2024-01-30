@@ -45,6 +45,15 @@ namespace PDA_Web.Areas.Admin.Controllers
         public async Task<IActionResult> LoadAll(ChargeCode chargeCode)
         {
             var data = await unitOfWork.ChargeCodes.GetAlllistAsync();
+            // Temp Solution START
+            var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
+            ViewBag.UserPermissionModel = UserPermissionModel;
+            var Currentuser = HttpContext.Session.GetString("UserID");
+
+            var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
+            ViewBag.UserRoleName = UserRole;
+            // Temp Solution END
+
             if (chargeCode.ChargeCodeName != null /*&& customer.FirstName != 0*/)
             {
                 data = data.Where(x => x.ChargeCodeName.ToUpper().Contains(chargeCode.ChargeCodeName.ToUpper())).ToList();

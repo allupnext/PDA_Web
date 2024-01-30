@@ -66,6 +66,16 @@ namespace PDA_Web.Areas.Admin.Controllers
         {
             // var customerdata = await unitOfWork.Customer.GetAlllistCustomerAsync(customer.CustomerId);
             var customerdata = await unitOfWork.Customer.GetAlllistAsync();
+
+            // Temp Solution START
+            var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
+            ViewBag.UserPermissionModel = UserPermissionModel;
+            var Currentuser = HttpContext.Session.GetString("UserID");
+
+            var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
+            ViewBag.UserRoleName = UserRole;
+            // Temp Solution END
+
             if (customer.FirstName != null /*&& customer.FirstName != 0*/)
             {
                 customerdata = customerdata.Where(x => x.FirstName == customer.FirstName).ToList();

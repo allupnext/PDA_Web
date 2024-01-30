@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<PDAEstimator_Domain.Entities.TariffSegment>
+@using PDAEstimator_Domain.Entities;
 <style>
     table td {
         width: 110px;
@@ -38,19 +39,37 @@
                     }
 
                 </td>
-                <td>
+                @if (ViewBag.UserPermissionModel != null)
+                {
+                    List<UserPermissionRights> userPermissionRights = new List<UserPermissionRights>();
+                    List<UserRoleName> userRoleName = new List<UserRoleName>();
+                    userPermissionRights = ViewBag.UserPermissionModel;
 
-                    <a class="btn btn-info btn-sm" onclick="editTariffSegment(@item.TariffSegmentID)">
-                        <i class="fas fa-pencil-alt">
-                        </i>
-                        Edit
-                    </a>
-                    <a class="btn btn-danger btn-sm" onclick="deleteTariffSegment(@item.TariffSegmentID)">
-                        <i class="fas fa-trash">
-                        </i>
-                        Delete
-                    </a>
-                </td>
+
+                    userRoleName = ViewBag.UserRoleName;
+                    <td>
+                        @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Tariff Slabs" && x.UserRolePermission == "Edit").Count() > 0))
+                        {
+                            <a class="btn btn-info btn-sm" onclick="editTariffSegment(@item.TariffSegmentID)">
+                                <i class="fas fa-pencil-alt">
+                                </i>
+                                Edit
+                            </a>
+                        }
+                        @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Tariff Slabs" && x.UserRolePermission == "Delete").Count() > 0))
+                        {
+                            <a class="btn btn-danger btn-sm" onclick="deleteTariffSegment(@item.TariffSegmentID)">
+                                <i class="fas fa-trash">
+                                </i>
+                                Delete
+                            </a>
+                        }
+
+
+                    </td>
+                }
+
+   
             </tr>
         }
     </tbody>

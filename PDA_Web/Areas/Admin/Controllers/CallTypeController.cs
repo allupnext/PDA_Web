@@ -41,6 +41,16 @@ namespace PDA_Web.Areas.Admin.Controllers
         public async Task<IActionResult> LoadAll(CallType callType)
         {
             var data = await unitOfWork.CallTypes.GetAllAsync();
+
+            // Temp Solution START
+            var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
+            ViewBag.UserPermissionModel = UserPermissionModel;
+            var Currentuser = HttpContext.Session.GetString("UserID");
+
+            var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
+            ViewBag.UserRoleName = UserRole;
+            // Temp Solution END
+
             if (callType.CallTypeName != null /*&& customer.FirstName != 0*/)
             {
                 data = data.Where(x => x.CallTypeName.ToUpper().Contains(callType.CallTypeName.ToUpper())).ToList();

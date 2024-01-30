@@ -438,6 +438,11 @@ namespace PDA_Web.Areas.Admin.Controllers
                 return RedirectToAction("index", "AdminLogin");
             }
         }
+        public async Task<IActionResult> TempData()
+        {
+           
+            return PartialView("partial/_ViewAll");
+        }
 
         public async Task<IActionResult> CargoLoad(int selectedTerminalId, int selectedPortId)
         {
@@ -474,6 +479,15 @@ namespace PDA_Web.Areas.Admin.Controllers
         {
             List<PDAEstimatorList> pDAEstimatorLists = new List<PDAEstimatorList>();
             var userid = HttpContext.Session.GetString("UserID");
+
+            // Temp Solution START
+            var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
+            ViewBag.UserPermissionModel = UserPermissionModel;
+            var Currentuser = HttpContext.Session.GetString("UserID");
+
+            var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
+            ViewBag.UserRoleName = UserRole;
+            // Temp Solution END
 
             var userdata = await unitOfWork.User.GetAllUsersById(Convert.ToInt64(userid));
             var userwithRole = await unitOfWork.User.GetByIdAsync(Convert.ToInt64(userid));

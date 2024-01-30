@@ -22,6 +22,7 @@ namespace PDA_Web.Areas.Admin.Controllers
         public async Task<IActionResult> Index()
         {
             var userid = HttpContext.Session.GetString("UserID");
+
             if (!string.IsNullOrEmpty(userid))
             {
                 // Temp Solution START
@@ -44,6 +45,16 @@ namespace PDA_Web.Areas.Admin.Controllers
         public async Task<IActionResult> LoadAll(CargoType cargoType)
         {
             var data = await unitOfWork.CargoTypes.GetAllAsync();
+
+            // Temp Solution START
+            var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
+            ViewBag.UserPermissionModel = UserPermissionModel;
+            var Currentuser = HttpContext.Session.GetString("UserID");
+
+            var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
+            ViewBag.UserRoleName = UserRole;
+            // Temp Solution END
+
             if (cargoType.CargoTypeName!= null /*&& customer.FirstName != 0*/)
             {
                 data = data.Where(x => x.CargoTypeName.ToUpper().Contains(cargoType.CargoTypeName.ToUpper())).ToList();

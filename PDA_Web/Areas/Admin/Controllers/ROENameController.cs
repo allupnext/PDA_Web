@@ -39,6 +39,16 @@ namespace PDA_Web.Areas.Admin.Controllers
         public async Task<IActionResult> LoadAll(ROENames rOENames)
         {
             var data = await unitOfWork.ROENames.GetAllAsync();
+
+            // Temp Solution START
+            var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
+            ViewBag.UserPermissionModel = UserPermissionModel;
+            var Currentuser = HttpContext.Session.GetString("UserID");
+
+            var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
+            ViewBag.UserRoleName = UserRole;
+            // Temp Solution END
+
             if (rOENames.ROEName!= null /*&& customer.FirstName != 0*/)
             {
                 data = data.Where(x => x.ROEName.ToUpper().Contains(rOENames.ROEName.ToUpper())).ToList();

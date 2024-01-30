@@ -43,6 +43,14 @@ namespace PDA_Web.Areas.Admin.Controllers
         public async Task<IActionResult> LoadAll(TariffSegment tariffSegment)
         {
             var data = await unitOfWork.tariffSegment.GetAllAsync();
+            // Temp Solution START
+            var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
+            ViewBag.UserPermissionModel = UserPermissionModel;
+            var Currentuser = HttpContext.Session.GetString("UserID");
+
+            var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
+            ViewBag.UserRoleName = UserRole;
+            // Temp Solution END
             if (tariffSegment.TariffSegmentName != null /*&& customer.FirstName != 0*/)
             {
                 data = data.Where(x => x.TariffSegmentName.Contains(tariffSegment.TariffSegmentName.ToUpper())|| x.TariffSegmentName.Contains(tariffSegment.TariffSegmentName.ToLower())).ToList();

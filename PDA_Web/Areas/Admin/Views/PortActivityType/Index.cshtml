@@ -60,9 +60,24 @@
 
                         <!-- /.card-body -->
                     </div>
-                    <div class="card-footer">
-                        <button class="btn btn-primary" onclick="PortActivityTypeSave()">Submit</button>
-                    </div>
+
+                    @using PDAEstimator_Domain.Entities;
+                    @if (ViewBag.UserPermissionModel != null)
+                    {
+                        List<UserPermissionRights> userPermissionRights = new List<UserPermissionRights>();
+                        List<UserRoleName> userRoleName = new List<UserRoleName>();
+                        userPermissionRights = ViewBag.UserPermissionModel;
+                        userRoleName = ViewBag.UserRoleName;
+
+                        @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Port Operation Type" && x.UserRolePermission == "Edit").Count() > 0))
+                        {
+                            <div class="card-footer">
+                                <button class="btn btn-primary" onclick="PortActivityTypeSave()">Submit</button>
+                            </div>
+                        }
+                    }
+
+         
 
                 </div>
 

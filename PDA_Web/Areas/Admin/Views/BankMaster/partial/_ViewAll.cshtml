@@ -71,19 +71,32 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Intermediary_Bank_Swift_Code)
                 </td>*@
-                <td>
-
-                    <a class="btn btn-info btn-sm" onclick="editState(@item.BankId)">
-                        <i class="fas fa-pencil-alt">
-                        </i>
-                        Edit
-                    </a>
-                    <a class="btn btn-danger btn-sm" onclick="deleteState(@item.BankId)">
-                        <i class="fas fa-trash">
-                        </i>
-                        Delete
-                    </a>
-                </td>
+                @using PDAEstimator_Domain.Entities;
+                @if (ViewBag.UserPermissionModel != null)
+                {
+                    List<UserPermissionRights> userPermissionRights = new List<UserPermissionRights>();
+                    List<UserRoleName> userRoleName = new List<UserRoleName>();
+                    userPermissionRights = ViewBag.UserPermissionModel;
+                    userRoleName = ViewBag.UserRoleName;
+                    <td>
+                        @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Bank Master" && x.UserRolePermission == "Edit").Count() > 0))
+                        {
+                            <a class="btn btn-info btn-sm" onclick="editState(@item.BankId)">
+                                <i class="fas fa-pencil-alt">
+                                </i>
+                                Edit
+                            </a>
+                        }
+                        @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Bank Master" && x.UserRolePermission == "Delete").Count() > 0))
+                        {
+                            <a class="btn btn-danger btn-sm" onclick="deleteState(@item.BankId)">
+                                <i class="fas fa-trash">
+                                </i>
+                                Delete
+                            </a>
+                        }
+                    </td>
+                }
             </tr>
         }
     </tbody>

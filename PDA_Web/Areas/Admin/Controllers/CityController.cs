@@ -44,6 +44,15 @@ namespace PDA_Web.Areas.Admin.Controllers
         }
         public async Task<IActionResult> LoadAll(CityList cityList)
         {
+
+            // Temp Solution START
+            var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
+            ViewBag.UserPermissionModel = UserPermissionModel;
+            var Currentuser = HttpContext.Session.GetString("UserID");
+
+            var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
+            ViewBag.UserRoleName = UserRole;
+            // Temp Solution END
             var data = await unitOfWork.Citys.GetAllAsync();
             if (cityList.CityName != null /*&& customer.FirstName != 0*/)
             {

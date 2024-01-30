@@ -64,14 +64,28 @@
                         <span class="badge badge-danger">In Active</span>
                     }
                 </td>
-                <td>
-                    <a class="btn btn-info btn-sm" onclick="editUser(@item.ID)">
-                        <i class="fas fa-pencil-alt"></i> Edit
-                    </a>
-                    <a class="btn btn-danger btn-sm" onclick="deleteUser(@item.ID)">
-                        <i class="fas fa-trash"></i> Delete
-                    </a>
-                </td>
+                @using PDAEstimator_Domain.Entities;
+                @if (ViewBag.UserPermissionModel != null)
+                {
+                    List<UserPermissionRights> userPermissionRights = new List<UserPermissionRights>();
+                    List<UserRoleName> userRoleName = new List<UserRoleName>();
+                    userPermissionRights = ViewBag.UserPermissionModel;
+                    userRoleName = ViewBag.UserRoleName;
+                    <td>
+                        @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Users" && x.UserRolePermission == "Edit").Count() > 0))
+                        {
+                            <a class="btn btn-info btn-sm" onclick="editUser(@item.ID)">
+                                <i class="fas fa-pencil-alt"></i> Edit
+                            </a>
+                        }
+                        @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Users" && x.UserRolePermission == "Delete").Count() > 0))
+                        {
+                            <a class="btn btn-danger btn-sm" onclick="deleteUser(@item.ID)">
+                                <i class="fas fa-trash"></i> Delete
+                            </a>
+                        }
+                    </td>
+                }
             </tr>
         }
     </tbody>

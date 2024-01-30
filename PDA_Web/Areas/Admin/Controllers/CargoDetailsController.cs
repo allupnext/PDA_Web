@@ -111,6 +111,16 @@ namespace PDA_Web.Areas.Admin.Controllers
         public async Task<IActionResult> LoadAll(CargoDetails cargoDetails)
         {
             var data = await unitOfWork.CargoDetails.GetAlllistAsync();
+
+            // Temp Solution START
+            var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
+            ViewBag.UserPermissionModel = UserPermissionModel;
+            var Currentuser = HttpContext.Session.GetString("UserID");
+
+            var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
+            ViewBag.UserRoleName = UserRole;
+            // Temp Solution END
+
             if (cargoDetails.CargoName != null)
             {
                 //data = data.Where(x => x.RoleName.Contains("%"+roles.RoleName+"%")).ToList();

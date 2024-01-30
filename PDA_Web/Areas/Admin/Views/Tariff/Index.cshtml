@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Index";
 }
+@using PDAEstimator_Domain.Entities;
 <link href="~/plugins/jquery-ui/jquery-ui.min.css" rel="stylesheet" />
 <link href="~/plugins/jquery-ui/jquery-ui.structure.min.css" rel="stylesheet" />
 <link href="~/plugins/jquery-ui/jquery-ui.structure.css" rel="stylesheet" />
@@ -264,14 +265,26 @@
                             <div class="col-sm-2" style="max-width: 30%;">
                                 <input type="text" class="form-control" id="Remarks" value="" name="Remarks" placeholder="Enter Remark">
                             </div>
-                            <div class="col-sm-2" style="max-width: 20%;">
-                                <div style="display: flex;">
-                                    <button class="btn btn-primary" id="AddTariffRate" onclick="AddTariffRate()">Add</button>
 
-                                    <button class="btn btn-primary" id="UpdateTariffRate" style="display:none" onclick="UpdateTariffRate()">UPDATE</button>
-                                </div>
+                            @if (ViewBag.UserPermissionModel != null)
+                            {
+                                List<UserPermissionRights> userPermissionRights = new List<UserPermissionRights>();
+                                List<UserRoleName> userRoleName = new List<UserRoleName>();
+                                userPermissionRights = ViewBag.UserPermissionModel;
+                                userRoleName = ViewBag.UserRoleName;
 
-                            </div>
+                                @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Add Tariff" && x.UserRolePermission == "Edit").Count() > 0))
+                                {
+                                    <div class="col-sm-2" style="max-width: 20%;">
+                                        <div style="display: flex;">
+                                            <button class="btn btn-primary" id="AddTariffRate" onclick="AddTariffRate()">Add</button>
+
+                                            <button class="btn btn-primary" id="UpdateTariffRate" style="display:none" onclick="UpdateTariffRate()">UPDATE</button>
+                                        </div>
+
+                                    </div>
+                                }
+                            }
                         </div>
 
                     </div>

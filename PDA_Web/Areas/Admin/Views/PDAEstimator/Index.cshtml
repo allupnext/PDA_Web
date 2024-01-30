@@ -1,6 +1,8 @@
 ﻿@{
     ViewData["Title"] = "Index";
 }
+@using PDAEstimator_Domain.Entities;
+
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <link href="~/plugins/jquery-ui/jquery-ui.min.css" rel="stylesheet" />
 <link href="~/plugins/jquery-ui/jquery-ui.structure.min.css" rel="stylesheet" />
@@ -265,9 +267,24 @@
                         </div>
                         <!-- /.card-body -->
                     </div>
-                    <div class="card-footer">
-                        <button class="btn btn-primary" onclick="PDAEstimatorSave()">Submit</button>
-                    </div>
+                     @if (ViewBag.UserPermissionModel != null )
+                    {
+                        List<UserPermissionRights> userPermissionRights = new List<UserPermissionRights>();
+                        List<UserRoleName> userRoleName = new List<UserRoleName>();
+                        userPermissionRights = ViewBag.UserPermissionModel;
+
+
+                        userRoleName = ViewBag.UserRoleName;
+                        @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "PDA Estimator" && x.UserRolePermission == "Edit").Count() > 0))
+                        {
+                            <div class="card-footer">
+                                <button class="btn btn-primary" onclick="PDAEstimatorSave()">Submit</button>
+                            </div>
+                        }
+                    }
+
+
+
                 </div>
             </div>
         </div>
@@ -385,7 +402,7 @@
         $(document).ready(function () {
 
             //$("#").DataTable();
-            loadData();
+           loadData();
             $('#PDAMenu').addClass('active');
             $('#CustomerFilter').change(function () {
                 debugger

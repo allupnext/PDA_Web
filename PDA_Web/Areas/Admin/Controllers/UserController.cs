@@ -63,6 +63,16 @@ namespace PDA_Web.Areas.Admin.Controllers
         {
             //string fullname = user.Salutation + " " + user.FirstName + " " + user.LastName;
             var data = await unitOfWork.User.GetAlllistAsync();
+
+            // Temp Solution START
+            var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
+            ViewBag.UserPermissionModel = UserPermissionModel;
+            var Currentuser = HttpContext.Session.GetString("UserID");
+
+            var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
+            ViewBag.UserRoleName = UserRole;
+            // Temp Solution END
+
             if (user.RoleId != null && user.RoleId != 0)
             {
                 //data = data.Where(x => x.RoleName.Contains("%"+roles.RoleName+"%")).ToList();
@@ -294,6 +304,15 @@ namespace PDA_Web.Areas.Admin.Controllers
             //ViewBag.UserRolePermissions = UserRolePermissionsData;
 
             //ViewBag.RollId = RoleId;
+
+            // Temp Solution START
+            var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
+            ViewBag.UserPermissionModel = UserPermissionModel;
+            var Currentuser = HttpContext.Session.GetString("UserID");
+
+            var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
+            ViewBag.UserRoleName = UserRole;
+            // Temp Solution END
 
             var UserPemissionRole_Role_MappingData = await unitOfWork.User.GetAllUserPemissionRole_Role_Mapping();
             UserPemissionRole_Role_MappingData =  UserPemissionRole_Role_MappingData.Where(x => x.RoleID == RoleId).ToList();

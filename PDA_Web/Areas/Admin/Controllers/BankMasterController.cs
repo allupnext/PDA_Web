@@ -46,6 +46,16 @@ namespace PDA_Web.Areas.Admin.Controllers
         public async Task<IActionResult> LoadAll(BankMaster bankMaster)
         {
             var data = await unitOfWork.BankMaster.GetAllAsync();
+
+            // Temp Solution START
+            var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
+            ViewBag.UserPermissionModel = UserPermissionModel;
+            var Currentuser = HttpContext.Session.GetString("UserID");
+
+            var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
+            ViewBag.UserRoleName = UserRole;
+            // Temp Solution END
+
             if (bankMaster.CompanyId != null && bankMaster.CompanyId != 0 /*&& customer.FirstName != 0*/)
             {
                 data = data.Where(x => x.CompanyId == bankMaster.CompanyId).ToList();
