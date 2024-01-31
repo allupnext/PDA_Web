@@ -1,6 +1,7 @@
 ﻿using iTextSharp.text.pdf;
 using iTextSharp.tool.xml.html;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing.Constraints;
 using NToastNotify;
 using PDA_Web.Models;
 using PDAEstimator_Application.Interfaces;
@@ -45,7 +46,12 @@ namespace PDA_Web.Areas.Admin.Controllers
             PDAEstimatorOutPutView pDAEstimatorOutPut = new PDAEstimatorOutPutView();
             pDAEstimatorOutPut = await PDAModelPrePared(pDAEstimatorOutPut, id);
 
-            return new ViewAsPdf("PDAEstimator", pDAEstimatorOutPut);
+            return new ViewAsPdf("PDAEstimator", pDAEstimatorOutPut)
+            {
+                //FileName = "MyPdf.pdf";
+                FileName = "PDA_" + pDAEstimatorOutPut.PortName + "_" + pDAEstimatorOutPut.PDAEstimatorID + ".pdf"
+                
+            };
         }
         public async Task<IActionResult> PDAEstimator(int id)
         {
@@ -92,7 +98,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             return View(pDAEstimatorOutPut);
             //return new ViewAsPdf(pDAEstimatorOutPut);
         }
-
+         
         public async Task<PDAEstimatorOutPutView> PDAModelPrePared(PDAEstimatorOutPutView pDAEstimatorOutPut, int id)
         {
             if (id > 0)
@@ -180,10 +186,10 @@ namespace PDA_Web.Areas.Admin.Controllers
 
                 pDAEstimatorOutPut.NotesData = unitOfWork.PDAEstimitor.GetNotes().Result.ToList();
                 var currencyData = unitOfWork.Currencys.GetAllAsync().Result;
-                pDAEstimatorOutPut.BaseCurrencyCode = currencyData.Where(x => x.BaseCurrency == true) != null ? currencyData.Where(x => x.BaseCurrency == true).FirstOrDefault().CurrencyCode : "";
-                pDAEstimatorOutPut.DefaultCurrencyCode = currencyData.Where(x => x.DefaultCurrecny == true) != null ? currencyData.Where(x => x.DefaultCurrecny == true).FirstOrDefault().CurrencyCode : "";
-                pDAEstimatorOutPut.BaseCurrencyCodeID = currencyData.Where(x => x.BaseCurrency == true) != null ? currencyData.Where(x => x.BaseCurrency == true).FirstOrDefault().ID : 0;
-                pDAEstimatorOutPut.DefaultCurrencyCodeID = currencyData.Where(x => x.DefaultCurrecny == true) != null ? currencyData.Where(x => x.DefaultCurrecny == true).FirstOrDefault().ID : 0;
+                //pDAEstimatorOutPut.BaseCurrencyCode = currencyData.Where(x => x.BaseCurrency == true) != null ? currencyData.Where(x => x.BaseCurrency == true).FirstOrDefault().CurrencyCode : "";
+                //pDAEstimatorOutPut.DefaultCurrencyCode = currencyData.Where(x => x.DefaultCurrecny == true) != null ? currencyData.Where(x => x.DefaultCurrecny == true).FirstOrDefault().CurrencyCode : "";
+                //pDAEstimatorOutPut.BaseCurrencyCodeID = currencyData.Where(x => x.BaseCurrency == true) != null ? currencyData.Where(x => x.BaseCurrency == true).FirstOrDefault().ID : 0;
+                //pDAEstimatorOutPut.DefaultCurrencyCodeID = currencyData.Where(x => x.DefaultCurrecny == true) != null ? currencyData.Where(x => x.DefaultCurrecny == true).FirstOrDefault().ID : 0;
 
                 //var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(pDAEstimatorOutPut.PortID).Result.Where(x => (x.CallTypeID == pDAEstimatorOutPut.CallTypeID || x.CallTypeID == null) && (x.SlabFrom == null || x.SlabFrom <= pDAEstimatorOutPut.GRT)) ;
                 var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(pDAEstimatorOutPut.PortID).Result.Where(x => (x.CallTypeID == pDAEstimatorOutPut.CallTypeID || x.CallTypeID == null) && (x.TerminalID == pDAEstimatorOutPut.TerminalID || x.TerminalID == null) && (x.BerthID == pDAEstimatorOutPut.BerthID || x.BerthID == null || x.BerthID == 0) && (x.CargoID == pDAEstimatorOutPut.CargoID || x.CargoID == null) && (x.VesselBallast == pDAEstimatorOutPut.VesselBallast || x.VesselBallast == 0)).OrderBy(o => o.ChargeCodeSequence).ThenBy(o => o.SlabFrom).ThenBy(o => o.TariffRateID);
