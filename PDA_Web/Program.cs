@@ -4,6 +4,7 @@ using NToastNotify;
 using PDA_Web.Data;
 using PDAEstimator_Application.Interfaces;
 using PDAEstimator_Infrastructure.Repositories;
+using Rotativa.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -63,6 +64,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+
 builder.Services.AddMvc()
                .AddNToastNotifyNoty(new NotyOptions
                {
@@ -91,7 +93,6 @@ app.UseRouting();
 
 app.UseAuthorization();
 app.UseSession();
-
 app.MapControllerRoute(
     name: "MyArea",
     pattern: "{area:exists}/{controller=AdminLogin}/{action=Index}/{id?}");
@@ -103,5 +104,5 @@ app.MapControllerRoute(
     pattern: "{controller=Dashboard}/{action=Index}/{id?}");
 
 app.MapRazorPages();
-
+app.UseRotativa();
 app.Run();

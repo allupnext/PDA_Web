@@ -5,6 +5,7 @@ using NToastNotify;
 using PDA_Web.Models;
 using PDAEstimator_Application.Interfaces;
 using PDAEstimator_Domain.Entities;
+using Rotativa.AspNetCore;
 using SelectPdf;
 using System.Data;
 using System.Globalization;
@@ -39,9 +40,61 @@ namespace PDA_Web.Areas.Admin.Controllers
             });
         }
 
+        public async Task<IActionResult> PDAEstimatorDonwload(int id)
+        {
+            PDAEstimatorOutPutView pDAEstimatorOutPut = new PDAEstimatorOutPutView();
+            pDAEstimatorOutPut = await PDAModelPrePared(pDAEstimatorOutPut, id);
+
+            return new ViewAsPdf("PDAEstimator", pDAEstimatorOutPut);
+        }
         public async Task<IActionResult> PDAEstimator(int id)
         {
             PDAEstimatorOutPutView pDAEstimatorOutPut = new PDAEstimatorOutPutView();
+            pDAEstimatorOutPut =  await PDAModelPrePared(pDAEstimatorOutPut, id);
+
+            //// Create the converter object
+            //HtmlToPdf converter = new HtmlToPdf();
+
+            //// Convert the HTML page from URL to memory
+            //var htmlvaleu = View("PDAEstimator", pDAEstimatorOutPut);
+            //var viewHtml = await this.RenderViewAsync("PDAEstimator", pDAEstimatorOutPut);
+            //using (MemoryStream stream = new System.IO.MemoryStream())
+            //{
+            //    StringReader sr = new StringReader(viewHtml);
+            //    Document pdfDoc = new Document(PageSize.A4, 10f, 10f, 100f, 0f);
+            //    PdfWriter writer = PdfWriter.GetInstance(pdfDoc, stream);
+            //    pdfDoc.Open();
+            //    XMLWorkerHelper.GetInstance().ParseXHtml(writer, pdfDoc, sr);
+            //    pdfDoc.Close();
+            //    return File(stream.ToArray(), "application/pdf", "Grid.pdf");
+            //}
+            //byte[] pdfData = converter.ConvertUrlToMemory(viewHtml.ToString());
+
+            ////// Save the PDF data to a file
+            //System.IO.File.WriteAllBytes("output.pdf", pdfData);
+
+            ////// Alternatively convert and save to a file in one step
+            ////converter.ConvertUrlToFile(UrlToConvert, "output.pdf");
+
+            ////// Send the PDF data for download in ASP.NET Core applications
+            //FileResult fileResult = new FileContentResult(pdfData, "application/pdf");
+            //fileResult.FileDownloadName = "Output.pdf";
+            //return fileResult;
+
+            //// Send the PDF data for download in ASP.NET Web Forms applications
+            //HttpResponse httpResponse = HttpContext.Current.Response;
+            //httpResponse.AddHeader("Content-Type", "application/pdf");
+            //httpResponse.AddHeader("Content-Disposition",
+            //           String.Format("attachment; filename=ConvertHtmlPart.pdf; size={0}",
+            //           pdfData.Length.ToString()));
+            //httpResponse.BinaryWrite(pdfData);
+            //httpResponse.End();
+            return View(pDAEstimatorOutPut);
+            //return new ViewAsPdf(pDAEstimatorOutPut);
+        }
+
+        public async Task<PDAEstimatorOutPutView> PDAModelPrePared(PDAEstimatorOutPutView pDAEstimatorOutPut, int id)
+        {
             if (id > 0)
             {
                 var PDAData = unitOfWork.PDAEstimitor.GetAlllistAsync().Result.Where(x => x.PDAEstimatorID == id).FirstOrDefault();
@@ -144,6 +197,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                         var formulatransdata = await unitOfWork.FormulaTransaction.GetAllTransAsync((int)triff.FormulaID);
                         if (formulatransdata.Count > 0)
                         {
+                            UnitCalculation(triff, pDAEstimatorOutPut.GRT, pDAEstimatorOutPut);
+
                             foreach (var formularTransList in formulatransdata)
                             {
                                 if (formularTransList.formulaAttributeID > 0)
@@ -151,12 +206,21 @@ namespace PDA_Web.Areas.Admin.Controllers
                                     string FormulaAttributedata = formularTransList.formulaAttributeName;
                                     if (FormulaAttributedata.Contains("GRT"))
                                     {
-                                        UnitCalculation(triff, pDAEstimatorOutPut.GRT, pDAEstimatorOutPut);
+                                        if (triff.SlabID == null || triff.SlabID == 0)
+                                        {
+                                            triff.UNITS = pDAEstimatorOutPut.GRT;
+                                        }
+
+                                        //UnitCalculation(triff, pDAEstimatorOutPut.GRT, pDAEstimatorOutPut);
                                         formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
                                     }
                                     else if (FormulaAttributedata.Contains("NRT"))
                                     {
-                                        UnitCalculation(triff, pDAEstimatorOutPut.NRT, pDAEstimatorOutPut);
+                                        if (triff.SlabID == null || triff.SlabID == 0)
+                                        {
+                                            triff.UNITS = pDAEstimatorOutPut.NRT;
+                                        }
+                                        //UnitCalculation(triff, pDAEstimatorOutPut.NRT, pDAEstimatorOutPut);
                                         formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
                                     }
                                     else if (FormulaAttributedata == "BSTH" || FormulaAttributedata == "BSTHF")
@@ -280,97 +344,59 @@ namespace PDA_Web.Areas.Admin.Controllers
 
             }
 
-
-            //// Create the converter object
-            //HtmlToPdf converter = new HtmlToPdf();
-
-            //// Convert the HTML page from URL to memory
-            //var htmlvaleu = View("PDAEstimator", pDAEstimatorOutPut);
-            var viewHtml = await this.RenderViewAsync("PDAEstimator", pDAEstimatorOutPut);
-            //using (MemoryStream stream = new System.IO.MemoryStream())
-            //{
-            //    StringReader sr = new StringReader(viewHtml);
-            //    Document pdfDoc = new Document(PageSize.A4, 10f, 10f, 100f, 0f);
-            //    PdfWriter writer = PdfWriter.GetInstance(pdfDoc, stream);
-            //    pdfDoc.Open();
-            //    XMLWorkerHelper.GetInstance().ParseXHtml(writer, pdfDoc, sr);
-            //    pdfDoc.Close();
-            //    return File(stream.ToArray(), "application/pdf", "Grid.pdf");
-            //}
-            //byte[] pdfData = converter.ConvertUrlToMemory(viewHtml.ToString());
-
-            ////// Save the PDF data to a file
-            //System.IO.File.WriteAllBytes("output.pdf", pdfData);
-
-            ////// Alternatively convert and save to a file in one step
-            ////converter.ConvertUrlToFile(UrlToConvert, "output.pdf");
-
-            ////// Send the PDF data for download in ASP.NET Core applications
-            //FileResult fileResult = new FileContentResult(pdfData, "application/pdf");
-            //fileResult.FileDownloadName = "Output.pdf";
-            //return fileResult;
-
-            //// Send the PDF data for download in ASP.NET Web Forms applications
-            //HttpResponse httpResponse = HttpContext.Current.Response;
-            //httpResponse.AddHeader("Content-Type", "application/pdf");
-            //httpResponse.AddHeader("Content-Disposition",
-            //           String.Format("attachment; filename=ConvertHtmlPart.pdf; size={0}",
-            //           pdfData.Length.ToString()));
-            //httpResponse.BinaryWrite(pdfData);
-            //httpResponse.End();
-            return View(pDAEstimatorOutPut);
+            return pDAEstimatorOutPut;
         }
 
         public PDATariffRateList UnitCalculation(PDATariffRateList triff, long? attributvalue, PDAEstimatorOutPutView pDAEstimatorOutPut)
         {
             decimal? units = 0;
-            //long? slabattributvalue = 0;
-            //if (triff.SlabName == "GRT")
-            //    slabattributvalue = pDAEstimatorOutPut.GRT;
-            //else if (triff.SlabName ==  "NRT")
-            //    slabattributvalue = pDAEstimatorOutPut.NRT;
-            //else if (triff.SlabName == "BSTH" || triff.SlabName == "BSTHF")
-            //    slabattributvalue = pDAEstimatorOutPut.BerthStay;
-            //else if (triff.SlabName == "BSTS" || triff.SlabName == "BSTSF")
-            //    slabattributvalue = pDAEstimatorOutPut.BerthStayShift;
-            //else if (triff.SlabName == "BSTD" || triff.SlabName == "BSTDF")
-            //    slabattributvalue = pDAEstimatorOutPut.BerthStayDay;
-            //else if (triff.SlabName == "BSTHC")
-            //    slabattributvalue = pDAEstimatorOutPut.BerthStayHoursCoastal;
-            //else if (triff.SlabName == "BSTSC")
-            //    slabattributvalue = pDAEstimatorOutPut.BerthStayShiftCoastal;
-            //else if (triff.SlabName == "BSTDC")
-            //    slabattributvalue = pDAEstimatorOutPut.BerthStayDayCoastal;
-            //else if (triff.SlabName  == "AST")
-            //    slabattributvalue = pDAEstimatorOutPut.AnchorageStay;
-            //else if (triff.SlabName == "CQTY")
-            //    slabattributvalue = pDAEstimatorOutPut.CargoQty;
+            long? slabattributvalue = 0;
+            if (triff.SlabName == "GRT")
+                slabattributvalue = pDAEstimatorOutPut.GRT;
+            else if (triff.SlabName == "NRT")
+                slabattributvalue = pDAEstimatorOutPut.NRT;
+            else if (triff.SlabName == "BSTH" || triff.SlabName == "BSTHF")
+                slabattributvalue = pDAEstimatorOutPut.BerthStay;
+            else if (triff.SlabName == "BSTS" || triff.SlabName == "BSTSF")
+                slabattributvalue = pDAEstimatorOutPut.BerthStayShift;
+            else if (triff.SlabName == "BSTD" || triff.SlabName == "BSTDF")
+                slabattributvalue = pDAEstimatorOutPut.BerthStayDay;
+            else if (triff.SlabName == "BSTHC")
+                slabattributvalue = pDAEstimatorOutPut.BerthStayHoursCoastal;
+            else if (triff.SlabName == "BSTSC")
+                slabattributvalue = pDAEstimatorOutPut.BerthStayShiftCoastal;
+            else if (triff.SlabName == "BSTDC")
+                slabattributvalue = pDAEstimatorOutPut.BerthStayDayCoastal;
+            else if (triff.SlabName == "AST")
+                slabattributvalue = pDAEstimatorOutPut.AnchorageStay;
+            else if (triff.SlabName == "CQTY")
+                slabattributvalue = pDAEstimatorOutPut.CargoQty;
 
             if (triff.SlabID != null && triff.SlabID > 0)
             {
                 if (triff.SlabIncreemental == 1)
                 {
-                    if (triff.SlabTo != 0 && attributvalue >= triff.SlabTo && triff.SlabFrom == 1)
+                    if (triff.SlabTo != 0 && slabattributvalue >= triff.SlabTo && triff.SlabFrom == 1)
                     {
                         units = triff.SlabTo;
                     }
-                    else if (triff.SlabTo != 0 && attributvalue >= triff.SlabTo && triff.SlabFrom != 1)
+                    else if (triff.SlabTo != 0 && slabattributvalue >= triff.SlabTo && triff.SlabFrom != 1)
                     {
                         units = (triff.SlabTo - triff.SlabFrom) + 1;
                         units = Math.Abs(Convert.ToDecimal(units));
                     }
-                    else if (attributvalue >= triff.SlabFrom)
+                    else if (slabattributvalue >= triff.SlabFrom)
                     {
-                        units = (attributvalue - triff.SlabFrom) + 1;
+                        units = (slabattributvalue - triff.SlabFrom) + 1;
                         units = Math.Abs(Convert.ToDecimal(units));
                     }
                     triff.NonIncreemental = true;
                 }
                 else
                 {
-                    if (triff.SlabFrom <= attributvalue && (triff.SlabTo == 0 || triff.SlabTo >= attributvalue))
+                    if (triff.SlabFrom <= slabattributvalue && (triff.SlabTo == 0 || triff.SlabTo >= slabattributvalue))
                     {
-                        units = attributvalue;
+                        units = slabattributvalue;
                         units = Math.Abs(Convert.ToDecimal(units));
                         triff.NonIncreemental = true;
                     }
@@ -383,7 +409,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             }
             else
             {
-                units = attributvalue;
+                units = slabattributvalue;
             }
 
             triff.UNITS = units;
@@ -462,7 +488,7 @@ namespace PDA_Web.Areas.Admin.Controllers
         }
         public async Task<IActionResult> TempData()
         {
-           
+
             return PartialView("partial/_ViewAll");
         }
 
@@ -557,7 +583,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             return PartialView("partial/TerminalList");
         }
 
-        
+
         public IActionResult TerminalNameOnchange(PDAEstimator PDAEstimitor)
         {
             var BearthDetailData = unitOfWork.BerthDetails.GetAllAsync().Result.Where(x => x.TerminalID == PDAEstimitor.TerminalID);

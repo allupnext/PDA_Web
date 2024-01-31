@@ -263,7 +263,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                 var RoleData = await unitOfWork.Roles.GetAllAsync();
                 //Roles RoleId = 
 
-                ViewBag.Roles = RoleData;
+                ViewBag.Roles = RoleData.Where(x=>x.RoleName != "Admin");
                 //ViewBag.Roles = RolesM.RoleID.ToString();
                 
                 
