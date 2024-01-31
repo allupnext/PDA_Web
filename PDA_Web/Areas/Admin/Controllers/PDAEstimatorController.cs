@@ -217,8 +217,16 @@ namespace PDA_Web.Areas.Admin.Controllers
                                             triff.UNITS = pDAEstimatorOutPut.GRT;
                                         }
 
+                                        if (triff.SlabID != null && triff.SlabID > 0 && FormulaAttributedata == triff.SlabName)
+                                        {
+                                            formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        }
+                                        else
+                                        {
+                                            formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.GRT.ToString() : pDAEstimatorOutPut.GRT.ToString();
+                                        }
+
                                         //UnitCalculation(triff, pDAEstimatorOutPut.GRT, pDAEstimatorOutPut);
-                                        formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.GRT.ToString() : pDAEstimatorOutPut.GRT.ToString();
                                     }
                                     else if (FormulaAttributedata.Contains("NRT"))
                                     {
@@ -227,12 +235,26 @@ namespace PDA_Web.Areas.Admin.Controllers
                                             triff.UNITS = pDAEstimatorOutPut.NRT;
                                         }
                                         //UnitCalculation(triff, pDAEstimatorOutPut.NRT, pDAEstimatorOutPut);
-                                        formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.NRT.ToString() : pDAEstimatorOutPut.NRT.ToString();
+                                        if (triff.SlabID != null && triff.SlabID > 0 && FormulaAttributedata == triff.SlabName)
+                                        {
+                                            formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        }
+                                        else
+                                        {
+                                            formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.NRT.ToString() : pDAEstimatorOutPut.NRT.ToString();
+                                        }
                                     }
                                     else if (FormulaAttributedata == "BSTH" || FormulaAttributedata == "BSTHF")
                                     {
                                         //UnitCalculation(triff, pDAEstimatorOutPut.BerthStay);
-                                        formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.BerthStay.ToString() : pDAEstimatorOutPut.BerthStay.ToString();
+                                        if (triff.SlabID != null && triff.SlabID > 0 && FormulaAttributedata == triff.SlabName)
+                                        {
+                                            formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        }
+                                        else
+                                        {
+                                            formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.BerthStay.ToString() : pDAEstimatorOutPut.BerthStay.ToString();
+                                        }
                                     }
                                     else if (FormulaAttributedata == "BSTS" || FormulaAttributedata == "BSTSF")
                                     {
@@ -242,32 +264,74 @@ namespace PDA_Web.Areas.Admin.Controllers
                                     else if (FormulaAttributedata == "BSTD" || FormulaAttributedata == "BSTDF")
                                     {
                                         //UnitCalculation(triff, pDAEstimatorOutPut.BerthStayDay);
-                                        formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.BerthStayDay.ToString() : pDAEstimatorOutPut.BerthStayDay.ToString();
+                                        if (triff.SlabID != null && triff.SlabID > 0 && FormulaAttributedata == triff.SlabName)
+                                        {
+                                            formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        }
+                                        else
+                                        {
+                                            formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.BerthStayDay.ToString() : pDAEstimatorOutPut.BerthStayDay.ToString();
+                                        }
                                     }
                                     else if (FormulaAttributedata.Contains("BSTHC"))
                                     {
                                         //UnitCalculation(triff, pDAEstimatorOutPut.BerthStayHoursCoastal);
-                                        formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.BerthStayHoursCoastal.ToString() : pDAEstimatorOutPut.BerthStayHoursCoastal.ToString();
+                                        if (triff.SlabID != null && triff.SlabID > 0 && FormulaAttributedata == triff.SlabName)
+                                        {
+                                            formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        }
+                                        else
+                                        {
+                                            formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.BerthStayHoursCoastal.ToString() : pDAEstimatorOutPut.BerthStayHoursCoastal.ToString();
+                                        }
                                     }
                                     else if (FormulaAttributedata.Contains("BSTSC"))
                                     {
                                         //UnitCalculation(triff, pDAEstimatorOutPut.BerthStayShiftCoastal);
-                                        formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.BerthStayShiftCoastal.ToString() : pDAEstimatorOutPut.BerthStayShiftCoastal.ToString();
+                                        if (triff.SlabID != null && triff.SlabID > 0 && FormulaAttributedata == triff.SlabName)
+                                        {
+                                            formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        }
+                                        else
+                                        {
+                                            formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.BerthStayShiftCoastal.ToString() : pDAEstimatorOutPut.BerthStayShiftCoastal.ToString();
+                                        }
                                     }
                                     else if (FormulaAttributedata.Contains("BSTDC"))
                                     {
                                         //UnitCalculation(triff, pDAEstimatorOutPut.BerthStayDayCoastal);
-                                        formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.BerthStayDayCoastal.ToString() : pDAEstimatorOutPut.BerthStayDayCoastal.ToString();
+                                        if (triff.SlabID != null && triff.SlabID > 0 && FormulaAttributedata == triff.SlabName)
+                                        {
+                                            formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        }
+                                        else
+                                        {
+                                            formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.BerthStayDayCoastal.ToString() : pDAEstimatorOutPut.BerthStayDayCoastal.ToString();
+                                        }
                                     }
                                     else if (FormulaAttributedata.Contains("AST"))
                                     {
                                         //UnitCalculation(triff, pDAEstimatorOutPut.AnchorageStay);
-                                        formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.AnchorageStay.ToString() : pDAEstimatorOutPut.AnchorageStay.ToString();
+                                        if (triff.SlabID != null && triff.SlabID > 0 && FormulaAttributedata == triff.SlabName)
+                                        {
+                                            formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        }
+                                        else
+                                        {
+                                            formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.AnchorageStay.ToString() : pDAEstimatorOutPut.AnchorageStay.ToString();
+                                        }
                                     }
                                     else if (FormulaAttributedata.Contains("CQTY"))
                                     {
                                         //UnitCalculation(triff, pDAEstimatorOutPut.CargoQty);
-                                        formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.CargoQty.ToString() : pDAEstimatorOutPut.CargoQty.ToString();
+                                        if (triff.SlabID != null && triff.SlabID > 0 && FormulaAttributedata == triff.SlabName)
+                                        {
+                                            formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        }
+                                        else
+                                        {
+                                            formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.CargoQty.ToString() : pDAEstimatorOutPut.CargoQty.ToString();
+                                        }
                                     }
                                     else
                                     {
