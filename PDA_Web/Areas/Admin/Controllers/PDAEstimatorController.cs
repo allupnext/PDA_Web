@@ -186,10 +186,10 @@ namespace PDA_Web.Areas.Admin.Controllers
 
                 pDAEstimatorOutPut.NotesData = unitOfWork.PDAEstimitor.GetNotes().Result.ToList();
                 var currencyData = unitOfWork.Currencys.GetAllAsync().Result;
-                //pDAEstimatorOutPut.BaseCurrencyCode = currencyData.Where(x => x.BaseCurrency == true) != null ? currencyData.Where(x => x.BaseCurrency == true).FirstOrDefault().CurrencyCode : "";
-                //pDAEstimatorOutPut.DefaultCurrencyCode = currencyData.Where(x => x.DefaultCurrecny == true) != null ? currencyData.Where(x => x.DefaultCurrecny == true).FirstOrDefault().CurrencyCode : "";
-                //pDAEstimatorOutPut.BaseCurrencyCodeID = currencyData.Where(x => x.BaseCurrency == true) != null ? currencyData.Where(x => x.BaseCurrency == true).FirstOrDefault().ID : 0;
-                //pDAEstimatorOutPut.DefaultCurrencyCodeID = currencyData.Where(x => x.DefaultCurrecny == true) != null ? currencyData.Where(x => x.DefaultCurrecny == true).FirstOrDefault().ID : 0;
+                pDAEstimatorOutPut.BaseCurrencyCode = currencyData.Where(x => x.BaseCurrency == true) != null ? currencyData.Where(x => x.BaseCurrency == true).FirstOrDefault().CurrencyCode : "";
+                pDAEstimatorOutPut.DefaultCurrencyCode = currencyData.Where(x => x.DefaultCurrecny == true) != null ? currencyData.Where(x => x.DefaultCurrecny == true).FirstOrDefault().CurrencyCode : "";
+                pDAEstimatorOutPut.BaseCurrencyCodeID = currencyData.Where(x => x.BaseCurrency == true) != null ? currencyData.Where(x => x.BaseCurrency == true).FirstOrDefault().ID : 0;
+                pDAEstimatorOutPut.DefaultCurrencyCodeID = currencyData.Where(x => x.DefaultCurrecny == true) != null ? currencyData.Where(x => x.DefaultCurrecny == true).FirstOrDefault().ID : 0;
 
                 //var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(pDAEstimatorOutPut.PortID).Result.Where(x => (x.CallTypeID == pDAEstimatorOutPut.CallTypeID || x.CallTypeID == null) && (x.SlabFrom == null || x.SlabFrom <= pDAEstimatorOutPut.GRT)) ;
                 var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(pDAEstimatorOutPut.PortID).Result.Where(x => (x.CallTypeID == pDAEstimatorOutPut.CallTypeID || x.CallTypeID == null) && (x.TerminalID == pDAEstimatorOutPut.TerminalID || x.TerminalID == null) && (x.BerthID == pDAEstimatorOutPut.BerthID || x.BerthID == null || x.BerthID == 0) && (x.CargoID == pDAEstimatorOutPut.CargoID || x.CargoID == null) && (x.VesselBallast == pDAEstimatorOutPut.VesselBallast || x.VesselBallast == 0)).OrderBy(o => o.ChargeCodeSequence).ThenBy(o => o.SlabFrom).ThenBy(o => o.TariffRateID);
@@ -218,7 +218,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                                         }
 
                                         //UnitCalculation(triff, pDAEstimatorOutPut.GRT, pDAEstimatorOutPut);
-                                        formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.GRT.ToString() : pDAEstimatorOutPut.GRT.ToString();
                                     }
                                     else if (FormulaAttributedata.Contains("NRT"))
                                     {
@@ -227,7 +227,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                                             triff.UNITS = pDAEstimatorOutPut.NRT;
                                         }
                                         //UnitCalculation(triff, pDAEstimatorOutPut.NRT, pDAEstimatorOutPut);
-                                        formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.NRT.ToString() : pDAEstimatorOutPut.NRT.ToString();
                                     }
                                     else if (FormulaAttributedata == "BSTH" || FormulaAttributedata == "BSTHF")
                                     {
