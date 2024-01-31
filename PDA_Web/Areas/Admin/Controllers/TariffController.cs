@@ -293,15 +293,14 @@ namespace PDA_Web.Areas.Admin.Controllers
             List<TariffRateList> TariffRatedata = new List<TariffRateList>();
             TariffRatedata = await unitOfWork.TariffMasters.GetAllTariffRateAsync(tariff.PortID);
 
-
-
+            // Temp Solution START
             var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
             ViewBag.UserPermissionModel = UserPermissionModel;
             var Currentuser = HttpContext.Session.GetString("UserID");
 
             var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
             ViewBag.UserRoleName = UserRole;
-
+            // Temp Solution END
 
             foreach (var TariffRate in TariffRatedata)
             {
@@ -372,6 +371,14 @@ namespace PDA_Web.Areas.Admin.Controllers
             List<FormulaList> formulaLists = new List<FormulaList>();
 
             var formulasdata = await unitOfWork.Formula.GetAllAsync();
+            // Temp Solution START
+            var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
+            ViewBag.UserPermissionModel = UserPermissionModel;
+            var Currentuser = HttpContext.Session.GetString("UserID");
+
+            var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
+            ViewBag.UserRoleName = UserRole;
+            // Temp Solution END
             string formulastring = string.Empty;
             foreach (var formula in formulasdata)
             {

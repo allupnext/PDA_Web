@@ -41,7 +41,7 @@
                     List<UserPermissionRights> userPermissionRights = new List<UserPermissionRights>();
                     List<UserRoleName> userRoleName = new List<UserRoleName>();
                     userPermissionRights = ViewBag.UserPermissionModel;
-                    userRoleName = ViewBag.UserRoleName;
+                        userRoleName = ViewBag.UserRoleName;
                     <td>
                         @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Formulas" && x.UserRolePermission == "Edit").Count() > 0))
                         {
