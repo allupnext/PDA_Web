@@ -24,7 +24,7 @@
             asp-append-version="true">
             </div>*@
             <div class="logo_name">
-                <img src="/companylogo/@Model.CompanyLogo"
+                <img src="@Model.CompanyLogoBase64"
                      id="DownloadFile"
                      asp-append-version="true" />
             </div>
@@ -767,7 +767,7 @@
 
                 ul.expense_items_row li:nth-child(2),
                 ul.expense_items_row li:nth-child(6) {
-                    width: 27%;
+                    width: 26%;
                 }
 
                 ul.expense_items_row li:nth-child(3),

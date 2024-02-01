@@ -13,6 +13,8 @@ namespace PDAEstimator_Domain.Entities
         public int CustomerID { get; set; }
         public string CompanyName { get; set; }
         public string CompanyLogo { get; set; }
+
+        public string CompanyLogoBase64 { get; set; }
         public string CompanyAddress1 { get; set; }
         public string CompanyAddress2 { get; set; }
         public string CompanyTelephone { get; set; }
