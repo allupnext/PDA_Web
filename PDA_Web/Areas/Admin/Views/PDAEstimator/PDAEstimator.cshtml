@@ -23,11 +23,13 @@
             height="80" width="80" id="DownloadFile"
             asp-append-version="true">
             </div>*@
-            <div class="logo_name">
-                <img src="@Model.CompanyLogoBase64"
+            @if (Model.CompanyLogoBase64 != "")
+            {
+                <div class="logo_name">
+                    <img src="@Model.CompanyLogoBase64"
                      id="DownloadFile"
                      asp-append-version="true" />
-            </div>
+            </div>}
         </div>
         <div class="company_detail">
             <ul class="company_name_address">

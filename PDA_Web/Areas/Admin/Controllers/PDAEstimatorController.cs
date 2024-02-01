@@ -10,21 +10,26 @@ using Rotativa.AspNetCore;
 using SelectPdf;
 using System.Data;
 using System.Globalization;
+using System.Drawing;
 using System.Linq;
+using System.IO;
+using Microsoft.Extensions.Hosting;
+using iTextSharp.text.pdf.parser;
 
 namespace PDA_Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
     public class PDAEstimatorController : Controller
     {
+        private readonly IWebHostEnvironment _hostEnvironment;
 
         private readonly IUnitOfWork unitOfWork;
         private readonly IToastNotification _toastNotification;
-        public PDAEstimatorController(IUnitOfWork unitOfWork, IToastNotification toastNotification)
+        public PDAEstimatorController(IUnitOfWork unitOfWork, IToastNotification toastNotification, IWebHostEnvironment hostEnvironment)
         {
             this.unitOfWork = unitOfWork;
             _toastNotification = toastNotification;
-
+            _hostEnvironment = hostEnvironment; 
         }
 
         public async Task<IActionResult> CurrencyOnchange(int Currency)
@@ -174,6 +179,37 @@ namespace PDA_Web.Areas.Admin.Controllers
                 pDAEstimatorOutPut.CompanyAlterTel = CompanyData.AlterTel;
                 pDAEstimatorOutPut.CompanyEmail = CompanyData.Email.ToUpper();
                 pDAEstimatorOutPut.CompanyLogo = CompanyData.CompanyLog;
+                string Companylogo = pDAEstimatorOutPut.CompanyLogo;
+
+
+                 string fullPath = GetFullPathOfFile(pDAEstimatorOutPut.CompanyLogo.Replace("\"", ""));
+                var test = !System.IO.File.Exists(fullPath);
+                //Read the File data into Byte Array.
+                byte[] bytes;
+
+                bytes = new byte[1024];
+
+                if (System.IO.File.Exists(fullPath))
+                {
+                    bytes = System.IO.File.ReadAllBytes(fullPath);
+                    string file = Convert.ToBase64String(bytes);
+                    pDAEstimatorOutPut.CompanyLogoBase64 = "data:image/png;base64, " + file;
+                }
+                else
+                {
+                    pDAEstimatorOutPut.CompanyLogoBase64 = "";
+                }
+
+
+                //image.Dispose();
+                /*                byte[] bytes = File.ReadAllBytes(@"image.png");*/
+              
+
+                //string base64String = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Companylogo));
+
+              
+
+
                 var custdata = unitOfWork.Customer.GetByIdAsync(PDAData.CustomerID).Result;
                 if (custdata != null && custdata.BankID != null)
                 {
@@ -416,6 +452,12 @@ namespace PDA_Web.Areas.Admin.Controllers
 
             return pDAEstimatorOutPut;
         }
+
+        private string GetFullPathOfFile(string fileName)
+        {
+            return $"{_hostEnvironment.WebRootPath}\\companylogo\\{fileName}";
+        }
+
 
         public PDATariffRateList UnitCalculation(PDATariffRateList triff, long? attributvalue, PDAEstimatorOutPutView pDAEstimatorOutPut)
         {
