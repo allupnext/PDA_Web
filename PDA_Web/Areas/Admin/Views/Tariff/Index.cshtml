@@ -383,6 +383,7 @@
         }
 
         function CopySelectedPort() {
+            alert("hii");
             var CopyFromportid = $('#PortName').val();
             var CopyToportid = $('#PortNameTo').val();
             var CopyCallTypetid = $('#CopyCallType').val();
@@ -396,7 +397,8 @@
             }
             $.ajax({
                 type: "GET",
-                url: "/Admin/Tariff/GetTarrifFromSelectedPorts",
+                //url: "/Admin/Tariff/GetTarrifFromSelectedPorts",
+                url: "/Admin/Tariff/InsertTarrifFromSelectedPorts",
                 data: PortIds,
                 dataType: "HTML",
                 success: function (data) {
@@ -427,7 +429,8 @@
             }
             $.ajax({
                 type: "GET",
-                url: "/Admin/Tariff/GetTarrifFromSamePorts",
+                //url: "/Admin/Tariff/GetTarrifFromSamePorts",
+                url: "/Admin/Tariff/InsertTarrifFromSamePorts",
                 data: PortIds,
                 dataType: "HTML",
                 success: function (data) {
