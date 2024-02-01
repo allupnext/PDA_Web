@@ -223,8 +223,8 @@
                         <td min-width="230px">
                             @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "PDA Estimator" && x.UserRolePermission == "ViewPDA").Count() > 0))
                             {
-                                <a class="btn btn-success btn-sm" href="@Url.Action("PDAEstimatorDonwload", "PDAEstimator", new { id = @item.PDAEstimatorID})" target="_blank">
-                                    <i class="fas fa-eye"></i> Download
+                                <a class="btn btn-warning btn-sm" href="@Url.Action("PDAEstimatorDonwload", "PDAEstimator", new { id = @item.PDAEstimatorID})" target="_blank">
+                                    <i class="fas fa-download"></i> Download
                                 </a>
                                 <a class="btn btn-success btn-sm" href="@Url.Action("PDAEstimator", "PDAEstimator", new { id = @item.PDAEstimatorID})" target="_blank">
                                     <i class="fas fa-eye"></i> View

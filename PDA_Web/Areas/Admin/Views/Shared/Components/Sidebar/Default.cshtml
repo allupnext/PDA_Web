@@ -3,7 +3,7 @@
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
+    <a href="#" class="brand-link">
         <img src="/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
         <span class="brand-text font-weight-light">PDA Estimator</span>
     </a>
@@ -28,7 +28,7 @@
                 <!-- Add icons to the links using the .nav-icon class
                 with font-awesome or any other icon font library -->
                 <li class="nav-item" id="itemDashboard">
-                    <a href="../kanban.html" class="nav-link">
+                    <a href="~/Admin/Home" class="nav-link">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>
                             Dashboard
@@ -36,34 +36,36 @@
                     </a>
                 </li>
                 @{
-                         List<UserPermissionRights> userPermissionRights = new List<UserPermissionRights>();
+                    List<UserPermissionRights> userPermissionRights = new List<UserPermissionRights>();
                     userPermissionRights = ViewBag.UserPermissionModel;
 
                     List<UserRoleName> userRoleName = new List<UserRoleName>();
                     userRoleName = ViewBag.UserRoleName;
-                   
+
                 }
                 @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "PDA Estimator" && x.UserRolePermission == "View").Count() > 0))
-                    {
-                        <li class="nav-item" >
-                            <a asp-area="Admin" asp-controller="PDAEstimator" asp-action="Index" class="nav-link" id="PDAMenu">
-                                <i class="nav-icon  fas fa-percent"></i>
-                                <p>
-                                    PDA Estimator
-                                </p>
-                            </a>
-                        </li>
-                    }
-                        <li href="#" class="nav-item">
-                            <a href="#" class="nav-link" id="TariffMainMenu">
-                                <i class="nav-icon fas fa-percent"></i>
-                                <p>
-                                    Tariff
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-
-                            <ul class="nav nav-treeview">
+                {
+                    <li class="nav-item" >
+                        <a asp-area="Admin" asp-controller="PDAEstimator" asp-action="Index" class="nav-link" id="PDAMenu">
+                            <i class="nav-icon  fas fa-percent"></i>
+                            <p>
+                                PDA Estimator
+                            </p>
+                        </a>
+                    </li>
+                }
+                <li href="#" class="nav-item">
+                    @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Add Tariff" && x.UserRolePermission == "View").Count() > 0 || userPermissionRights.Where(x => x.MenuName == "Tariff Slabs" && x.UserRolePermission == "View").Count() > 0 || userPermissionRights.Where(x => x.MenuName == "Expense Category" && x.UserRolePermission == "View").Count() > 0 || userPermissionRights.Where(x => x.MenuName == "Charge Code" && x.UserRolePermission == "View").Count() > 0 || userPermissionRights.Where(x => x.MenuName == "Formula Attributes" && x.UserRolePermission == "View").Count() > 0 || userPermissionRights.Where(x => x.MenuName == "Formulas" && x.UserRolePermission == "View").Count() > 0))
+                            {
+                    <a href="#" class="nav-link" id="TariffMainMenu">
+                        <i class="nav-icon fas fa-percent"></i>
+                        <p>
+                            Tariff
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                            }
+                    <ul class="nav nav-treeview">
                         @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Add Tariff" && x.UserRolePermission == "View").Count() > 0))
                         {
                             <li class="nav-item">
@@ -82,7 +84,7 @@
                                 </a>
                             </li>
                         }
-                        
+
                         @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Expense Category" && x.UserRolePermission == "View").Count() > 0))
                         {
                             <li class="nav-item">
@@ -120,8 +122,8 @@
                             </li>
                         }
 
-                            </ul>
-                        </li>
+                    </ul>
+                </li>
                 @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Customer" && x.UserRolePermission == "View").Count() > 0))
                 {
                     <li class="nav-item">
@@ -146,6 +148,8 @@
                 }
 
                 <li href="#" class="nav-item">
+                    @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Tax Master" && x.UserRolePermission == "View").Count() > 0 || userPermissionRights.Where(x => x.MenuName == "Currency" && x.UserRolePermission == "View").Count() > 0 || userPermissionRights.Where(x => x.MenuName == "ROE" && x.UserRolePermission == "View").Count() > 0 || userPermissionRights.Where(x => x.MenuName == "ROEName" && x.UserRolePermission == "View").Count() > 0))
+             {
                     <a href="#" class="nav-link" id="FinanceMaster">
                         <i class="nav-icon fas fa-hand-holding-usd"></i>
                         <p>
@@ -153,6 +157,7 @@
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
+             }
                     <ul class="nav nav-treeview">
                         @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Tax Master" && x.UserRolePermission == "View").Count() > 0))
                         {
@@ -196,10 +201,12 @@
                             </li>
                         }
 
-                       
+
                     </ul>
                 </li>
                 <li href="#" class="nav-item">
+                    @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Port Master" && x.UserRolePermission == "View").Count() > 0))
+             {
                     <a href="#" class="nav-link" id="PortMainMenu">
                         <i class="nav-icon fas fa-ship"></i>
                         <p>
@@ -207,8 +214,9 @@
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
+             }
                     <ul class="nav nav-treeview">
-                        @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "PDA Estimator" && x.UserRolePermission == "View").Count() > 0))
+                        @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Port Master" && x.UserRolePermission == "View").Count() > 0))
                         {
                             <li class="nav-item">
                                 <a asp-area="Admin" asp-controller="PortDetails" asp-action="Index" class="nav-link" id="PortMenu">
@@ -232,6 +240,8 @@
                     </ul>
                 </li>
                 <li href="#" class="nav-item">
+                    @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Cargo Master" && x.UserRolePermission == "View").Count() > 0 || userPermissionRights.Where(x => x.MenuName == "Cargo Type" && x.UserRolePermission == "View").Count() > 0 || userPermissionRights.Where(x => x.MenuName == "Cargo Family" && x.UserRolePermission == "View").Count() > 0 || userPermissionRights.Where(x => x.MenuName == "Cargo Handled" && x.UserRolePermission == "View").Count() > 0))
+             {
                     <a href="#" class="nav-link" id="CargoMainMenu">
                         <i class="nav-icon fas fa-truck"></i>
                         <p>
@@ -239,6 +249,8 @@
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
+             }
+
                     <ul class="nav nav-treeview">
                         @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Cargo Master" && x.UserRolePermission == "View").Count() > 0))
                         {
@@ -291,13 +303,16 @@
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link" id="MasterMenu">
-                        <i class="nav-icon fas fa-edit"></i>
+                    @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Country" && x.UserRolePermission == "View").Count() > 0 || userPermissionRights.Where(x => x.MenuName == "State" && x.UserRolePermission == "View").Count() > 0 || userPermissionRights.Where(x => x.MenuName == "City" && x.UserRolePermission == "View").Count() > 0 || userPermissionRights.Where(x => x.MenuName == "Call Type" && x.UserRolePermission == "View").Count() > 0))
+                            {
+                        <a href="#" class="nav-link" id="MasterMenu">
+                            <i class="nav-icon fas fa-edit"></i>
                         <p>
                             Masters
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
+                    }
                     <ul class="nav nav-treeview">
                         @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Country" && x.UserRolePermission == "View").Count() > 0))
                         {
@@ -311,14 +326,14 @@
 
                         @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "State" && x.UserRolePermission == "View").Count() > 0))
                         {
-
+                            <li class="nav-item">
+                                <a asp-area="Admin" asp-controller="State" asp-action="Index" class="nav-link" id="StateMenu">
+                                    <i class="far fa-circle11 nav-icon"></i>
+                                    <p>State</p>
+                                </a>
+                            </li>
                         }
-                        <li class="nav-item">
-                            <a asp-area="Admin" asp-controller="State" asp-action="Index" class="nav-link" id="StateMenu">
-                                <i class="far fa-circle11 nav-icon"></i>
-                                <p>State</p>
-                            </a>
-                        </li>
+
                         @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "City" && x.UserRolePermission == "View").Count() > 0))
                         {
                             <li class="nav-item">
@@ -364,6 +379,8 @@
                 </li>
 
                 <li href="#" class="nav-item">
+                    @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Users" && x.UserRolePermission == "View").Count() > 0 || userPermissionRights.Where(x => x.MenuName == "User Roles" && x.UserRolePermission == "View").Count() > 0 || userPermissionRights.Where(x => x.MenuName == "Role Permission" && x.UserRolePermission == "View").Count() > 0))
+             {
                     <a href="#" class="nav-link" id="UserMainMenu">
                         <i class="nav-icon fa fa-users"></i>
                         <p>
@@ -371,6 +388,7 @@
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
+             }
                     <ul class="nav nav-treeview">
                         @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Users" && x.UserRolePermission == "View").Count() > 0))
                         {
@@ -421,6 +439,8 @@
                 </li>
 
                 <li href="#" class="nav-item">
+                    @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Company" && x.UserRolePermission == "View").Count() > 0 || userPermissionRights.Where(x => x.MenuName == "Bank Master" && x.UserRolePermission == "View").Count() > 0))
+             {
                     <a href="#" class="nav-link" id="Comney_Master">
                         <i class="nav-icon fa fa-users"></i>
                         <p>
@@ -428,6 +448,7 @@
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
+             }
                     <ul class="nav nav-treeview">
                         @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Company" && x.UserRolePermission == "View").Count() > 0))
                         {

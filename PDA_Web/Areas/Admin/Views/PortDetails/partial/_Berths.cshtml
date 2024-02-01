@@ -22,7 +22,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="PortName">Port</label>
-                                @Html.DropDownList("Port", new SelectList(ViewBag.Port, "ID", "PortName"), "Please select", new { @class="form-control" })
+                                @Html.DropDownList("BerthPort", new SelectList(ViewBag.Port, "ID", "PortName"), "Please select", new { @class="form-control" })
 
                                 </div>
                             </div>
@@ -179,9 +179,9 @@
     $(function () {
         debugger;
         $('#BerthStatus').prop("checked", true);
-        $('#Port').val(@ViewBag.PortSelected);
+        $('#BerthPort').val(@ViewBag.PortSelected);
         if (@ViewBag.PortSelected != null) {
-            $('#Port').prop('disabled', true);
+            $('#BerthPort').prop('disabled', true);
         }
 
         //$('#Terminal').val(@ViewBag.TerminalSelected);

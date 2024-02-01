@@ -38,9 +38,12 @@
             </ul>
 
             <ul class="company_contact">
-                <li class="lablebold">TEL: <a href="#" class="valuefont">@Model.CompanyTelephone </a></li>
-                <li class="lablebold">TEL: <a href="#" class="valuefont">@Model.CompanyAlterTel</a></li>
-                <li class="lablebold">EMAIL: <a href="#" class="valuefont">@Model.CompanyEmail</a> </li>
+                <li class="lablebold">TEL: @Model.CompanyTelephone </li>
+                @if (Model.CompanyAlterTel != null && Model.CompanyAlterTel != "")
+                {
+                    <li class="lablebold">TEL: @Model.CompanyAlterTel</li>
+                }
+                <li class="lablebold">EMAIL: @Model.CompanyEmail  </li>
             </ul>
         </div>
 
