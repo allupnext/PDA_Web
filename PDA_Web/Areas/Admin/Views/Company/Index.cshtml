@@ -455,7 +455,7 @@
                 data: companyData,
                 success: function (data) {
                     $('#CompanyName').val(data.company.companyName);
-                    $('#CompanyLogo').val(data.company.companyLogo);
+                    $('#CompanyLog').val(data.company.companyLogo);
                     $('#Address1').val(data.company.address1);
                     $('#Address2').val(data.company.address2);
                     $('#Country').val(data.company.country);
@@ -464,9 +464,12 @@
                     $('#Telephone').val(data.company.telephone);
                     var a = $('#Telephone').val().split("-");
                     $('#Telephone').val(a[1]);
-                    $('#AlternateTelephone').val(data.company.alternateTelephone);
-                    var a = $('#AlternateTelephone').val().split("-");
-                    $('#AlternateTelephone').val(a[1]);
+                    // $('#AlternateTelephone').val(data.company.alternateTelephone);
+                    // var a = $('#AlternateTelephone').val().split("-");
+                    // $('#AlternateTelephone').val(a[1]);
+                    $('#AlterTel').val(data.company.alterTel);
+                    var a = $('#AlterTel').val().split("-");
+                    $('#AlterTel').val(a[1]);
                     $('#Email').val(data.company.email);
                     // Set values for other fields as needed
                 },
