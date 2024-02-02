@@ -686,10 +686,9 @@
 
         }
 
-        function EditPDAEstimator(id) {
+        function EditPDAEstimator(id , para) {
             $(window).scrollTop(150);
             $('#PDAEstimatorId').val(id);
-
             var PDAEstimitor;
 
             PDAEstimitor = {
@@ -759,6 +758,9 @@
                     $('#VesselBallast').val(data.pdaEstimitor.vesselBallast);
                     calltypebasehideshowberthstay();
                     berthstaycalculation();
+                    if (para == "Copy") {
+                        $('#PDAEstimatorId').val(0);
+                    }
                 },
                 error: function () {
                 }
