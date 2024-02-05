@@ -60,6 +60,13 @@ namespace PDAEstimator_Domain.Entities
         public int? TaxID { get; set; }
         public string? TaxName { get; set; }
 
+        public string? ModifyUser { get; set; }
+        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime? ModifyDate { get; set; }
+        public string? CreatedBy { get; set; }
+        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime? CreationDate { get; set; }
+
 
         public int? SlabIncreemental { get; set; }
         public int VesselBallast { get; set; } = 0;

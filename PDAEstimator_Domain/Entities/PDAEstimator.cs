@@ -67,6 +67,11 @@ namespace PDAEstimator_Domain.Entities
         public long? BerthStayShiftCoastal { get; set; }
         public long? BerthStayHoursCoastal { get; set; }
 
+        public string? CreatedBy { get; set; }
+        public DateTime? CreationDate { get; set; }
+        public string? ModifyUserID { get; set; }
+        public DateTime? ModifyDate { get; set; }
+
     }
 
 }

@@ -36,6 +36,11 @@
             <th style="min-width:150px;">Formula</th>
             <th style="min-width:250px;">Remark</th>
             <th>Tax</th>
+            <th>CreatedBy</th>
+            <th>CreationDate</th>
+            <th>ModifyUserID</th>
+            <th>ModifyDate</th>
+
           
             <th style="min-width:200px;"></th>
         </tr>
@@ -168,6 +173,7 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Remark)
                 </td>
+
                 <td>
                     @if (item.TaxName == null || item.TaxName == "")
                     {
@@ -176,6 +182,51 @@
                     else
                     {
                         @Html.DisplayFor(modelItem => item.TaxName)
+                    }
+
+                </td>
+                <td>
+                    @if (item.CreatedBy == null)
+                    {
+                        <span></span>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.CreatedBy)
+                    }
+
+                </td>
+                <td>
+                    @if (item.CreationDate == null)
+                    {
+                        <span></span>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.CreationDate)
+                    }
+
+                </td>
+                
+                <td>
+                    @if (item.ModifyUser == null)
+                    {
+                        <span></span>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.ModifyUser)
+                    }
+
+                </td>
+                <td>
+                    @if (item.ModifyDate == null)
+                    {
+                        <span></span>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.ModifyDate)
                     }
 
                 </td>

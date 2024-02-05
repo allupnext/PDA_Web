@@ -748,11 +748,15 @@ namespace PDA_Web.Areas.Admin.Controllers
 
             if (PDAEstimitor.PDAEstimatorID > 0)
             {
+                var userid = HttpContext.Session.GetString("UserID");
+                PDAEstimitor.ModifyUserID = userid;
                 await unitOfWork.PDAEstimitor.UpdateAsync(PDAEstimitor);
                 _toastNotification.AddSuccessToastMessage("Updated Successfully");
             }
             else
             {
+                var userid = HttpContext.Session.GetString("UserID");
+                PDAEstimitor.CreatedBy = userid;
                 var id = await unitOfWork.PDAEstimitor.AddAsync(PDAEstimitor);
                 //if (id != "" && Convert.ToInt64(id) > 0)
                 //{

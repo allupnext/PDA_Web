@@ -7,6 +7,8 @@ using PDAEstimator_Domain.Entities;
 using PDAEstimator_Infrastructure.Repositories;
 using System.Globalization;
 using static System.Reflection.Metadata.BlobBuilder;
+using Azure.Core;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace PDA_Web.Areas.Admin.Controllers
 {
@@ -418,6 +420,7 @@ namespace PDA_Web.Areas.Admin.Controllers
 
         public async Task<ActionResult> TariffSave(TariffRateList tariff)
         {
+
             TariffMaster tariffMaster = new TariffMaster();
             tariffMaster.PortID = tariff.PortID;
             TariffRate tariffRate = new TariffRate();
@@ -450,7 +453,10 @@ namespace PDA_Web.Areas.Admin.Controllers
         }
         
         public async Task<ActionResult> TariffRateSave(TariffRate tariffrate)
-        {
+            {
+            //var remoteIpAddress = Request.HttpContext.Connection.RemoteIpAddress;
+            //var test1 = HttpContext.Features.Get<IHttpConnectionFeature>();
+            //var test2 = HttpContext.Connection.RemoteIpAddress;
             CultureInfo provider = CultureInfo.InvariantCulture;
 
             string Validity_Tostring = tariffrate.StringValidity_To + " " + "12:00:00 AM";
@@ -461,13 +467,20 @@ namespace PDA_Web.Areas.Admin.Controllers
 
             tariffrate.Validity_From = Validity_Froms;
             tariffrate.Validity_To = Validity_To;
+
+
+
             if (tariffrate.TariffRateID > 0)
             {
+                var Currentuser = HttpContext.Session.GetString("UserID");
+                tariffrate.ModifyUserID = Currentuser;
                 await unitOfWork.TariffRates.UpdateAsync(tariffrate);
                 _toastNotification.AddSuccessToastMessage("Updated Successfully");
             }
             else
             {
+                var Currentuser = HttpContext.Session.GetString("UserID");
+                tariffrate.CreatedBy = Currentuser;
                 await unitOfWork.TariffRates.AddAsync(tariffrate);
                 _toastNotification.AddSuccessToastMessage("Inserted successfully");
             }

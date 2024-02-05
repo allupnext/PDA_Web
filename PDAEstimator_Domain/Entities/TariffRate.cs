@@ -23,13 +23,13 @@ namespace PDAEstimator_Domain.Entities
         public decimal Rate { get; set; }
         public int? CurrencyID { get; set; }
 
-        public int? CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
 
         public string? Remark { get; set; }
         public int? TaxID { get; set; }
         public DateTime? CreationDate { get; set; }
         public string? IPAddress { get; set; }
-        public int? ModifyUserID { get; set; }
+        public string? ModifyUserID { get; set; }
         public DateTime? ModifyDate { get; set; }
         public int status { get; set; }
         [DisplayFormat(DataFormatString = "{0:MM-dd-yyyy}", ApplyFormatInEditMode = true)]
