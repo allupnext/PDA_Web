@@ -1,20 +1,11 @@
-﻿using iTextSharp.text.pdf;
-using iTextSharp.tool.xml.html;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing.Constraints;
+﻿using Microsoft.AspNetCore.Mvc;
 using NToastNotify;
-using PDA_Web.Models;
 using PDAEstimator_Application.Interfaces;
 using PDAEstimator_Domain.Entities;
 using Rotativa.AspNetCore;
 using SelectPdf;
 using System.Data;
 using System.Globalization;
-using System.Drawing;
-using System.Linq;
-using System.IO;
-using Microsoft.Extensions.Hosting;
-using iTextSharp.text.pdf.parser;
 
 namespace PDA_Web.Areas.Admin.Controllers
 {
@@ -54,8 +45,9 @@ namespace PDA_Web.Areas.Admin.Controllers
             return new ViewAsPdf("PDAEstimator", pDAEstimatorOutPut)
             {
                 //FileName = "MyPdf.pdf";
-                FileName = "PDA_" + pDAEstimatorOutPut.PortName + "_" + pDAEstimatorOutPut.PDAEstimatorID + ".pdf"
-                
+                FileName = "PDA_" + pDAEstimatorOutPut.PortName + "_" + pDAEstimatorOutPut.PDAEstimatorID + ".pdf",
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+                PageSize = Rotativa.AspNetCore.Options.Size.A3
             };
         }
         public async Task<IActionResult> PDAEstimator(int id)
