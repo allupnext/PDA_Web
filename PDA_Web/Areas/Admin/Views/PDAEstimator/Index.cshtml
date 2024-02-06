@@ -317,6 +317,10 @@
                                 <label for="CallType">Call Type<span class="text-danger">*</span></label>
                                 @Html.DropDownList("CallTypeFilter", new SelectList(ViewBag.CallType, "ID", "CallTypeName"), "Please select", new { @class = "form-control" })
                             </div>
+                            <div class="col-sm-2">
+                                <label for="UserFilter">UserFilter<span class="text-danger">*</span></label>
+                                @Html.DropDownList("UserFilter", new SelectList(ViewBag.EmployeeCode, "ID", "EmployCode"), "Please select", new { @class = "form-control" })
+                            </div>
                         </div>
                         <div id="viewAll" class="table-responsive"></div>
                     </div>
@@ -417,6 +421,10 @@
                 loadData();
             });
             $('#CallTypeFilter').change(function () {
+                debugger
+                loadData();
+            });
+            $('#UserFilter').change(function () {
                 debugger
                 loadData();
             });
@@ -854,6 +862,7 @@
                 "PortID": $('#PortFilter').val(),
                 "TerminalID": $('#TerminalFilter').val(),
                 "CallTypeID": $('#CallTypeFilter').val(),
+                "CreatedBy": $('#UserFilter').val(),
             };
 
             $.ajax({

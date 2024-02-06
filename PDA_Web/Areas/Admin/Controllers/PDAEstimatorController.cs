@@ -539,6 +539,9 @@ namespace PDA_Web.Areas.Admin.Controllers
                 var CallTypeData = await unitOfWork.CallTypes.GetAllAsync();
                 ViewBag.CallType = CallTypeData;
 
+                var EmployeeCode = await unitOfWork.User.GetAllAsync();
+                ViewBag.EmployeeCode = EmployeeCode;
+
                 var PortActivityData = await unitOfWork.PortActivities.GetAllAsync();
                 ViewBag.PortActivity = PortActivityData;
 
@@ -654,6 +657,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                     List<int> PortIds = userdata.Ports.Split(',').Select(int.Parse).ToList();
                     pDAEstimatorLists = await unitOfWork.PDAEstimitor.GetAlllistAsync();
                     pDAEstimatorLists = pDAEstimatorLists.Where(x => PortIds.Contains(x.PortID)).ToList();
+
                 }
             }
 
@@ -674,6 +678,11 @@ namespace PDA_Web.Areas.Admin.Controllers
                 if (pDAEstimator.CallTypeID != null && pDAEstimator.CallTypeID != 0)
                 {
                     pDAEstimatorLists = pDAEstimatorLists.Where(x => x.CallTypeID == pDAEstimator.CallTypeID).ToList();
+                }
+                if (pDAEstimator.CreatedBy != null && pDAEstimator.CreatedBy != "")
+                {
+                    pDAEstimatorLists = pDAEstimatorLists.Where(x => Convert.ToInt64(x.UserId) == Convert.ToInt64(pDAEstimator.CreatedBy)).ToList();
+
                 }
             }
             return PartialView("partial/_ViewAll", pDAEstimatorLists);

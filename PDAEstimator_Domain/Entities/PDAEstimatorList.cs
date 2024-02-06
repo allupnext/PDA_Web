@@ -72,6 +72,7 @@ namespace PDAEstimator_Domain.Entities
         public long? BerthStayShiftCoastal { get; set; }
         public long? BerthStayHoursCoastal { get; set; }
 
+        public string UserId { get; set; }
         public string CreatedBy { get; set; }
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime CreationDate { get; set; }
