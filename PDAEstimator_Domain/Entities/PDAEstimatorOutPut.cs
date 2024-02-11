@@ -32,5 +32,7 @@ namespace PDAEstimator_Domain.Entities
         public string DefaultCurrencyCode { get; set; }
         public decimal Taxrate { get; set; }
 
+        public int BaseCurrencyCodeID { get; set; }
+        public int DefaultCurrencyCodeID { get; set; }
     }
 }

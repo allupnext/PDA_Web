@@ -9,7 +9,7 @@ namespace PDAEstimator_Application.Interfaces
 {
     public interface IPDAEstimatorOutPutTariffRepository : IGenericRepository<PDAEstimatorOutPutTariff>
     {
-      
 
+        Task<List<PDAEstimatorOutPutTariff>> GetAllByPDAEstimatorIDAsync(long id);
     }
 }

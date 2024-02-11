@@ -576,7 +576,7 @@
 
         function PDAEstimatorSave() {
             var PDAEstimitor;
-
+            showLoader(this);
             PDAEstimitor = {
                 "PDAEstimatorId": $('#PDAEstimatorId').val(),
                 "CustomerId": $('#customerid').val(),
@@ -679,19 +679,22 @@
                     data: PDAEstimitor,
                     success: function (data) {
                         if (!data.proceed) {
+                            $('#loading').hide();
                             return;
                         }
                         else {
+                            $('#loading').hide();
                             clear();
                             loadData();
                         }
 
                     },
                     error: function () {
+                        $('#loading').hide();
                     }
                 });
             }
-
+            
         }
 
         function EditPDAEstimator(id , para) {
