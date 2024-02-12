@@ -91,6 +91,12 @@
 
     $(document).ready(function () {
         $("#TariffTable").DataTable({
+            scrollX: true,
+            scrollCollapse: true,
+            scrollY: '400px',
+            fixedHeader: {
+                header: true,
+            },
             "bDestroy": true,
             destroy: true,
             "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]

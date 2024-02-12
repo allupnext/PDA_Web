@@ -294,6 +294,12 @@
     $(document).ready(function () {
         $("#PDAEstimator").DataTable({
             order: [[1, 'desc']],
+            scrollX: true,
+            scrollCollapse: true,
+            scrollY: '400px',
+                fixedHeader: {
+                header: true,
+            },
             "responsive": false, "lengthChange": false, "autoWidth": false,
             "buttons": [{
                 extend: 'excel',

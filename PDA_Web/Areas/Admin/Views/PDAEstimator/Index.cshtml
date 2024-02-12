@@ -448,6 +448,7 @@
                 calltypebasehideshowberthstay();
             });
 
+            //$('#PDAEstimator').parent().parent().css("overflow", "scroll").css("height", "400px");
 
         });
 
@@ -557,23 +558,20 @@
             $('#CallTypeName').val("");
             $('#CargoName').val("");
             $('#CargoQty').val("");
-            $('#CargoUnitofMasurement').val("");
+            $('#CargoUnitofMasurement').val("MT");
             $('#LoadDischargeRate').val("");
-            $('#Currency').val("");
-            $('#ROERate').val("");
             $('#DWT').val("");
             $('#GRT').val("");
             $('#ArrivalDraft').val("");
             $('#NRT').val("");
             $('#BerthStay').val("");
             $('#BerthStayDay').val("");
-            $('#AnchorageStay').val("");
+            $('#AnchorageStay').val("0");
             $('#LOA').val("");
             $('#Beam').val("");
             $('#ETA').val("");
             $('#Company').val("");
             $('#BerthStayShift').val("");
-            $('#VesselBallast').val("");
             $('#BerthStayhourCoastal').val("");
             $('#BerthStayDayCoastal').val("");
             $('#BerthStayShiftCoastal').val("");
@@ -582,7 +580,7 @@
 
         function PDAEstimatorSave() {
             var PDAEstimitor;
-            showLoader(this);
+            //showLoader(this);
             PDAEstimitor = {
                 "PDAEstimatorId": $('#PDAEstimatorId').val(),
                 "CustomerId": $('#customerid').val(),
@@ -685,18 +683,18 @@
                     data: PDAEstimitor,
                     success: function (data) {
                         if (!data.proceed) {
-                            $('#loading').hide();
+                            //$('#loading').hide();
                             return;
                         }
                         else {
-                            $('#loading').hide();
+                            //$('#loading').hide();
                             clear();
                             loadData();
                         }
 
                     },
                     error: function () {
-                        $('#loading').hide();
+                        //$('#loading').hide();
                     }
                 });
             }
