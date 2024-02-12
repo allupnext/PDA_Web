@@ -16,5 +16,8 @@ namespace PDAEstimator_Application.Interfaces
         Task<int> DeleteCustomer_Company_MappingAsync(long id);
 
         Task<List<CustomerList>> GetAlllistCustomerAsync(int customerId);
+        Task<Customer> CheckEmailExist(string email);
+        Task<string> GenerateEmailConfirmationTokenAsync(string token, int id);
+        Task<string> ChangePassword(string Password, long id);
     }
 }

@@ -35,7 +35,7 @@
                     </div>
                     <!-- /.card-header -->
                     <!-- form start -->
-                    <div class="card-body">
+                    <div class="card-body" >
                         <input type="hidden" id="UserId" name="UserId" value="">
                         <div class="row">
                             <div class="col-sm-6">
@@ -113,6 +113,12 @@
                         <div class="row">
                             <div class="col-sm-3">
                                 <div class="form-group">
+                                    <label for="EmailId">EmailID<span class="text-danger">*</span> </label>
+                                    <input type="text" class="form-control" id="EmailID" placeholder="Email" />
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
                                     <label for="PrimaryCompany">Primary Company<span class="text-danger">*</span></label>
                                     @Html.DropDownList("PrimaryCompany", new SelectList(ViewBag.PrimaryCompany, "CompanyId", "CompanyName"), "Please Select", new { @class = "form-control"})
                                 </div>
@@ -176,7 +182,7 @@
                     <div class="card-header">
                         <h3 class="card-title">User List</h3>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body" style="overflow-x:scroll; overflow-y:hidden;">
                         <label for="">Filters:</label>
                         <div class="row" style="padding-bottom: 10px;">
                             <div class="col-sm-2" style="max-width: 15%;">
@@ -270,6 +276,7 @@
                 "UserPassword": $('#UserPassword').val(),
                 "MobileNo": $('#MobileNo').val(),
                 "RoleID": $('#Role').val(),
+                "EmailID": $('#EmailID').val(),
                 "PrimaryCompanyId": $('#PrimaryCompany').val(),
                 "SecondaryCompanyId": $('#SecondaryCompany').val(),
                 "PortIds": $('#PortNameId').val(),
@@ -281,6 +288,10 @@
             else if ($('#FirstName').val() == "") {
                 toastr.error("Please enter first name.", 'Error Alert');
                 $('#FirstName').css("border-color", "Red");
+            }
+            else if ($('#EmailID').val() == "") {
+                toastr.error("Please enter Email Address.", 'Error Alert');
+                $('#EmailID').css("border-color", "Red");
             }
             else if ($('#LastName').val() == "") {
                 toastr.error("Please enter last name.", 'Error Alert');
@@ -331,7 +342,7 @@
                 $('#UserPassword').val("");
                 $('#MobileNo').val("");
                 $('#Role').val("");
-
+                $('#EmailID').val("");
                 $('#PrimaryCompany').val("");
                 $('#PortNameId').val("");
             }
@@ -388,6 +399,7 @@
                 "MobileNo": $('#MobileNo').val(),
                 "Salutation": $('#Salutation').val(),
                 "RoleID": $('#Role').val(),
+                "EmailID": $('#EmailID').val(),
                 "PrimaryCompanyId": $('#PrimaryCompany').val(),
                 "secondaryCompanyId": $('#SecondaryCompany').val(),
                 "PortId": $('#PortNameId').val()
@@ -409,6 +421,7 @@
                     $('#MobileNo').val(data.user.mobileNo);
                     $('#Salutation').val(data.user.salutation);
                     $('#Role').val(data.user.roleId);
+                    $('#EmailID').val(data.user.emailID);
                     $('#PrimaryCompany').val(data.user.primaryCompany);
                     $('#SecondaryCompany').val(data.user.secondaryCompanyId);
                     $('#PortNameId').val(data.user.portIds);

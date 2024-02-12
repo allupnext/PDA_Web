@@ -3,8 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using NToastNotify;
 using PDA_Web.Data;
 using PDAEstimator_Application.Interfaces;
+using PDAEstimator_Domain.Entities;
 using PDAEstimator_Infrastructure.Repositories;
 using Rotativa.AspNetCore;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,13 +59,13 @@ builder.Services.AddTransient<IPDAEstimatorOutPutTariffRepository, PDAEstimatorO
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromSeconds(1800);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-
 
 builder.Services.AddMvc()
                .AddNToastNotifyNoty(new NotyOptions
