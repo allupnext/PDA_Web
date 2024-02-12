@@ -117,6 +117,27 @@ namespace PDA_Web.Areas.Admin.Controllers
 
                 };
 
+                string Companylogo = pDAEstimatorOutPutView.CompanyLogo;
+
+
+                string fullPath = GetFullPathOfFile(pDAEstimatorOutPutView.CompanyLogo.Replace("\"", ""));
+                var test = !System.IO.File.Exists(fullPath);
+                //Read the File data into Byte Array.
+                byte[] bytes;
+
+                bytes = new byte[1024];
+
+                if (System.IO.File.Exists(fullPath))
+                {
+                    bytes = System.IO.File.ReadAllBytes(fullPath);
+                    string file = Convert.ToBase64String(bytes);
+                    pDAEstimatorOutPutView.CompanyLogoBase64 = "data:image/png;base64, " + file;
+                }
+                else
+                {
+                    pDAEstimatorOutPutView.CompanyLogoBase64 = "";
+                }
+
                 BankMaster bankMaster = new BankMaster()
                 {
                     NameofBeneficiary = pDAEstimatorOutPutdata.NameofBeneficiary,

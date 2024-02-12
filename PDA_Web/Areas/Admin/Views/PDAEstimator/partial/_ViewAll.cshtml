@@ -252,12 +252,6 @@
                                 </a>
                             }
 
-                            //@if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "PDA Estimator" && x.UserRolePermission == "Edit").Count() > 0))
-                            //{
-                            //    <a class="btn btn-info btn-sm" onclick="EditPDAEstimator(@item.PDAEstimatorID)">
-                            //        <i class="fas fa-pencil-alt"></i> Edit
-                            //    </a>
-                            //}
                             @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "PDA Estimator" && x.UserRolePermission == "Delete").Count() > 0))
                             {
                                 <a class="btn btn-danger btn-sm" onclick="deletePDAEstimator(@item.PDAEstimatorID)">

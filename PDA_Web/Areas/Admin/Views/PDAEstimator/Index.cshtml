@@ -264,10 +264,17 @@
                                     }, new { @class = "form-control" })
                                 </div>
                             </div>
+                          @*  <div class="col-sm-2" style="max-width: 15%;">
+                                <div class="form-group">
+                                    <label for="ReducedGRT">Reduced GRT<span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="ReducedGRT" placeholder="Reduced GRT">
+
+                                </div>
+                            </div>*@
                         </div>
                         <!-- /.card-body -->
                     </div>
-                     @if (ViewBag.UserPermissionModel != null )
+                    @if (ViewBag.UserPermissionModel != null)
                     {
                         List<UserPermissionRights> userPermissionRights = new List<UserPermissionRights>();
                         List<UserRoleName> userRoleName = new List<UserRoleName>();
@@ -328,7 +335,7 @@
             </div>
 
         </div>
-
+    </div>
 </section>
 
 
@@ -406,7 +413,7 @@
         $(document).ready(function () {
 
             //$("#").DataTable();
-           loadData();
+            loadData();
             $('#PDAMenu').addClass('active');
             $('#CustomerFilter').change(function () {
                 debugger
@@ -428,12 +435,12 @@
                 debugger
                 loadData();
             });
-            
+
             $("#CargoQty, #LoadDischargeRate").on("input", function () {
                 berthstaycalculation();
             });
 
-         
+
             $('#Currency').val(@ViewBag.CurrencyDefault);
             callCurrencyfunc($('#Currency').val());
 
@@ -539,8 +546,7 @@
             });
         }
 
-        function clear()
-        {
+        function clear() {
             $('#PDAEstimatorId').val("");
             $('#customerid').val("");
             $('#VesselName').val("");
@@ -571,7 +577,7 @@
             $('#BerthStayhourCoastal').val("");
             $('#BerthStayDayCoastal').val("");
             $('#BerthStayShiftCoastal').val("");
-            
+
         }
 
         function PDAEstimatorSave() {
@@ -694,10 +700,10 @@
                     }
                 });
             }
-            
+
         }
 
-        function EditPDAEstimator(id , para) {
+        function EditPDAEstimator(id, para) {
             $(window).scrollTop(150);
             $('#PDAEstimatorId').val(id);
             var PDAEstimitor;
@@ -777,7 +783,7 @@
                 }
             });
         }
-        
+
         function formatDate(date) {
             var day = date.getDate();
             var month = date.getMonth() + 1; //Months are zero-based
@@ -881,21 +887,21 @@
             });
         }
 
-        //function ViewPDAEstimator(PDAEstimatorID) {
-                        //    alert('hi')
-                        //    $.ajax({
-                        //        url: "/Admin/PDAEstimator/PDAEstimator?id=" + PDAEstimatorID,
-                        //        dataType: "html",
-                        //        success: function (data) {
-                        //            var url = "https://jsonplaceholder.typicode.com/users/" + userId;
-                        //            window.open(url, "_blank");
-                        //        },
-                        //        error: function (error) {
-                        //            debugger;
-                        //            alert("Error:" + error);
-                        //        }
-                        //    })
-                        //}
-                    
+                //function ViewPDAEstimator(PDAEstimatorID) {
+                                //    alert('hi')
+                                //    $.ajax({
+                                //        url: "/Admin/PDAEstimator/PDAEstimator?id=" + PDAEstimatorID,
+                                //        dataType: "html",
+                                //        success: function (data) {
+                                //            var url = "https://jsonplaceholder.typicode.com/users/" + userId;
+                                //            window.open(url, "_blank");
+                                //        },
+                                //        error: function (error) {
+                                //            debugger;
+                                //            alert("Error:" + error);
+                                //        }
+                                //    })
+                                //}
+
     </script>
 }
