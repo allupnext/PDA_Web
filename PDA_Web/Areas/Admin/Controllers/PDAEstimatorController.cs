@@ -20,7 +20,7 @@ namespace PDA_Web.Areas.Admin.Controllers
         {
             this.unitOfWork = unitOfWork;
             _toastNotification = toastNotification;
-            _hostEnvironment = hostEnvironment; 
+            _hostEnvironment = hostEnvironment;
         }
 
         public async Task<IActionResult> CurrencyOnchange(int Currency)
@@ -52,50 +52,138 @@ namespace PDA_Web.Areas.Admin.Controllers
         }
         public async Task<IActionResult> PDAEstimator(int id)
         {
-            PDAEstimatorOutPutView pDAEstimatorOutPut = new PDAEstimatorOutPutView();
-            pDAEstimatorOutPut =  await PDAModelPrePared(pDAEstimatorOutPut, id);
+            //PDAEstimatorOutPutView pDAEstimatorOutPut = new PDAEstimatorOutPutView();
+            //pDAEstimatorOutPut = await PDAModelPrePared(pDAEstimatorOutPut, id);
 
-            //// Create the converter object
-            //HtmlToPdf converter = new HtmlToPdf();
+            PDAEstimatorOutPutView pDAEstimatorOutPutView = new PDAEstimatorOutPutView();
 
-            //// Convert the HTML page from URL to memory
-            //var htmlvaleu = View("PDAEstimator", pDAEstimatorOutPut);
-            //var viewHtml = await this.RenderViewAsync("PDAEstimator", pDAEstimatorOutPut);
-            //using (MemoryStream stream = new System.IO.MemoryStream())
-            //{
-            //    StringReader sr = new StringReader(viewHtml);
-            //    Document pdfDoc = new Document(PageSize.A4, 10f, 10f, 100f, 0f);
-            //    PdfWriter writer = PdfWriter.GetInstance(pdfDoc, stream);
-            //    pdfDoc.Open();
-            //    XMLWorkerHelper.GetInstance().ParseXHtml(writer, pdfDoc, sr);
-            //    pdfDoc.Close();
-            //    return File(stream.ToArray(), "application/pdf", "Grid.pdf");
-            //}
-            //byte[] pdfData = converter.ConvertUrlToMemory(viewHtml.ToString());
+            var pDAEstimatorOutPutdata = await unitOfWork.PDAEstimitorOUTPUT.GetByIdAsync(Convert.ToInt64(id));
+            if (pDAEstimatorOutPutdata != null)
+            {
+                var PDAData = unitOfWork.PDAEstimitor.GetAlllistAsync().Result.Where(x => x.PDAEstimatorID == id).FirstOrDefault();
+                var TaxData = unitOfWork.Taxs.GetAllAsync().Result;
 
-            ////// Save the PDF data to a file
-            //System.IO.File.WriteAllBytes("output.pdf", pdfData);
+                pDAEstimatorOutPutView = new PDAEstimatorOutPutView()
+                {
+                    PDAEstimatorID = PDAData.PDAEstimatorID,
+                    CustomerID = PDAData.CustomerID,
+                    FirstName = PDAData.CustomerCompanyName,
+                    VesselName = PDAData.VesselName,
+                    PortName = PDAData.PortName,
+                    PortID = PDAData.PortID,
+                    ActivityTypeId = PDAData.ActivityTypeId,
+                    BerthStayDay = PDAData.BerthStayDay,
+                    TerminalName = PDAData.TerminalName,
+                    ETA = PDAData.ETA,
+                    ActivityType = PDAData.ActivityType,
+                    TerminalID = PDAData.TerminalID,
+                    CallTypeName = PDAData.CallTypeName,
+                    CallTypeID = PDAData.CallTypeID,
+                    CurrencyName = PDAData.CurrencyName,
+                    CargoID = PDAData.CargoID,
+                    CargoQty = PDAData.CargoQty,
+                    CargoUnitofMasurement = PDAData.CargoUnitofMasurement,
+                    LoadDischargeRate = PDAData.LoadDischargeRate,
+                    CargoName = PDAData.CargoName,
+                    CurrencyID = PDAData.CurrencyID,
+                    ROE = PDAData.ROE,
+                    DWT = PDAData.DWT,
+                    ArrivalDraft = PDAData.ArrivalDraft,
+                    GRT = PDAData.GRT,
+                    NRT = PDAData.NRT,
+                    BerthStay = PDAData.BerthStay,
+                    AnchorageStay = PDAData.AnchorageStay,
+                    LOA = PDAData.LOA,
+                    Beam = PDAData.Beam,
+                    IsDeleted = PDAData.IsDeleted,
+                    InternalCompanyID = PDAData.InternalCompanyID,
+                    BerthStayShift = PDAData.BerthStayShift,
+                    BerthStayShiftCoastal = PDAData.BerthStayShiftCoastal,
+                    BerthStayDayCoastal = PDAData.BerthStayDayCoastal,
+                    BerthStayHoursCoastal = PDAData.BerthStayHoursCoastal,
+                    VesselBallast = PDAData.VesselBallast,
+                    BerthID = PDAData.BerthId,
+                    CompanyName = pDAEstimatorOutPutdata.CompanyName,
+                    CompanyAddress1 = pDAEstimatorOutPutdata.CompanyAddress1.ToUpper(),
+                    CompanyAddress2 = pDAEstimatorOutPutdata.CompanyAddress2.ToUpper(),
+                    CompanyTelephone = pDAEstimatorOutPutdata.CompanyTelephone.ToUpper(),
+                    CompanyAlterTel = pDAEstimatorOutPutdata.CompanyAlterTel.ToUpper(),
+                    CompanyEmail = pDAEstimatorOutPutdata.CompanyEmail.ToUpper(),
+                    CompanyLogo = pDAEstimatorOutPutdata.CompanyLogo,
+                    BaseCurrencyCode = pDAEstimatorOutPutdata.BaseCurrencyCode,
+                    BaseCurrencyCodeID = pDAEstimatorOutPutdata.BaseCurrencyCodeID,
+                    DefaultCurrencyCode = pDAEstimatorOutPutdata.DefaultCurrencyCode,
+                    DefaultCurrencyCodeID = pDAEstimatorOutPutdata.DefaultCurrencyCodeID,
 
-            ////// Alternatively convert and save to a file in one step
-            ////converter.ConvertUrlToFile(UrlToConvert, "output.pdf");
+                };
 
-            ////// Send the PDF data for download in ASP.NET Core applications
-            //FileResult fileResult = new FileContentResult(pdfData, "application/pdf");
-            //fileResult.FileDownloadName = "Output.pdf";
-            //return fileResult;
+                BankMaster bankMaster = new BankMaster()
+                {
+                    NameofBeneficiary = pDAEstimatorOutPutdata.NameofBeneficiary,
+                    BeneficiaryAddress = pDAEstimatorOutPutdata.BeneficiaryAddress,
+                    AccountNo = pDAEstimatorOutPutdata.AccountNo,
+                    Beneficiary_Bank_Name = pDAEstimatorOutPutdata.Beneficiary_Bank_Name,
+                    Beneficiary_Bank_Address = pDAEstimatorOutPutdata.Beneficiary_Bank_Address,
+                    Beneficiary_RTGS_NEFT_IFSC_Code = pDAEstimatorOutPutdata.Beneficiary_Bank_Name,
+                    Beneficiary_Bank_Swift_Code = pDAEstimatorOutPutdata.Beneficiary_Bank_Name,
+                    Intermediary_Bank = pDAEstimatorOutPutdata.Intermediary_Bank,
+                    Intermediary_Bank_Swift_Code = pDAEstimatorOutPutdata.Intermediary_Bank,
+                };
 
-            //// Send the PDF data for download in ASP.NET Web Forms applications
-            //HttpResponse httpResponse = HttpContext.Current.Response;
-            //httpResponse.AddHeader("Content-Type", "application/pdf");
-            //httpResponse.AddHeader("Content-Disposition",
-            //           String.Format("attachment; filename=ConvertHtmlPart.pdf; size={0}",
-            //           pdfData.Length.ToString()));
-            //httpResponse.BinaryWrite(pdfData);
-            //httpResponse.End();
-            return View(pDAEstimatorOutPut);
+                pDAEstimatorOutPutView.BankMaster = bankMaster;
+                pDAEstimatorOutPutView.Expenses = unitOfWork.Expenses.GetAllAsync().Result.OrderBy(x => x.sequnce).ToList();
+
+                var Notesdata = await unitOfWork.PDAEstimitorOUTNote.GetAllNotesByPDAEstimatorOutPutIDAsync(pDAEstimatorOutPutdata.PDAEstimatorOutPutID);
+                List<Notes> notes = new List<Notes>();
+                if (Notesdata != null)
+                {
+                    foreach (var noteitem in Notesdata)
+                    {
+                        Notes note = new Notes
+                        {
+                            Note = noteitem.Note,
+                            sequnce = noteitem.sequnce
+                        };
+
+                        notes.Add(note);
+                    }
+                }
+
+                pDAEstimatorOutPutView.NotesData = notes;
+
+                var pDAEstimatorOutPutTariffdata = await unitOfWork.PDAEstimatorOutPutTariff.GetAllByPDAEstimatorIDAsync(pDAEstimatorOutPutdata.PDAEstimatorOutPutID);
+                List<PDATariffRateList> pDATariffRateLists = new List<PDATariffRateList>();
+                if (pDAEstimatorOutPutTariffdata != null && pDAEstimatorOutPutTariffdata.Count() > 0)
+                {
+                    foreach (var pDAEstimatorOutPutTariff in pDAEstimatorOutPutTariffdata)
+                    {
+                        PDATariffRateList pDATariffRateList = new PDATariffRateList
+                        {
+                            Amount = pDAEstimatorOutPutTariff.Amount,
+                            Remark = pDAEstimatorOutPutTariff.Remark,
+                            Rate = pDAEstimatorOutPutTariff.Rate,
+                            ExpenseCategoryID = pDAEstimatorOutPutTariff.ExpenseCategoryID,
+                            ChargeCodeName = pDAEstimatorOutPutTariff.ChargeCodeName,
+                            UNITS = pDAEstimatorOutPutTariff.UNITS,
+                            TaxID = pDAEstimatorOutPutTariff.TaxID,
+                            CurrencyID = pDAEstimatorOutPutTariff.CurrencyID
+
+                        };
+                        pDAEstimatorOutPutView.Taxrate = pDAEstimatorOutPutTariff.Taxrate;
+                        pDATariffRateLists.Add(pDATariffRateList);
+                    }
+                }
+                pDAEstimatorOutPutView.TariffRateList = pDATariffRateLists;
+            }
+            else
+            {
+                pDAEstimatorOutPutView = await PDAModelPrePared(pDAEstimatorOutPutView, id);
+
+            }
+            return View(pDAEstimatorOutPutView);
             //return new ViewAsPdf(pDAEstimatorOutPut);
         }
-         
+
         public async Task<PDAEstimatorOutPutView> PDAModelPrePared(PDAEstimatorOutPutView pDAEstimatorOutPut, int id)
         {
             if (id > 0)
@@ -168,13 +256,20 @@ namespace PDA_Web.Areas.Admin.Controllers
                 }
                 pDAEstimatorOutPut.CompanyAddress2 = CompanyData.CityName.ToUpper() + ", " + CompanyData.StateName.ToUpper() + ", " + CompanyData.CountryName.ToUpper();
                 pDAEstimatorOutPut.CompanyTelephone = CompanyData.Telephone;
-                pDAEstimatorOutPut.CompanyAlterTel = CompanyData.AlterTel;
+                if (CompanyData.AlterTel.Split("-")[1] != "")
+                {
+                    pDAEstimatorOutPut.CompanyAlterTel = CompanyData.AlterTel;
+                }
+                else
+                {
+                    pDAEstimatorOutPut.CompanyAlterTel = "";
+                }
                 pDAEstimatorOutPut.CompanyEmail = CompanyData.Email.ToUpper();
                 pDAEstimatorOutPut.CompanyLogo = CompanyData.CompanyLog;
                 string Companylogo = pDAEstimatorOutPut.CompanyLogo;
 
 
-                 string fullPath = GetFullPathOfFile(pDAEstimatorOutPut.CompanyLogo.Replace("\"", ""));
+                string fullPath = GetFullPathOfFile(pDAEstimatorOutPut.CompanyLogo.Replace("\"", ""));
                 var test = !System.IO.File.Exists(fullPath);
                 //Read the File data into Byte Array.
                 byte[] bytes;
@@ -195,11 +290,11 @@ namespace PDA_Web.Areas.Admin.Controllers
 
                 //image.Dispose();
                 /*                byte[] bytes = File.ReadAllBytes(@"image.png");*/
-              
+
 
                 //string base64String = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(Companylogo));
 
-              
+
 
 
                 var custdata = unitOfWork.Customer.GetByIdAsync(PDAData.CustomerID).Result;
@@ -231,7 +326,28 @@ namespace PDA_Web.Areas.Admin.Controllers
                         var formulatransdata = await unitOfWork.FormulaTransaction.GetAllTransAsync((int)triff.FormulaID);
                         if (formulatransdata.Count > 0)
                         {
-                            UnitCalculation(triff, pDAEstimatorOutPut.GRT, pDAEstimatorOutPut);
+                            long? slabattributvalue = 0;
+                            if (triff.SlabName == "GRT")
+                                slabattributvalue = pDAEstimatorOutPut.GRT;
+                            else if (triff.SlabName == "NRT")
+                                slabattributvalue = pDAEstimatorOutPut.NRT;
+                            else if (triff.SlabName == "BSTH" || triff.SlabName == "BSTHF")
+                                slabattributvalue = pDAEstimatorOutPut.BerthStay;
+                            else if (triff.SlabName == "BSTS" || triff.SlabName == "BSTSF")
+                                slabattributvalue = pDAEstimatorOutPut.BerthStayShift;
+                            else if (triff.SlabName == "BSTD" || triff.SlabName == "BSTDF")
+                                slabattributvalue = pDAEstimatorOutPut.BerthStayDay;
+                            else if (triff.SlabName == "BSTHC")
+                                slabattributvalue = pDAEstimatorOutPut.BerthStayHoursCoastal;
+                            else if (triff.SlabName == "BSTSC")
+                                slabattributvalue = pDAEstimatorOutPut.BerthStayShiftCoastal;
+                            else if (triff.SlabName == "BSTDC")
+                                slabattributvalue = pDAEstimatorOutPut.BerthStayDayCoastal;
+                            else if (triff.SlabName == "AST")
+                                slabattributvalue = pDAEstimatorOutPut.AnchorageStay;
+                            else if (triff.SlabName == "CQTY")
+                                slabattributvalue = pDAEstimatorOutPut.CargoQty;
+                            UnitCalculation(triff, pDAEstimatorOutPut.GRT, (long)slabattributvalue);
 
                             foreach (var formularTransList in formulatransdata)
                             {
@@ -450,31 +566,10 @@ namespace PDA_Web.Areas.Admin.Controllers
             return $"{_hostEnvironment.WebRootPath}\\companylogo\\{fileName}";
         }
 
-
-        public PDATariffRateList UnitCalculation(PDATariffRateList triff, long? attributvalue, PDAEstimatorOutPutView pDAEstimatorOutPut)
+        public PDATariffRateList UnitCalculation(PDATariffRateList triff, long? attributvalue, long slabattributvalue)
         {
             decimal? units = 0;
-            long? slabattributvalue = 0;
-            if (triff.SlabName == "GRT")
-                slabattributvalue = pDAEstimatorOutPut.GRT;
-            else if (triff.SlabName == "NRT")
-                slabattributvalue = pDAEstimatorOutPut.NRT;
-            else if (triff.SlabName == "BSTH" || triff.SlabName == "BSTHF")
-                slabattributvalue = pDAEstimatorOutPut.BerthStay;
-            else if (triff.SlabName == "BSTS" || triff.SlabName == "BSTSF")
-                slabattributvalue = pDAEstimatorOutPut.BerthStayShift;
-            else if (triff.SlabName == "BSTD" || triff.SlabName == "BSTDF")
-                slabattributvalue = pDAEstimatorOutPut.BerthStayDay;
-            else if (triff.SlabName == "BSTHC")
-                slabattributvalue = pDAEstimatorOutPut.BerthStayHoursCoastal;
-            else if (triff.SlabName == "BSTSC")
-                slabattributvalue = pDAEstimatorOutPut.BerthStayShiftCoastal;
-            else if (triff.SlabName == "BSTDC")
-                slabattributvalue = pDAEstimatorOutPut.BerthStayDayCoastal;
-            else if (triff.SlabName == "AST")
-                slabattributvalue = pDAEstimatorOutPut.AnchorageStay;
-            else if (triff.SlabName == "CQTY")
-                slabattributvalue = pDAEstimatorOutPut.CargoQty;
+
 
             if (triff.SlabID != null && triff.SlabID > 0)
             {
@@ -758,120 +853,355 @@ namespace PDA_Web.Areas.Admin.Controllers
                 var userid = HttpContext.Session.GetString("UserID");
                 PDAEstimitor.CreatedBy = userid;
                 var id = await unitOfWork.PDAEstimitor.AddAsync(PDAEstimitor);
-                //if (id != "" && Convert.ToInt64(id) > 0)
-                //{
-                //    PDAEstimatorOutPut pDAEstimatorOutPut = new PDAEstimatorOutPut();
-                //    //var PDAData = unitOfWork.PDAEstimitor.GetAlllistAsync().Result.Where(x => x.PDAEstimatorID == Convert.ToInt64(id)).FirstOrDefault();
+                if (id != "" && Convert.ToInt64(id) > 0)
+                {
+                    PDAEstimatorOutPut pDAEstimatorOutPut = new PDAEstimatorOutPut();
+                    //var PDAData = unitOfWork.PDAEstimitor.GetAlllistAsync().Result.Where(x => x.PDAEstimatorID == Convert.ToInt64(id)).FirstOrDefault();
 
-                //    var CompanyData = unitOfWork.Company.GetAlllistAsync().Result.Where(x => x.CompanyId == PDAEstimitor.InternalCompanyID).FirstOrDefault();
-                //    var TaxData = unitOfWork.Taxs.GetAllAsync().Result;
+                    var CompanyData = unitOfWork.Company.GetAlllistAsync().Result.Where(x => x.CompanyId == PDAEstimitor.InternalCompanyID).FirstOrDefault();
+                    var TaxData = unitOfWork.Taxs.GetAllAsync().Result;
 
-                //    string Addressline2 = "";
-                //    pDAEstimatorOutPut.PDAEstimatorID = Convert.ToInt64(id);
-                //    if (CompanyData != null)
-                //    {
-                //        if (CompanyData.Address2 != null)
-                //        {
-                //            Addressline2 = CompanyData.Address1.ToUpper() + ", " + CompanyData.Address2.ToUpper() + ", ";
-                //        }
-                //        else
-                //        {
-                //            Addressline2 = CompanyData.Address1.ToUpper() + ", ";
-                //        }
+                    string Addressline2 = "";
+                    pDAEstimatorOutPut.PDAEstimatorID = Convert.ToInt64(id);
+                    if (CompanyData != null)
+                    {
+                        if (CompanyData.Address2 != null)
+                        {
+                            Addressline2 = CompanyData.Address1.ToUpper() + ", " + CompanyData.Address2.ToUpper() + ", ";
+                        }
+                        else
+                        {
+                            Addressline2 = CompanyData.Address1.ToUpper() + ", ";
+                        }
 
-                //        pDAEstimatorOutPut.CompanyName = CompanyData.CompanyName;
-                //        pDAEstimatorOutPut.CompanyAddress1 = Addressline2;
-                //        pDAEstimatorOutPut.CompanyAddress2 = CompanyData.CityName.ToUpper() + ", " + CompanyData.StateName.ToUpper() + ", " + CompanyData.CountryName.ToUpper();
-                //        pDAEstimatorOutPut.CompanyTelephone = CompanyData.Telephone;
-                //        pDAEstimatorOutPut.CompanyAlterTel = CompanyData.AlterTel;
-                //        pDAEstimatorOutPut.CompanyEmail = CompanyData.Email.ToUpper();
-                //        pDAEstimatorOutPut.CompanyLogo = CompanyData.CompanyLog;
-                //    }
-                //    else
-                //    {
-                //        pDAEstimatorOutPut.CompanyAddress1 = "";
-                //        pDAEstimatorOutPut.CompanyAddress2 = "";
-                //        pDAEstimatorOutPut.CompanyTelephone = "";
-                //        pDAEstimatorOutPut.CompanyAlterTel = "";
-                //        pDAEstimatorOutPut.CompanyEmail = "";
-                //        pDAEstimatorOutPut.CompanyLogo = "";
-                //    }
+                        pDAEstimatorOutPut.CompanyName = CompanyData.CompanyName;
+                        pDAEstimatorOutPut.CompanyAddress1 = Addressline2;
+                        pDAEstimatorOutPut.CompanyAddress2 = CompanyData.CityName.ToUpper() + ", " + CompanyData.StateName.ToUpper() + ", " + CompanyData.CountryName.ToUpper();
+                        pDAEstimatorOutPut.CompanyTelephone = CompanyData.Telephone;
+                        if (CompanyData.AlterTel.Split("-")[1] != "")
+                        {
+                            pDAEstimatorOutPut.CompanyAlterTel = CompanyData.AlterTel;
+                        }
+                        else
+                        {
+                            pDAEstimatorOutPut.CompanyAlterTel = "";
+                        }
+                        pDAEstimatorOutPut.CompanyEmail = CompanyData.Email.ToUpper();
+                        pDAEstimatorOutPut.CompanyLogo = CompanyData.CompanyLog;
+                    }
+                    else
+                    {
+                        pDAEstimatorOutPut.CompanyAddress1 = "";
+                        pDAEstimatorOutPut.CompanyAddress2 = "";
+                        pDAEstimatorOutPut.CompanyTelephone = "";
+                        pDAEstimatorOutPut.CompanyAlterTel = "";
+                        pDAEstimatorOutPut.CompanyEmail = "";
+                        pDAEstimatorOutPut.CompanyLogo = "";
+                    }
 
-                //    var custdata = unitOfWork.Customer.GetByIdAsync(PDAEstimitor.CustomerID).Result;
-                //    if (custdata != null && custdata.BankID != null)
-                //    {
-                //        var BankMaster = unitOfWork.BankMaster.GetByIdAsync(custdata.BankID).Result;
-                //        if (BankMaster != null)
-                //        {
-                //            pDAEstimatorOutPut.NameofBeneficiary = BankMaster.NameofBeneficiary;
-                //            pDAEstimatorOutPut.BeneficiaryAddress = BankMaster.BeneficiaryAddress;
-                //            pDAEstimatorOutPut.AccountNo = BankMaster.AccountNo;
-                //            pDAEstimatorOutPut.Beneficiary_Bank_Name = BankMaster.Beneficiary_Bank_Name;
-                //            pDAEstimatorOutPut.Beneficiary_Bank_Address = BankMaster.Beneficiary_Bank_Address;
-                //            pDAEstimatorOutPut.Beneficiary_RTGS_NEFT_IFSC_Code = BankMaster.Beneficiary_Bank_Name;
-                //            pDAEstimatorOutPut.Beneficiary_Bank_Swift_Code = BankMaster.Beneficiary_Bank_Name;
-                //            pDAEstimatorOutPut.Intermediary_Bank = BankMaster.Intermediary_Bank;
-                //            pDAEstimatorOutPut.Intermediary_Bank_Swift_Code = BankMaster.Intermediary_Bank;
-                //        }
-                //    }
+                    var custdata = unitOfWork.Customer.GetByIdAsync(PDAEstimitor.CustomerID).Result;
+                    if (custdata != null && custdata.BankID != null)
+                    {
+                        var BankMaster = unitOfWork.BankMaster.GetByIdAsync(custdata.BankID).Result;
+                        if (BankMaster != null)
+                        {
+                            pDAEstimatorOutPut.NameofBeneficiary = BankMaster.NameofBeneficiary;
+                            pDAEstimatorOutPut.BeneficiaryAddress = BankMaster.BeneficiaryAddress;
+                            pDAEstimatorOutPut.AccountNo = BankMaster.AccountNo;
+                            pDAEstimatorOutPut.Beneficiary_Bank_Name = BankMaster.Beneficiary_Bank_Name;
+                            pDAEstimatorOutPut.Beneficiary_Bank_Address = BankMaster.Beneficiary_Bank_Address;
+                            pDAEstimatorOutPut.Beneficiary_RTGS_NEFT_IFSC_Code = BankMaster.Beneficiary_Bank_Name;
+                            pDAEstimatorOutPut.Beneficiary_Bank_Swift_Code = BankMaster.Beneficiary_Bank_Name;
+                            pDAEstimatorOutPut.Intermediary_Bank = BankMaster.Intermediary_Bank;
+                            pDAEstimatorOutPut.Intermediary_Bank_Swift_Code = BankMaster.Intermediary_Bank;
+                        }
+                    }
 
-                //    var currencyData = unitOfWork.Currencys.GetAllAsync().Result;
-                //    pDAEstimatorOutPut.BaseCurrencyCode = currencyData.Where(x => x.BaseCurrency == true) != null ? currencyData.Where(x => x.BaseCurrency == true).FirstOrDefault().CurrencyCode : "";
-                //    pDAEstimatorOutPut.DefaultCurrencyCode = currencyData.Where(x => x.DefaultCurrecny == true) != null ? currencyData.Where(x => x.DefaultCurrecny == true).FirstOrDefault().CurrencyCode : "";
-                //    var taxrate = TaxData.Where(x => x.TaxName.Contains("GST")).Select(x => x.TaxRate).FirstOrDefault();
-                //    pDAEstimatorOutPut.Taxrate = taxrate;
-                //    pDAEstimatorOutPut.PDAEstimatorOutPutDate = DateTime.Now;
-                //    var PDAEstimitorOUTPUTid = await unitOfWork.PDAEstimitorOUTPUT.AddAsync(pDAEstimatorOutPut);
+                    var currencyData = unitOfWork.Currencys.GetAllAsync().Result;
+                    pDAEstimatorOutPut.BaseCurrencyCode = currencyData.Where(x => x.BaseCurrency == true) != null ? currencyData.Where(x => x.BaseCurrency == true).FirstOrDefault().CurrencyCode : "";
+                    pDAEstimatorOutPut.DefaultCurrencyCode = currencyData.Where(x => x.DefaultCurrecny == true) != null ? currencyData.Where(x => x.DefaultCurrecny == true).FirstOrDefault().CurrencyCode : "";
 
-                //    if (PDAEstimitorOUTPUTid != "" && Convert.ToInt64(PDAEstimitorOUTPUTid) > 0)
-                //    {
-                //        var NotesData = unitOfWork.PDAEstimitor.GetNotes().Result.ToList();
-                //        foreach (var note in NotesData)
-                //        {
-                //            PDAEstimatorOutPutNote pDAEstimatorOutPutNote = new PDAEstimatorOutPutNote();
-                //            pDAEstimatorOutPutNote.PDAEstimatorOutPutID = Convert.ToInt64(PDAEstimitorOUTPUTid);
-                //            pDAEstimatorOutPutNote.Note = note.Note;
-                //            pDAEstimatorOutPutNote.sequnce = note.sequnce;
-                //            // await unitOfWork.PDAEstimitorOUTNote.AddAsync(pDAEstimatorOutPutNote);
-                //        }
-                //    }
+                    pDAEstimatorOutPut.BaseCurrencyCodeID = currencyData.Where(x => x.BaseCurrency == true) != null ? currencyData.Where(x => x.BaseCurrency == true).FirstOrDefault().ID : 0;
+                    pDAEstimatorOutPut.DefaultCurrencyCodeID = currencyData.Where(x => x.DefaultCurrecny == true) != null ? currencyData.Where(x => x.DefaultCurrecny == true).FirstOrDefault().ID : 0;
 
-                //    var pDAEstimatorOutPutdata = unitOfWork.PDAEstimitorOUTPUT.GetByIdAsync(Convert.ToInt64(id)).Result;
-                //    PDAEstimatorOutPutView pDAEstimatorOutPutView = new PDAEstimatorOutPutView()
-                //    {
-                //        PDAEstimatorID = pDAEstimatorOutPutdata.PDAEstimatorID,
-                //        CompanyName = pDAEstimatorOutPutdata.CompanyName,
-                //        CompanyAddress1 = pDAEstimatorOutPutdata.CompanyAddress1.ToUpper(),
-                //        CompanyAddress2 = pDAEstimatorOutPutdata.CompanyAddress2.ToUpper(),
-                //        CompanyTelephone = pDAEstimatorOutPutdata.CompanyTelephone.ToUpper(),
-                //        CompanyAlterTel = pDAEstimatorOutPutdata.CompanyAlterTel.ToUpper(),
-                //        CompanyEmail = pDAEstimatorOutPutdata.CompanyEmail.ToUpper(),
-                //        CompanyLogo = pDAEstimatorOutPutdata.CompanyLogo,
-                //    };
+                    //var taxrate = TaxData.Where(x => x.TaxName.Contains("GST")).Select(x => x.TaxRate).FirstOrDefault();
+                    //pDAEstimatorOutPut.Taxrate = taxrate;
+                    pDAEstimatorOutPut.PDAEstimatorOutPutDate = DateTime.Now;
+                    var PDAEstimitorOUTPUTid = await unitOfWork.PDAEstimitorOUTPUT.AddAsync(pDAEstimatorOutPut);
 
+                    if (PDAEstimitorOUTPUTid != "" && Convert.ToInt64(PDAEstimitorOUTPUTid) > 0)
+                    {
+                        var NotesData = await unitOfWork.PDAEstimitor.GetNotes();
+                        if (NotesData != null)
+                        {
+                            foreach (var note in NotesData)
+                            {
+                                PDAEstimatorOutPutNote pDAEstimatorOutPutNote = new PDAEstimatorOutPutNote();
+                                pDAEstimatorOutPutNote.PDAEstimatorOutPutID = Convert.ToInt64(PDAEstimitorOUTPUTid);
+                                pDAEstimatorOutPutNote.Note = note.Note;
+                                pDAEstimatorOutPutNote.sequnce = note.sequnce;
+                                await unitOfWork.PDAEstimitorOUTNote.AddAsync(pDAEstimatorOutPutNote);
+                            }
+                        }
 
-                //    BankMaster bankMaster = new BankMaster()
-                //    {
-                //        NameofBeneficiary = pDAEstimatorOutPutdata.NameofBeneficiary,
-                //        BeneficiaryAddress = pDAEstimatorOutPutdata.BeneficiaryAddress,
-                //        AccountNo = pDAEstimatorOutPutdata.AccountNo,
-                //        Beneficiary_Bank_Name = pDAEstimatorOutPutdata.Beneficiary_Bank_Name,
-                //        Beneficiary_Bank_Address = pDAEstimatorOutPutdata.Beneficiary_Bank_Address,
-                //        Beneficiary_RTGS_NEFT_IFSC_Code = pDAEstimatorOutPutdata.Beneficiary_Bank_Name,
-                //        Beneficiary_Bank_Swift_Code = pDAEstimatorOutPutdata.Beneficiary_Bank_Name,
-                //        Intermediary_Bank = pDAEstimatorOutPutdata.Intermediary_Bank,
-                //        Intermediary_Bank_Swift_Code = pDAEstimatorOutPutdata.Intermediary_Bank,
-                //    };
+                        List<PDAEstimatorOutPutTariff> pDAEstimatorOutPutTariffs = new List<PDAEstimatorOutPutTariff>();
+                        var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(PDAEstimitor.PortID).Result.Where(x => (x.CallTypeID == PDAEstimitor.CallTypeID || x.CallTypeID == null) && (x.TerminalID == PDAEstimitor.TerminalID || x.TerminalID == null) && (x.BerthID == PDAEstimitor.BerthId || x.BerthID == null || x.BerthID == 0) && (x.CargoID == PDAEstimitor.CargoID || x.CargoID == null) && (x.VesselBallast == PDAEstimitor.VesselBallast || x.VesselBallast == 0)).OrderBy(o => o.ChargeCodeSequence).ThenBy(o => o.SlabFrom).ThenBy(o => o.TariffRateID);
+                        List<PDATariffRateList> pDATariffRateList = new List<PDATariffRateList>();
+                        decimal taxrate = 0;
+                        foreach (var triff in triffdata)
+                        {
+                            if (triff.FormulaID != null && triff.FormulaID > 0)
+                            {
+                                string formulastring = string.Empty;
+                                var formulatransdata = await unitOfWork.FormulaTransaction.GetAllTransAsync((int)triff.FormulaID);
+                                if (formulatransdata.Count > 0)
+                                {
+                                    long? slabattributvalue = 0;
+                                    if (triff.SlabName == "GRT")
+                                        slabattributvalue = PDAEstimitor.GRT;
+                                    else if (triff.SlabName == "NRT")
+                                        slabattributvalue = PDAEstimitor.NRT;
+                                    else if (triff.SlabName == "BSTH" || triff.SlabName == "BSTHF")
+                                        slabattributvalue = PDAEstimitor.BerthStay;
+                                    else if (triff.SlabName == "BSTS" || triff.SlabName == "BSTSF")
+                                        slabattributvalue = PDAEstimitor.BerthStayShift;
+                                    else if (triff.SlabName == "BSTD" || triff.SlabName == "BSTDF")
+                                        slabattributvalue = PDAEstimitor.BerthStayDay;
+                                    else if (triff.SlabName == "BSTHC")
+                                        slabattributvalue = PDAEstimitor.BerthStayHoursCoastal;
+                                    else if (triff.SlabName == "BSTSC")
+                                        slabattributvalue = PDAEstimitor.BerthStayShiftCoastal;
+                                    else if (triff.SlabName == "BSTDC")
+                                        slabattributvalue = PDAEstimitor.BerthStayDayCoastal;
+                                    else if (triff.SlabName == "AST")
+                                        slabattributvalue = PDAEstimitor.AnchorageStay;
+                                    else if (triff.SlabName == "CQTY")
+                                        slabattributvalue = PDAEstimitor.CargoQty;
+                                    UnitCalculation(triff, PDAEstimitor.GRT, (long)slabattributvalue);
 
-                //    pDAEstimatorOutPutView.BankMaster = bankMaster;
+                                    foreach (var formularTransList in formulatransdata)
+                                    {
+                                        if (formularTransList.formulaAttributeID > 0)
+                                        {
+                                            string FormulaAttributedata = formularTransList.formulaAttributeName;
+                                            if (FormulaAttributedata.Contains("GRT"))
+                                            {
+                                                if (triff.SlabID == null || triff.SlabID == 0)
+                                                {
+                                                    triff.UNITS = PDAEstimitor.GRT;
+                                                }
 
-                //    //var Notesdata = await unitOfWork.PDAEstimitorOUTNote.GetAllNotesByPDAEstimatorOutPutIDAsync(Convert.ToInt64(id));
-                //    List<Notes> notes = new List<Notes>();
+                                                if (triff.SlabID != null && triff.SlabID > 0 && FormulaAttributedata == triff.SlabName)
+                                                {
+                                                    formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                                }
+                                                else
+                                                {
+                                                    formulastring = formulastring != "" ? formulastring + " " + PDAEstimitor.GRT.ToString() : PDAEstimitor.GRT.ToString();
+                                                }
 
-                //}
+                                                //UnitCalculation(triff, pDAEstimatorOutPut.GRT, pDAEstimatorOutPut);
+                                            }
+                                            else if (FormulaAttributedata.Contains("NRT"))
+                                            {
+                                                if (triff.SlabID == null || triff.SlabID == 0)
+                                                {
+                                                    triff.UNITS = PDAEstimitor.NRT;
+                                                }
+                                                //UnitCalculation(triff, pDAEstimatorOutPut.NRT, pDAEstimatorOutPut);
+                                                if (triff.SlabID != null && triff.SlabID > 0 && FormulaAttributedata == triff.SlabName)
+                                                {
+                                                    formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                                }
+                                                else
+                                                {
+                                                    formulastring = formulastring != "" ? formulastring + " " + PDAEstimitor.NRT.ToString() : PDAEstimitor.NRT.ToString();
+                                                }
+                                            }
+                                            else if (FormulaAttributedata == "BSTH" || FormulaAttributedata == "BSTHF")
+                                            {
+                                                //UnitCalculation(triff, pDAEstimatorOutPut.BerthStay);
+                                                if (triff.SlabID != null && triff.SlabID > 0 && FormulaAttributedata == triff.SlabName)
+                                                {
+                                                    formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                                }
+                                                else
+                                                {
+                                                    formulastring = formulastring != "" ? formulastring + " " + PDAEstimitor.BerthStay.ToString() : PDAEstimitor.BerthStay.ToString();
+                                                }
+                                            }
+                                            else if (FormulaAttributedata == "BSTS" || FormulaAttributedata == "BSTSF")
+                                            {
+                                                //UnitCalculation(triff, pDAEstimatorOutPut.BerthStayShift);
+                                                formulastring = formulastring != "" ? formulastring + " " + PDAEstimitor.BerthStayShift.ToString() : PDAEstimitor.BerthStayShift.ToString();
+                                            }
+                                            else if (FormulaAttributedata == "BSTD" || FormulaAttributedata == "BSTDF")
+                                            {
+                                                //UnitCalculation(triff, pDAEstimatorOutPut.BerthStayDay);
+                                                if (triff.SlabID != null && triff.SlabID > 0 && FormulaAttributedata == triff.SlabName)
+                                                {
+                                                    formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                                }
+                                                else
+                                                {
+                                                    formulastring = formulastring != "" ? formulastring + " " + PDAEstimitor.BerthStayDay.ToString() : PDAEstimitor.BerthStayDay.ToString();
+                                                }
+                                            }
+                                            else if (FormulaAttributedata.Contains("BSTHC"))
+                                            {
+                                                //UnitCalculation(triff, pDAEstimatorOutPut.BerthStayHoursCoastal);
+                                                if (triff.SlabID != null && triff.SlabID > 0 && FormulaAttributedata == triff.SlabName)
+                                                {
+                                                    formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                                }
+                                                else
+                                                {
+                                                    formulastring = formulastring != "" ? formulastring + " " + PDAEstimitor.BerthStayHoursCoastal.ToString() : PDAEstimitor.BerthStayHoursCoastal.ToString();
+                                                }
+                                            }
+                                            else if (FormulaAttributedata.Contains("BSTSC"))
+                                            {
+                                                //UnitCalculation(triff, pDAEstimatorOutPut.BerthStayShiftCoastal);
+                                                if (triff.SlabID != null && triff.SlabID > 0 && FormulaAttributedata == triff.SlabName)
+                                                {
+                                                    formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                                }
+                                                else
+                                                {
+                                                    formulastring = formulastring != "" ? formulastring + " " + PDAEstimitor.BerthStayShiftCoastal.ToString() : PDAEstimitor.BerthStayShiftCoastal.ToString();
+                                                }
+                                            }
+                                            else if (FormulaAttributedata.Contains("BSTDC"))
+                                            {
+                                                //UnitCalculation(triff, pDAEstimatorOutPut.BerthStayDayCoastal);
+                                                if (triff.SlabID != null && triff.SlabID > 0 && FormulaAttributedata == triff.SlabName)
+                                                {
+                                                    formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                                }
+                                                else
+                                                {
+                                                    formulastring = formulastring != "" ? formulastring + " " + PDAEstimitor.BerthStayDayCoastal.ToString() : PDAEstimitor.BerthStayDayCoastal.ToString();
+                                                }
+                                            }
+                                            else if (FormulaAttributedata.Contains("AST"))
+                                            {
+                                                //UnitCalculation(triff, pDAEstimatorOutPut.AnchorageStay);
+                                                if (triff.SlabID != null && triff.SlabID > 0 && FormulaAttributedata == triff.SlabName)
+                                                {
+                                                    formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                                }
+                                                else
+                                                {
+                                                    formulastring = formulastring != "" ? formulastring + " " + PDAEstimitor.AnchorageStay.ToString() : PDAEstimitor.AnchorageStay.ToString();
+                                                }
+                                            }
+                                            else if (FormulaAttributedata.Contains("CQTY"))
+                                            {
+                                                //UnitCalculation(triff, pDAEstimatorOutPut.CargoQty);
+                                                if (triff.SlabID != null && triff.SlabID > 0 && FormulaAttributedata == triff.SlabName)
+                                                {
+                                                    formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                                }
+                                                else
+                                                {
+                                                    formulastring = formulastring != "" ? formulastring + " " + PDAEstimitor.CargoQty.ToString() : PDAEstimitor.CargoQty.ToString();
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (triff.UNITS == null || triff.UNITS == 0)
+                                                {
+                                                    triff.UNITS = 1;
+                                                }
+                                                formulastring = formulastring != "" ? formulastring + " " + formularTransList.formulaAttributeName : formularTransList.formulaAttributeName;
+                                            }
+                                        }
+                                        if (formularTransList.formulaSlabID > 0)
+                                            formulastring = formulastring != "" ? formulastring + " " + formularTransList.formulaSlabName : formularTransList.formulaSlabName;
+                                        if (formularTransList.formulaOperatorID > 0)
+                                            formulastring = formulastring != "" ? formulastring + " " + formularTransList.formulaOperatorName : formularTransList.formulaOperatorName;
+                                        if (formularTransList.formulaValue > 0)
+                                            formulastring = formulastring != "" ? formulastring + " " + formularTransList.formulaValue : formularTransList.formulaValue.ToString();
+                                    }
+                                }
+                                else
+                                {
+                                    triff.UNITS = 1;
+
+                                }
+                                triff.Formula = formulastring;
+                                triff.FormulaID = (int)triff.FormulaID;
+                            }
+                            else
+                            {
+                                triff.UNITS = 1;
+                            }
+
+                            if (triff.Formula != "")
+                            {
+                                DataTable dt = new DataTable();
+                                var amount = dt.Compute(triff.Formula, "");
+                                decimal amt = Convert.ToDecimal(amount);
+                                amt = Math.Abs(amt);
+                                amt = amt * triff.Rate;
+                                triff.Amount = amt;
+                            }
+                            else
+                            {
+                                triff.Amount = 0;
+                            }
+
+                            if (triff.CurrencyID == pDAEstimatorOutPut.BaseCurrencyCodeID)
+                            {
+                                if (triff.TaxID != null && triff.TaxID != 0)
+                                {
+                                    var tax = TaxData.Where(x => x.ID == triff.TaxID).Select(x => x.TaxRate).FirstOrDefault();
+                                    triff.GSTBase = (triff.Amount * tax) / 100;
+                                    taxrate = tax;
+                                }
+                                else
+                                {
+                                    triff.GSTBase = 0;
+                                }
+                            }
+                            if (triff.CurrencyID == pDAEstimatorOutPut.DefaultCurrencyCodeID)
+                            {
+                                if (triff.TaxID != null && triff.TaxID != 0)
+                                {
+                                    var tax = TaxData.Where(x => x.ID == triff.TaxID).Select(x => x.TaxRate).FirstOrDefault();
+                                    triff.GSTDefault = (triff.Amount * tax) / 100;
+                                    taxrate = tax;
+                                }
+                                else
+                                {
+                                    triff.GSTDefault = 0;
+                                }
+                            }
+
+                            if (triff.NonIncreemental)
+                            {
+                                PDAEstimatorOutPutTariff pDAEstimatorOutPutTariff = new PDAEstimatorOutPutTariff();
+                                pDAEstimatorOutPutTariff.UNITS = triff.UNITS != null ? (decimal)triff.UNITS : 0;
+                                pDAEstimatorOutPutTariff.Amount = triff.Amount;
+                                pDAEstimatorOutPutTariff.PDAEstimatorOutPutID = Convert.ToInt64(PDAEstimitorOUTPUTid);
+                                pDAEstimatorOutPutTariff.ExpenseCategoryID = triff.ExpenseCategoryID;
+                                pDAEstimatorOutPutTariff.Remark = triff.Remark;
+                                pDAEstimatorOutPutTariff.Rate = triff.Rate;
+                                pDAEstimatorOutPutTariff.Taxrate = taxrate;
+                                pDAEstimatorOutPutTariff.ChargeCodeName = triff.ChargeCodeName;
+                                pDAEstimatorOutPutTariff.CurrencyID = triff.CurrencyID;
+                                pDAEstimatorOutPutTariff.TaxID = triff.TaxID;
+                                await unitOfWork.PDAEstimatorOutPutTariff.AddAsync(pDAEstimatorOutPutTariff);
+
+                                pDATariffRateList.Add(triff);
+                            }
+                        }
+
+                    }
+                }
 
                 _toastNotification.AddSuccessToastMessage("Submitted successfully");
-                RedirectToAction("PDAEstimator", "PDAEstimator", id);
+                //return RedirectToAction("PDAEstimator", "PDAEstimator", id);
             }
             return Json(new
             {

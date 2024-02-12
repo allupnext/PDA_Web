@@ -80,7 +80,7 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<List<PDAEstimatorOutPutNote>> GetAllNotesByPDAEstimatorOutPutIDAsync(long id)
         {
-            var sql = "SELECT * FROM PDAEstimatorOutPutNote where  IsDeleted! = 1 and PDAEstimatorID = @Id ORDER BY PDAEstimatorID DESC";
+            var sql = "SELECT * FROM PDAEstimatorOutPutNote where PDAEstimatorOutPutID = @Id";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();

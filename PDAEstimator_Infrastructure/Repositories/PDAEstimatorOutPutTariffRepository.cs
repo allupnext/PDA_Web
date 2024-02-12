@@ -18,7 +18,7 @@ namespace PDAEstimator_Infrastructure.Repositories
         {
             try
             {
-                var sql = "INSERT INTO PDAEstimatorOutPutTariff (PDAEstimatorOutPutID ,ExpenseCategoryID,ChargeCodeName,Rate,UNITS,Amount,Remark) VALUES (@PDAEstimatorOutPutID , @ExpenseCategoryID, @ChargeCodeName, @Rate, @UNITS, @Amount, @Remark) SELECT CAST(SCOPE_IDENTITY() as bigint)";
+                var sql = "INSERT INTO PDAEstimatorOutPutTariff (PDAEstimatorOutPutID ,ExpenseCategoryID,ChargeCodeName,Rate,UNITS,Amount,Remark, Taxrate, TaxID, CurrencyID) VALUES (@PDAEstimatorOutPutID , @ExpenseCategoryID, @ChargeCodeName, @Rate, @UNITS, @Amount, @Remark, @Taxrate, @TaxID, @CurrencyID) SELECT CAST(SCOPE_IDENTITY() as bigint)";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
                     connection.Open();
@@ -77,7 +77,17 @@ namespace PDAEstimator_Infrastructure.Repositories
             }
             catch (Exception ex) { throw ex; }
         }
-        
+
+        public async Task<List<PDAEstimatorOutPutTariff>> GetAllByPDAEstimatorIDAsync(long id)
+        {
+            var sql = "SELECT * FROM PDAEstimatorOutPutTariff where PDAEstimatorOutPutID = @Id";
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+            {
+                connection.Open();
+                var result = await connection.QueryAsync<PDAEstimatorOutPutTariff>(sql, new { Id = id });
+                return new List<PDAEstimatorOutPutTariff>(result.ToList());
+            }
+        }
 
         public async Task<int> UpdateAsync(PDAEstimatorOutPutTariff entity)
         {

@@ -87,7 +87,23 @@
     @*<script src="~/dist/js/pages/dashboard.js"></script>*@
     <!-- /.row (main row) -->
     <script src="~/js/site.js" asp-append-version="true"></script>
-
+    <script>
+        var showLoader = function (form) {
+            $("<div id='loading' />").css({
+                'position': 'fixed',
+                'left': 0,
+                'right': 0,
+                'bottom': 0,
+                'top': 0,
+                'background': '#0020ff36',
+                'z-index': '99',
+                'text-align': 'center'
+            }).appendTo($("body"))
+                .append(
+                    $("<img width='100' style='padding-top:300px;'/>").attr("src", "https://i.gifer.com/ZZ5H.gif")
+                );
+        }
+    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
     @await Component.InvokeAsync("NToastNotify")
