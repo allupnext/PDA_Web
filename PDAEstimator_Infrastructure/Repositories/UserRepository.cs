@@ -40,7 +40,7 @@ namespace PDAEstimator_Infrastructure.Repositories
         {
             try
             {
-                var sql = "INSERT INTO Usermaster (FirstName, LastName, EmployCode, UserPassword, MobileNo,Salutation,Status,RoleID, IsDeleted) VALUES (@FirstName, @LastName, @EmployCode, @UserPassword,@MobileNo,@Salutation, @Status,@RoleID, 0) SELECT CAST(SCOPE_IDENTITY() as int)";
+                var sql = "INSERT INTO Usermaster (FirstName, LastName, EmployCode, UserPassword, MobileNo,Salutation,Status,RoleID, EmailID, IsDeleted) VALUES (@FirstName, @LastName, @EmployCode, @UserPassword,@MobileNo,@Salutation, @Status,@RoleID ,@EmailID, 0) SELECT CAST(SCOPE_IDENTITY() as int)";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
                     connection.Open();
@@ -211,7 +211,7 @@ namespace PDAEstimator_Infrastructure.Repositories
         {
             try
             {
-                var sql = "UPDATE UserMaster SET FirstName = @FirstName, LastName = @LastName,EmployCode = @EmployCode, UserPassword = @UserPassword, MobileNo = @MobileNo, Salutation = @Salutation,RoleID=@RoleID,Status = @Status WHERE ID = @Id";
+                var sql = "UPDATE UserMaster SET FirstName = @FirstName, LastName = @LastName,EmployCode = @EmployCode, UserPassword = @UserPassword, MobileNo = @MobileNo, Salutation = @Salutation,RoleID=@RoleID, EmailID = @EmailID,Status = @Status WHERE ID = @Id";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
                     connection.Open();

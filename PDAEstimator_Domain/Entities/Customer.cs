@@ -40,6 +40,7 @@ namespace PDAEstimator_Domain.Entities
         public string Beneficiary_Bank_Name { get; set; }
         public int BankID { get; set; }
         public int[]? SecondaryCompanyId { get; set; }
+        public string? Token { get; set; }
     }
 
 }

@@ -44,6 +44,8 @@ namespace PDA_Web.Areas.Admin.Controllers
             }
         }
 
+
+
         public async Task<ActionResult> Logout()
         {
             HttpContext.Session.SetString("UserID", "");

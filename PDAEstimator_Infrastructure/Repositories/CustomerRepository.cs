@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using static Dapper.SqlMapper;
 
 namespace PDAEstimator_Infrastructure.Repositories
 {
@@ -32,6 +33,58 @@ namespace PDAEstimator_Infrastructure.Repositories
                 return customer;
             }
         }
+        public async Task<Customer> CheckEmailExist(string email)
+        {
+            var sql = "SELECT * FROM CustomerMaster where Email=@Email";
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+            {
+                connection.Open();
+                //var result = await connection.QueryAsync<User>(sql);
+                //return result.FirstOrDefault();
+                var customer = connection.Query<Customer>(sql, new { Email = email}).FirstOrDefault();
+                return customer;
+            }
+        }
+
+        public async Task<string> GenerateEmailConfirmationTokenAsync(string token, int id)
+        {
+            try
+            {
+                var sql = "update CustomerMaster set Token = @Token Where CustomerId = @CustomerId";
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                {
+                    connection.Open();
+                    var result = await connection.ExecuteAsync(sql, new { Token = token, CustomerId = id });
+                    return result.ToString();
+                    //return new string(token.ToString(),);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+        public async Task<string> ChangePassword(string Password, long id)
+        {
+            try
+            {
+                var sql = "update CustomerMaster set Password = @Password Where CustomerId = @CustomerId";
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                {
+                    connection.Open();
+                    var result = await connection.ExecuteAsync(sql, new { Password = Password, CustomerId = id });
+                    return result.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+
         public async Task<string> AddAsync(Customer entity)
         {
             try
@@ -131,6 +184,8 @@ namespace PDAEstimator_Infrastructure.Repositories
             catch (Exception ex) { throw ex; }
         }
     
+
+
         public async Task<List<CustomerList>> GetAlllistAsync()
         {
             var sql = "SELECT CustomerId, Salutation,FirstName,LastName,Designation,Address1,Address2,Company,CustomerMaster.City as City,CustomerMaster.State as State,CustomerMaster.Country as Country,Email,Mobile,Password,CityName,StateName,CountryName,AlternativeEmail,Telephone,IsEmailNotification,BankMaster.Beneficiary_Bank_Name FROM CustomerMaster left join CityList on CityList.ID =  CustomerMaster.City left join Country on Country.ID =  CustomerMaster.Country left join State on State.ID =  CustomerMaster.State Left join BankMaster ON BankMaster.BankId = CustomerMaster.BankID WHERE CustomerMaster.IsDeleted != 1";
