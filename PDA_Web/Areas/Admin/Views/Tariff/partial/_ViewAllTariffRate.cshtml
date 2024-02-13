@@ -5,8 +5,7 @@
         word-wrap: break-word;
     }
 
-    #TariffRateTable_wrapper {
-        overflow-x:scroll !important;    }
+  
 
 </style>
 <table class="table table-bordered  table-striped" id="TariffRateTable">
@@ -292,6 +291,12 @@
         $("#TariffRateTable").DataTable({
             "bDestroy": true,
             "searching": false,
+            scrollX: true,
+            scrollCollapse: true,
+            scrollY: '400px',
+            fixedHeader: {
+                header: true,
+            },
             "buttons": [{
                 extend: 'excel',
                 text: 'Export Search Results',
