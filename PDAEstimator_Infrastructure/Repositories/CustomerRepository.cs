@@ -23,7 +23,7 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<Customer> Authenticate(string email, string password)
         {
-            var sql = "SELECT * FROM CustomerMaster where Email=@Email and Password=@password";
+            var sql = "SELECT * FROM CustomerMaster where Email=@Email and Password=@Password";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
@@ -81,6 +81,28 @@ namespace PDAEstimator_Infrastructure.Repositories
             {
                 throw ex;
             }
+
+        }
+        public async Task<string> AuthenticateById(int id, string Password )
+        {
+            try
+            {
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                {
+                    var dynamicParameters = new DynamicParameters();
+                    var args = new Dictionary<string, object>()
+                    {
+                        ["CustomerId"] = id,
+                        ["Password"] = Password
+                    };
+                    dynamicParameters.AddDynamicParams(args);
+                    connection.Open();
+                    var result = await connection.QueryAsync("AuthenticateById", new { CustomerId = id, Password = Password });
+                    return result.ToString();
+                }
+            }
+            catch (Exception ex) { throw ex; }
+
 
         }
 

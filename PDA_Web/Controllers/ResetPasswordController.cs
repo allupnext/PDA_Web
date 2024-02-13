@@ -19,7 +19,7 @@ namespace PDA_Web.Controllers
 
         }
         public IActionResult Index()
-        {
+        {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
             return View();
         }
         public async Task<IActionResult> ForgotPasswordIndex(ResetPassword resetPassword)
@@ -56,6 +56,21 @@ namespace PDA_Web.Controllers
             }
 
             //return View();
+        }
+
+
+        public async Task<IActionResult> ChangePasswordByCurrentPassword(ChangePasswordModel Data)
+        {
+            if(Data.CurrentPassword != null && Data.CurrentPassword != "") 
+            {
+                var Currentuser = HttpContext.Session.GetString("CustID");
+                Data.userId = Convert.ToInt32(Currentuser);
+                var ChekUser = unitOfWork.Customer.AuthenticateById(Data.userId, Data.CurrentPassword);
+                var SetPassword = unitOfWork.Customer.ChangePassword(Data.NewPassword, Data.userId);
+            }
+
+            
+            return View();
         }
     }
 }
