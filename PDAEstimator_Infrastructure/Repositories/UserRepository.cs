@@ -31,8 +31,42 @@ namespace PDAEstimator_Infrastructure.Repositories
                 connection.Open();
                 //var result = await connection.QueryAsync<User>(sql);
                 //return result.FirstOrDefault();
+                //var user = connection.Query<User>(sql, new { EmployCode = username, password = password }).FirstOrDefault();
                 var user = connection.Query<User>(sql, new { EmployCode = username, password = password }).FirstOrDefault();
                 return user;
+            }
+        }
+
+        public async Task<string> GenerateEmailConfirmationTokenAsync(string token, int id)
+        {
+            try
+            {
+                var sql = "update UserMaster set Token = @Token Where ID = @ID";
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                {
+                    connection.Open();
+                    var result = await connection.ExecuteAsync(sql, new { Token = token, ID = id });
+                    return result.ToString();
+                    //return new string(token.ToString(),);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        public async Task<User> CheckEmailExist(string email)
+        {
+            var sql = "SELECT * FROM UserMaster where EmailID= @EmailID";
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+            {
+                connection.Open();
+                //var result = await connection.QueryAsync<User>(sql);
+                //return result.FirstOrDefault();
+                var User = connection.Query<User>(sql, new { EmailID = email }).FirstOrDefault();
+                return User;
             }
         }
 
@@ -187,6 +221,47 @@ namespace PDAEstimator_Infrastructure.Repositories
                 return result;
             }
         }
+        public async Task<string> ChangePassword(string Password, long id)
+        {
+            try
+            {
+                var sql = "update UserMaster set UserPassword = @UserPassword Where ID = @ID";
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                {
+                    connection.Open();
+                    var result = await connection.ExecuteAsync(sql, new { UserPassword = Password, ID = id });
+                    return result.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+        public async Task<string> AuthenticateById(int id, string Password)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                {
+                    var dynamicParameters = new DynamicParameters();
+                    var args = new Dictionary<string, object>()
+                    {
+                        ["ID"] = id,
+                        ["UserPassword"] = Password
+                    };
+                    dynamicParameters.AddDynamicParams(args);
+                    connection.Open();
+                    var result = await connection.QueryAsync("AuthenticateUserById", new { ID = id, UserPassword = Password });
+                    return result.ToString();
+                }
+            }
+            catch (Exception ex) { throw ex; }
+
+
+        }
+
 
         public async Task<User> GetFullUserByIdAsync(long id)
         {

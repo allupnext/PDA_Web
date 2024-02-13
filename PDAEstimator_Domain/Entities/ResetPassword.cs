@@ -11,6 +11,7 @@ namespace PDAEstimator_Domain.Entities
     {
         public int userId { get; set; }
         public string Email { get; set; }
+        public string EmailID { get; set; }
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; }

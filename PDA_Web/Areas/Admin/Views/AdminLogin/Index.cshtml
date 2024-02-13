@@ -34,7 +34,8 @@
 
                 <form method="post">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control"id="EmployCode" placeholder="User Name" asp-for="@Model.EmployCode">
+@*                         <input type="text" class="form-control"id="EmployCode" placeholder="User Name" asp-for="@Model.EmployCode"> *@
+                        <input type="text" class="form-control"id="EmployCode" placeholder="Email" asp-for="@Model.EmployCode">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-envelope"></span>
@@ -59,6 +60,9 @@
                             </div>
                         </div>
                         <!-- /.col -->
+                        <div class="col-8">
+                            <a asp-controller="AdminLogin" asp-action="ForgotPassword">Reset Password!!!</a>
+                        </div>
                         <div class="col-4">
                             <button type="submit" class="btn btn-primary btn-block">Sign In</button>
                         </div>

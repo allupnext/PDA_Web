@@ -22,6 +22,11 @@ namespace PDAEstimator_Application.Interfaces
         Task<string> AddUserPemissionRole_Role_MappingAsync(UserPemissionRole_Role_Mapping entity);
         Task<int> DeleteUserPemissionRole_Role_MappingAsync(int RoleID, int UserRolePermissionId);
         Task<List<UserPemissionRole_Role_Mapping>> GetAllUserPemissionRole_Role_Mapping();
-        
+        Task<User> CheckEmailExist(string email);
+        Task<string> GenerateEmailConfirmationTokenAsync(string token, int id);
+        Task<string> ChangePassword(string Password, long id);
+        Task<string> AuthenticateById(int id, string Password);
+
+
     }
 }

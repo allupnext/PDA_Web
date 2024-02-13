@@ -67,9 +67,10 @@ namespace PDA_Web.Controllers
                 Data.userId = Convert.ToInt32(Currentuser);
                 var ChekUser = unitOfWork.Customer.AuthenticateById(Data.userId, Data.CurrentPassword);
                 var SetPassword = unitOfWork.Customer.ChangePassword(Data.NewPassword, Data.userId);
+                _toastNotification.AddSuccessToastMessage("PassWord Set Successfully..");
             }
 
-            
+
             return View();
         }
     }

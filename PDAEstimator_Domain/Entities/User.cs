@@ -43,5 +43,7 @@ namespace PDAEstimator_Domain.Entities
         public int[]? PortIds { get; set; }
 
         public string? RoleName { get; set; }
+        public string? Token { get; set; }
+
     }
 }

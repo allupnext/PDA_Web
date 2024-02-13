@@ -26,6 +26,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             if (user != null)
             {
                 User isAuthenticated = await unitOfWork.User.Authenticate(user.EmployCode, user.UserPassword);
+     
                 
                 if (isAuthenticated != null)
                 {
@@ -43,6 +44,41 @@ namespace PDA_Web.Areas.Admin.Controllers
                 return View();
             }
         }
+        public async Task<IActionResult> ForgotPassword(string Email)
+        {
+            if (Email != null)
+            {
+                var EmailExist = await unitOfWork.User.CheckEmailExist(Email);
+                if (EmailExist != null)
+                {
+                    Random random = new Random();
+                    int length = Email.Length; // Desired string length
+                    string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                    char[] randomString = new char[length];
+
+                    for (int i = 0; i < length; i++)
+                    {
+                        randomString[i] = characters[random.Next(characters.Length)];
+                    }
+
+                    string token = new string(randomString);
+                    await unitOfWork.User.GenerateEmailConfirmationTokenAsync(token, EmailExist.ID);
+
+
+                    var confirmationLink = Url.Action("ForgotUserPasswordIndex", "UserResetPassword",
+                    new { userId = EmailExist.ID, token = token }, Request.Scheme);
+                    _logger.Log(Microsoft.Extensions.Logging.LogLevel.Warning, confirmationLink);
+
+                    return View();
+                }
+                else
+                {
+                    return View();
+                }
+            }
+            return View();
+        }
+
 
 
 
