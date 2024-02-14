@@ -9,19 +9,23 @@
     <thead>
         <tr>
 @*            @Html.HiddenFor(model => model.CountryId)
-*@            <th>
+            *@
+            <th>
                 @Html.DisplayNameFor(model => model.NameofBeneficiary)
             </th>
-            <th>
+            <th style="min-width:300px;">
                 @Html.DisplayNameFor(model => model.BeneficiaryAddress)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.AccountNo)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Beneficiary_Bank_Name)
+                @Html.DisplayNameFor(model => model.Bank_Code)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Beneficiary_Bank_Name)
+            </th>
+            <th style="min-width:300px;">
                 @Html.DisplayNameFor(model => model.Beneficiary_Bank_Address)
             </th>
             @*<th>
@@ -37,7 +41,7 @@
                 @Html.DisplayNameFor(model => model.Intermediary_Bank_Swift_Code)
             </th>*@
 
-            <th></th>
+            <th style="min-width:200px;"></th>
         </tr>
     </thead>
     <tbody>
@@ -52,6 +56,9 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.AccountNo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Bank_Code)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Beneficiary_Bank_Name)
@@ -123,8 +130,21 @@
 
     $(function () {
         $("#BankMasterTable").DataTable({
-            "responsive": true, "lengthChange": false, "autoWidth": false,
-            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+           
+            scrollX: true,
+            scrollCollapse: true,
+            scrollY: '400px',
+            fixedHeader: {
+                header: true,
+            },
+            "buttons": [{
+                extend: 'excel',
+                text: 'Export Search Results',
+                className: 'btn btn-default',
+                exportOptions: {
+                    columns: 'th:not(:last-child)'
+                }
+            }]
         }).buttons().container().appendTo('#BankMasterTable_wrapper .col-md-6:eq(0)');
 
         //$('#portDetailsTable').DataTable({

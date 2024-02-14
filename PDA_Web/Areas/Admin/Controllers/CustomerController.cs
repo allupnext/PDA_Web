@@ -51,7 +51,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                 var SecondryCompanyData = await unitOfWork.Company.GetAllAsync();
                 ViewBag.SecondaryCompany = SecondryCompanyData;
 
-                var BankData = await unitOfWork.BankMaster.GetAllAsync();
+                var BankData = await unitOfWork.BankMaster.GetAllBankDetailsAsync();
                 ViewBag.BankData = BankData;
 
                 return View();

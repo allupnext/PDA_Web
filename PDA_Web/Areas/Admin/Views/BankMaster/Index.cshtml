@@ -107,6 +107,12 @@
                                     <input type="text" class="form-control" id="Intermediary_Bank_Swift_Code" placeholder="Intermediary_Bank_Swift_Code Address" onchange="onStateChange(this.val)">
                                 </div>
                             </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="BankCode">Bank_Code<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="BankCodeID" placeholder="Bank Code">
+                                </div>
+                            </div>
                            
                         </div>
                         <div class="row">
@@ -169,7 +175,7 @@
                                 <input type="text" class="form-control" id="Beneficiary_Bank_NameFilter" placeholder="Beneficiary Bank Name">
                             </div>
                         </div>
-                    <div id="viewAll" class="card-body table-responsive"></div>
+                    <div id="viewAll" class="table-responsive"></div>
                 </div>
             </div>
         </div>
@@ -222,6 +228,7 @@
                 "Beneficiary_Bank_Swift_Code": $('#Beneficiary_Bank_Swift_Code').val(),
                 "Intermediary_Bank": $('#Intermediary_Bank').val(),
                 "Intermediary_Bank_Swift_Code": $('#Intermediary_Bank_Swift_Code').val(),
+                "Bank_Code": $('#BankCodeID').val(),
                 "IsDefault": IsDefault
 
             }
@@ -256,6 +263,10 @@
             else if ($('#Beneficiary_Bank_Swift_Code').val() == "") {
                 toastr.error("Please enter Beneficiary Bank Swift Code.", 'Error Alert');
                 $('#Beneficiary_Bank_Swift_Code').css("border-color", "Red");
+            }
+            else if ($('#BankCodeID').val() == "") {
+                toastr.error("Please enter BankCode.", 'Error Alert');
+                $('#BankCodeID').css("border-color", "Red");
             }
             else if ($('#Intermediary_Bank').val() == "") {
                 toastr.error("Please enter Intermediary Bank.", 'Error Alert');
@@ -293,6 +304,7 @@
                 $('#Beneficiary_Bank_Swift_Code').val("");
                 $('#Intermediary_Bank').val("");
                 $('#Intermediary_Bank_Swift_Code').val("");
+                $('#BankCodeID').val("");
                 $('#IsDefault').val("");
 
             }
@@ -346,6 +358,7 @@
                     $('#Beneficiary_Bank_Swift_Code').val(data.states.beneficiary_Bank_Swift_Code);
                     $('#Intermediary_Bank').val(data.states.intermediary_Bank);
                     $('#Intermediary_Bank_Swift_Code').val(data.states.intermediary_Bank_Swift_Code);
+                    $('#BankCodeID').val(data.states.bank_Code);
                     $('#IsDefault').val(data.states.isDefault);
 
                 },

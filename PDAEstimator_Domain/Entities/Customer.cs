@@ -18,8 +18,8 @@ namespace PDAEstimator_Domain.Entities
         public string Address1 { get; set; } 
         public string Address2 { get; set; } 
         public string Company { get; set; }
-        public int City { get; set; }
-        public int State { get; set; }
+        public int? City { get; set; }
+        public int? State { get; set; }
         public int Country { get; set; }
         [Required(ErrorMessage = "Emmail must be valid")]
         [EmailAddress]
@@ -38,6 +38,7 @@ namespace PDAEstimator_Domain.Entities
         public string SecondaryCompany { get; set; }
         public int? PrimaryCompanyId { get; set; }
         public string Beneficiary_Bank_Name { get; set; }
+        public string? Bank_Code { get; set; }
         public int BankID { get; set; }
         public int[]? SecondaryCompanyId { get; set; }
         public string? Token { get; set; }

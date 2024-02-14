@@ -19,6 +19,7 @@ namespace PDAEstimator_Domain.Entities
         public string Beneficiary_Bank_Swift_Code { get; set; }
         public string Intermediary_Bank { get; set; }
         public string Intermediary_Bank_Swift_Code { get; set; }
+        public string Bank_Code { get; set; }
         public bool IsDefault { get; set; }
         public bool Status { get; set; }
         public bool IsDeleted { get; set; }

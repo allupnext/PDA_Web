@@ -17,9 +17,9 @@ namespace PDAEstimator_Domain.Entities
         public string Company { get; set; }
 
         public string Address2 { get; set; }
-        public int City { get; set; }
+        public int? City { get; set; }
         public string CityName { get; set; }
-        public string StateName { get; set; }
+        public string? StateName { get; set; }
         public string CountryName { get; set; }
 
         public int State { get; set; }
@@ -39,5 +39,6 @@ namespace PDAEstimator_Domain.Entities
 
         public int BankId { get; set; }
         public string Beneficiary_Bank_Name { get; set; }
+        public string? Bank_Code { get; set; }
     }
 }

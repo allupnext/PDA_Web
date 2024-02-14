@@ -26,7 +26,7 @@ namespace PDAEstimator_Infrastructure.Repositories
         {
             try
             {
-                var sql = "Insert into BankMaster (CompanyId,NameofBeneficiary,BeneficiaryAddress,AccountNo,Beneficiary_Bank_Name,Beneficiary_Bank_Address,Beneficiary_RTGS_NEFT_IFSC_Code,Beneficiary_Bank_Swift_Code,Intermediary_Bank,Intermediary_Bank_Swift_Code,IsDefault,Status) VALUES (@CompanyId,@NameofBeneficiary,@BeneficiaryAddress,@AccountNo,@Beneficiary_Bank_Name,@Beneficiary_Bank_Address,@Beneficiary_RTGS_NEFT_IFSC_Code,@Beneficiary_Bank_Swift_Code,@Intermediary_Bank,@Intermediary_Bank_Swift_Code,@IsDefault,1)";
+                var sql = "Insert into BankMaster (CompanyId,NameofBeneficiary,BeneficiaryAddress,AccountNo,Beneficiary_Bank_Name,Beneficiary_Bank_Address,Beneficiary_RTGS_NEFT_IFSC_Code,Beneficiary_Bank_Swift_Code,Intermediary_Bank,Intermediary_Bank_Swift_Code,Bank_Code,IsDefault,Status) VALUES (@CompanyId,@NameofBeneficiary,@BeneficiaryAddress,@AccountNo,@Beneficiary_Bank_Name,@Beneficiary_Bank_Address,@Beneficiary_RTGS_NEFT_IFSC_Code,@Beneficiary_Bank_Swift_Code,@Intermediary_Bank,@Intermediary_Bank_Swift_Code,@Bank_Code,@IsDefault,1)";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
                     connection.Open();
@@ -61,6 +61,16 @@ namespace PDAEstimator_Infrastructure.Repositories
                 return new List<BankMaster>(result.ToList());
             }
         }
+        public async Task<List<BankMaster>> GetAllBankDetailsAsync()
+        {
+            var sql = "select * From BankMaster where Status=1 order by Bank_Code";
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+            {
+                connection.Open();
+                var result = await connection.QueryAsync<BankMaster>(sql);
+                return new List<BankMaster>(result.ToList());
+            }
+        }
 
         public async Task<BankMaster> GetByIdAsync(long id)
         {
@@ -79,7 +89,7 @@ namespace PDAEstimator_Infrastructure.Repositories
         {
             try
             {
-                var sql = "Update BankMaster set CompanyId=@CompanyId,NameofBeneficiary=@NameofBeneficiary,BeneficiaryAddress=@BeneficiaryAddress,AccountNo=@AccountNo,Beneficiary_Bank_Name=@Beneficiary_Bank_Name,Beneficiary_Bank_Address=@Beneficiary_Bank_Address,Beneficiary_RTGS_NEFT_IFSC_Code=@Beneficiary_RTGS_NEFT_IFSC_Code,Beneficiary_Bank_Swift_Code=@Beneficiary_Bank_Swift_Code,Intermediary_Bank=@Intermediary_Bank,Intermediary_Bank_Swift_Code=@Intermediary_Bank_Swift_Code,IsDefault=@IsDefault WHERE BankId= @BankId";
+                var sql = "Update BankMaster set CompanyId=@CompanyId,NameofBeneficiary=@NameofBeneficiary,BeneficiaryAddress=@BeneficiaryAddress,AccountNo=@AccountNo,Beneficiary_Bank_Name=@Beneficiary_Bank_Name,Beneficiary_Bank_Address=@Beneficiary_Bank_Address,Beneficiary_RTGS_NEFT_IFSC_Code=@Beneficiary_RTGS_NEFT_IFSC_Code,Beneficiary_Bank_Swift_Code=@Beneficiary_Bank_Swift_Code,Intermediary_Bank=@Intermediary_Bank,Intermediary_Bank_Swift_Code=@Intermediary_Bank_Swift_Code,Bank_Code=@Bank_Code,IsDefault=@IsDefault WHERE BankId= @BankId";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
                     connection.Open();

@@ -100,13 +100,13 @@
                         <div class="row">
                             <div class="col-sm-3">
                                 <div class="form-group" id="Countrydrop">
-                                    <label for="State">State<span class="text-danger">*</span></label>
+                                    <label for="State">State@* <span class="text-danger">*</span> *@</label>
                                     @Html.DropDownList("State", new SelectList(ViewBag.State, "ID", "StateName"), "Please select", new { @class = "form-control", @onchange = "callChangefunc(this.value)" })
                                 </div>
                             </div>
                             <div class="col-sm-3">
                                 <div class="form-group" id="Statedrop">
-                                    <label for="PortName">City<span class="text-danger">*</span></label>
+                                    <label for="PortName">City@* <span class="text-danger">*</span> *@</label>
                                     @Html.DropDownList("City", new SelectList(ViewBag.City, "ID", "CityName"), "Please select", new { @class = "form-control" })
 
                                 </div>
@@ -207,9 +207,13 @@
 
                             </div>
                             <div class="col-sm-3">
-                                <div class="form-group" id="BeneficiaryBank">
+@*                                 <div class="form-group" id="BeneficiaryBank">
                                     <label for="Bank">Banks<span class="text-danger">*</span></label>
                                     @Html.DropDownList("Beneficiary", new SelectList(ViewBag.BankData, "BankId", "Beneficiary_Bank_Name"), "Please Select", new { @class = "form-control" })
+                                </div> *@
+                                <div class="form-group" id="BeneficiaryBank">
+                                    <label for="Bank">Banks<span class="text-danger">*</span></label>
+                                    @Html.DropDownList("Beneficiary", new SelectList(ViewBag.BankData, "BankId", "Bank_Code"), "Please Select", new { @class = "form-control" })
                                 </div>
                             </div>
                         </div>
@@ -504,10 +508,11 @@
             } else if ($('#Address1').val() == "") {
                 toastr.error("Please enter address 1.", 'Error Alert');
                 $('#Address1').css("border-color", "Red");
-            } else if ($('#City').val() == "") {
-                toastr.error("Please Select city.", 'Error Alert');
-                $('#City').css("border-color", "Red");
             }
+            // else if ($('#City').val() == "") {
+            //     toastr.error("Please Select city.", 'Error Alert');
+            //     $('#City').css("border-color", "Red");
+            // }
             else if ($('#Country').val() == "") {
                 toastr.error("Please Select country.", 'Error Alert');
                 $('#Country').css("border-color", "Red");

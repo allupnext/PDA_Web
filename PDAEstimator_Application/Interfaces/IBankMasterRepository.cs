@@ -9,6 +9,6 @@ namespace PDAEstimator_Application.Interfaces
 {
     public interface IBankMasterRepository : IGenericRepository<BankMaster>
     {
-
+        Task<List<BankMaster>> GetAllBankDetailsAsync();
     }
 }

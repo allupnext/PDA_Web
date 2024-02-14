@@ -67,7 +67,7 @@ namespace PDA_Web.Controllers
                     await unitOfWork.Customer.GenerateEmailConfirmationTokenAsync(token, EmailExist.CustomerId);
 
 
-                    var confirmationLink = Url.Action("ForgotPasswordIndex", "ResetPassword",
+                     var confirmationLink = Url.Action("ForgotPasswordIndex", "ResetPassword",
                     new { userId = EmailExist.CustomerId, token = token }, Request.Scheme);
                     _logger.Log(Microsoft.Extensions.Logging.LogLevel.Warning, confirmationLink);
 
