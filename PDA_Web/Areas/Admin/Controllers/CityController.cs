@@ -66,7 +66,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             //{
             //    var viewModel = _mapper.Map<List<ProjectViewModel>>(response.Data);
             return PartialView("partial/_ViewAll", data);
-            //}
+            //} 
         }
 
         public async Task<ActionResult> citySave(CityList cityList)

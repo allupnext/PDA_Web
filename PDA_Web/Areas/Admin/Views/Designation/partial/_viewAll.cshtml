@@ -1,0 +1,99 @@
+﻿@model IEnumerable<PDAEstimator_Domain.Entities.Designation>
+<style>
+    table td {
+        width: 110px;
+        word-wrap: break-word;
+    }
+</style>
+<table class="table table-bordered table-striped" id="DesignationNameTable">
+    <thead>
+        <tr>
+            @*            @Html.HiddenFor(model => model.CountryId)
+            *@
+            <th>
+                @Html.DisplayNameFor(model => model.DesignationName)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DesignationName)
+                </td>
+
+                @using PDAEstimator_Domain.Entities;
+                @if (ViewBag.UserPermissionModel != null)
+                {
+                    List<UserPermissionRights> userPermissionRights = new List<UserPermissionRights>();
+                    List<UserRoleName> userRoleName = new List<UserRoleName>();
+                    userPermissionRights = ViewBag.UserPermissionModel;
+                    userRoleName = ViewBag.UserRoleName;
+                    <td>
+                        @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Designation" && x.UserRolePermission == "Edit").Count() > 0))
+                        {
+                            <a class="btn btn-info btn-sm" onclick="editDesignationi(@item.DesignationId)">
+                                <i class="fas fa-pencil-alt">
+                                </i>
+                                Edit
+                            </a>
+                        }
+                        @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Designation" && x.UserRolePermission == "Delete").Count() > 0))
+                        {
+                            <a class="btn btn-danger btn-sm" onclick="deleteDesignation(@item.DesignationId)">
+                                <i class="fas fa-trash">
+                                </i>
+                                Delete
+                            </a>
+                        }
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+<!-- jQuery -->
+<script src="~/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/plugins/datatables/jquery.datatables.js"></script>
+<script src="~/plugins/datatables/jquery.datatables.min.js"></script>
+<script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="~/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="~/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="~/plugins/jszip/jszip.min.js"></script>
+<script src="~/plugins/pdfmake/pdfmake.min.js"></script>
+<script src="~/plugins/pdfmake/vfs_fonts.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+<script>
+
+
+    $(function () {
+        $("#DesignationNameTable").DataTable({
+            "columns": [
+                { "width": "20%" },
+                { "width": "40%" }
+            ],
+            "responsive": true, "lengthChange": false, "autoWidth": false,
+            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        }).buttons().container().appendTo('#DesignationNameTable_wrapper .col-md-6:eq(0)');
+
+        //$('#portDetailsTable').DataTable({
+        //    "paging": true,
+        //    "lengthChange": false,
+        //    "searching": false,
+        //    "ordering": true,
+        //    "info": true,
+        //    "autoWidth": false,
+        //    "responsive": true,
+        //});
+    });
+
+</script>

@@ -314,6 +314,15 @@
                     </a>
                     }
                     <ul class="nav nav-treeview">
+                        @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Designation" && x.UserRolePermission == "View").Count() > 0))
+                        {
+                            <li class="nav-item">
+                                <a asp-area="Admin" asp-controller="Designation" asp-action="Index" class="nav-link" id="DesignationMenu">
+                                    <i class="far fa-circle11 nav-icon"></i>
+                                    <p>Designation</p>
+                                </a>
+                            </li>
+                        }
                         @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Country" && x.UserRolePermission == "View").Count() > 0))
                         {
                             <li class="nav-item">
