@@ -84,16 +84,16 @@ namespace PDA_Web.Areas.Admin.Controllers
             if (bankMaster.BankId > 0)
             {
                 var AccountNo = data.Where(x => x.AccountNo == bankMaster.AccountNo && x.BankId != bankMaster.BankId).ToList();
-                var Beneficiary_Bank_Swift_Code = data.Where(x => x.Beneficiary_Bank_Swift_Code != bankMaster.Beneficiary_Bank_Swift_Code && x.BankId == bankMaster.BankId).ToList();
-                var Beneficiary_RTGS_NEFT_IFSC_Code = data.Where(x => x.Beneficiary_RTGS_NEFT_IFSC_Code != bankMaster.Beneficiary_RTGS_NEFT_IFSC_Code && x.BankId == bankMaster.BankId).ToList();
-                var Intermediary_Bank_Swift_Code = data.Where(x => x.Intermediary_Bank_Swift_Code != bankMaster.Intermediary_Bank_Swift_Code && x.BankId == bankMaster.BankId).ToList();
+                //var Beneficiary_Bank_Swift_Code = data.Where(x => x.Beneficiary_Bank_Swift_Code != bankMaster.Beneficiary_Bank_Swift_Code && x.BankId == bankMaster.BankId).ToList();
+                //var Beneficiary_RTGS_NEFT_IFSC_Code = data.Where(x => x.Beneficiary_RTGS_NEFT_IFSC_Code != bankMaster.Beneficiary_RTGS_NEFT_IFSC_Code && x.BankId == bankMaster.BankId).ToList();
+                //var Intermediary_Bank_Swift_Code = data.Where(x => x.Intermediary_Bank_Swift_Code != bankMaster.Intermediary_Bank_Swift_Code && x.BankId == bankMaster.BankId).ToList();
                 
                 if (AccountNo != null && AccountNo.Count > 0)
                 {
                     _toastNotification.AddWarningToastMessage("AccountNo already exists.");
                 }
 
-                else if (Beneficiary_Bank_Swift_Code != null && Beneficiary_Bank_Swift_Code.Count > 0)
+/*                else if (Beneficiary_Bank_Swift_Code != null && Beneficiary_Bank_Swift_Code.Count > 0)
                 {
                     _toastNotification.AddWarningToastMessage("Beneficiary_Bank_Swift_Code already exists.");
                 }
@@ -104,7 +104,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                 else if (Intermediary_Bank_Swift_Code != null && Intermediary_Bank_Swift_Code.Count > 0)
                 {
                     _toastNotification.AddWarningToastMessage("Intermediary_Bank_Swift_Code already exists.");
-                }
+                }*/
                 else
                 {
                     await unitOfWork.BankMaster.UpdateAsync(bankMaster);
@@ -113,16 +113,16 @@ namespace PDA_Web.Areas.Admin.Controllers
             }
             else
             {
-                var Beneficiary_RTGS_NEFT_IFSC_Code = data.Where(x => x.Beneficiary_RTGS_NEFT_IFSC_Code == bankMaster.Beneficiary_RTGS_NEFT_IFSC_Code).ToList();
-                var Intermediary_Bank_Swift_Code = data.Where(x => x.Intermediary_Bank_Swift_Code == bankMaster.Intermediary_Bank_Swift_Code).ToList();
+                //var Beneficiary_RTGS_NEFT_IFSC_Code = data.Where(x => x.Beneficiary_RTGS_NEFT_IFSC_Code == bankMaster.Beneficiary_RTGS_NEFT_IFSC_Code).ToList();
+                //var Intermediary_Bank_Swift_Code = data.Where(x => x.Intermediary_Bank_Swift_Code == bankMaster.Intermediary_Bank_Swift_Code).ToList();
                 var AccountNo = data.Where(x => x.AccountNo == bankMaster.AccountNo).ToList();
-                var Beneficiary_Bank_Swift_Code = data.Where(x => x.Beneficiary_Bank_Swift_Code == bankMaster.Beneficiary_Bank_Swift_Code).ToList();
+               //var Beneficiary_Bank_Swift_Code = data.Where(x => x.Beneficiary_Bank_Swift_Code == bankMaster.Beneficiary_Bank_Swift_Code).ToList();
                 
                 if (AccountNo != null && AccountNo.Count > 0)
                 {
                     _toastNotification.AddWarningToastMessage("AccountNo already exists.");
                 }
-                else if (Beneficiary_Bank_Swift_Code != null && Beneficiary_Bank_Swift_Code.Count > 0)
+/*                else if (Beneficiary_Bank_Swift_Code != null && Beneficiary_Bank_Swift_Code.Count > 0)
                 {
                     _toastNotification.AddWarningToastMessage("Beneficiary_Bank_Swift_Code already exists.");
                 }
@@ -133,7 +133,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                 else if (Intermediary_Bank_Swift_Code != null && Intermediary_Bank_Swift_Code.Count > 0)
                 {
                     _toastNotification.AddWarningToastMessage("Intermediary_Bank_Swift_Code already exists.");
-                }
+                }*/
                 else
                 {
                     await unitOfWork.BankMaster.AddAsync(bankMaster);
