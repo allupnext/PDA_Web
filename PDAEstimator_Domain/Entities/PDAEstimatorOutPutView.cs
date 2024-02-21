@@ -56,6 +56,8 @@ namespace PDAEstimator_Domain.Entities
 
         public int? GRT { get; set; }
 
+        public int? RGRT { get; set; }
+
         public int? NRT { get; set; }
 
         public long? BerthStay { get; set; }

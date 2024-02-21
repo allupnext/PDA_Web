@@ -90,6 +90,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                     DWT = PDAData.DWT,
                     ArrivalDraft = PDAData.ArrivalDraft,
                     GRT = PDAData.GRT,
+                    RGRT = PDAData.RGRT,
                     NRT = PDAData.NRT,
                     BerthStay = PDAData.BerthStay,
                     AnchorageStay = PDAData.AnchorageStay,
@@ -238,6 +239,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                     DWT = PDAData.DWT,
                     ArrivalDraft = PDAData.ArrivalDraft,
                     GRT = PDAData.GRT,
+                    RGRT = PDAData.RGRT,
                     NRT = PDAData.NRT,
                     BerthStay = PDAData.BerthStay,
                     AnchorageStay = PDAData.AnchorageStay,
@@ -980,6 +982,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                                     long? slabattributvalue = 0;
                                     if (triff.SlabName == "GRT")
                                         slabattributvalue = PDAEstimitor.GRT;
+                                    else if (triff.SlabName == "RGRT")
+                                        slabattributvalue = PDAEstimitor.RGRT;
                                     else if (triff.SlabName == "NRT")
                                         slabattributvalue = PDAEstimitor.NRT;
                                     else if (triff.SlabName == "BSTH" || triff.SlabName == "BSTHF")
@@ -1019,6 +1023,24 @@ namespace PDA_Web.Areas.Admin.Controllers
                                                 else
                                                 {
                                                     formulastring = formulastring != "" ? formulastring + " " + PDAEstimitor.GRT.ToString() : PDAEstimitor.GRT.ToString();
+                                                }
+
+                                                //UnitCalculation(triff, pDAEstimatorOutPut.GRT, pDAEstimatorOutPut);
+                                            }
+                                            if (FormulaAttributedata.Contains("RGRT"))
+                                            {
+                                                if (triff.SlabID == null || triff.SlabID == 0)
+                                                {
+                                                    triff.UNITS = PDAEstimitor.RGRT;
+                                                }
+
+                                                if (triff.SlabID != null && triff.SlabID > 0 && FormulaAttributedata == triff.SlabName)
+                                                {
+                                                    formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                                }
+                                                else
+                                                {
+                                                    formulastring = formulastring != "" ? formulastring + " " + PDAEstimitor.RGRT.ToString() : PDAEstimitor.RGRT.ToString();
                                                 }
 
                                                 //UnitCalculation(triff, pDAEstimatorOutPut.GRT, pDAEstimatorOutPut);

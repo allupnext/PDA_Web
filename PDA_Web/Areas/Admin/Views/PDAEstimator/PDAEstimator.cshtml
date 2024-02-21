@@ -27,9 +27,10 @@
             {
                 <div class="logo_name">
                     <img src="@Model.CompanyLogoBase64"
-                     id="DownloadFile"
-                     asp-append-version="true" />
-            </div>}
+                         id="DownloadFile"
+                         asp-append-version="true" />
+                </div>
+            }
         </div>
         <div class="company_detail">
             <ul class="company_name_address">
@@ -140,8 +141,15 @@
             }
         </ul>
         <ul>
-            <li class="lablebold">GRT</li>
-            <li class="valuefont">@Model.GRT</li>
+            <li class="lablebold">GRT / RGRT</li>
+            @if (Model.RGRT != null)
+            {
+                <li class="valuefont">@Model.GRT / @Model.RGRT</li>
+            }
+            else
+            {
+                <li class="valuefont">@Model.GRT / - </li>
+            }
             <li class="lablebold">CARGO</li>
             @if (Model.CargoName == null)
             {
@@ -590,7 +598,7 @@
 
     </section>
 
-   
+
     <style>
 
         html {
@@ -790,9 +798,9 @@
                     width: 10%;
                 }
                 /*
-                                                                                                                                ul.expense_items_row li:last-child {
-                                                                                                                                    color: #ff0000 !important;
-                                                                                                                                }*/
+                                                                                                                                        ul.expense_items_row li:last-child {
+                                                                                                                                            color: #ff0000 !important;
+                                                                                                                                        }*/
 
                 ul.expense_items_row li ul li {
                     border-top: 1px solid #fff;

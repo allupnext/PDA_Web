@@ -264,13 +264,13 @@
                                     }, new { @class = "form-control" })
                                 </div>
                             </div>
-                          @*  <div class="col-sm-2" style="max-width: 15%;">
+                            <div class="col-sm-2" style="max-width: 15%;">
                                 <div class="form-group">
                                     <label for="ReducedGRT">Reduced GRT<span class="text-danger">*</span></label>
                                     <input type="number" class="form-control" id="ReducedGRT" placeholder="Reduced GRT">
 
                                 </div>
-                            </div>*@
+                            </div>
                         </div>
                         <!-- /.card-body -->
                     </div>
@@ -562,6 +562,7 @@
             $('#LoadDischargeRate').val("");
             $('#DWT').val("");
             $('#GRT').val("");
+            $('#ReducedGRT').val("");
             $('#ArrivalDraft').val("");
             $('#NRT').val("");
             $('#BerthStay').val("");
@@ -599,6 +600,7 @@
                 "DWT": $('#DWT').val(),
                 "ArrivalDraft": $('#ArrivalDraft').val(),
                 "GRT": $('#GRT').val(),
+                "RGRT": $('#ReducedGRT').val(),
                 "NRT": $('#NRT').val(),
                 "BerthStay": $("#CallTypeName option:selected").text() != 'Coastal' ? $('#BerthStay').val() : null,
                 "BerthStayDay": $("#CallTypeName option:selected").text() != 'Coastal' ? $('#BerthStayDay').val() : null,
@@ -660,6 +662,10 @@
                 toastr.error("Please Enter GRT.", 'Error Alert');
                 $('#GRT').css("border-color", "Red");
             }
+            //else if ($('#ReducedGRT').val() == "") {
+            //    toastr.error("Please Enter Reduced GRT.", 'Error Alert');
+            //    $('#ReducedGRT').css("border-color", "Red");
+            //}
             else if ($('#NRT').val() == "") {
                 toastr.error("Please Enter NRT.", 'Error Alert');
                 $('#NRT').css("border-color", "Red");
@@ -724,6 +730,7 @@
                 "DWT": $('#DWT').val(),
                 "ArrivalDraft": $('#ArrivalDraft').val(),
                 "GRT": $('#GRT').val(),
+                "RGRT": $('#ReducedGRT').val(),
                 "NRT": $('#NRT').val(),
                 "BerthStay": $('#BerthStay').val(),
                 "BerthStayDay": $('#BerthStayDay').val(),
@@ -758,6 +765,7 @@
                     $('#DWT').val(data.pdaEstimitor.dwt);
                     $('#ArrivalDraft').val(data.pdaEstimitor.arrivalDraft);
                     $('#GRT').val(data.pdaEstimitor.grt);
+                    $('#ReducedGRT').val(data.pdaEstimitor.rgrt);
                     $('#NRT').val(data.pdaEstimitor.nrt);
                     $('#BerthStay').val(data.pdaEstimitor.berthStay);
                     $('#BerthStayDay').val(data.pdaEstimitor.berthStayDay);
@@ -816,6 +824,7 @@
                 "DWT": $('#DWT').val(),
                 "ArrivalDraft": $('#ArrivalDraft').val(),
                 "GRT": $('#GRT').val(),
+                "RGRT": $('#ReducedGRT').val(),
                 "NRT": $('#NRT').val(),
                 "BerthStay": $('#BerthStay').val(),
                 "BerthStayDay": $('#BerthStayDay').val(),
