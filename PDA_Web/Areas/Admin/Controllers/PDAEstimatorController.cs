@@ -352,6 +352,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                             long? slabattributvalue = 0;
                             if (triff.SlabName == "GRT")
                                 slabattributvalue = pDAEstimatorOutPut.GRT;
+                            else if (triff.SlabName == "RGRT")
+                                slabattributvalue = pDAEstimatorOutPut.RGRT;
                             else if (triff.SlabName == "NRT")
                                 slabattributvalue = pDAEstimatorOutPut.NRT;
                             else if (triff.SlabName == "BSTH" || triff.SlabName == "BSTHF")
@@ -391,6 +393,24 @@ namespace PDA_Web.Areas.Admin.Controllers
                                         else
                                         {
                                             formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.GRT.ToString() : pDAEstimatorOutPut.GRT.ToString();
+                                        }
+
+                                        //UnitCalculation(triff, pDAEstimatorOutPut.GRT, pDAEstimatorOutPut);
+                                    }
+                                    else if (FormulaAttributedata.Contains("RGRT"))
+                                    {
+                                        if (triff.SlabID == null || triff.SlabID == 0)
+                                        {
+                                            triff.UNITS = pDAEstimatorOutPut.RGRT;
+                                        }
+
+                                        if (triff.SlabID != null && triff.SlabID > 0 && FormulaAttributedata == triff.SlabName)
+                                        {
+                                            formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        }
+                                        else
+                                        {
+                                            formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.RGRT.ToString() : pDAEstimatorOutPut.RGRT.ToString();
                                         }
 
                                         //UnitCalculation(triff, pDAEstimatorOutPut.GRT, pDAEstimatorOutPut);
@@ -841,7 +861,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                 PDAEstimitor.BerthStayDay = Convert.ToInt64(berthStayDay);
                 PDAEstimitor.BerthStayShift = Convert.ToInt64(berthStayShift);
             }
-            if (calltype.CallTypeName.ToUpper() == "COASTAL IN FOREIGN OUT" || calltype.CallTypeName.ToUpper() == "FOREIGN IN COASTAL OUT")
+            else if (calltype.CallTypeName.ToUpper() == "COASTAL IN FOREIGN OUT" || calltype.CallTypeName.ToUpper() == "FOREIGN IN COASTAL OUT")
             {
                 PDAEstimitor.BerthStayHoursCoastal = Convert.ToInt64(berthStayHrs);
                 PDAEstimitor.BerthStayDayCoastal = Convert.ToInt64(berthStayDay);
@@ -1027,7 +1047,7 @@ namespace PDA_Web.Areas.Admin.Controllers
 
                                                 //UnitCalculation(triff, pDAEstimatorOutPut.GRT, pDAEstimatorOutPut);
                                             }
-                                            if (FormulaAttributedata.Contains("RGRT"))
+                                            else if (FormulaAttributedata.Contains("RGRT"))
                                             {
                                                 if (triff.SlabID == null || triff.SlabID == 0)
                                                 {
