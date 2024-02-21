@@ -1,0 +1,199 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Designation</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Designation</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Add City </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <div class="card-body">
+                        <input type="hidden" id="DesignationId" name="DesignationId" value="">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="PortName">Designation Name<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="DesignationName" placeholder="Designation Name" onchange="onCityChange(this.value)">
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-primary" onclick="DesignationSave()">Submit</button>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    </div>
+                    </div>
+                    </div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Designation List</h3>
+                    </div>
+                    <div class="card-body">
+                        <label for="">Filters:</label>
+                        <div class="row" style="padding-bottom: 10px;">
+                            <div class="col-sm-2" style="max-width: 15%;">
+@*                                 <label for="CityNameFilter">City Name</label>
+                                <input type="text" class="form-control" id="CityNameFilter" placeholder="City Name"> *@
+                            </div>
+                    @*         <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="CityNameFilter">State</label>
+                                @Html.DropDownList("StateFilter", new SelectList(ViewBag.State, "ID", "StateName"), "Please Select",new { @class="form-control" })
+                            </div> *@
+                        </div>
+                        <div id="viewAll" class="table-responsive"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+
+            loadData();
+
+        });
+
+        function DesignationSave() {
+            var Designation;
+
+            Designation = {
+                "DesignationId": $('#DesignationId').val(),
+                "DesignationName": $('#DesignationName').val()
+            }
+            if ($('#DesignationName').val() == "") {
+                toastr.error("Please enter city name.", 'Error Alert');
+                $('#DesignationName').css("border", "1px solid red");
+            }
+            
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/Designation/DesignationSave",
+                    data: Designation,
+                    success: function (data) {
+                        if (!data.proceed) {
+                            return;
+                        }
+                        else {
+                            loadData();
+                        }
+
+                    },
+                    error: function () {
+                    }
+                });
+                $('#DesignationId').val("");
+                $('#DesignationName').val("");
+            }
+        }
+
+        function deleteDesignation(id) {
+            debugger
+            var Designation;
+
+            Designation = {
+
+                "DesignationId": id,
+                "DesignationName": $('#DesignationName').val()
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Designation/deleteDesignation",
+                data: Designation,
+                success: function (data) {
+                    loadData();
+                },
+                error: function () {
+                }
+            });
+
+        }
+
+        function editDesignationi(id) {
+            //Id
+            debugger
+            $('#DesignationId').val(id);
+
+
+            var Designation;
+
+            Designation = {
+
+                "DesignationId": $('#DesignationId').val(),
+                "DesignationName": $('#DesignationName').val()
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Designation/editDesignation",
+                data: Designation,
+                success: function (data) {
+                    debugger;
+                    $('#DesignationName').val(data.citys.designationName);
+ 
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+
+        function loadData() {
+
+            var Designation;
+
+            Designation = {
+                //"DesignationName": $("#CityNameFilter").val()
+            }
+            $.ajax({
+                type: "GET",
+                url: "/Admin/Designation/LoadAll",
+                data: Designation,
+                dataType: "HTML",
+                success: function (data) {
+                    $("#viewAll").html(data);
+                },
+                error: function () {
+                }
+            });
+        }
+
+    </script>
+           
+}

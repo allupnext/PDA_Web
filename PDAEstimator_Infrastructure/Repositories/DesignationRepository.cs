@@ -19,14 +19,26 @@ namespace PDAEstimator_Infrastructure.Repositories
             this.configuration = configuration;
         }
 
-        public Task<string> AddAsync(Designation entity)
+        public async Task<string> AddAsync(Designation entity)
         {
-            throw new NotImplementedException();
+            var sql = "Insert Into Designation (DesignationName,IsDeleted) values (@DesignationName,0)";
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+            {
+                connection.Open();
+                var result = await connection.ExecuteAsync(sql, entity);
+                return new string(entity.ToString());
+            }
         }
 
-        public Task<int> DeleteAsync(long id)
+        public async Task<int> DeleteAsync(long id)
         {
-            throw new NotImplementedException();
+            var sql = "Update Designation Set IsDeleted = 1 WHERE DesignationId = @Id";
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+            {
+                connection.Open();
+                var result = await connection.ExecuteAsync(sql, new { Id = id });
+                return result;
+            }
         }
 
         public async Task<List<Designation>> GetAllAsync()
@@ -51,9 +63,15 @@ namespace PDAEstimator_Infrastructure.Repositories
             }
         }
 
-        public Task<int> UpdateAsync(Designation entity)
+        public async Task<int> UpdateAsync(Designation designation)
         {
-            throw new NotImplementedException();
+            var sql = "Update Designation set DesignationName = @DesignationName WHERE DesignationId = @DesignationId";
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+            {
+                connection.Open();
+                var result = await connection.ExecuteAsync(sql, designation);
+                return result;
+            }
         }
     }
 }
