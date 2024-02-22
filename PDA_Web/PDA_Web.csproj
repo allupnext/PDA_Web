@@ -27,6 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\PDAEstimator_Application\PDAEstimator_Application.csproj" />
     <ProjectReference Include="..\PDAEstimator_Infrastructure\PDAEstimator_Infrastructure.csproj" />
+    <ProjectReference Include="..\PDAEstimator_Infrastructure_Shared\PDAEstimator_Infrastructure_Shared.csproj" />
   </ItemGroup>
 
 </Project>

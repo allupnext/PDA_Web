@@ -2,6 +2,8 @@
 using NToastNotify;
 using PDAEstimator_Application.Interfaces;
 using PDAEstimator_Domain.Entities;
+using PDAEstimator_Infrastructure_Shared;
+using PDAEstimator_Infrastructure_Shared.Services;
 
 namespace PDA_Web.Areas.Admin.Controllers
 {
@@ -10,15 +12,18 @@ namespace PDA_Web.Areas.Admin.Controllers
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IToastNotification _toastNotification;
+        private readonly IEmailSender _emailSender;
 
-        public NotesController(IUnitOfWork unitOfWork, IToastNotification toastNotification)
+        public NotesController(IUnitOfWork unitOfWork, IToastNotification toastNotification, IEmailSender emailSender)
         {
             this.unitOfWork = unitOfWork;
             _toastNotification = toastNotification;
-
+            _emailSender = emailSender;
         }
         public async Task<IActionResult> Index()
         {
+            //var message = new Message(new string[] { "patelalpeshn@gmail.com" }, "Test email", "This is the content from our email.");
+            //_emailSender.SendEmail(message);
             var userid = HttpContext.Session.GetString("UserID");
             if (!string.IsNullOrEmpty(userid))
             {

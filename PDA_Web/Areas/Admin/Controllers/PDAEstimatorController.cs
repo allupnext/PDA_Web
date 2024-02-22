@@ -146,10 +146,10 @@ namespace PDA_Web.Areas.Admin.Controllers
                     AccountNo = pDAEstimatorOutPutdata.AccountNo,
                     Beneficiary_Bank_Name = pDAEstimatorOutPutdata.Beneficiary_Bank_Name,
                     Beneficiary_Bank_Address = pDAEstimatorOutPutdata.Beneficiary_Bank_Address,
-                    Beneficiary_RTGS_NEFT_IFSC_Code = pDAEstimatorOutPutdata.Beneficiary_Bank_Name,
-                    Beneficiary_Bank_Swift_Code = pDAEstimatorOutPutdata.Beneficiary_Bank_Name,
+                    Beneficiary_RTGS_NEFT_IFSC_Code = pDAEstimatorOutPutdata.Beneficiary_RTGS_NEFT_IFSC_Code,
+                    Beneficiary_Bank_Swift_Code = pDAEstimatorOutPutdata.Beneficiary_Bank_Swift_Code,
                     Intermediary_Bank = pDAEstimatorOutPutdata.Intermediary_Bank,
-                    Intermediary_Bank_Swift_Code = pDAEstimatorOutPutdata.Intermediary_Bank,
+                    Intermediary_Bank_Swift_Code = pDAEstimatorOutPutdata.Intermediary_Bank_Swift_Code,
                 };
 
                 pDAEstimatorOutPutView.BankMaster = bankMaster;
@@ -611,7 +611,7 @@ namespace PDA_Web.Areas.Admin.Controllers
 
         public PDATariffRateList UnitCalculation(PDATariffRateList triff, long? attributvalue, long slabattributvalue)
         {
-            decimal? units = 0;
+            decimal? units = 1;
 
 
             if (triff.SlabID != null && triff.SlabID > 0)
@@ -942,10 +942,10 @@ namespace PDA_Web.Areas.Admin.Controllers
                         pDAEstimatorOutPut.CompanyLogo = "";
                     }
 
-                    var custdata = unitOfWork.Customer.GetByIdAsync(PDAEstimitor.CustomerID).Result;
-                    if (custdata != null && custdata.BankID != null)
+                    //var custdata = unitOfWork.Customer.GetByIdAsync(PDAEstimitor.CustomerID).Result;
+                    if (PDAEstimitor.InternalCompanyID != null)
                     {
-                        var BankMaster = unitOfWork.BankMaster.GetByIdAsync(custdata.BankID).Result;
+                        var BankMaster = unitOfWork.BankMaster.GetByCompanyIdAsync((int)PDAEstimitor.InternalCompanyID).Result;
                         if (BankMaster != null)
                         {
                             pDAEstimatorOutPut.NameofBeneficiary = BankMaster.NameofBeneficiary;
@@ -953,10 +953,10 @@ namespace PDA_Web.Areas.Admin.Controllers
                             pDAEstimatorOutPut.AccountNo = BankMaster.AccountNo;
                             pDAEstimatorOutPut.Beneficiary_Bank_Name = BankMaster.Beneficiary_Bank_Name;
                             pDAEstimatorOutPut.Beneficiary_Bank_Address = BankMaster.Beneficiary_Bank_Address;
-                            pDAEstimatorOutPut.Beneficiary_RTGS_NEFT_IFSC_Code = BankMaster.Beneficiary_Bank_Name;
-                            pDAEstimatorOutPut.Beneficiary_Bank_Swift_Code = BankMaster.Beneficiary_Bank_Name;
+                            pDAEstimatorOutPut.Beneficiary_RTGS_NEFT_IFSC_Code = BankMaster.Beneficiary_RTGS_NEFT_IFSC_Code;
+                            pDAEstimatorOutPut.Beneficiary_Bank_Swift_Code = BankMaster.Beneficiary_Bank_Swift_Code;
                             pDAEstimatorOutPut.Intermediary_Bank = BankMaster.Intermediary_Bank;
-                            pDAEstimatorOutPut.Intermediary_Bank_Swift_Code = BankMaster.Intermediary_Bank;
+                            pDAEstimatorOutPut.Intermediary_Bank_Swift_Code = BankMaster.Intermediary_Bank_Swift_Code;
                         }
                     }
 
@@ -1186,6 +1186,10 @@ namespace PDA_Web.Areas.Admin.Controllers
                                         if (formularTransList.formulaValue > 0)
                                             formulastring = formulastring != "" ? formulastring + " " + formularTransList.formulaValue : formularTransList.formulaValue.ToString();
                                     }
+                                    if (triff.UNITS == null || triff.UNITS == 0)
+                                    {
+                                        triff.UNITS = 1;
+                                    }
                                 }
                                 else
                                 {
@@ -1244,7 +1248,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                             if (triff.NonIncreemental)
                             {
                                 PDAEstimatorOutPutTariff pDAEstimatorOutPutTariff = new PDAEstimatorOutPutTariff();
-                                pDAEstimatorOutPutTariff.UNITS = triff.UNITS != null ? (decimal)triff.UNITS : 0;
+                                pDAEstimatorOutPutTariff.UNITS = triff.UNITS != null ? (decimal)triff.UNITS : 1;
                                 pDAEstimatorOutPutTariff.Amount = triff.Amount;
                                 pDAEstimatorOutPutTariff.PDAEstimatorOutPutID = Convert.ToInt64(PDAEstimitorOUTPUTid);
                                 pDAEstimatorOutPutTariff.ExpenseCategoryID = triff.ExpenseCategoryID;
