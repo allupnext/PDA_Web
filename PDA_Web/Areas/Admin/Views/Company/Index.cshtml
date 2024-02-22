@@ -112,7 +112,7 @@
                                     <label for="AlterTel">Alternate Telephone</label>
                                     <div class="row">
                                         <div class="col-sm-2">
-                                            @Html.DropDownList("CountryCode",new SelectList(ViewBag.CountryCode,"CountryCode"), new { @class = "form-control", style= "width:80px;"})
+                                            @Html.DropDownList("AlterCountryCode",new SelectList(ViewBag.CountryCode,"CountryCode"), new { @class = "form-control", style= "width:80px;"})
                                         </div>
                                         <div class="col-sm-7">
                                             <input type="tel" class="form-control" id="AlterTel" placeholder="Mobile Number">
@@ -306,6 +306,20 @@
                             error: function () {
                             }
                         });
+                        $.ajax({
+                            type: "GET",
+                            url: "/Admin/Customer/CountryOnChangeforCountryCode",
+                            data: Customer,
+
+                            success: function (data) {
+                                $('#CountryCode').val(data.code),
+                                    $('#AlterCountryCode').val(data.code)
+
+
+                            },
+                            error: function () {
+                            }
+                        });
                     },
                     error: function () {
                     }
@@ -461,15 +475,19 @@
                     $('#Country').val(data.company.country);
                     $('#State').val(data.company.state);
                     $('#City').val(data.company.city);
+                    // $('#AlterCountryCode').val(data.customer.countryCode);
+                    // $('#CountryCode').val(data.customer.countryCode);
                     $('#Telephone').val(data.company.telephone);
                     var a = $('#Telephone').val().split("-");
                     $('#Telephone').val(a[1]);
+                    $('#CountryCode').val(a[0]);
                     // $('#AlternateTelephone').val(data.company.alternateTelephone);
                     // var a = $('#AlternateTelephone').val().split("-");
                     // $('#AlternateTelephone').val(a[1]);
                     $('#AlterTel').val(data.company.alterTel);
                     var a = $('#AlterTel').val().split("-");
                     $('#AlterTel').val(a[1]);
+                    $('#AlterCountryCode').val(a[0]);
                     $('#Email').val(data.company.email);
                     // Set values for other fields as needed
                 },

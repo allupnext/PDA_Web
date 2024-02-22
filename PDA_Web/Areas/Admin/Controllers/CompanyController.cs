@@ -111,6 +111,17 @@ namespace PDA_Web.Areas.Admin.Controllers
             ViewBag.City = CityData;
             return PartialView("partial/CityList");
         }
+        public async Task<IActionResult> CountryOnChangeforCountryCode(Customer customer)
+        {
+            var CountryData = await unitOfWork.Countrys.GetCountryCodeByCountryIdAsync(customer.Country);
+            ViewBag.CountryCode = CountryData;
+            return Json(new
+            {
+                code = CountryData.CountryCode,
+                proceed = true,
+                msg = ""
+            });
+        }
 
         public IActionResult StateOnchange(Customer customer)
         {

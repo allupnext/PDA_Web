@@ -33,6 +33,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                 ViewBag.UserRoleName = UserRole;
                 // Temp Solution END
                 var CountryData = await unitOfWork.Countrys.GetAllAsync();
+
                 ViewBag.Country = CountryData;
                 ViewBag.CountryCode = CountryData.Select(x => x.CountryCode).ToList();
 
@@ -189,16 +190,28 @@ namespace PDA_Web.Areas.Admin.Controllers
         {
             var StateData = unitOfWork.States.GetAllAsync().Result.Where(x => x.CountryId == customer.Country);
             var CityData = unitOfWork.Citys.GetCitylistByCountry(customer.Country, 0);
-
+            
             ViewBag.City = CityData;
             ViewBag.State = StateData;
             return PartialView("partial/StatesList");
         }
+        public async Task<IActionResult> CountryOnChangeforCountryCode(Customer customer)
+        {
+            var CountryData = await unitOfWork.Countrys.GetCountryCodeByCountryIdAsync(customer.Country);
+            ViewBag.CountryCode = CountryData;
+            return Json(new
+            {
+                code = CountryData.CountryCode,
+                proceed = true,
+                msg = ""
+            });
+        }
 
         public IActionResult CountryOnchangeforCity(Customer customer)
         {
-            var CityData = unitOfWork.Citys.GetCitylistByCountry(customer.Country, 0).Result;
+            var CountryData = unitOfWork.Countrys.GetAllAsync();
 
+            var CityData = unitOfWork.Citys.GetCitylistByCountry(customer.Country, 0).Result;
             ViewBag.City = CityData;
             return PartialView("partial/CityList");
         }

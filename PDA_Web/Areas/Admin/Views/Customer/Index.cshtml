@@ -119,7 +119,7 @@
                                             @Html.DropDownList("CountryCode",new SelectList(ViewBag.CountryCode,"CountryCode"), new { @class = "form-control", style= "width:80px;"})
                                         </div>
                                         <div class="col-sm-7">
-                                            <input type="tel" class="form-control" id="Mobile" placeholder="Mobile Number" >
+                                            <input type="tel" class="form-control" id="Mobile" maxlength="10" placeholder="Mobile Number">
                                         </div>
                                     </div>
                                 </div>
@@ -129,10 +129,10 @@
                                     <label for="Telephone">Telephone Number</label>
                                     <div class="row">
                                         <div class="col-sm-2">
-                                            @Html.DropDownList("CountryCode",new SelectList(ViewBag.CountryCode), new { @class = "form-control", style= "width:80px;"})
+                                            @Html.DropDownList("AlterCountryCode",new SelectList(ViewBag.CountryCode), new { @class = "form-control", style= "width:80px;"})
                                         </div>
                                         <div class="col-sm-7">
-                                            <input type="tel" class="form-control" id="Telephone" placeholder="Telephone Number">
+                                            <input type="tel" class="form-control" id="Telephone" maxlength="10" placeholder="Telephone Number">
                                         </div>
                                     </div>
                                 </div>
@@ -385,10 +385,24 @@
                             error: function () {
                             }
                         });
+                        $.ajax({
+                            type: "GET",
+                            url: "/Admin/Customer/CountryOnChangeforCountryCode",
+                            data: Customer,
+                           
+                            success: function (data) {
+                                $('#CountryCode').val(data.code),
+                                $('#AlterCountryCode').val(data.code)
+
+                            },
+                            error: function () {
+                            }
+                        });
                     },
                     error: function () {
                     }
                 });
+
             });
 
             $("#PrimaryCompany").change(function () {
@@ -662,6 +676,8 @@
                     $('#Country').val(data.customer.country);
                     $('#Email').val(data.customer.email);
                     $('#AlternativeEmail').val(data.customer.alternativeEmail);
+                    $('#AlterCountryCode').val(data.customer.countryCode);
+                    $('#CountryCode').val(data.customer.countryCode);
                     $('#Mobile').val(data.customer.mobile);
                     var a = $('#Mobile').val().split("-");
                     $('#Mobile').val(a[1]);
@@ -678,6 +694,18 @@
                 error: function () {
                 }
             });
+            // $.ajax({
+            //     type: "GET",
+            //     url: "/Admin/Customer/CountryOnChangeforCountryCode",
+            //     data: Customer,
+
+            //     success: function (data) {
+            //         $('#CountryCode').val(data.code),
+            //             $('#AlterCountryCode').val(data.code)
+            //     },
+            //     error: function () {
+            //     }
+            // });
         }
 
         function loadData() {

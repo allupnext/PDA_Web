@@ -62,6 +62,16 @@ namespace PDAEstimator_Infrastructure.Repositories
                 return result;
             }
         }
+        public async Task<Country> GetCountryCodeByCountryIdAsync(long id)
+        {
+            var sql = "select CountryCode from Country Where ID = @Id";
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+            {
+                connection.Open();
+                var result = await connection.QuerySingleOrDefaultAsync<Country>(sql, new { Id = id });
+                return result;
+            }
+        }
 
         public async Task<int> UpdateAsync(Country entity)
         {

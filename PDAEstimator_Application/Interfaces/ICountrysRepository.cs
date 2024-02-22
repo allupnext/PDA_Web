@@ -9,5 +9,6 @@ namespace PDAEstimator_Application.Interfaces
 {
     public interface ICountryRepository : IGenericRepository<Country>
     {
+        Task<Country> GetCountryCodeByCountryIdAsync(long id);
     }
 }
