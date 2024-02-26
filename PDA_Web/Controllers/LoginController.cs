@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿    using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
@@ -6,6 +6,9 @@ using NToastNotify;
 using NuGet.Common;
 using PDAEstimator_Application.Interfaces;
 using PDAEstimator_Domain.Entities;
+using PDAEstimator_Infrastructure_Shared.Services;
+using System.Net;
+using System.Net.Mail;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace PDA_Web.Controllers
@@ -14,14 +17,14 @@ namespace PDA_Web.Controllers
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly ILogger<LoginController> _logger;
-
+        private readonly IEmailSender _emailSender;
         private readonly IToastNotification _toastNotification;
-        public LoginController(ILogger<LoginController> logger, IUnitOfWork unitOfWork, IToastNotification toastNotification)
+        public LoginController(ILogger<LoginController> logger, IUnitOfWork unitOfWork, IToastNotification toastNotification , IEmailSender emailSender)
         {
             this.unitOfWork = unitOfWork;
             _logger = logger;
             _toastNotification = toastNotification;
-            
+            _emailSender = emailSender;
         }
 
         [HttpPost]
@@ -48,39 +51,62 @@ namespace PDA_Web.Controllers
 
         public async Task<IActionResult> ForgotPassword(string Email)
         {
-            if (Email != null)
+            try 
             {
-                var EmailExist = await unitOfWork.Customer.CheckEmailExist(Email);
-                if (EmailExist != null)
+                if (Email != null)
                 {
-                    Random random = new Random();
-                    int length = Email.Length; // Desired string length
-                    string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-                    char[] randomString = new char[length];
-
-                    for (int i = 0; i < length; i++)
+                    var EmailExist = await unitOfWork.Customer.CheckEmailExist(Email);
+                    if (EmailExist != null)
                     {
-                        randomString[i] = characters[random.Next(characters.Length)];
+                        Random random = new Random();
+                        int length = Email.Length; // Desired string length
+                        string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                        char[] randomString = new char[length];
+
+                        for (int i = 0; i < length; i++)
+                        {
+                            randomString[i] = characters[random.Next(characters.Length)];
+                        }
+
+                        string token = new string(randomString);
+                        await unitOfWork.Customer.GenerateEmailConfirmationTokenAsync(token, EmailExist.CustomerId);
+
+
+                        var confirmationLink = Url.Action("ForgotPasswordIndex", "ResetPassword",
+                       new { userId = EmailExist.CustomerId, token = token }, Request.Scheme);
+                        _logger.Log(Microsoft.Extensions.Logging.LogLevel.Warning, confirmationLink);
+/*
+                        MailMessage mailMessage = new MailMessage();
+                        mailMessage.From = new MailAddress("sonikeval8511@gmail.com");
+                        mailMessage.To.Add(Email);
+                        mailMessage.Subject = "Test The Link";
+                        mailMessage.Body = "this is my mail body";
+
+
+                        SmtpClient smtpClient = new SmtpClient();
+                        smtpClient.Host = "h1d.f62.myftpupload.com";
+                        smtpClient.Port = 22;
+                        smtpClient.UseDefaultCredentials = false;
+                        smtpClient.Credentials = new System.Net.NetworkCredential("LTIxHJtGZI8cXv", "EJNnFJ6bVUza6r");
+                        smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
+                        smtpClient.EnableSsl = true;
+                        smtpClient.Send(mailMessage);*/
+
+
+                        return View();
                     }
-
-                    string token = new string(randomString);
-                    await unitOfWork.Customer.GenerateEmailConfirmationTokenAsync(token, EmailExist.CustomerId);
-
-
-                     var confirmationLink = Url.Action("ForgotPasswordIndex", "ResetPassword",
-                    new { userId = EmailExist.CustomerId, token = token }, Request.Scheme);
-                    _logger.Log(Microsoft.Extensions.Logging.LogLevel.Warning, confirmationLink);
-
-
-
-                    return View();
+                    else
+                    {
+                        return View();
+                    }
                 }
-                else 
-                {
-                    return View();
-                }
+                return View();
             }
-            return View();
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+           
          }
 
 

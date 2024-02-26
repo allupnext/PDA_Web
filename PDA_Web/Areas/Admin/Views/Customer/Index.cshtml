@@ -142,7 +142,7 @@
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="Email">Email<span class="text-danger">*</span></label>
-                                    <input type="email" class="form-control" id="Email" placeholder="Email" onkeypress="validateEmail(this.value)" onChange="validateEmail(this.value)">
+                                    <input type="email" class="form-control" id="Email" placeholder="Email" oninput="validateEmail(this.value)" onChange="validateEmail(this.value)">
                                     <span id="emailError" style="color: red;"></span>
                                 </div>
                             </div>
@@ -310,7 +310,7 @@
     <script>
 
         function validateEmail(Email) {
-            var emailRegex = /^[a-zA-Z0-9]+@@[a-zA-Z.]+\.[a-zA-Z]{2,}$/;
+            var emailRegex = /^[a-zA-Z0-9]+[-.,a-zA-Z0-9]+@@[-.,a-zA-Z.]+\.[a-zA-Z]{2,}$/;
 
             var emailError = document.getElementById('emailError');
 
