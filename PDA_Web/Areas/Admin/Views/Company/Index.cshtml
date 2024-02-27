@@ -93,7 +93,7 @@
                                     <label for="Telephone">Telephone<span class="text-danger">*</span></label>
                                     <div class="row">
                                         <div class="col-sm-2">
-                                            @Html.DropDownList("CountryCode",new SelectList(ViewBag.CountryCode,"CountryCode"), new { @class = "form-control", style= "width:80px;"})
+                                            @Html.DropDownList("CountryCode",new SelectList(ViewBag.CountryCode,"CountryCode"), new { @class = "form-control", style= "width:80px; padding: 0px;"})
                                         </div>
                                         <div class="col-sm-7">
                                             <input type="tel" class="form-control" id="Telephone" placeholder="Mobile Number">
@@ -112,7 +112,7 @@
                                     <label for="AlterTel">Alternate Telephone</label>
                                     <div class="row">
                                         <div class="col-sm-2">
-                                            @Html.DropDownList("AlterCountryCode",new SelectList(ViewBag.CountryCode,"CountryCode"), new { @class = "form-control", style= "width:80px;"})
+                                            @Html.DropDownList("AlterCountryCode",new SelectList(ViewBag.CountryCode,"CountryCode"), new { @class = "form-control", style= "width:80px; padding: 0px;"})
                                         </div>
                                         <div class="col-sm-7">
                                             <input type="tel" class="form-control" id="AlterTel" placeholder="Mobile Number">

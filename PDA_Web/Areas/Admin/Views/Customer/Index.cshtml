@@ -116,10 +116,10 @@
                                     <label for="Mobile">Mobile Number<span class="text-danger">*</span></label>
                                     <div class="row">
                                         <div class="col-sm-2">
-                                            @Html.DropDownList("CountryCode",new SelectList(ViewBag.CountryCode,"CountryCode"), new { @class = "form-control", style= "width:80px;"})
+                                            @Html.DropDownList("CountryCode",new SelectList(ViewBag.CountryCode,"CountryCode"), new { @class = "form-control", style= "width:80px; padding: 0px;"})
                                         </div>
                                         <div class="col-sm-7">
-                                            <input type="tel" class="form-control" id="Mobile" maxlength="10" placeholder="Mobile Number">
+                                            <input type="tel" class="form-control" id="Mobile" maxlength="11" placeholder="Mobile Number">
                                         </div>
                                     </div>
                                 </div>
@@ -129,10 +129,10 @@
                                     <label for="Telephone">Telephone Number</label>
                                     <div class="row">
                                         <div class="col-sm-2">
-                                            @Html.DropDownList("AlterCountryCode",new SelectList(ViewBag.CountryCode), new { @class = "form-control", style= "width:80px;"})
+                                            @Html.DropDownList("AlterCountryCode",new SelectList(ViewBag.CountryCode), new { @class = "form-control", style= "width:80px; padding: 0px;"})
                                         </div>
                                         <div class="col-sm-7">
-                                            <input type="tel" class="form-control" id="Telephone" maxlength="10" placeholder="Telephone Number">
+                                            <input type="tel" class="form-control" id="Telephone" maxlength="11" placeholder="Telephone Number">
                                         </div>
                                     </div>
                                 </div>

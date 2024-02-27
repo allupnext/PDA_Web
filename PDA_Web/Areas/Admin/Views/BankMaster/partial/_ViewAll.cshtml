@@ -28,7 +28,7 @@
             <th style="min-width:300px;">
                 @Html.DisplayNameFor(model => model.Beneficiary_Bank_Address)
             </th>
-            @*<th>
+            <th>
                 @Html.DisplayNameFor(model => model.Beneficiary_RTGS_NEFT_IFSC_Code)
             </th>
             <th>
@@ -39,7 +39,7 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Intermediary_Bank_Swift_Code)
-            </th>*@
+            </th>
 
             <th style="min-width:200px;"></th>
         </tr>
@@ -66,7 +66,7 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Beneficiary_Bank_Address)
                 </td>
-               @* <td>
+               <td>
                     @Html.DisplayFor(modelItem => item.Beneficiary_RTGS_NEFT_IFSC_Code)
                 </td>
                 <td>
@@ -77,7 +77,7 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Intermediary_Bank_Swift_Code)
-                </td>*@
+                </td>
                 @using PDAEstimator_Domain.Entities;
                 @if (ViewBag.UserPermissionModel != null)
                 {

@@ -99,7 +99,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="PortName">Mobile<span class="text-danger">*</span> </label>
-                                    <input type="text" class="form-control" id="MobileNo" placeholder="MobileNo" onchange="onUserChange(this.val,5)">
+                                    <input type="text" class="form-control" id="MobileNo" placeholder="MobileNo" maxlength="11" onchange="onUserChange(this.val,5)">
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -340,6 +340,7 @@
                 $('#LastName').val("");
                 $('#EmployCode').val("");
                 $('#UserPassword').val("");
+                $('#ConfirmPassword').val("");
                 $('#MobileNo').val("");
                 $('#Role').val("");
                 $('#EmailID').val("");
