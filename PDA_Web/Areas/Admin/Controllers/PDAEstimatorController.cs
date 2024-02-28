@@ -611,7 +611,7 @@ namespace PDA_Web.Areas.Admin.Controllers
 
         public PDATariffRateList UnitCalculation(PDATariffRateList triff, long? attributvalue, long slabattributvalue)
         {
-            decimal? units = 1;
+            decimal? units = 0;
 
 
             if (triff.SlabID != null && triff.SlabID > 0)
@@ -1186,10 +1186,10 @@ namespace PDA_Web.Areas.Admin.Controllers
                                         if (formularTransList.formulaValue > 0)
                                             formulastring = formulastring != "" ? formulastring + " " + formularTransList.formulaValue : formularTransList.formulaValue.ToString();
                                     }
-                                    if (triff.UNITS == null || triff.UNITS == 0)
-                                    {
-                                        triff.UNITS = 1;
-                                    }
+                                    //if (triff.UNITS == null || triff.UNITS == 0)
+                                    //{
+                                    //    triff.UNITS = 1;
+                                    //}
                                 }
                                 else
                                 {
@@ -1248,7 +1248,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                             if (triff.NonIncreemental)
                             {
                                 PDAEstimatorOutPutTariff pDAEstimatorOutPutTariff = new PDAEstimatorOutPutTariff();
-                                pDAEstimatorOutPutTariff.UNITS = triff.UNITS != null ? (decimal)triff.UNITS : 1;
+                                pDAEstimatorOutPutTariff.UNITS = triff.UNITS != null ? (decimal)triff.UNITS : 0;
                                 pDAEstimatorOutPutTariff.Amount = triff.Amount;
                                 pDAEstimatorOutPutTariff.PDAEstimatorOutPutID = Convert.ToInt64(PDAEstimitorOUTPUTid);
                                 pDAEstimatorOutPutTariff.ExpenseCategoryID = triff.ExpenseCategoryID;
