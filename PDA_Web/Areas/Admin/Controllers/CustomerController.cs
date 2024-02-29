@@ -34,17 +34,17 @@ namespace PDA_Web.Areas.Admin.Controllers
                 // Temp Solution END
                 var CountryData = await unitOfWork.Countrys.GetAllAsync();
 
-                ViewBag.Country = CountryData;
-                ViewBag.CountryCode = CountryData.Select(x => x.CountryCode).ToList();
+                /*                ViewBag.Country = CountryData;
+                                ViewBag.CountryCode = CountryData.Select(x => x.CountryCode).ToList();
 
-                var DesignationData = await unitOfWork.Designation.GetAllAsync();
-                ViewBag.Designations = DesignationData;
+                                var DesignationData = await unitOfWork.Designation.GetAllAsync();
+                                ViewBag.Designations = DesignationData;
 
-                var StateData = await unitOfWork.States.GetAllAsync();
-                ViewBag.State = StateData;
+                                var StateData = await unitOfWork.States.GetAllAsync();
+                                ViewBag.State = StateData;
 
-                var CityData = await unitOfWork.Citys.GetAllAsync();
-                ViewBag.City = CityData;
+                                var CityData = await unitOfWork.Citys.GetAllAsync();
+                                ViewBag.City = CityData;*/
 
                 var PrimaryCompanyData = await unitOfWork.Company.GetAllAsync();
                 ViewBag.PrimaryCompany = PrimaryCompanyData;
@@ -62,6 +62,130 @@ namespace PDA_Web.Areas.Admin.Controllers
                 return RedirectToAction("index", "AdminLogin");
             }
         }
+
+        public async Task<ActionResult> OpenCustomerUserMaster(CustomerList customer)
+        {
+            ViewBag.CustomerSelected = customer.CustomerId;
+            ViewBag.Customer = await unitOfWork.Customer.GetAllAsync();
+
+            ViewBag.Designations = await unitOfWork.Designation.GetAllAsync();
+
+            var CountryData = await unitOfWork.Countrys.GetAllAsync();
+            ViewBag.Country = CountryData;
+            ViewBag.CountryCode = CountryData.Select(x => x.CountryCode).ToList();
+
+            var StateData = await unitOfWork.States.GetAllAsync();
+            ViewBag.State = StateData;
+
+            var CityData = await unitOfWork.Citys.GetAllAsync();
+            ViewBag.City = CityData;
+
+
+            var data = await unitOfWork.CustomerUserMaster.GetByCustomerIdAsync(customer.CustomerId);
+            var Terminals = PartialView("partial/_CustomerUserDetails", data);
+            return Terminals;
+
+        }
+
+        public async Task<ActionResult> CustomerUserSave(CustomerUserMaster customer)
+        {
+            var customerdata = await unitOfWork.CustomerUserMaster.GetAllAsync();
+            if (customer.ID > 0)
+            {
+                var CMobileNumber = customerdata.Where(x => x.Mobile == customer.Mobile && x.ID != customer.ID).ToList();
+                var CEmailId = customerdata.Where(x => x.Email.ToUpper() == customer.Email.ToUpper() && x.ID != customer.ID).ToList();
+                if (CMobileNumber.Count > 0 && CMobileNumber != null || CEmailId.Count > 0 && CEmailId != null)
+                {
+                    _toastNotification.AddWarningToastMessage("MobileNumber Or Email Exist!..");
+                }
+                else
+                {
+                    await unitOfWork.CustomerUserMaster.UpdateAsync(customer);
+
+                    _toastNotification.AddSuccessToastMessage("Updated Successfully");
+                }
+            }
+            else
+            {
+                var CMobileNumber = customerdata.Where(x => x.Mobile == customer.Mobile).ToList();
+                var CEmailId = customerdata.Where(x => x.Email.ToUpper() == customer.Email.ToUpper()).ToList();
+                if (CMobileNumber.Count > 0 && CMobileNumber != null || CEmailId.Count > 0 && CEmailId != null)
+                {
+                    _toastNotification.AddWarningToastMessage("MobileNumber Or Email Exist!..");
+                }
+                else
+                {
+                    var custId = await unitOfWork.CustomerUserMaster.AddAsync(customer);
+
+                    _toastNotification.AddSuccessToastMessage("Inserted successfully");
+                }
+            }
+            return Json(new
+            {
+                proceed = true,
+                msg = ""
+            });
+        }
+
+        public async Task<ActionResult> editCustomerUserDetails(CustomerUserMaster customer)
+        {
+            var data = await unitOfWork.CustomerUserMaster.GetByIdAsync(customer.ID);
+            return Json(new
+            {
+                Customer = data,
+                proceed = true,
+                msg = ""
+            });
+        }
+
+        public async Task<ActionResult> deleteCustomerUserDetails(CustomerUserMaster customer)
+        {
+            var data = await unitOfWork.CustomerUserMaster.DeleteAsync(customer.ID);
+            _toastNotification.AddSuccessToastMessage("Deleted Successfully");
+            return Json(new
+            {
+                proceed = true,
+                msg = ""
+            });
+        }
+        public IActionResult CountryOnchange(CustomerUserMaster customer)
+        {
+            var StateData = unitOfWork.States.GetAllAsync().Result.Where(x => x.CountryId == customer.Country);
+            var CityData = unitOfWork.Citys.GetCitylistByCountry(customer.Country, 0);
+
+            ViewBag.City = CityData;
+            ViewBag.State = StateData;
+            return PartialView("partial/StatesList");
+        }
+        public async Task<IActionResult> CountryOnChangeforCountryCode(CustomerUserMaster customer)
+        {
+            var CountryData = await unitOfWork.Countrys.GetCountryCodeByCountryIdAsync(customer.Country);
+            ViewBag.CountryCode = CountryData;
+            return Json(new
+            {
+                code = CountryData.CountryCode,
+                proceed = true,
+                msg = ""
+            });
+        }
+
+        public IActionResult CountryOnchangeforCity(CustomerUserMaster customer)
+        {
+            var CountryData = unitOfWork.Countrys.GetAllAsync();
+
+            var CityData = unitOfWork.Citys.GetCitylistByCountry(customer.Country, 0).Result;
+            ViewBag.City = CityData;
+            return PartialView("partial/CityList");
+        }
+
+        public IActionResult StateOnchange(CustomerUserMaster customer)
+        {
+            var CityData = unitOfWork.Citys.GetAllAsync().Result.Where(x => x.StateId == customer.State);
+
+            ViewBag.City = CityData;
+            return PartialView("partial/CityList");
+        }
+
 
         public async Task<IActionResult> LoadAll(CustomerList customer)
         {
@@ -101,19 +225,52 @@ namespace PDA_Web.Areas.Admin.Controllers
 
         }
 
+        public async Task<IActionResult> loadcustomeruserData(CustomerList customer)
+        {
+            // var customerdata = await unitOfWork.Customer.GetAlllistCustomerAsync(customer.CustomerId);
+            //var customerdata = await unitOfWork.Customer.GetAlllistAsync();
+            var customerdata = await unitOfWork.CustomerUserMaster.GetByCustomerIdAsync(customer.CustomerId);
+            //ViewBag.Customer = await unitOfWork.Customer.GetAllAsync();
+            // Temp Solution START
+            var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
+            ViewBag.UserPermissionModel = UserPermissionModel;
+            var Currentuser = HttpContext.Session.GetString("UserID");
+
+            var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
+            ViewBag.UserRoleName = UserRole;
+            // Temp Solution END
+
+            if (customer.FirstName != null /*&& customer.FirstName != 0*/)
+            {
+                customerdata = customerdata.Where(x => x.FirstName == customer.FirstName).ToList();
+            }
+            if (customer.Country != null && customer.Country != 0)
+            {
+                customerdata = customerdata.Where(x => x.Country == customer.Country).ToList();
+            }
+            if (customer.Address1 != null /*&& customer.FirstName != 0*/)
+            {
+                customerdata = customerdata.Where(x => x.Address1 == customer.Address1).ToList();
+            }
+            if (customer.Email != null /*&& customer.FirstName != 0*/)
+            {
+                customerdata = customerdata.Where(x => x.Email == customer.Email).ToList();
+            }
+            if (customer.Company != null /*&& customer.FirstName != 0*/)
+            {
+                customerdata = customerdata.Where(x => x.Company == customer.Company).ToList();
+            }
+            return PartialView("partial/_ViewAllCustomerUserDetails", customerdata);
+
+        }
+
         public async Task<ActionResult> CustomerSave(Customer customer)
         {
             var customerdata = await unitOfWork.Customer.GetAlllistAsync();
             if (customer.CustomerId > 0)
             {
-                var CMobileNumber = customerdata.Where(x => x.Mobile == customer.Mobile && x.CustomerId != customer.CustomerId).ToList();
-                var CEmailId = customerdata.Where(x => x.Email.ToUpper() == customer.Email.ToUpper() && x.CustomerId != customer.CustomerId).ToList();
-                if (CMobileNumber.Count > 0 && CMobileNumber != null || CEmailId.Count > 0 && CEmailId != null)
-                {
-                    _toastNotification.AddWarningToastMessage("MobileNumber Or Email Exist!..");
-                }
-                else
-                {
+
+
                     await unitOfWork.Customer.UpdateAsync(customer);
                     await unitOfWork.Customer.DeleteCustomer_Company_MappingAsync(customer.CustomerId);
                     if (customer.PrimaryCompanyId != null)
@@ -139,18 +296,10 @@ namespace PDA_Web.Areas.Admin.Controllers
                         }
                     }
                     _toastNotification.AddSuccessToastMessage("Updated Successfully");
-                }
+                
             }
             else
             {
-                var CMobileNumber = customerdata.Where(x => x.Mobile == customer.Mobile).ToList();
-                var CEmailId = customerdata.Where(x => x.Email.ToUpper() == customer.Email.ToUpper()).ToList();
-                if (CMobileNumber.Count > 0 && CMobileNumber != null || CEmailId.Count > 0 && CEmailId != null)
-                {
-                    _toastNotification.AddWarningToastMessage("MobileNumber Or Email Exist!..");
-                }
-                else
-                {
                 var custId = await unitOfWork.Customer.AddAsync(customer);
                 if (!string.IsNullOrEmpty(custId))
                 {
@@ -178,7 +327,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                     }
                 }
                 _toastNotification.AddSuccessToastMessage("Inserted successfully");
-                }
+                
             }
             return Json(new
             {
@@ -186,43 +335,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                 msg = ""
             });
         }
-        public IActionResult CountryOnchange(Customer customer)
-        {
-            var StateData = unitOfWork.States.GetAllAsync().Result.Where(x => x.CountryId == customer.Country);
-            var CityData = unitOfWork.Citys.GetCitylistByCountry(customer.Country, 0);
-            
-            ViewBag.City = CityData;
-            ViewBag.State = StateData;
-            return PartialView("partial/StatesList");
-        }
-        public async Task<IActionResult> CountryOnChangeforCountryCode(Customer customer)
-        {
-            var CountryData = await unitOfWork.Countrys.GetCountryCodeByCountryIdAsync(customer.Country);
-            ViewBag.CountryCode = CountryData;
-            return Json(new
-            {
-                code = CountryData.CountryCode,
-                proceed = true,
-                msg = ""
-            });
-        }
 
-        public IActionResult CountryOnchangeforCity(Customer customer)
-        {
-            var CountryData = unitOfWork.Countrys.GetAllAsync();
-
-            var CityData = unitOfWork.Citys.GetCitylistByCountry(customer.Country, 0).Result;
-            ViewBag.City = CityData;
-            return PartialView("partial/CityList");
-        }
-
-        public IActionResult StateOnchange(Customer customer)
-        {
-            var CityData = unitOfWork.Citys.GetAllAsync().Result.Where(x => x.StateId == customer.State);
-
-            ViewBag.City = CityData;
-            return PartialView("partial/CityList");
-        }
 
         public IActionResult PrimaryCompneySelected(Customer customer)
         {

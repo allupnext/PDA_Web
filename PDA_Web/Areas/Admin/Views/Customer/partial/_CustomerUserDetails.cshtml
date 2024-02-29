@@ -1,0 +1,305 @@
+﻿@model IEnumerable<PDAEstimator_Domain.Entities.CustomerUserMaster>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- general form elements -->
+            @*<form>*@
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Add Terminal Details </h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+                <!-- form start -->
+                <div class="card-body">
+                    <input type="hidden" id="CustomerUserId" name="CustomerUserId" value="">
+@*                     <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="PortName">Customer's Company</label>
+                                @Html.DropDownList("CompanyDrop", new SelectList(ViewBag.Customer, "CustomerId", "Company"), new { @class="form-control" })
+
+                            </div>
+                        </div>
+
+                    </div> *@
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="PortName">Customer's Company</label>
+                                @Html.DropDownList("CompanyDrop", new SelectList(ViewBag.Customer, "CustomerId", "Company"), new { @class="form-control" })
+
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Salutation">Salutation<span class="text-danger">*</span> </label>
+                                <select class="form-control" id="Salutation">
+                                    <option value="">Please Select</option>
+                                    <option value="Mr">Mr</option>
+                                    <option value="Mrs">Mrs</option>
+                                    <option value="Ms">Ms</option>
+                                    <option value="Dr">Dr</option>
+                                    <option value="Captain">Captain</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="FirstName">First Name<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="FirstName" placeholder="First Name">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="LastName">Last Name<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="LastName" placeholder="Last Name">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label for="Designation">Designation<span class="text-danger">*</span></label>
+                            @Html.DropDownList("Designation", new SelectList(ViewBag.Designations, "DesignationId", "DesignationName"), "Please Select", new { @class = "form-control" })
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Address1">Address Line 1<span class="text-danger">*</span></label>
+                                <textarea type="text" cols="2" rows="3" class="form-control" id="Address1" placeholder="Address Line 1"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Address2">Address Line 2</label>
+                                <textarea type="text" cols="2" rows="3" class="form-control" id="Address2" placeholder="Address Line 2"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Country">Country<span class="text-danger">*</span></label>
+                                @Html.DropDownList("Country", new SelectList(ViewBag.Country, "ID", "CountryName"), "Please Select", new { @class = "form-control", @onchange = "ChangeCountryfunc(this.value)" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group" id="Countrydrop">
+                                <label for="State">State@* <span class="text-danger">*</span> *@</label>
+                                @Html.DropDownList("State", new SelectList(ViewBag.State, "ID", "StateName"), "Please select", new { @class = "form-control", @onchange = "callChangefunc(this.value)" })
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group" id="Statedrop">
+                                <label for="PortName">City@* <span class="text-danger">*</span> *@</label>
+                                @Html.DropDownList("City", new SelectList(ViewBag.City, "ID", "CityName"), "Please select", new { @class = "form-control" })
+
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Mobile">Mobile Number<span class="text-danger">*</span></label>
+                                <div class="row">
+                                    <div class="col-sm-2">
+                                        @Html.DropDownList("CountryCode",new SelectList(ViewBag.CountryCode,"CountryCode"), new { @class = "form-control", style= "width:80px; padding: 0px;"})
+                                    </div>
+                                    <div class="col-sm-7">
+                                        <input type="tel" class="form-control" id="Mobile" maxlength="11" placeholder="Mobile Number">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Telephone">Telephone Number</label>
+                                <div class="row">
+                                    <div class="col-sm-2">
+                                        @Html.DropDownList("AlterCountryCode",new SelectList(ViewBag.CountryCode,"AlterCountryCode"), new { @class = "form-control", style= "width:80px; padding: 0px;"})
+                                    </div>
+                                    <div class="col-sm-7">
+                                        <input type="tel" class="form-control" id="Telephone" maxlength="11" placeholder="Telephone Number">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Email">Email<span class="text-danger">*</span></label>
+                                <input type="email" class="form-control" id="Email" placeholder="Email" oninput="validateEmail(this.value)" onChange="validateEmail(this.value)">
+                                <span id="emailError" style="color: red;"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Email">Alternative Email</label>
+                                <input type="email" class="form-control" id="AlternativeEmail" placeholder="Alternative Email">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Password">Password<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="Password" placeholder="Password">
+                            </div>
+                        </div>
+@*                         <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Status">CustomerStatus<span class="text-danger">*</span></label>
+                                <select class="form-control" id="Status">
+                                    <option value="">Please Select</option>
+                                    <option value="Active">
+                                        Active
+                                    </option>
+                                    <option value="InActive">
+                                        InActive
+                                    </option>
+                                    <option value="Rejected">
+                                        Rejected
+                                    </option>
+                                    <option value="pending">
+                                        Pending For Approval
+                                    </option>
+
+                                </select>
+                            </div>
+                        </div> *@
+
+                        @* <div class="col-sm-6">
+                        <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="CustomerStatus">
+                        <label class="form-check-label" for="CustomerStatus">Status</label>
+                        </div>
+
+                        </div> *@
+
+
+                    </div>
+
+                    <!-- /.card-body -->
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-primary" onclick="CustomerUserSave()">Submit</button>
+                </div>
+
+            </div>
+            @*</form>*@
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">CustomerUSerList</h3>
+                </div>
+                <div class="card-body">
+                    <div class="">
+                        <label for="">Filters:</label>
+
+                        <div class="row" style="padding-bottom: 10px;">
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="FirstNameFilter">First Name</label>
+                                <input type="text" class="form-control" id="FirstNameFilter" placeholder="First Name" onchange="FirstNameFilter_Change()">
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="Address1Filter">Address Line 1</label>
+                                <input type="text" class="form-control" id="Address1Filter" placeholder="Address Line 1" onchange="Address1Filter_Change()">
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="CountryFilter">Country</label>
+                                @Html.DropDownList("CountryFilter", new SelectList(ViewBag.Country, "ID", "CountryName"), "Please Select", new { @class = "form-control" })
+                            </div>
+                            @*      <div class="col-sm-2" style="max-width: 15%;">
+                            <label for="MobileFilter">Mobile Number</label>
+                            <input type="tel" class="form-control" id="MobileFilter" placeholder="Mobile Number">
+                            </div> *@
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="EmailFilter">Email</label>
+                                <input type="email" class="form-control" id="EmailFilter" placeholder="Email" onchange="EmailFilter_Change()">
+                            </div>
+
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="CompanyFilter">Company</label>
+                                <input type="text" class="form-control" id="_CompanyFilter" placeholder="Company" onchange="CompanyFilter_Change()">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div id="viewAllCustomerUser" class="card-body table-responsive">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- jQuery -->
+<script src="~/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/plugins/datatables/jquery.datatables.js"></script>
+<script src="~/plugins/datatables/jquery.datatables.min.js"></script>
+<script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="~/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="~/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="~/plugins/jszip/jszip.min.js"></script>
+<script src="~/plugins/pdfmake/pdfmake.min.js"></script>
+<script src="~/plugins/pdfmake/vfs_fonts.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+<script>
+    // function onTerminalChange(val, inputVal) {
+    //     if (inputVal == 1) {
+    //         $('#TerminalCode').css("border", "1px solid #ced4da");
+    //     }
+    //     else if (inputVal == 2) {
+    //         $('#TerminalName').css("border", "1px solid #ced4da");
+    //     }
+    // }
+
+
+
+    $(function () {
+        loadcustomeruserData();
+        debugger;
+        $('#Status').prop("checked", true);
+        $('#CompanyDrop').val(@ViewBag.CustomerSelected);
+        if (@ViewBag.CustomerSelected != null) {
+            $('#CompanyDrop').prop('disabled', true);
+        }
+
+        $("#TerminalDetailsTable").DataTable({
+            "bDestroy": true,
+            "searching": false,
+            scrollX: true,
+            scrollCollapse: true,
+            scrollY: '400px',
+            fixedHeader: {
+                header: true,
+            },
+            "buttons": [{
+                extend: 'excel',
+                text: 'Export Search Results',
+                className: 'btn btn-default',
+                exportOptions: {
+                    columns: 'th:not(:last-child)'
+                }
+            }]
+        }).buttons().container().appendTo('#TerminalDetailsTable_wrapper .col-md-6:eq(0)');
+
+
+
+    });</script>

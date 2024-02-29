@@ -65,6 +65,7 @@ namespace PDAEstimator_Application.Interfaces
         ICompanyRepository Company { get; }
 
         IBankMasterRepository BankMaster { get; }
+        ICustomerUserMaster CustomerUserMaster { get; }
 
     }
 }

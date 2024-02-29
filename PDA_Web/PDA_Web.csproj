@@ -30,4 +30,11 @@
     <ProjectReference Include="..\PDAEstimator_Infrastructure_Shared\PDAEstimator_Infrastructure_Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Areas\Admin\Views\Customer\partial\_ViewAllCustomerUserDetails.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

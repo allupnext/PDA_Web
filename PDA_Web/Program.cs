@@ -55,6 +55,7 @@ builder.Services.AddTransient<IBankMasterRepository, BankMasterRepository>();
 builder.Services.AddTransient<IPDAEstimitorOUTRepository, PDAEstimitorOUTRepository>();
 builder.Services.AddTransient<IPDAEstimitorOUTNoteRepository, PDAEstimitorOUTNoteRepository>();
 builder.Services.AddTransient<IPDAEstimatorOutPutTariffRepository, PDAEstimatorOutPutTariffRepository>();
+builder.Services.AddTransient<ICustomerUserMaster, CustomerUser>();
 
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 

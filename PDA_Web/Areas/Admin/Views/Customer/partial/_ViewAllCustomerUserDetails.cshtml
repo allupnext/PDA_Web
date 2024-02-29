@@ -1,0 +1,178 @@
+﻿@model IEnumerable<PDAEstimator_Domain.Entities.CustomerUserMaster>
+<style>
+    table td {
+        width: 110px;
+        word-wrap: break-word;
+    }
+</style>
+<table class="table table-bordered table-striped" id="TerminalDetailsTable">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Company)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Salutation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Designation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address1)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address2)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Country)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.State)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.City)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Mobile)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Telephone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Password)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AlternativeEmail)
+            </th>
+            @*                                 <th>
+            @Html.DisplayNameFor(model => model.Status)
+            </th> *@
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Company)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Salutation)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FirstName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LastName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Designation)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Address1)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Address2)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Country)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.State)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.City)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Mobile)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Telephone)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Password)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AlternativeEmail)
+                    </td>
+                    @*                                         <td>
+            @if (item.Status == true)
+            {
+            <span class="badge badge-success">Active</span>
+            }
+            else
+            {
+            <span class="badge badge-danger">In Active</span>
+            }
+            </td> *@
+                    <td>
+                        <a class="btn btn-info btn-sm" onclick="editCustomerUserDetails(@item.ID)">
+                            <i class="fas fa-pencil-alt">
+                            </i>
+                            Edit
+                        </a>
+                        <a class="btn btn-danger btn-sm" onclick="deleteCustomerUserDetails(@item.ID)">
+                            <i class="fas fa-trash">
+                            </i>
+                            Delete
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+<!-- jQuery -->
+<script src="~/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/plugins/datatables/jquery.datatables.js"></script>
+<script src="~/plugins/datatables/jquery.datatables.min.js"></script>
+<script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="~/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="~/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="~/plugins/jszip/jszip.min.js"></script>
+<script src="~/plugins/pdfmake/pdfmake.min.js"></script>
+<script src="~/plugins/pdfmake/vfs_fonts.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+<script>
+    
+
+   
+     $(function () {
+        $("#TerminalDetailsTable").DataTable({
+           
+            "searching": false,
+             "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        }).buttons().container().appendTo('#TerminalDetailsTable_wrapper .col-md-6:eq(0)');
+     });
+    //     //$('#portDetailsTable').DataTable({
+    //     //    "paging": true,
+    //     //    "lengthChange": false,
+    //     //    "searching": false,
+    //     //    "ordering": true,
+    //     //    "info": true,
+    //     //    "autoWidth": false,
+    //     //    "responsive": true,
+    //     //});
+    // });</script>

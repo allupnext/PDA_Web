@@ -38,7 +38,7 @@
                     <div class="card-body">
                         <input type="hidden" id="CustomerId" name="CustomerId" value="">
                         <div class="row">
-                            <div class="col-sm-3">
+@*                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="Salutation">Salutation<span class="text-danger">*</span> </label>
                                     <select class="form-control" id="Salutation">
@@ -63,16 +63,45 @@
                                     <input type="text" class="form-control" id="LastName" placeholder="Last Name">
                                 </div>
                             </div>
-                            <div class="col-sm-3">
+ *@                            <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="Company">Customer's Company<span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="_Company" placeholder="Company">
                                 </div>
                             </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="Status">CustomerStatus<span class="text-danger">*</span></label>
+                                    <select class="form-control" id="Status">
+                                        <option value="">Please Select</option>
+                                        <option value="Active">
+                                            Active
+                                        </option>
+                                        <option value="InActive">
+                                            InActive
+                                        </option>
+                                        <option value="Rejected">
+                                            Rejected
+                                        </option>
+                                        <option value="pending">
+                                            Pending For Approval
+                                        </option>
+
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="CustomerStatus">
+                                    <label class="form-check-label" for="CustomerStatus">Status</label>
+                                </div>
+
+                            </div>
                         </div>
 
 
-                        <div class="row">
+@*                         <div class="row">
                             <div class="col-sm-3">
                                 <label for="Designation">Designation<span class="text-danger">*</span></label>
                                 @Html.DropDownList("Designation", new SelectList(ViewBag.Designations, "DesignationId", "DesignationName"), "Please Select", new { @class = "form-control" })
@@ -96,17 +125,18 @@
                                     @Html.DropDownList("Country", new SelectList(ViewBag.Country, "ID", "CountryName"), "Please Select", new { @class = "form-control"})
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
+                        </div> *@
+@*                         <div class="row">
                             <div class="col-sm-3">
                                 <div class="form-group" id="Countrydrop">
-                                    <label for="State">State@* <span class="text-danger">*</span> *@</label>
+                                <label for="State">State@* <span class="text-danger">*</span> *@@*</label>
                                     @Html.DropDownList("State", new SelectList(ViewBag.State, "ID", "StateName"), "Please select", new { @class = "form-control", @onchange = "callChangefunc(this.value)" })
                                 </div>
                             </div>
                             <div class="col-sm-3">
                                 <div class="form-group" id="Statedrop">
-                                    <label for="PortName">City@* <span class="text-danger">*</span> *@</label>
+                                <label for="PortName">
+                                    City@* <span class="text-danger">*</span> *@@*</label>
                                     @Html.DropDownList("City", new SelectList(ViewBag.City, "ID", "CityName"), "Please select", new { @class = "form-control" })
 
                                 </div>
@@ -137,9 +167,9 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-3">
+                        </div> *@
+
+@*                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="Email">Email<span class="text-danger">*</span></label>
                                     <input type="email" class="form-control" id="Email" placeholder="Email" oninput="validateEmail(this.value)" onChange="validateEmail(this.value)">
@@ -157,39 +187,8 @@
                                     <label for="Password">Password<span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="Password" placeholder="Password">
                                 </div>
-                            </div>
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="Status">CustomerStatus<span class="text-danger">*</span></label>
-                                    <select class="form-control" id="Status">
-                                        <option value="">Please Select</option>
-                                        <option value="Active">
-                                            Active
-                                        </option>
-                                        <option value="InActive">
-                                            InActive
-                                        </option>
-                                        <option value="Rejected">
-                                            Rejected
-                                        </option>
-                                        <option value="pending">
-                                            Pending For Approval
-                                        </option>
-
-                                    </select>
-                                </div>
-                            </div>
-
-                            @* <div class="col-sm-6">
-                            <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="CustomerStatus">
-                            <label class="form-check-label" for="CustomerStatus">Status</label>
-                            </div>
-
                             </div> *@
 
-
-                        </div>
                         <div class="row">
                             <div class="col-sm-3">
                                 <div class="form-group">
@@ -261,47 +260,30 @@
                     <div class="card-header">
                         <h3 class="card-title">Customer List</h3>
                     </div>  
-                    <div class="card-body">
-                        <div class="">
-                            <label for="">Filters:</label>
 
-
-                        </div>
-                        <div class="row" style="padding-bottom: 10px;">
-                            <div class="col-sm-2" style="max-width: 15%;">
-                                <label for="FirstNameFilter">First Name</label>
-                                <input type="text" class="form-control" id="FirstNameFilter" placeholder="First Name">
-                            </div>
-                            <div class="col-sm-2" style="max-width: 15%;">
-                                <label for="Address1Filter">Address Line 1</label>
-                                <input type="text" class="form-control" id="Address1Filter" placeholder="Address Line 1">
-                            </div>
-                            <div class="col-sm-2" style="max-width: 15%;">
-                                <label for="CountryFilter">Country</label>
-                                @Html.DropDownList("CountryFilter", new SelectList(ViewBag.Country, "ID", "CountryName"), "Please Select", new { @class = "form-control" })
-                            </div>
-                            @*      <div class="col-sm-2" style="max-width: 15%;">
-                            <label for="MobileFilter">Mobile Number</label>
-                            <input type="tel" class="form-control" id="MobileFilter" placeholder="Mobile Number">
-                            </div> *@
-                            <div class="col-sm-2" style="max-width: 15%;">
-                                <label for="EmailFilter">Email</label>
-                                <input type="email" class="form-control" id="EmailFilter" placeholder="Email">
-                            </div>
-
-                            <div class="col-sm-2" style="max-width: 15%;">
-                                <label for="CompanyFilter">Company</label>
-                                <input type="text" class="form-control" id="_CompanyFilter" placeholder="Company">
-                            </div>
-                        </div>
-                    </div>
                     <div id="viewAll" class="card-body table-responsive"></div>
                 </div>
             </div>
         </div>
 
     </div>
+    <div id="customeruserdetails" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document" style="max-width: 90% !important;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">Customer-User Master</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="customeruserdetailsModelclose">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
 
+                <div class="modal-body">
+                    <div id="customeruserdetailsModelbody">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
 
@@ -320,6 +302,56 @@
                 emailError.textContent = 'Enter valid Email';
                 emailError.style.color = 'red';
             }
+        }
+
+        function ChangeCountryfunc(val)
+        {
+
+            var Countryid = val;
+            var Customer;
+            Customer = {
+                "Country": Countryid,
+                "State": $("#State").val(),
+                "City": $('#City').val(),
+            }
+            $.ajax({
+                type: "GET",
+                url: "/Admin/Customer/CountryOnchange",
+                data: Customer,
+                dataType: "HTML",
+                success: function (data) {
+
+                    $("#Countrydrop").html(data);
+                    $.ajax({
+                        type: "GET",
+                        url: "/Admin/Customer/CountryOnchangeforCity",
+                        data: Customer,
+                        dataType: "HTML",
+                        success: function (data) {
+                            $("#Statedrop").html(data);
+
+                        },
+                        error: function () {
+                        }
+                    });
+                    $.ajax({
+                        type: "GET",
+                        url: "/Admin/Customer/CountryOnChangeforCountryCode",
+                        data: Customer,
+
+                        success: function (data) {
+                            $('#CountryCode').val(data.code),
+                                $('#AlterCountryCode').val(data.code)
+
+                        },
+                        error: function () {
+                        }
+                    });
+                },
+                error: function () {
+                }
+            });
+
         }
 
         function callChangefunc(val) {
@@ -427,27 +459,45 @@
                 });
             })
 
-            $("#FirstNameFilter").change(function () {
-                loadData();
-            });
-            $("#EmailFilter").change(function () {
-                loadData();
-            });
+            // $("#FirstNameFilter").change(function () {
+            //     loadData();
+            // });
+            // $("#EmailFilter").change(function () {
+            //     loadData();
+            // });
 
-            $("#CountryFilter").change(function () {
-                loadData();
-            });
-            $("#Address1Filter").change(function () {
-                loadData();
-            });
+            // $("#CountryFilter").change(function () {
+            //     loadData();
+            // }); 
+            // $("#Address1Filter").change(function () {
+            //     loadData();
+            // });
 
-            $("#MobileFilter").change(function () {
-                loadData();
-            });
-            $("#CompanyFilter").change(function () {
-                loadData();
-            });
+            // $("#MobileFilter").change(function () {
+            //     loadData();
+            // });
+            // $("#CompanyFilter").change(function () {
+            //     loadData();
+            // });
         });
+
+        function FirstNameFilter_Change() {
+
+            loadcustomeruserData();
+        }
+        function Address1Filter_Change() {
+
+            loadcustomeruserData();
+        }
+        function EmailFilter_Change() {
+
+            loadcustomeruserData();
+        }
+        function CompanyFilter_Change() {
+
+            loadcustomeruserData();
+        }
+
 
         //random password
         function generateRandomPassword(length) {
@@ -472,11 +522,12 @@
                 $('#CurrencyCode').css("border", "1px solid #ced4da");
             }
         }
+        function CustomerUserSave() {
 
-        function customerSave() {
             var Customer;
             Customer = {
-                "CustomerId": $('#CustomerId').val(),
+                "ID": $('#CustomerUserId').val(),
+                "CustomerId": $('#CompanyDrop').val(),
                 "Salutation": $('#Salutation').val(),
                 "FirstName": $('#FirstName').val(),
                 "LastName": $('#LastName').val(),
@@ -490,17 +541,12 @@
                 "Email": $('#Email').val(),
                 "Mobile": $('#Mobile').val(),
                 "Password": $('#Password').val(),
-                "Status": $('#Status').val(),
                 "CountryCode": $('#CountryCode').val(),
+                "AlterCountryCode": $('#AlterCountryCode').val(),
                 "AlternativeEmail": $('#AlternativeEmail').val(),
                 "Telephone": $('#Telephone').val(),
-                "IsEmailNotification": $("#EmailNotification").prop('checked'),
-                "PrimaryCompanyId": $('#PrimaryCompany').val(),
-                "SecondaryCompanyId": $('#SecondaryCompany').val(),
-                "BankID": $('#Beneficiary').val()
-                
             }
-            
+
             debugger
             if ($('#Salutation').val() == "") {
                 toastr.error("Please enter salutation.", 'Error Alert');
@@ -512,34 +558,205 @@
                 toastr.error("Please enter last name.", 'Error Alert');
                 $('#LastName').css("border-color", "Red");
             }
-            else if ($('#_Company').val() == "") {
-                toastr.error("Please enter customer's company.", 'Error Alert');
-                $('#_Company').css("border-color", "Red");
-            }
-            else if ($('#Designation').val() == "") {
-                toastr.error("Please enter designation.", 'Error Alert');
-                $('#Designation').css("border-color", "Red");
-            } else if ($('#Address1').val() == "") {
+             else if ($('#Address1').val() == "") {
                 toastr.error("Please enter address 1.", 'Error Alert');
                 $('#Address1').css("border-color", "Red");
             }
+
+            else {
+                $.ajax({
+                    type: "POST",
+                url: "/Admin/Customer/CustomerUserSave",
+                    data: Customer,
+                    success: function (data) {
+                        if (!data.proceed) {
+                            return;
+                        }
+                        else {
+                            OpenCustomerUserMaster($('#CompanyDrop').val());
+                        }
+
+                    },
+                    error: function () {
+                    }
+                });
+
+                $('#Salutation').val("");
+                $('#FirstName').val("");
+                $('#LastName').val("");
+                $('#Designation').val("");
+                $('#Address1').val("");
+                $('#Address2').val("");
+                $('#_Company').val("");
+                $('#City').val("");
+                $('#State').val("");
+                $('#Country').val("");
+                $('#Email').val("");
+                $('#AlternativeEmail').val("");
+                $('#Mobile').val("");
+                $('#Telephone').val("");
+                $('#Password').val("");
+                $('#Status').val("");
+
+                $('#PrimaryCompany').val("");
+            }
+        }
+        function deleteCustomerUserDetails(id) {
+            debugger
+
+            var Customer;
+
+            Customer = {
+                "ID": id,
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Customer/deleteCustomerUserDetails",
+                data: Customer,
+                success: function (data) {
+                    OpenCustomerUserMaster($('#CustomerId').val());
+                },
+                error: function () {
+                }
+            });
+        }
+        function editCustomerUserDetails(id) {
+            //Id
+            var ID = id;
+            debugger
+            var Customer;
+
+            Customer = {
+                "ID": ID,
+                "CustomerId": $('#CustomerId').val(),
+                "Salutation": $('#Salutation').val(),
+                "FirstName": $('#FirstName').val(),
+                "LastName": $('#LastName').val(),
+                "Designation": $('#Designation').val(),
+                "Address1": $('#Address1').val(),
+                "Address2": $('#Address2').val(),
+                "City": $('#City').val(),
+                "State": $('#State').val(),
+                "Country": $('#Country').val(),
+                "Company": $('#_Company').val(),
+                "Email": $('#Email').val(),
+                "AlternativeEmail": $('#AlternativeEmail').val(),
+                "Mobile": $('#Mobile').val(),
+                "Telephone": $('#Telephone').val(),
+                "Password": $('#Password').val(),
+                "Status": $('#Status').val(),
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Customer/editCustomerUserDetails",
+                data: Customer,
+                success: function (data) {
+                    debugger
+                    $('#CustomerUserId').val(data.customer.id);
+                    $('#CustomerId').val(data.customer.customerId);
+                    $('#Salutation').val(data.customer.salutation);
+                    $('#FirstName').val(data.customer.firstName);
+                    $('#LastName').val(data.customer.lastName);
+                    $('#Designation').val(data.customer.designation);
+                    $('#Address1').val(data.customer.address1);
+                    $('#Address2').val(data.customer.address2);
+                    $('#City').val(data.customer.city);
+                    $('#State').val(data.customer.state);
+                    $('#Country').val(data.customer.country);
+                    $('#_Company').val(data.customer.company);
+                    $('#Email').val(data.customer.email);
+                    $('#AlternativeEmail').val(data.customer.alternativeEmail);
+                    //$('#AlterCountryCode').val(data.customer.alterCountryCode);
+                    //$('#CountryCode').val(data.customer.countryCode);
+                    $('#Mobile').val(data.customer.mobile);
+                    var a = $('#Mobile').val().split("-");
+                    $('#Mobile').val(a[1]);
+                    $('#CountryCode').val(a[0]);
+                    $('#Telephone').val(data.customer.telephone);
+                    var T = $('#Telephone').val().split("-");
+                    $('#Telephone').val(T[1]);
+                    $('#AlterCountryCode').val(T[0]);
+                    $('#Password').val(data.customer.password);
+                    $('#Status').val(data.customer.status);
+                    
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+
+
+        function customerSave() {
+            var Customer;
+            Customer = {
+                "CustomerId": $('#CustomerId').val(),
+                // "Salutation": $('#Salutation').val(),
+                // "FirstName": $('#FirstName').val(),
+                // "LastName": $('#LastName').val(),
+                // "Designation": $('#Designation').val(),
+                // "Address1": $('#Address1').val(),
+                // "Address2": $('#Address2').val(),
+                "Company": $('#_Company').val(),
+                // "City": $('#City').val(),
+                // "State": $('#State').val(),
+                // "Country": $('#Country').val(),
+                // "Email": $('#Email').val(),
+                // "Mobile": $('#Mobile').val(),
+                // "Password": $('#Password').val(),
+                "Status": $('#Status').val(),
+                // "CountryCode": $('#CountryCode').val(),
+                // "AlternativeEmail": $('#AlternativeEmail').val(),
+                // "Telephone": $('#Telephone').val(),
+                "IsEmailNotification": $("#EmailNotification").prop('checked'),
+                "PrimaryCompanyId": $('#PrimaryCompany').val(),
+                "SecondaryCompanyId": $('#SecondaryCompany').val(),
+                "BankID": $('#Beneficiary').val()
+                
+            }
+            
+            debugger
+            // if ($('#Salutation').val() == "") {
+            //     toastr.error("Please enter salutation.", 'Error Alert');
+            //     $('#Salutation').css("border-color", "Red");
+            // } else if ($('#FirstName').val() == "") {
+            //     toastr.error("Please enter first name.", 'Error Alert');
+            //     $('#FirstName').css("border-color", "Red");
+            // } else if ($('#LastName').val() == "") {
+            //     toastr.error("Please enter last name.", 'Error Alert');
+            //     $('#LastName').css("border-color", "Red");
+            // }
+            if ($('#_Company').val() == "") {
+                toastr.error("Please enter customer's company.", 'Error Alert');
+                $('#_Company').css("border-color", "Red");
+            }
+            // else if ($('#Designation').val() == "") {
+            //     toastr.error("Please enter designation.", 'Error Alert');
+            //     $('#Designation').css("border-color", "Red");
+            // } else if ($('#Address1').val() == "") {
+            //     toastr.error("Please enter address 1.", 'Error Alert');
+            //     $('#Address1').css("border-color", "Red");
+            // }
             // else if ($('#City').val() == "") {
             //     toastr.error("Please Select city.", 'Error Alert');
             //     $('#City').css("border-color", "Red");
             // }
-            else if ($('#Country').val() == "") {
-                toastr.error("Please Select country.", 'Error Alert');
-                $('#Country').css("border-color", "Red");
-            } else if ($('#Email').val() == "") {
-                toastr.error("Please enter email.", 'Error Alert');
-                $('#Email').css("border-color", "Red");
-            } else if ($('#Mobile').val() == "") {
-                toastr.error("Please enter mobile number.", 'Error Alert');
-                $('#Mobile').css("border-color", "Red");
-            } else if ($('#Password').val() == "") {
-                toastr.error("Please enter password.", 'Error Alert');
-                $('#Password').css("border-color", "Red");
-            }
+            // else if ($('#Country').val() == "") {
+            //     toastr.error("Please Select country.", 'Error Alert');
+            //     $('#Country').css("border-color", "Red");
+            // } else if ($('#Email').val() == "") {
+            //     toastr.error("Please enter email.", 'Error Alert');
+            //     $('#Email').css("border-color", "Red");
+            // } else if ($('#Mobile').val() == "") {
+            //     toastr.error("Please enter mobile number.", 'Error Alert');
+            //     $('#Mobile').css("border-color", "Red");
+            // } else if ($('#Password').val() == "") {
+            //     toastr.error("Please enter password.", 'Error Alert');
+            //     $('#Password').css("border-color", "Red");
+            // }
             else if ($('#Status').val() == "") {
                 toastr.error("Please Select Status.", 'Error Alert');
                 $('#Status').css("border-color", "Red");
@@ -584,7 +801,9 @@
                 $('#Telephone').val("");
                 $('#Password').val("");
                 $('#Status').val("");
-
+                $('#Beneficiary').val("");
+                $('#SecondaryCompany').val("");
+                $("#EmailNotification").prop('checked', false),
                 $('#PrimaryCompany').val("");
             }
         }
@@ -663,28 +882,8 @@
                 data: Customer,
                 success: function (data) {
                     debugger
-                    $('#Salutation').val(data.customer.salutation);
-                    $('#FirstName').val(data.customer.firstName);
-                    $('#LastName').val(data.customer.lastName);
-                    $('#Designation').val(data.customer.designation);
-                    $('#Address1').val(data.customer.address1);
-                    $('#Address2').val(data.customer.address2);
-                    $('#City').val(data.customer.city);
-                    $('#State').val(data.customer.state);
                     $('#_Company').val(data.customer.company);
                     $('#Status').val(data.customer.status);
-                    $('#Country').val(data.customer.country);
-                    $('#Email').val(data.customer.email);
-                    $('#AlternativeEmail').val(data.customer.alternativeEmail);
-                    $('#AlterCountryCode').val(data.customer.countryCode);
-                    $('#CountryCode').val(data.customer.countryCode);
-                    $('#Mobile').val(data.customer.mobile);
-                    var a = $('#Mobile').val().split("-");
-                    $('#Mobile').val(a[1]);
-                    $('#Telephone').val(data.customer.telephone);
-                    var T = $('#Telephone').val().split("-");
-                    $('#Telephone').val(T[1]);
-                    $('#Password').val(data.customer.password);
                     $('#PrimaryCompany').val(data.customer.primaryCompany);
                     $('#SecondaryCompany').val(data.customer.secondaryCompanyId);
                     ///////////
@@ -708,6 +907,31 @@
             // });
         }
 
+        function OpenCustomerUserMaster(id) {
+            debugger;
+            customeruserdetails = {
+                "CustomerId": id,
+                "Company": $("#PortName").val(),
+                "City": $('#City').val(),
+                "State": $("#State").val(),
+                "Country": $('#Country').val()
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Customer/OpenCustomerUserMaster",
+                data: customeruserdetails,
+                dataType: "html",
+                success: function (data) {
+                    $("#customeruserdetails").modal('hide');
+                    $("#customeruserdetails").modal('show');
+                    $("#customeruserdetails").find(".modal-body").html(data);
+                },
+                error: function () {
+                }
+            });
+        }
+
         function loadData() {
             var Customer;
             Customer = {
@@ -728,6 +952,33 @@
                 dataType: "HTML",
                 success: function (data) {
                     $("#viewAll").html(data);
+                },
+                error: function () {
+                }
+            });
+        }
+
+
+        function loadcustomeruserData() {
+            var Customer;
+            Customer = {
+                "CustomerId": $('#CompanyDrop').val(),
+                "FirstName": $("#FirstNameFilter").val(),
+                "Address1": $('#Address1Filter').val(),
+                "Country": $('#CountryFilter').val(),
+                "Company": $('#CompanyFilter').val(),
+                "Email": $('#EmailFilter').val(),
+                "Mobile": $('#MobileFilter').val(),
+
+
+            }
+            $.ajax({
+                type: "GET",
+                url: "/Admin/Customer/loadcustomeruserData",
+                data: Customer,
+                dataType: "HTML",
+                success: function (data) {
+                    $("#viewAllCustomerUser").html(data);
                 },
                 error: function () {
                 }
