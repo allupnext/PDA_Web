@@ -225,7 +225,7 @@ namespace PDAEstimator_Infrastructure.Repositories
         public async Task<List<CustomerList>> GetAlllistCustomerAsync(int customerId)
         {
             //var sql = "SELECT CustomerId, Salutation,FirstName,LastName,Designation,Address1,Address2,Company,CustomerMaster.City as City,CustomerMaster.State as State,CustomerMaster.Country as Country,Email,Mobile,Password,Status,CityName,StateName,CountryName FROM CustomerMaster left join CityList on CityList.ID =  CustomerMaster.City left join Country on Country.ID =  CustomerMaster.Country left join State on State.ID =  CustomerMaster.State WHERE CustomerMaster.IsDeleted != 1";
-            var sql = "SELECT CustomerId,Company,Status FROM CustomerMaster  WHERE CustomerMaster.IsDeleted != 1 SELECT CustomerId,Company,Status FROM CustomerMaster WHERE CustomerMaster.IsDeleted != 1";
+            var sql = "SELECT CustomerId,Company,Status FROM CustomerMaster  WHERE CustomerMaster.IsDeleted != 1 ";
 
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {

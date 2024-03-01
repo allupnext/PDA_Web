@@ -51,10 +51,11 @@ namespace PDAEstimator_Infrastructure.Repositories
         }
         public async Task<List<CustomerUserMaster>> GetByCustomerIdAsync(long id)
         {
-            //var sql = "SELECT TerminalDetails.*, PortName FROM TerminalDetails Left join PortDetails On PortDetails.ID = TerminalDetails.PortID where  TerminalDetails.IsDeleted != 1";
+            
             try
             {
-                var sql = "select CustomerUserMAster.* , CustomerMaster.Company from CustomerUserMAster left join CustomerMaster on CustomerMaster.CustomerId = CustomerUserMaster.CustomerId where CustomerUserMAster.IsDeleted != 1 and CustomerMaster.CustomerId = @CustomerId";
+                //var sql = "select CustomerUserMAster.* , CustomerMaster.Company from CustomerUserMAster left join CustomerMaster on CustomerMaster.CustomerId = CustomerUserMaster.CustomerId where CustomerUserMAster.IsDeleted != 1 and CustomerMaster.CustomerId = @CustomerId";
+                var sql = "select CustomerUserMAster.* , CustomerMaster.Company, Designation.DesignationName, Country.CountryName, State.StateName, CityList.CityName from CustomerUserMAster left join CustomerMaster on CustomerMaster.CustomerId = CustomerUserMaster.CustomerId left join Designation on CustomerUserMaster.Designation = Designation.DesignationId left join Country on CustomerUserMaster.Country = Country.ID left join [State] on CustomerUserMaster.State = State.ID left join CityList on CustomerUserMaster.City = CityList.ID where CustomerUserMAster.IsDeleted != 1 and CustomerMaster.CustomerId = @CustomerId";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
                     connection.Open();

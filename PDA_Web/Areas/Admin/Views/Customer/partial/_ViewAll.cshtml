@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<PDAEstimator_Domain.Entities.CustomerList>
 <style>
     table td {
-        width: 110px;
+        /* width: 110px; */
         word-wrap: break-word;
     }
 </style>
@@ -52,18 +52,18 @@
                 @Html.DisplayNameFor(model => model.Password)
             </th> *@
 
-            <th>
+            <th style="min-width:20%">
                 @Html.DisplayNameFor(model => model.Company)
             </th>
 
-             <th>
+            <th style="min-width:20%">
                 @Html.DisplayNameFor(model => model.PrimaryCompany)
             </th>
 
-            <th>
+            <th style="min-width:20%">
                 @Html.DisplayNameFor(model => model.SecondaryCompany)
             </th>
-            <th style="max-width:90px">
+            <th style="min-width:6%">
                 @Html.DisplayNameFor(model => model.Status)
             </th>
 @*             <th>
@@ -76,7 +76,7 @@
                 @Html.DisplayNameFor(model => model.IsEmailNotification)
             </th>
           
-            <th style="width:22%"></th>
+            <th style="width:35%"></th>
         </tr>
     </thead>
     <tbody>
@@ -157,12 +157,12 @@
                     userPermissionRights = ViewBag.UserPermissionModel;
                     userRoleName = ViewBag.UserRoleName;
                     <td>
+
                         <a class="btn btn-primary btn-sm" onclick="OpenCustomerUserMaster(@customer.CustomerId)">
                             <i class="fas fa-folder">
                             </i>
                             Customer User
                         </a>
-
                         @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Customer" && x.UserRolePermission == "Edit").Count() > 0))
                         {
                             <a class="btn btn-info btn-sm" onclick="editCustomer(@customer.CustomerId)">
@@ -206,6 +206,12 @@
          $("#CustomerNameTable").DataTable({
            
             "searching": false,
+            scrollX: true,
+            scrollCollapse: true,
+            scrollY: '400px',
+            fixedHeader: {
+                header: true,
+            },
              "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
          }).buttons().container().appendTo('#CustomerNameTable_wrapper .col-md-6:eq(0)');
      });

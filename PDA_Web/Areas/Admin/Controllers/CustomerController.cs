@@ -65,6 +65,15 @@ namespace PDA_Web.Areas.Admin.Controllers
 
         public async Task<ActionResult> OpenCustomerUserMaster(CustomerList customer)
         {
+            // Temp Solution START
+            var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
+            ViewBag.UserPermissionModel = UserPermissionModel;
+            var Currentuser = HttpContext.Session.GetString("UserID");
+
+            var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
+            ViewBag.UserRoleName = UserRole;
+            // Temp Solution END
+
             ViewBag.CustomerSelected = customer.CustomerId;
             ViewBag.Customer = await unitOfWork.Customer.GetAllAsync();
 

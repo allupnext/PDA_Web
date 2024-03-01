@@ -27,6 +27,10 @@ namespace PDAEstimator_Domain.Entities
         public string CountryCode { get; set; }
         public string AlterCountryCode { get; set; }
         public string AlternativeEmail { get; set; }
+        public string DesignationName { get; set; }
+        public string CountryName { get; set; }
+        public string StateName { get; set; }
+        public string CityName { get; set; }
         public string? Token { get; set; }
     }
 }

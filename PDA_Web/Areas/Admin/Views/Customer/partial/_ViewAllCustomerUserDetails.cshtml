@@ -79,7 +79,7 @@
                         @Html.DisplayFor(modelItem => item.LastName)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Designation)
+                        @Html.DisplayFor(modelItem => item.DesignationName)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Address1)
@@ -88,13 +88,13 @@
                         @Html.DisplayFor(modelItem => item.Address2)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Country)
+                        @Html.DisplayFor(modelItem => item.CountryName)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.State)
+                        @Html.DisplayFor(modelItem => item.StateName)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.City)
+                        @Html.DisplayFor(modelItem => item.CityName)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Mobile)
@@ -121,18 +121,33 @@
             <span class="badge badge-danger">In Active</span>
             }
             </td> *@
-                    <td>
-                        <a class="btn btn-info btn-sm" onclick="editCustomerUserDetails(@item.ID)">
-                            <i class="fas fa-pencil-alt">
-                            </i>
-                            Edit
-                        </a>
-                        <a class="btn btn-danger btn-sm" onclick="deleteCustomerUserDetails(@item.ID)">
-                            <i class="fas fa-trash">
-                            </i>
-                            Delete
-                        </a>
+                    @using PDAEstimator_Domain.Entities;
+                    @if (ViewBag.UserPermissionModel != null)
+                    {
+                        List<UserPermissionRights> userPermissionRights = new List<UserPermissionRights>();
+                        List<UserRoleName> userRoleName = new List<UserRoleName>();
+                        userPermissionRights = ViewBag.UserPermissionModel;
+                        userRoleName = ViewBag.UserRoleName;
+
+                        <td>
+                            @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Customer" && x.UserRolePermission == "Edit").Count() > 0))
+                            {
+                                <a class="btn btn-info btn-sm" onclick="editCustomerUserDetails(@item.ID)">
+                                    <i class="fas fa-pencil-alt">
+                                    </i>
+                                    Edit
+                                </a>
+                            }
+                            @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Customer" && x.UserRolePermission == "Delete").Count() > 0))
+                            {
+                                <a class="btn btn-danger btn-sm" onclick="deleteCustomerUserDetails(@item.ID)">
+                                    <i class="fas fa-trash">
+                                </i>
+                                Delete
+                            </a>
+                        }
                     </td>
+                    }
                 </tr>
             }
         }
@@ -163,6 +178,12 @@
         $("#TerminalDetailsTable").DataTable({
            
             "searching": false,
+            scrollX: true,
+            scrollCollapse: true,
+            scrollY: '400px',
+            fixedHeader: {
+                header: true,
+            },
              "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
         }).buttons().container().appendTo('#TerminalDetailsTable_wrapper .col-md-6:eq(0)');
      });

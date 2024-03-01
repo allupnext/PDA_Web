@@ -184,9 +184,21 @@
 
                     <!-- /.card-body -->
                 </div>
-                <div class="card-footer">
-                    <button class="btn btn-primary" onclick="CustomerUserSave()">Submit</button>
-                </div>
+                @using PDAEstimator_Domain.Entities;
+                @if (ViewBag.UserPermissionModel != null)
+                {
+                    List<UserPermissionRights> userPermissionRights = new List<UserPermissionRights>();
+                    List<UserRoleName> userRoleName = new List<UserRoleName>();
+                    userPermissionRights = ViewBag.UserPermissionModel;
+                    userRoleName = ViewBag.UserRoleName;
+
+                    @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Customer" && x.UserRolePermission == "Edit").Count() > 0))
+                    {
+                        <div class="card-footer">
+                            <button class="btn btn-primary" onclick="CustomerUserSave()">Submit</button>
+                        </div>
+                    }
+                }
 
             </div>
             @*</form>*@
@@ -214,7 +226,7 @@
                             </div>
                             <div class="col-sm-2" style="max-width: 15%;">
                                 <label for="CountryFilter">Country</label>
-                                @Html.DropDownList("CountryFilter", new SelectList(ViewBag.Country, "ID", "CountryName"), "Please Select", new { @class = "form-control" })
+                                @Html.DropDownList("CountryFilter", new SelectList(ViewBag.Country, "ID", "CountryName"), "Please Select", new { @class = "form-control", @onchange = "OnChangeCountryFilterfunc(this.value)"  })
                             </div>
                             @*      <div class="col-sm-2" style="max-width: 15%;">
                             <label for="MobileFilter">Mobile Number</label>
@@ -273,7 +285,23 @@
 
 
     $(function () {
-        loadcustomeruserData();
+        //random password
+        function generateRandomPassword(length) {
+        
+            const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            let password = "";
+            for (let i = 0; i < length; i++) {
+                const randomIndex = Math.floor(Math.random() * charset.length);
+                password += charset.charAt(randomIndex);
+            }
+            return password;
+        }
+        // Usage
+        const randomPassword = generateRandomPassword(8);
+        $('#Password').val(randomPassword);
+
+
+        loadcustomeruserData($('#CompanyDrop').val(@ViewBag.CustomerSelected));
         debugger;
         $('#Status').prop("checked", true);
         $('#CompanyDrop').val(@ViewBag.CustomerSelected);
