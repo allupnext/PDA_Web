@@ -53,7 +53,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             
         }
 
-        public IActionResult PortNameOnchange(PDAEstimator PDAEstimitor)
+/*        public IActionResult PortNameOnchange(PDAEstimator PDAEstimitor)
         {
             var TerminalDetailData = unitOfWork.TerminalDetails.GetAllAsync().Result.Where(x => x.PortID == PDAEstimitor.PortID);
 
@@ -65,7 +65,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             var BearthDetailData = unitOfWork.BerthDetails.GetAllAsync().Result.Where(x => x.TerminalID == PDAEstimitor.TerminalID);
             ViewBag.Berth = BearthDetailData;
             return PartialView("partial/BerthList");
-        }
+        }*/
 
 
         public IActionResult PortNameOnchange(CargoHandleds cargoHandleds)
