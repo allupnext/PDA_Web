@@ -581,7 +581,6 @@
 
         function PDAEstimatorSave() {
             var PDAEstimitor;
-            //showLoader(this);
             PDAEstimitor = {
                 "PDAEstimatorId": $('#PDAEstimatorId').val(),
                 "CustomerId": $('#customerid').val(),
@@ -683,24 +682,27 @@
                 $('#ETA').css("border-color", "Red");
             }
             else {
+                showLoader(this);
                 $.ajax({
                     type: "POST",
                     url: "/Admin/PDAEstimator/PDAEstimitorSave",
                     data: PDAEstimitor,
                     success: function (data) {
                         if (!data.proceed) {
-                            //$('#loading').hide();
+                            $('.loading').hide();
                             return;
                         }
                         else {
-                            //$('#loading').hide();
                             clear();
+                            $('.loading').hide();
                             loadData();
+                           
+
                         }
 
                     },
                     error: function () {
-                        //$('#loading').hide();
+                        $('.loading').hide();
                     }
                 });
             }
@@ -871,6 +873,8 @@
         }
 
         function loadData() {
+            showLoader(this);
+
             var Padestimator;
             debugger
             Padestimator = {
@@ -888,27 +892,29 @@
                 dataType: "HTML",
                 success: function (data) {
                     $("#viewAll").html(data);
+                    $('.loading').hide();
                 },
                 error: function () {
+                    $('.loading').hide();
                 }
             });
         }
 
-                //function ViewPDAEstimator(PDAEstimatorID) {
-                                //    alert('hi')
-                                //    $.ajax({
-                                //        url: "/Admin/PDAEstimator/PDAEstimator?id=" + PDAEstimatorID,
-                                //        dataType: "html",
-                                //        success: function (data) {
-                                //            var url = "https://jsonplaceholder.typicode.com/users/" + userId;
-                                //            window.open(url, "_blank");
-                                //        },
-                                //        error: function (error) {
-                                //            debugger;
-                                //            alert("Error:" + error);
-                                //        }
-                                //    })
-                                //}
+        //function ViewPDAEstimator(PDAEstimatorID) {
+                        //    alert('hi')
+                        //    $.ajax({
+                        //        url: "/Admin/PDAEstimator/PDAEstimator?id=" + PDAEstimatorID,
+                        //        dataType: "html",
+                        //        success: function (data) {
+                        //            var url = "https://jsonplaceholder.typicode.com/users/" + userId;
+                        //            window.open(url, "_blank");
+                        //        },
+                        //        error: function (error) {
+                        //            debugger;
+                        //            alert("Error:" + error);
+                        //        }
+                        //    })
+                        //}
 
     </script>
 }

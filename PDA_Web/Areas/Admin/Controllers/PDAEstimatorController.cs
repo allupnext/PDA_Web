@@ -370,7 +370,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                                 slabattributvalue = pDAEstimatorOutPut.BerthStayDayCoastal;
                             else if (triff.SlabName == "AST")
                                 slabattributvalue = pDAEstimatorOutPut.AnchorageStay;
-                            else if (triff.SlabName == "CQTY")
+                            else if (triff.SlabName == "QTYMT")
                                 slabattributvalue = pDAEstimatorOutPut.CargoQty;
                             UnitCalculation(triff, pDAEstimatorOutPut.GRT, (long)slabattributvalue);
 
@@ -508,7 +508,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                                             formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.AnchorageStay.ToString() : pDAEstimatorOutPut.AnchorageStay.ToString();
                                         }
                                     }
-                                    else if (FormulaAttributedata.Contains("CQTY"))
+                                    else if (FormulaAttributedata.Contains("QTYMT"))
                                     {
                                         //UnitCalculation(triff, pDAEstimatorOutPut.CargoQty);
                                         if (triff.SlabID != null && triff.SlabID > 0 && FormulaAttributedata == triff.SlabName)
@@ -1020,7 +1020,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                                         slabattributvalue = PDAEstimitor.BerthStayDayCoastal;
                                     else if (triff.SlabName == "AST")
                                         slabattributvalue = PDAEstimitor.AnchorageStay;
-                                    else if (triff.SlabName == "CQTY")
+                                    else if (triff.SlabName == "QTYMT")
                                         slabattributvalue = PDAEstimitor.CargoQty;
                                     UnitCalculation(triff, PDAEstimitor.GRT, (long)slabattributvalue);
 
@@ -1158,7 +1158,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                                                     formulastring = formulastring != "" ? formulastring + " " + PDAEstimitor.AnchorageStay.ToString() : PDAEstimitor.AnchorageStay.ToString();
                                                 }
                                             }
-                                            else if (FormulaAttributedata.Contains("CQTY"))
+                                            else if (FormulaAttributedata.Contains("QTYMT"))
                                             {
                                                 //UnitCalculation(triff, pDAEstimatorOutPut.CargoQty);
                                                 if (triff.SlabID != null && triff.SlabID > 0 && FormulaAttributedata == triff.SlabName)
