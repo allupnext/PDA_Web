@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<PDAEstimator_Domain.Entities.UserList>
 <style>
     table td {
-        width: 110px;
+        /* width: 110px; */
         word-wrap: break-word;
     }
 </style>
@@ -9,11 +9,11 @@
     <thead>
         <tr>
             <th style="min-width:150px;">Name</th>
-            <th style="min-width:150px;">Employ Code (User Name)</th>
+            <th style="min-width:100px;">Employ Code (User Name)</th>
             <th style="min-width:150px;">EmailID</th>
             <th style="min-width:130px;">User Password</th>
             <th style="min-width:100px;">Mobile No</th>
-            <th style="min-width:200px;">Role</th>
+            <th style="min-width:80px;">Role</th>
             <th style="min-width:100px;">
                 @Html.DisplayNameFor(model => model.PrimaryCompany)
             </th>
@@ -21,7 +21,7 @@
             <th style="min-width:100px;">
                 @Html.DisplayNameFor(model => model.SecondaryCompany)
             </th>
-            <th style="min-width:100px;">
+            <th style="min-width:300px;">
                 @Html.DisplayNameFor(model => model.Ports)
             </th>
             <th style="min-width:100px;">Status</th>
@@ -34,7 +34,7 @@
         {
             <tr>
                 <td>@Html.DisplayFor(modelItem => item.Salutation) @Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName) </td>
-                <td>@Html.DisplayFor(modelItem => item.EmployCode)</td>
+                <td style="text-align:center">@Html.DisplayFor(modelItem => item.EmployCode)</td>
                 <td>@Html.DisplayFor(modelItem => item.EmailID)</td>
                 <td>@Html.DisplayFor(modelItem => item.UserPassword)</td>
               
