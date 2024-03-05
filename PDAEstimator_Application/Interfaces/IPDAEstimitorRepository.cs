@@ -11,7 +11,7 @@ namespace PDAEstimator_Application.Interfaces
     {
         Task<List<CargoDetails>> GetCargoByTerminalAndPortAsync(int terminalId, int portId);
         Task<List<PDAEstimatorList>> GetAlllistAsync();
-        Task<List<PDATariffRateList>> GetAllPDA_Tariff(int portId);
+        Task<List<PDATariffRateList>> GetAllPDA_Tariff(int portId, DateTime ETA);
         Task<List<Notes>> GetNotes();
         Task<Company_Customer_Mapping> GetbyCustIdasync(int id);
 
