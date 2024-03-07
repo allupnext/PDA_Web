@@ -1,6 +1,85 @@
-﻿    @{
+﻿@{
     ViewData["Title"] = "Index";
 }
+<style>
+
+    * {
+        box-sizing: border-box;
+    }
+
+    a {
+        text-decoration: none;
+        color: #379937;
+    }
+
+    body {
+        margin: 40px;
+    }
+
+    .dropdown {
+        position: relative;
+        font-size: 14px;
+        color: #333;
+    }
+
+        .dropdown .dropdown-list {
+            padding: 12px;
+            background: #fff;
+            position: relative;
+            top: 0px;
+            left: 2px;
+            right: 2px;
+            box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.15);
+            transform-origin: 50% 0;
+            transform: scale(1, 0);
+            transition: transform 0.15s ease-in-out 0.15s;
+            max-height: 30vh;
+            overflow-y: scroll;
+        }
+
+        .dropdown .dropdown-option {
+            display: block;
+            padding: 8px 12px;
+            opacity: 0;
+            transition: opacity 0.15s ease-in-out;
+        }
+
+        .dropdown .dropdown-label {
+            display: block;
+            height: 30px;
+            background: #fff;
+            border: 1px solid #ccc;
+            padding: 6px 12px;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+            .dropdown .dropdown-label:before {
+                content: "";
+                float: right;
+            }
+
+        .dropdown.on .dropdown-list {
+            transform: scale(1, 1);
+            transition-delay: 0s;
+        }
+
+            .dropdown.on .dropdown-list .dropdown-option {
+                opacity: 1;
+                transition-delay: 0.2s;
+            }
+
+        .dropdown.on .dropdown-label:before {
+            content: "";
+        }
+
+        .dropdown [type=checkbox] {
+            position: relative;
+            top: -1px;
+            margin-right: 4px;
+        }
+
+</style>
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <div class="container-fluid">
@@ -35,7 +114,7 @@
                     </div>
                     <!-- /.card-header -->
                     <!-- form start -->
-                    <div class="card-body" >
+                    <div class="card-body">
                         <input type="hidden" id="UserId" name="UserId" value="">
                         <div class="row">
                             <div class="col-sm-6">
@@ -131,14 +210,39 @@
                                 </div>
 
                             </div>
-                            <div class="col-sm-3">
+@*                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="PortList">Ports</label>
                                     @Html.ListBox("PortNameId", new MultiSelectList(ViewBag.PortList,  "ID", "PortName"),  new { @class = "form-control"})
                                 </div>
+                            </div> *@
+                            <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Ports">Ports:</label>
+                                    <div class="dropdown portdropdown on" data-control="checkbox-dropdown">
+                                        <label class="dropdown-label">Select</label>
+
+                                        <div class="dropdown-list">
+                                            <a href="#" data-toggle="check-all" class="dropdown-option">
+                                                Check All
+                                            </a>
+
+                                            @foreach (var item in ViewBag.PortList)
+                                            {
+                                                <label class="dropdown-option">
+                                                    <input type="checkbox" name="dropdown-group" id="SelectedPortsId_@item.ID" value="@item.ID" />
+                                                    @item.PortName
+                                                </label>
+                                            }
+                                        </div>
+                                        <input type="hidden" id="selectedValuesInput" name="selectedValues">
+                                    </div>
+                                </div>
                             </div>
+
+
                         </div>
-                        <div class="row">
+                        <div class="row" style="padding-top:30px">
                             <div class="col-sm-6">
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input" id="UserStatus">
@@ -198,7 +302,7 @@
                                 @Html.DropDownList("PrimaryCompanyFilter", new SelectList(ViewBag.PrimaryCompany, "CompanyId", "CompanyName"), "Please Select", new { @class = "form-control"})
                             </div>
                         </div>
-                    <div id="viewAll" class="table-responsive"></div>
+                        <div id="viewAll" class="table-responsive"></div>
                     </div>
                 </div>
             </div>
@@ -209,9 +313,11 @@
 </section>
 
 
+
 @section Scripts
     {
     <script>
+
         $(document).ready(function () {
 
             $('#UserMainMenu').addClass('active');
@@ -263,7 +369,12 @@
             if ($('#Status').is(":checked")) {
                 Status = true;
             }
-          
+            if ($('.portdropdown :checked').length == 0)
+            {
+
+                var UpdatedPorts = $('#selectedValuesInput').val(0);
+            }
+
             var users;
 
             users = {
@@ -279,7 +390,7 @@
                 "EmailID": $('#EmailID').val(),
                 "PrimaryCompanyId": $('#PrimaryCompany').val(),
                 "SecondaryCompanyId": $('#SecondaryCompany').val(),
-                "PortIds": $('#PortNameId').val(),
+                "SelectedPortIds": $('#selectedValuesInput').val(),
                 "UserStatus": Status
             }
             if ($('#Salutation').val() == "") {
@@ -348,6 +459,11 @@
                 $('#PrimaryCompany').val("");
                 $('#PortNameId').val("");
                 $('#UserStatus').val("");
+                $('#selectedValuesInput').val("");
+                $('#selectedValuesInput').prop("checked", false);
+                $('.portdropdown :checked').prop("checked", false);
+                $('.dropdown-label').html("Select Options");
+               
             }
         }
 
@@ -417,6 +533,7 @@
                 data: user,
                 success: function (data) {
                     debugger;
+                    var portsids = data.user.portIds;
                     $('#FirstName').val(data.user.firstName);
                     $('#LastName').val(data.user.lastName);
                     $('#EmployCode').val(data.user.employCode);
@@ -428,6 +545,29 @@
                     $('#PrimaryCompany').val(data.user.primaryCompany);
                     $('#SecondaryCompany').val(data.user.secondaryCompanyId);
                     $('#PortNameId').val(data.user.portIds);
+                    $('#selectedValuesInput').val(data.user.portIds);
+                    var i;
+                    for (i = 0; i < portsids.length; ++i) {
+                        var pot = portsids[i];
+                        $('#SelectedPortsId_' + pot).prop('checked', true);
+
+                    }
+                    var selected = [];
+                    $('.portdropdown input:checked').each(function () {
+                        selected.push($(this).attr('name'));
+                    });
+
+                    if (selected.length <= 0) {
+                        $('.dropdown-label').html("Select Options");
+                    } else if (selected.length === 1) {
+                        $('.dropdown-label').html(selected.parent("label").text());
+
+                    } else if (selected.length === $('.portdropdown :checked').length) {
+                        $('.dropdown-label').html("All Selected");
+                        
+                    } else {
+                        $('.dropdown-label').html(selected.length + " Selected");
+                    }
                     $(window).scrollTop(150);
                 },
                 error: function () {
@@ -450,7 +590,7 @@
             $.ajax({
                 type: "GET",
                 url: "/Admin/User/LoadAll",
-                data:user,
+                data: user,
                 dataType: "HTML",
                 success: function (data) {
                     $("#viewAll").html(data);

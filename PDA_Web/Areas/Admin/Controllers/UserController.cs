@@ -88,7 +88,7 @@ namespace PDA_Web.Areas.Admin.Controllers
         public async Task<ActionResult> UserSave(User user)
         {
             var data = await unitOfWork.User.GetAlllistAsync();
-
+            user.PortIds = user.SelectedPortIds.Split(',').Select(x => int.Parse(x)).ToArray();
             if (user.ID > 0)
             {
                 var EmployeeCodeupdate = data.Where(x => x.EmployCode.ToUpper() == user.EmployCode.ToUpper() && x.ID != user.ID).ToList();
