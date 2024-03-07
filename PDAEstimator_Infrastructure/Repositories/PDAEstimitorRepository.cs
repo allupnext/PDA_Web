@@ -81,13 +81,13 @@ namespace PDAEstimator_Infrastructure.Repositories
             }
         }
 
-        public async Task<List<PDATariffRateList>> GetAllPDA_Tariff(int portId)
+        public async Task<List<PDATariffRateList>> GetAllPDA_Tariff(int portId, DateTime ETA)
         {
             var sql = "GetAllPDA_Tariff";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
-                var result = await connection.QueryAsync<PDATariffRateList>(sql, new { PortId = portId });
+                var result = await connection.QueryAsync<PDATariffRateList>(sql, new { PortId = portId, ETA = ETA.Date });
                 return new List<PDATariffRateList>(result.ToList());
             }
         }
