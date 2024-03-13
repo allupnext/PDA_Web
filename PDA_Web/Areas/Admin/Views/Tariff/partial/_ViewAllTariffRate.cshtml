@@ -22,14 +22,16 @@
             <th style="min-width:110px;">Validity From</th>
             <th style="min-width:110px;">Validity To</th>
             <th>Status</th>
-            <th>Call Type</th>
+            <th style="min-width:110px;">Call Type</th>
             <th style="min-width:150px;">Expenses</th>
             <th style="min-width:150px;">Charge Codes</th>
             <th>Vessel Ballast</th>
+            <th>Reduced GRT</th>
             <th>Slab</th>
             <th>Slab Increemental</th>
             <th>Slab From</th>
             <th>Slab To</th>
+            <th>Range Tariff ID</th>
             <th>Rate</th>
             <th>Currency</th>
             <th style="min-width:150px;">Formula</th>
@@ -136,6 +138,21 @@
 
                 </td>
                 <td>
+                    @if (item.Reduced_GRT == 0)
+                    {
+                        <span class="badge badge-warning">Not-Applicable</span>
+                    }
+                    else if (item.Reduced_GRT == 1)
+                    {
+                        <span class="badge badge-danger">No</span>
+                    }
+                    else
+                    {
+                        <span class="badge badge-success">Yes</span>
+                    }
+
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.SlabName)
                 </td>
                 <td>
@@ -158,6 +175,9 @@
                         @if (item.SlabTo != null)
                         @Convert.ToDecimal(item.SlabTo).ToString("#,##0.#######")
 
+                </td>
+                <td>
+                        @Html.DisplayFor(modelItem => item.Range_TariffID)
                 </td>
                 <td>
                     @item.Rate.ToString("#,##0.#######")

@@ -70,5 +70,7 @@ namespace PDAEstimator_Domain.Entities
 
         public int? SlabIncreemental { get; set; }
         public int VesselBallast { get; set; } = 0;
+        public int Reduced_GRT { get; set; } = 0;
+        public int Range_TariffID { get; set; } = 0;
     }
 }

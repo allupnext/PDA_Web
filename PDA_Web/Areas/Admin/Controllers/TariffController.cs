@@ -442,6 +442,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             tariffRate.Remark = tariff.Remark;
             tariffRate.SlabIncreemental = tariff.SlabIncreemental;
             tariffRate.VesselBallast = tariff.VesselBallast;
+   
             await unitOfWork.TariffRates.AddAsync(tariffRate);
             _toastNotification.AddSuccessToastMessage("Inserted successfully");
 

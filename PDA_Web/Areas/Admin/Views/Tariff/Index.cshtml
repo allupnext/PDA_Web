@@ -166,12 +166,14 @@
 
                             <div class="col-sm-2" style="max-width: 15%;">Charge Codes<span class="text-danger">*</span></div>
                             <div class="col-sm-2" style="max-width: 15%;">Vessel Ballast<span class="text-danger">*</span></div>
+                            <div class="col-sm-2" style="max-width: 15%;">Reduced_GRT<span class="text-danger">*</span></div>
 
                             <div class="col-sm-2" style="max-width: 10%;">Tax<span class="text-danger">*</span></div>
                             <div class="col-sm-2" style="max-width: 10%;">Slab<span class="text-danger">*</span></div>
                             <div class="col-sm-2" style="max-width: 20%;">Slab Increemental<span class="text-danger">*</span></div>
                             <div class="col-sm-2" style="max-width: 10%;">Slab From<span class="text-danger">*</span></div>
                             <div class="col-sm-2" style="max-width: 10%;">Slab To<span class="text-danger">*</span></div>
+                            <div class="col-sm-2" style="max-width: 10%;">Range_TariffID<span class="text-danger">*</span></div>
                             <div class="col-sm-2" style="max-width: 10%;">Rate<span class="text-danger">*</span></div>
                             <div class="col-sm-2" style="max-width: 10%;">Currency<span class="text-danger">*</span></div>
                             <div class="col-sm-2" style="max-width: 15%;">Formula<span class="text-danger">*</span></div>
@@ -226,6 +228,15 @@
                                 }, new { @class = "form-control" })
 
                             </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                @Html.DropDownList("Reduced_GRT", new List<SelectListItem>
+                                {
+                                new SelectListItem{ Text="Not-Applicable", Value = "0" },
+                                new SelectListItem{ Text="No", Value = "1" },
+                                new SelectListItem{ Text="Yes", Value = "2" },
+                                }, new { @class = "form-control" })
+
+                            </div>
                             <div class="col-sm-2" style="max-width: 10%;">
                                 @Html.DropDownList("Texs", new SelectList(ViewBag.Texs, "ID", "TaxName"), "Not Applicable", new { @class = "form-control" })
 
@@ -249,6 +260,9 @@
                             </div>
                             <div class="col-sm-2" style="max-width: 10%;">
                                 <input type="text" class="form-control" id="SlabTo" value="" name="SlabTo" placeholder="Enter Slab To">
+                            </div>
+                            <div class="col-sm-2" style="max-width: 10%;">
+                                <input type="number" class="form-control" id="Range_TariffID" value="" name="Range_Tariff_ID" placeholder="Enter Range_TariffID">
                             </div>
 
                             <div class="col-sm-2" style="max-width: 10%;">
@@ -600,7 +614,7 @@
                             dataType: "HTML",
                             success: function (data) {
                                 $("#DivTerminalNameFilter").html(data);
-                                loadData();
+                                //loadData();
                             },
                             error: function () {
                             }
@@ -614,7 +628,7 @@
                             dataType: "HTML",
                             success: function (data) {
                                 $("#DivCargoNameFilter").html(data);
-                                loadData();
+                               // loadData();
                             },
                             error: function () {
                             }
@@ -628,7 +642,7 @@
                             dataType: "HTML",
                             success: function (data) {
                                 $("#formuladiv").html(data);
-                                loadData();
+                                //loadData();
                             },
                             error: function () {
                             }
@@ -641,7 +655,7 @@
                             dataType: "HTML",
                             success: function (data) {
                                 $("#cargodrop").html(data);
-                                loadData();
+                                //loadData();
                             },
                             error: function () {
                             }
@@ -742,7 +756,9 @@
                 "Remark": $("#Remarks").val(),
                 "TaxID": $("#Texs").val(),
                 "SlabIncreemental": $("#SlabIncreemental").val(),
-                "VesselBallast": $("#VesselBallast").val()
+                "VesselBallast": $("#VesselBallast").val(),
+                "Reduced_GRT": $("#Reduced_GRT").val(),
+                "Range_TariffID": $("#Range_TariffID").val()
 
             }
             if ($('#PortName').val() == "") {
@@ -803,7 +819,7 @@
                         return;
                     }
                     else {
-                        clear();
+    
                         loadData();
 
                     }
@@ -815,6 +831,7 @@
         }
 
         function UpdateTariffRate() {
+       
             debugger;
             // $('#TariffRateID').val(id);
 
@@ -841,7 +858,10 @@
                 "SlabFrom": $('#SlabFrom').val(),
                 "SlabTo": $('#SlabTo').val(),
                 "SlabIncreemental": $("#SlabIncreemental").val(),
-                "VesselBallast": $("#VesselBallast").val()
+                "VesselBallast": $("#VesselBallast").val(),
+                "Reduced_GRT": $("#Reduced_GRT").val(),
+                "Range_TariffID": $("#Range_TariffID").val()
+             
             }
             if ($('#PortName').val() == "") {
                 toastr.error("Please select port.", 'Error Alert');
@@ -963,9 +983,11 @@
                     $('#Remarks').val(data.tariffRates.remark);
                     $('#SlabIncreemental').val(data.tariffRates.slabIncreemental);
                     $('#VesselBallast').val(data.tariffRates.vesselBallast);
+                    $('#Reduced_GRT').val(data.tariffRates.reduced_GRT);
                     $('#Slabs').val(data.tariffRates.slabID);
                     $('#SlabFrom').val(data.tariffRates.slabFrom);
                     $('#SlabTo').val(data.tariffRates.slabTo);
+                    $('#Range_TariffID').val(data.tariffRates.range_TariffID);
 
                     //$('#FromDate').val(data.tariffRates.validity_From);
                     //$('#ToDate').val(data.tariffRates.validity_To);
@@ -1046,12 +1068,14 @@
             $("#Currency").val(1);
             $("#SlabIncreemental").val(1);
             $("#VesselBallast").val(0);
+            $("#Reduced_GRT").val(0);
             $("#Status").val(1);
             $("#FromDate").val('');
             $("#ToDate").val('');
             $("#Formulas").val('');
             $('#formulastring').text('');
             $('#Remarks').val('');
+            $('#Range_TariffID').val('');
         }
 
         function deleteTariff(id) {
@@ -1090,6 +1114,7 @@
 
 
         function loadData() {
+           
             var TariffMasters;
 
             TariffMasters = {
