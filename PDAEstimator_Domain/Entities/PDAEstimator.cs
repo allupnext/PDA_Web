@@ -63,6 +63,7 @@ namespace PDAEstimator_Domain.Entities
         public int? InternalCompanyID { get; set; }
         public long? BerthStayShift { get; set; }
         public int VesselBallast { get; set; } = 0;
+        public int IsReducedGRT { get; set; } = 0;
 
         public long? BerthStayDayCoastal { get; set; }
         public long? BerthStayShiftCoastal { get; set; }

@@ -98,6 +98,7 @@
                 @Html.DisplayNameFor(model => model.ETA)
             </th>
             <th>Vessel Ballast</th>
+            <th>IsReducedGRT</th>
             <th>CreatedBy</th>
             <th>CreationDate</th>
 @*             <th>ModifyUserID</th>
@@ -205,6 +206,18 @@
                 <td>
 
                     @if (item.VesselBallast == 1)
+                    {
+                        <span class="badge badge-danger">No</span>
+                    }
+                    else
+                    {
+                        <span class="badge badge-success">Yes</span>
+                    }
+
+                </td>
+                <td>
+
+                    @if (item.IsReducedGRT == 1)
                     {
                         <span class="badge badge-danger">No</span>
                     }

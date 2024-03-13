@@ -271,6 +271,18 @@
 
                                 </div>
                             </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <div class="form-group">
+                                    <label for="IsReducedGRT">IsReduced GRT<span class="text-danger">*</span></label>
+                                    @Html.DropDownList("IsReducedGRT", new List<SelectListItem>
+                                    {
+                                    // new SelectListItem{ Text="Not-Applicable", Value = "0" },
+                                    new SelectListItem{ Text="No", Value = "1" },
+                                    new SelectListItem{ Text="Yes", Value = "2" },
+                                    }, new { @class = "form-control" })
+
+                                </div>
+                            </div>
                         </div>
                         <!-- /.card-body -->
                     </div>
@@ -562,8 +574,12 @@
             $('#LoadDischargeRate').val("");
             $('#DWT').val("");
             $('#GRT').val("");
+            $('#ROERate').val("");
             $('#ReducedGRT').val("");
+            $('#IsReducedGRT').val(1);
+            $('#VesselBallast').val(1);
             $('#ArrivalDraft').val("");
+            $('#Currency').val("");
             $('#NRT').val("");
             $('#BerthStay').val("");
             $('#BerthStayDay').val("");
@@ -611,6 +627,7 @@
                 "InternalCompanyID": $('#Company').val(),
                 "BerthStayShift": $("#CallTypeName option:selected").text() != 'Coastal' ? $('#BerthStayShift').val() : null,
                 "VesselBallast": $("#VesselBallast").val(),
+                "IsReducedGRT": $("#IsReducedGRT").val(),
                 "BerthStayHoursCoastal": $("#CallTypeName option:selected").text() != 'Foreign' ? $('#BerthStayhourCoastal').val() : null,
                 "BerthStayDayCoastal": $("#CallTypeName option:selected").text() != 'Foreign' ? $('#BerthStayDayCoastal').val() : null,
                 "BerthStayShiftCoastal": $("#CallTypeName option:selected").text() != 'Foreign' ? $('#BerthStayShiftCoastal').val() : null,
@@ -781,6 +798,7 @@
                     $('#Company').val(data.pdaEstimitor.internalCompanyID);
                     $('#BerthStayShift').val(data.pdaEstimitor.berthStayShift);
                     $('#VesselBallast').val(data.pdaEstimitor.vesselBallast);
+                    $('#IsReducedGRT').val(data.pdaEstimitor.isReducedGRT);
                     calltypebasehideshowberthstay();
                     berthstaycalculation();
                     if (para == "Copy") {
