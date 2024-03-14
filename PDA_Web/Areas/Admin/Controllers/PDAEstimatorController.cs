@@ -338,7 +338,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                 pDAEstimatorOutPut.DefaultCurrencyCodeID = currencyData.Where(x => x.DefaultCurrecny == true) != null ? currencyData.Where(x => x.DefaultCurrecny == true).FirstOrDefault().ID : 0;
 
                 //var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(pDAEstimatorOutPut.PortID).Result.Where(x => (x.CallTypeID == pDAEstimatorOutPut.CallTypeID || x.CallTypeID == null) && (x.SlabFrom == null || x.SlabFrom <= pDAEstimatorOutPut.GRT)) ;
-                var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(pDAEstimatorOutPut.PortID, pDAEstimatorOutPut.ETA != null? (DateTime)pDAEstimatorOutPut.ETA: DateTime.Now.Date).Result.Where(x => (x.CallTypeID == pDAEstimatorOutPut.CallTypeID || x.CallTypeID == null) && (x.TerminalID == pDAEstimatorOutPut.TerminalID || x.TerminalID == null) && (x.BerthID == pDAEstimatorOutPut.BerthID || x.BerthID == null || x.BerthID == 0) && (x.CargoID == pDAEstimatorOutPut.CargoID || x.CargoID == null) && (x.VesselBallast == pDAEstimatorOutPut.VesselBallast || x.VesselBallast == 0)).OrderBy(o => o.ChargeCodeSequence).ThenBy(o => o.SlabFrom).ThenBy(o => o.TariffRateID);
+                var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(pDAEstimatorOutPut.PortID, pDAEstimatorOutPut.ETA != null ? (DateTime)pDAEstimatorOutPut.ETA : DateTime.Now.Date).Result.Where(x => (x.CallTypeID == pDAEstimatorOutPut.CallTypeID || x.CallTypeID == null) && (x.TerminalID == pDAEstimatorOutPut.TerminalID || x.TerminalID == null) && (x.BerthID == pDAEstimatorOutPut.BerthID || x.BerthID == null || x.BerthID == 0) && (x.CargoID == pDAEstimatorOutPut.CargoID || x.CargoID == null) && (x.VesselBallast == pDAEstimatorOutPut.VesselBallast || x.VesselBallast == 0)).OrderBy(o => o.ChargeCodeSequence).ThenBy(o => o.SlabFrom).ThenBy(o => o.TariffRateID);
                 List<PDATariffRateList> pDATariffRateList = new List<PDATariffRateList>();
                 decimal taxrate = 0;
                 foreach (var triff in triffdata)
@@ -1022,8 +1022,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                                         slabattributvalue = PDAEstimitor.AnchorageStay;
                                     else if (triff.SlabName == "QTYMT")
                                         slabattributvalue = PDAEstimitor.CargoQty;
-                                    UnitCalculation(triff, PDAEstimitor.GRT, (long)slabattributvalue);
 
+                                    UnitCalculation(triff, PDAEstimitor.GRT, (long)slabattributvalue);
                                     foreach (var formularTransList in formulatransdata)
                                     {
                                         if (formularTransList.formulaAttributeID > 0)
@@ -1211,6 +1211,11 @@ namespace PDA_Web.Areas.Admin.Controllers
                                 decimal amt = Convert.ToDecimal(amount);
                                 amt = Math.Abs(amt);
                                 amt = amt * triff.Rate;
+                                if (triff.Range_TariffID > 0)
+                                {
+                                    var data = await unitOfWork.TariffRates.GetByIdAsync(triff.Range_TariffID);
+                                    amt = amt + data.Rate;
+                                }
                                 triff.Amount = amt;
                             }
                             else
