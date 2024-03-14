@@ -290,6 +290,8 @@
                 $('#CombineTaxId').val("");
                 $('#FromDate').val("");
                 $('#ToDate').val("");
+                $('#CombineTax').prop("checked", false);
+                toggleDropdown();
             }
         }
 
@@ -342,9 +344,10 @@
                 data: taxs,
                 success: function (data) {
                     debugger;
+                    var CombTaxId = data.taxs.combineTaxId;
                     $('#TaxName').val(data.taxs.taxName);
                     $('#TaxRate').val(data.taxs.taxRate);
-                    $('#CombineTaxId').val(data.taxs.combineTaxID);
+                    $('#CombineTaxId').val(data.taxs.combineTaxId);
                     // $('#FromDate').val(data.taxs.fromDate);
                     // $('#ToDate').val(data.taxs.toDate);
                     var fromDate = new Date(data.taxs.fromDate);
@@ -353,11 +356,17 @@
                     var toDate = new Date(data.taxs.toDate);
                     var formattedtoDate = formatDate(toDate);
                     $('#ToDate').val(formattedtoDate);
+                    if (CombTaxId > 0)
+                    {
+                        $('#CombineTax').prop("checked", true);
+                        toggleDropdown();
+                    }
 
                 },
                 error: function () {
                 }
             });
+
         }
         function formatDate(date) {
 

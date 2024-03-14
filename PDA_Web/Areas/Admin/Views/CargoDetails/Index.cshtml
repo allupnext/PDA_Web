@@ -63,7 +63,7 @@
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                    <label for="PortName">Cargo Information</label>
+                                    <label for="exampleInputFile">Cargo Information</label>
                                         <div class="input-group">
                                             <div class="custom-file">
                                                 <input type="file" class="custom-file-input" id="exampleInputFile" onchange="uploadFiles('exampleInputFile');">
@@ -297,7 +297,7 @@
                     debugger;
                     $('#CargoType').val(data.cargoDetails.cargoTypeID);
                     $('#CargoName').val(data.cargoDetails.cargoName);
-
+                    $('#CargoFamily').val(data.cargoDetails.cargoFamilyID);
                 },
                 error: function () {
                 }
