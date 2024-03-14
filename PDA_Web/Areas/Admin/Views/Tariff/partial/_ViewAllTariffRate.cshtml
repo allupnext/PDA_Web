@@ -11,7 +11,9 @@
 <table class="table table-bordered  table-striped" id="TariffRateTable">
     <thead>
         <tr>
-
+             <th style="min-width:150px;">
+                Tariff ID
+            </th>
             <th style="min-width:150px;">
                 Terminal
             </th>
@@ -52,6 +54,11 @@
             <tr>
 
                 <td>
+                    @Html.DisplayFor(modelItem => item.TariffRateID)
+
+                </td>
+                <td>
+                   
                     @if (item.TerminalName == null || item.TerminalName == "")
                     {
                         <span>All</span>
