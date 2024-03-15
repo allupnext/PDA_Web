@@ -609,7 +609,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             return $"{_hostEnvironment.WebRootPath}\\companylogo\\{fileName}";
         }
 
-        public PDATariffRateList UnitCalculation(PDATariffRateList triff, long? attributvalue, long slabattributvalue)
+        public PDATariffRateList UnitCalculation(PDATariffRateList triff, long? attributvalue, long slabattributvalue, bool Range_Tariff = false)
         {
             decimal? units = 0;
 
@@ -638,8 +638,16 @@ namespace PDA_Web.Areas.Admin.Controllers
                 {
                     if (triff.SlabFrom <= slabattributvalue && (triff.SlabTo == 0 || triff.SlabTo >= slabattributvalue))
                     {
-                        units = slabattributvalue;
-                        units = Math.Abs(Convert.ToDecimal(units));
+                        if (Range_Tariff)
+                        {
+                            units = (slabattributvalue - triff.SlabFrom) + 1;
+                            units = Math.Abs(Convert.ToDecimal(units));
+                        }
+                        else
+                        {
+                            units = slabattributvalue;
+                            units = Math.Abs(Convert.ToDecimal(units));
+                        }
                         triff.NonIncreemental = true;
                     }
                     else
@@ -988,7 +996,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                         }
 
                         List<PDAEstimatorOutPutTariff> pDAEstimatorOutPutTariffs = new List<PDAEstimatorOutPutTariff>();
-                        var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(PDAEstimitor.PortID, PDAEstimitor.ETA != null ? (DateTime)PDAEstimitor.ETA : DateTime.Now.Date).Result.Where(x => (x.CallTypeID == PDAEstimitor.CallTypeID || x.CallTypeID == null) && (x.TerminalID == PDAEstimitor.TerminalID || x.TerminalID == null) && (x.BerthID == PDAEstimitor.BerthId || x.BerthID == null || x.BerthID == 0) && (x.CargoID == PDAEstimitor.CargoID || x.CargoID == null) && (x.VesselBallast == PDAEstimitor.VesselBallast || x.VesselBallast == 0)).OrderBy(o => o.ChargeCodeSequence).ThenBy(o => o.SlabFrom).ThenBy(o => o.TariffRateID);
+                        var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(PDAEstimitor.PortID, PDAEstimitor.ETA != null ? (DateTime)PDAEstimitor.ETA : DateTime.Now.Date).Result.Where(x => (x.CallTypeID == PDAEstimitor.CallTypeID || x.CallTypeID == null) && (x.TerminalID == PDAEstimitor.TerminalID || x.TerminalID == null) && (x.BerthID == PDAEstimitor.BerthId || x.BerthID == null || x.BerthID == 0) && (x.CargoID == PDAEstimitor.CargoID || x.CargoID == null) && (x.VesselBallast == PDAEstimitor.VesselBallast || x.VesselBallast == 0) && (x.Reduced_GRT == PDAEstimitor.IsReducedGRT || x.Reduced_GRT == 0)).OrderBy(o => o.ChargeCodeSequence).ThenBy(o => o.SlabFrom).ThenBy(o => o.TariffRateID);
                         List<PDATariffRateList> pDATariffRateList = new List<PDATariffRateList>();
                         decimal taxrate = 0;
                         foreach (var triff in triffdata)
@@ -1023,7 +1031,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                                     else if (triff.SlabName == "QTYMT")
                                         slabattributvalue = PDAEstimitor.CargoQty;
 
-                                    UnitCalculation(triff, PDAEstimitor.GRT, (long)slabattributvalue);
+                                    bool Range_Tariff = triff.Range_TariffID > 0 ? true : false;
+                                    UnitCalculation(triff, PDAEstimitor.GRT, (long)slabattributvalue, Range_Tariff);
                                     foreach (var formularTransList in formulatransdata)
                                     {
                                         if (formularTransList.formulaAttributeID > 0)
