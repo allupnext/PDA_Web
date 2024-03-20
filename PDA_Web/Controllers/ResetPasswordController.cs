@@ -23,10 +23,8 @@ namespace PDA_Web.Controllers
             return View();
         }
         public async Task<IActionResult> ForgotPasswordIndex(ResetPassword resetPassword)
-        {
-
-            
-            var ChekCustomer = unitOfWork.Customer.GetByIdAsync(resetPassword.userId).Result;
+        {            
+            var ChekCustomer = unitOfWork.CustomerUserMaster.GetByIdAsync(resetPassword.userId).Result;
             if (ChekCustomer != null && (ChekCustomer.Token != null || ChekCustomer.Token != "" || ChekCustomer.Token == resetPassword.Token))
             {
                 return View();
@@ -46,12 +44,26 @@ namespace PDA_Web.Controllers
             if (resetPassword != null)
             {
                 var ChekCustomer = unitOfWork.Customer.ChangePassword(resetPassword.Password, resetPassword.userId);
-                return View();
+
+                var data = new
+                {
+                    success = true,
+                    message =  1
+                };
+                return Json(data);
+
+            
             }
             else
             {
                 _toastNotification.AddWarningToastMessage("Password Can't Changed!!!");
-                return View();
+                var data = new
+                {
+                    success = true,
+                    message = 0
+                };
+                return Json(data);
+          
 
             }
 
@@ -59,15 +71,40 @@ namespace PDA_Web.Controllers
         }
 
 
+
         public async Task<IActionResult> ChangePasswordByCurrentPassword(ChangePasswordModel Data)
         {
             if(Data.CurrentPassword != null && Data.CurrentPassword != "") 
             {
-                var Currentuser = HttpContext.Session.GetString("CustID");
+                var Currentuser = HttpContext.Session.GetString("ID");
                 Data.userId = Convert.ToInt32(Currentuser);
                 var ChekUser = unitOfWork.Customer.AuthenticateById(Data.userId, Data.CurrentPassword);
-                var SetPassword = unitOfWork.Customer.ChangePassword(Data.NewPassword, Data.userId);
-                _toastNotification.AddSuccessToastMessage("PassWord Set Successfully..");
+
+                if (ChekUser.Result == 1)
+                {
+                    var SetPassword = unitOfWork.Customer.ChangePassword(Data.NewPassword, Data.userId);
+                    _toastNotification.AddSuccessToastMessage("PassWord Set Successfully..");
+                    var data = new
+                    {
+                        success = true,
+                        message = "Operation completed successfully!"
+                    };
+                    return Json(data);
+                }
+                else
+                {
+
+                    _toastNotification.AddWarningToastMessage("Password can't changed");
+                    var data = new
+                    {
+                        success = true,
+                        message = "Operation not completed successfully!"
+                    };
+                    return Json(data);
+                }
+
+
+
             }
 
 

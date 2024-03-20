@@ -239,7 +239,7 @@ namespace PDAEstimator_Infrastructure.Repositories
             }
 
         }
-        public async Task<string> AuthenticateById(int id, string Password)
+        public async Task<int> AuthenticateById(int id, string Password)
         {
             try
             {
@@ -253,8 +253,9 @@ namespace PDAEstimator_Infrastructure.Repositories
                     };
                     dynamicParameters.AddDynamicParams(args);
                     connection.Open();
-                    var result = await connection.QueryAsync("AuthenticateUserById", new { ID = id, UserPassword = Password });
-                    return result.ToString();
+                    var result = await connection.QuerySingleOrDefaultAsync<int>("AuthenticateUserById", new { ID = id, UserPassword = Password });
+                 
+                    return result;
                 }
             }
             catch (Exception ex) { throw ex; }

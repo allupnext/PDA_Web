@@ -25,7 +25,7 @@ namespace PDAEstimator_Application.Interfaces
         Task<User> CheckEmailExist(string email);
         Task<string> GenerateEmailConfirmationTokenAsync(string token, int id);
         Task<string> ChangePassword(string Password, long id);
-        Task<string> AuthenticateById(int id, string Password);
+        Task<int> AuthenticateById(int id, string Password);
 
 
     }

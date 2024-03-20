@@ -20,5 +20,7 @@ namespace PDAEstimator_Domain.Entities
         [DataType(DataType.Password)]
         [Compare("NewPassword", ErrorMessage = "NewPassword and ConfirmPassword must be Match")]
         public string ConfirmPassword { get; set; }
+
+        public int Changed { get; set; }
     }
 }

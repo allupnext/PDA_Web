@@ -27,6 +27,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             var User =  unitOfWork.User.GetByIdAsync(resetPassword.userId).Result;
             if (User != null && (User.Token != null || User.Token != "" || User.Token == resetPassword.Token))
             {
+
                 return View();
             }
             else
@@ -34,20 +35,31 @@ namespace PDA_Web.Areas.Admin.Controllers
                 _toastNotification.AddWarningToastMessage("Please Give valid Token...");
                 return View();
             }
-
-
         }
         public async Task<IActionResult> ChangePassword(ResetPassword resetPassword)
         {
             if (resetPassword != null)
             {
                 var ChekCustomer = unitOfWork.User.ChangePassword(resetPassword.Password, resetPassword.userId);
-                return RedirectToAction("Index", "AdminLogin", new { area = "Admin" });   
+                var data = new
+                {
+                    success = true,
+                    message = 1
+                };
+                return Json(data);
+                /*_toastNotification.AddSuccessToastMessage("Password New Password is Updated.");
+                return RedirectToAction("Index", "AdminLogin", new { area = "Admin" });*/
             }
             else
             {
                 _toastNotification.AddWarningToastMessage("Password Can't Changed!!!");
-                return View();
+                var data = new
+                {
+                    success = true,
+                    message = 0
+                };
+                return Json(data);
+              /*  return View();*/
             }
         }
 
@@ -68,7 +80,30 @@ namespace PDA_Web.Areas.Admin.Controllers
                 var Currentuserr = HttpContext.Session.GetString("UserID");
                 Data.userId = Convert.ToInt32(Currentuserr);
                 var ChekUser = unitOfWork.User.AuthenticateById(Data.userId, Data.CurrentPassword);
-                var SetPassword = unitOfWork.User.ChangePassword(Data.NewPassword, Data.userId);
+
+                if (ChekUser.Result == 1)
+                {
+                    var SetPassword = unitOfWork.User.ChangePassword(Data.NewPassword, Data.userId);
+                    _toastNotification.AddSuccessToastMessage("PassWord Set Successfully..");
+                    var data = new
+                    {
+                        success = true,
+                        message = "Operation completed successfully!"
+                    };
+                    return View(data);
+                }
+                else
+                {
+                    _toastNotification.AddWarningToastMessage("Password can't changed");
+                    var data = new
+                    {
+                        success = true,
+                        message = "Operation not completed successfully!"
+                    };
+                    return Json(data);
+                }
+                
+
             }
 
 

@@ -21,27 +21,27 @@ namespace PDAEstimator_Infrastructure.Repositories
             this.configuration = configuration;
         }
 
-        public async Task<Customer> Authenticate(string email, string password)
+        public async Task<CustomerUserMaster> Authenticate(string email, string password)
         {
-            var sql = "SELECT * FROM CustomerMaster where Email=@Email and Password=@Password";
+            var sql = "SELECT * FROM CustomerUserMaster where Email=@Email and Password=@Password";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
                 //var result = await connection.QueryAsync<User>(sql);
                 //return result.FirstOrDefault();
-                var customer = connection.Query<Customer>(sql, new { Email = email, password = password }).FirstOrDefault();
+                var customer = connection.Query<CustomerUserMaster>(sql, new { Email = email, password = password }).FirstOrDefault();
                 return customer;
             }
         }
-        public async Task<Customer> CheckEmailExist(string email)
+        public async Task<CustomerUserMaster> CheckEmailExist(string email)
         {
-            var sql = "SELECT * FROM CustomerMaster where Email=@Email";
+            var sql = "SELECT * FROM CustomerUserMaster where Email=@Email";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
                 //var result = await connection.QueryAsync<User>(sql);
                 //return result.FirstOrDefault();
-                var customer = connection.Query<Customer>(sql, new { Email = email}).FirstOrDefault();
+                var customer = connection.Query<CustomerUserMaster>(sql, new { Email = email}).FirstOrDefault();
                 return customer;
             }
         }
@@ -50,11 +50,12 @@ namespace PDAEstimator_Infrastructure.Repositories
         {
             try
             {
-                var sql = "update CustomerMaster set Token = @Token Where CustomerId = @CustomerId";
+                //var sql = "update CustomerMaster set Token = @Token Where CustomerId = @CustomerId";
+                var sql = "update CustomerUserMaster set Token = @Token Where ID = @ID";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
                     connection.Open();
-                    var result = await connection.ExecuteAsync(sql, new { Token = token, CustomerId = id });
+                    var result = await connection.ExecuteAsync(sql, new { Token = token, ID = id });
                     return result.ToString();
                     //return new string(token.ToString(),);
                 }
@@ -69,11 +70,12 @@ namespace PDAEstimator_Infrastructure.Repositories
         {
             try
             {
-                var sql = "update CustomerMaster set Password = @Password Where CustomerId = @CustomerId";
+                //var sql = "update CustomerMaster set Password = @Password Where CustomerId = @CustomerId";
+                var sql = "update CustomerUserMaster set Password = @Password Where ID = @ID";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
                     connection.Open();
-                    var result = await connection.ExecuteAsync(sql, new { Password = Password, CustomerId = id });
+                    var result = await connection.ExecuteAsync(sql, new { Password = Password, ID = id });
                     return result.ToString();
                 }
             }
@@ -83,7 +85,7 @@ namespace PDAEstimator_Infrastructure.Repositories
             }
 
         }
-        public async Task<string> AuthenticateById(int id, string Password )
+        public async Task<int> AuthenticateById(int id, string Password )
         {
             try
             {
@@ -92,13 +94,13 @@ namespace PDAEstimator_Infrastructure.Repositories
                     var dynamicParameters = new DynamicParameters();
                     var args = new Dictionary<string, object>()
                     {
-                        ["CustomerId"] = id,
+                        ["ID"] = id,
                         ["Password"] = Password
                     };
                     dynamicParameters.AddDynamicParams(args);
                     connection.Open();
-                    var result = await connection.QueryAsync("AuthenticateById", new { CustomerId = id, Password = Password });
-                    return result.ToString();
+                    var result = await connection.QuerySingleOrDefaultAsync<int>("AuthenticateById", new { ID = id, Password = Password });
+                    return result;
                 }
             }
             catch (Exception ex) { throw ex; }

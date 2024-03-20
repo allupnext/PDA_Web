@@ -6,6 +6,7 @@ using NToastNotify;
 using NuGet.Common;
 using PDAEstimator_Application.Interfaces;
 using PDAEstimator_Domain.Entities;
+using PDAEstimator_Infrastructure_Shared;
 using PDAEstimator_Infrastructure_Shared.Services;
 using System.Net;
 using System.Net.Mail;
@@ -32,10 +33,11 @@ namespace PDA_Web.Controllers
         {
             if (customerAuth != null)
             {
-                Customer isAuthenticated = await unitOfWork.Customer.Authenticate(customerAuth.Email, customerAuth.CustomerPassword);
+                CustomerUserMaster isAuthenticated = await unitOfWork.Customer.Authenticate(customerAuth.Email, customerAuth.CustomerPassword);
                 if (isAuthenticated != null)
                 {
                     HttpContext.Session.SetString("CustID", isAuthenticated.CustomerId.ToString());
+                    HttpContext.Session.SetString("ID", isAuthenticated.ID.ToString());
                     return RedirectToAction("Index", "Dashboard");
                 }
                 else
@@ -69,28 +71,23 @@ namespace PDA_Web.Controllers
                         }
 
                         string token = new string(randomString);
-                        await unitOfWork.Customer.GenerateEmailConfirmationTokenAsync(token, EmailExist.CustomerId);
+                        await unitOfWork.Customer.GenerateEmailConfirmationTokenAsync(token, EmailExist.ID);
 
 
                         var confirmationLink = Url.Action("ForgotPasswordIndex", "ResetPassword",
-                       new { userId = EmailExist.CustomerId, token = token }, Request.Scheme);
+                       new { userId = EmailExist.ID, token = token }, Request.Scheme);
                         _logger.Log(Microsoft.Extensions.Logging.LogLevel.Warning, confirmationLink);
-/*
-                        MailMessage mailMessage = new MailMessage();
-                        mailMessage.From = new MailAddress("sonikeval8511@gmail.com");
-                        mailMessage.To.Add(Email);
-                        mailMessage.Subject = "Test The Link";
-                        mailMessage.Body = "this is my mail body";
 
+                        List<string> recipients = new List<string>
+                    {
+                        Email
+                    };
+                        string Content = confirmationLink;
+                        string Subject = "To_ResetPassword_Link";
 
-                        SmtpClient smtpClient = new SmtpClient();
-                        smtpClient.Host = "h1d.f62.myftpupload.com";
-                        smtpClient.Port = 22;
-                        smtpClient.UseDefaultCredentials = false;
-                        smtpClient.Credentials = new System.Net.NetworkCredential("LTIxHJtGZI8cXv", "EJNnFJ6bVUza6r");
-                        smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
-                        smtpClient.EnableSsl = true;
-                        smtpClient.Send(mailMessage);*/
+                        var Msg = new Message(recipients, Subject, Content);
+            /*            _toastNotification.AddSuccessToastMessage("Email hase been sent to given Email Address");*/
+                        _emailSender.SendEmail(Msg);
 
 
                         return View();
@@ -120,5 +117,6 @@ namespace PDA_Web.Controllers
         {
             return View();
         }
+   
     }
 }
