@@ -33,7 +33,7 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>@Html.DisplayFor(modelItem => item.Salutation) @Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName) </td>
+                <td>@* @Html.DisplayFor(modelItem => item.Salutation) *@ @Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName) </td>
                 <td style="text-align:center">@Html.DisplayFor(modelItem => item.EmployCode)</td>
                 <td>@Html.DisplayFor(modelItem => item.EmailID)</td>
                 <td>@Html.DisplayFor(modelItem => item.UserPassword)</td>
