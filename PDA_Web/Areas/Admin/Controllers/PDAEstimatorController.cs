@@ -868,7 +868,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                 if (userdata.Ports != null && userdata.Ports != "")
                 {
                     List<int> PortIds = userdata.Ports.Split(',').Select(int.Parse).ToList();
-                    pDAEstimatorLists = await unitOfWork.PDAEstimitor.GetAlllistAsync();
+                    pDAEstimatorLists = await unitOfWork.PDAEstimitor.GetPDAEstiomatorListOfLast30Days();
                     pDAEstimatorLists = pDAEstimatorLists.Where(x => PortIds.Contains(x.PortID)).ToList();
 
                 }
