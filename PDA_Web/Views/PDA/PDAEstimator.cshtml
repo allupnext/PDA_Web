@@ -324,11 +324,18 @@
                                     }
                                     @if (chargecodeitem.UNITS != null)
                                     {
-                                        <li class="valuefont">@Convert.ToDecimal(chargecodeitem.UNITS).ToString("#,##0.##")</li>
+                                        if (chargecodeitem.UNITS == 0)
+                                        {
+                                            <li class="valuefont">-</li>
+                                        }
+                                        else
+                                        {
+                                            <li class="valuefont">@Convert.ToDecimal(chargecodeitem.UNITS).ToString("#,##0.##")</li>
+                                        }
                                     }
                                     else
                                     {
-                                        <li class="valuefont">0.00</li>
+                                        <li class="valuefont">-</li>
                                     }
                                     @if (@chargecodeitem.CurrencyID == Model.BaseCurrencyCodeID)
                                     {
@@ -765,9 +772,9 @@
                     width: 10%;
                 }
                 /*
-                                                                                                        ul.expense_items_row li:last-child {
-                                                                                                            color: #ff0000 !important;
-                                                                                                        }*/
+                                                                                                                ul.expense_items_row li:last-child {
+                                                                                                                    color: #ff0000 !important;
+                                                                                                                }*/
 
                 ul.expense_items_row li ul li {
                     border-top: 1px solid #fff;

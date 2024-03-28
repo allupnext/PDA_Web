@@ -1223,7 +1223,77 @@ namespace PDA_Web.Areas.Admin.Controllers
                                 if (triff.Range_TariffID > 0)
                                 {
                                     var data = await unitOfWork.TariffRates.GetByIdAsync(triff.Range_TariffID);
-                                    amt = amt + data.Rate;
+                                    var formulatransdata = await unitOfWork.FormulaTransaction.GetAllTransAsync((int)data.FormulaID);
+                                    string formulastringref = "";
+                                    foreach (var formularTransList in formulatransdata)
+                                    {
+                                        if (formularTransList.formulaAttributeID > 0)
+                                        {
+                                            string FormulaAttributedata = formularTransList.formulaAttributeName;
+                                            if (FormulaAttributedata.Contains("GRT"))
+                                            {
+                                                formulastringref = formulastringref != "" ? formulastringref + " " + PDAEstimitor.GRT.ToString() : PDAEstimitor.GRT.ToString();
+
+                                            }
+                                            else if (FormulaAttributedata.Contains("RGRT"))
+                                            {
+                                                formulastringref = formulastringref != "" ? formulastringref + " " + PDAEstimitor.RGRT.ToString() : PDAEstimitor.RGRT.ToString();
+                                            }
+                                            else if (FormulaAttributedata.Contains("NRT"))
+                                            {
+                                                formulastringref = formulastringref != "" ? formulastringref + " " + PDAEstimitor.NRT.ToString() : PDAEstimitor.NRT.ToString();
+
+                                            }
+                                            else if (FormulaAttributedata == "BSTH" || FormulaAttributedata == "BSTHF")
+                                            {
+                                                formulastringref = formulastringref != "" ? formulastringref + " " + PDAEstimitor.BerthStay.ToString() : PDAEstimitor.BerthStay.ToString();
+
+                                            }
+                                            else if (FormulaAttributedata == "BSTS" || FormulaAttributedata == "BSTSF")
+                                            {
+                                                formulastringref = formulastringref != "" ? formulastringref + " " + PDAEstimitor.BerthStayShift.ToString() : PDAEstimitor.BerthStayShift.ToString();
+                                            }
+                                            else if (FormulaAttributedata == "BSTD" || FormulaAttributedata == "BSTDF")
+                                            {
+                                                formulastringref = formulastringref != "" ? formulastringref + " " + PDAEstimitor.BerthStayDay.ToString() : PDAEstimitor.BerthStayDay.ToString();
+                                            }
+                                            else if (FormulaAttributedata.Contains("BSTHC"))
+                                            {
+                                                formulastringref = formulastringref != "" ? formulastringref + " " + PDAEstimitor.BerthStayHoursCoastal.ToString() : PDAEstimitor.BerthStayHoursCoastal.ToString();
+                                            }
+                                            else if (FormulaAttributedata.Contains("BSTSC"))
+                                            {
+                                                formulastringref = formulastringref != "" ? formulastringref + " " + PDAEstimitor.BerthStayShiftCoastal.ToString() : PDAEstimitor.BerthStayShiftCoastal.ToString();
+                                            }
+                                            else if (FormulaAttributedata.Contains("BSTDC"))
+                                            {
+                                                formulastringref = formulastringref != "" ? formulastringref + " " + PDAEstimitor.BerthStayDayCoastal.ToString() : PDAEstimitor.BerthStayDayCoastal.ToString();
+                                            }
+                                            else if (FormulaAttributedata.Contains("AST"))
+                                            {
+                                                formulastringref = formulastringref != "" ? formulastringref + " " + PDAEstimitor.AnchorageStay.ToString() : PDAEstimitor.AnchorageStay.ToString();
+                                            }
+                                            else if (FormulaAttributedata.Contains("QTYMT"))
+                                            {
+                                                formulastringref = formulastringref != "" ? formulastringref + " " + PDAEstimitor.CargoQty.ToString() : PDAEstimitor.CargoQty.ToString();
+                                            }
+                                            else
+                                            {
+                                                formulastringref = formulastringref != "" ? formulastringref + " " + formularTransList.formulaAttributeName : formularTransList.formulaAttributeName;
+                                            }
+                                        }
+                                        if (formularTransList.formulaSlabID > 0)
+                                            formulastringref = formulastringref != "" ? formulastringref + " " + formularTransList.formulaSlabName : formularTransList.formulaSlabName;
+                                        if (formularTransList.formulaOperatorID > 0)
+                                            formulastringref = formulastringref != "" ? formulastringref + " " + formularTransList.formulaOperatorName : formularTransList.formulaOperatorName;
+                                        if (formularTransList.formulaValue > 0)
+                                            formulastringref = formulastringref != "" ? formulastringref + " " + formularTransList.formulaValue : formularTransList.formulaValue.ToString();
+                                    }
+
+                                    var amountref = dt.Compute(formulastringref, "");
+                                    decimal amtref = Convert.ToDecimal(amountref);
+                                    amtref = amtref * data.Rate;
+                                    amt = amt + amtref;
                                 }
                                 triff.Amount = amt;
                             }

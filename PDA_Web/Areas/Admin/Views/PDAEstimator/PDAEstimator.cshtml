@@ -343,11 +343,19 @@
                                     }
                                     @if (chargecodeitem.UNITS != null)
                                     {
-                                        <li class="valuefont">@Convert.ToDecimal(chargecodeitem.UNITS).ToString("#,##0.##")</li>
+                                        if (chargecodeitem.UNITS == 0)
+                                        {
+                                            <li class="valuefont">-</li>
+                                        }
+                                        else
+                                        {
+                                            <li class="valuefont">@Convert.ToDecimal(chargecodeitem.UNITS).ToString("#,##0.##")</li>
+                                        }
+                                        //<li class="valuefont">@Convert.ToDecimal(chargecodeitem.UNITS).ToString("#,##0.##")</li>
                                     }
                                     else
                                     {
-                                        <li class="valuefont">0.00</li>
+                                        <li class="valuefont">-</li>
                                     }
                                     @if (@chargecodeitem.CurrencyID == Model.BaseCurrencyCodeID)
                                     {
