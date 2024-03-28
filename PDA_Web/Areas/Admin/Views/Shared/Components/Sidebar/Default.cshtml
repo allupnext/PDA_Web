@@ -46,7 +46,7 @@
                 @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "PDA Estimator" && x.UserRolePermission == "View").Count() > 0))
                 {
                     <li class="nav-item" >
-                        <a asp-area="Admin" asp-controller="PDAEstimator" asp-action="Index" class="nav-link" id="PDAMenu">
+                        <a href="/Admin/PDAEstimator/Index?param2=PDA" class="nav-link" id="PDAMenu">
                             <i class="nav-icon  fas fa-percent"></i>
                             <p>
                                 PDA Estimator
@@ -138,7 +138,13 @@
                 @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Reports" && x.UserRolePermission == "View").Count() > 0))
                 {
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                       @*  <a asp-area="Admin" asp-controller="PDAEstimator" asp-action="LoadAllReport" class="nav-link" id="PDAMenu">
+                            <i class="nav-icon fas fa-chart-pie"></i>
+                            <p>
+                                Reports
+                            </p>
+                        </a> *@
+                        <a href="/Admin/PDAEstimator/Index?param2=Report" class="nav-link" id="PDAMenu">
                             <i class="nav-icon fas fa-chart-pie"></i>
                             <p>
                                 Reports

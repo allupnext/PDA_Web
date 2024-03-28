@@ -341,7 +341,8 @@
                                 @Html.DropDownList("UserFilter", new SelectList(ViewBag.EmployeeCode, "ID", "EmployCode"), "Please select", new { @class = "form-control" })
                             </div>
                         </div>
-                        <div id="viewAll" class="table-responsive"></div>
+                        <div id="viewAll"  class="table-responsive"></div>
+                        <div id="ReportList" class="table-responsive"></div>
                     </div>
                 </div>
             </div>
@@ -891,8 +892,10 @@
         }
 
         function loadData() {
+            
             showLoader(this);
-
+            var t = @ViewBag.Report;
+          
             var Padestimator;
             debugger
             Padestimator = {
@@ -902,20 +905,39 @@
                 "CallTypeID": $('#CallTypeFilter').val(),
                 "CreatedBy": $('#UserFilter').val(),
             };
+            if (t == 1) {
+                $.ajax({
+                    type: "GET",
+                    url: "/Admin/PDAEstimator/LoadAllReport",
+                    data: Padestimator,
+                    dataType: "HTML",
+                    success: function (data) {
+                        $("#ReportList").html(data);
+                        $('.loading').hide();
+                    },
+                    error: function () {
+                        $('.loading').hide();
+                    }
+                });
+            }
+            else
+            {
+                $.ajax({
+                    type: "GET",
+                    url: "/Admin/PDAEstimator/LoadAll",
+                    data: Padestimator,
+                    dataType: "HTML",
+                    success: function (data) {
+                        $("#viewAll").html(data);
+                        $('.loading').hide();
+                    },
+                    error: function () {
+                        $('.loading').hide();
+                    }
+                });
+            }
 
-            $.ajax({
-                type: "GET",
-                url: "/Admin/PDAEstimator/LoadAll",
-                data: Padestimator,
-                dataType: "HTML",
-                success: function (data) {
-                    $("#viewAll").html(data);
-                    $('.loading').hide();
-                },
-                error: function () {
-                    $('.loading').hide();
-                }
-            });
+
         }
 
         //function ViewPDAEstimator(PDAEstimatorID) {

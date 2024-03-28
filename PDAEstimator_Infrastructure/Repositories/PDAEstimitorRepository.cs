@@ -156,6 +156,17 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         }
 
+        public async Task<List<PDAEstimatorList>> GetPDAEstiomatorListOfLast30Days()
+        {
+            var sql = "GetPDAEstiomatorListOfLast30Days";
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+            {
+                connection.Open();
+                var result = await connection.QueryAsync<PDAEstimatorList>(sql);
+                return new List<PDAEstimatorList>(result.ToList());
+            }
+        }
+
 
         public async Task<List<Notes>> GetNotes()
         {

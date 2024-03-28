@@ -8,7 +8,9 @@
 </style>
 <table class="table table-bordered table-striped" id="PDAEstimator">
     <thead>
-        
+        <tr>
+            <th>ReportList</th>
+        </tr>
         <tr>
             <th>
                 PDA ID
@@ -102,7 +104,7 @@
             <th>IsReducedGRT</th>
             <th>CreatedBy</th>
             <th>CreationDate</th>
-@*             <th>ModifyUserID</th>
+            @*             <th>ModifyUserID</th>
             <th>ModifyDate</th> *@
 
             <th style="min-width:200px"></th>
@@ -234,12 +236,12 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.CreationDate)
                 </td>
-@*                 <td>
-                    @Html.DisplayFor(modelItem => item.ModifyUser)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ModifyDate)
-                </td> *@
+                @*                 <td>
+            @Html.DisplayFor(modelItem => item.ModifyUser)
+            </td>
+            <td>
+            @Html.DisplayFor(modelItem => item.ModifyDate)
+            </td> *@
 
                 @{
 
@@ -311,7 +313,7 @@
             scrollX: true,
             scrollCollapse: true,
             scrollY: '400px',
-                fixedHeader: {
+            fixedHeader: {
                 header: true,
             },
             "responsive": false, "lengthChange": false, "autoWidth": false,

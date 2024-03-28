@@ -666,8 +666,16 @@ namespace PDA_Web.Areas.Admin.Controllers
             return triff;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string param2)
         {
+            if (param2 == "Report")
+            {
+                ViewBag.Report = 1;
+            }
+            if (param2 == "PDA")
+            {
+                ViewBag.Report = 0;
+            }
             var userid = HttpContext.Session.GetString("UserID");
             if (!string.IsNullOrEmpty(userid))
             {
@@ -833,6 +841,66 @@ namespace PDA_Web.Areas.Admin.Controllers
             }
             return PartialView("partial/_ViewAll", pDAEstimatorLists);
         }
+
+        public async Task<IActionResult> LoadAllReport (PDAEstimator pDAEstimator)
+        {
+
+            List<PDAEstimatorList> pDAEstimatorLists = new List<PDAEstimatorList>();
+            var userid = HttpContext.Session.GetString("UserID");
+
+            // Temp Solution START
+            var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
+            ViewBag.UserPermissionModel = UserPermissionModel;
+            var Currentuser = HttpContext.Session.GetString("UserID");
+
+            var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
+            ViewBag.UserRoleName = UserRole;
+            // Temp Solution END
+
+            var userdata = await unitOfWork.User.GetAllUsersById(Convert.ToInt64(userid));
+            var userwithRole = await unitOfWork.User.GetByIdAsync(Convert.ToInt64(userid));
+            if (userwithRole.RoleName == "Admin")
+            {
+                pDAEstimatorLists = await unitOfWork.PDAEstimitor.GetPDAEstiomatorListOfLast30Days();
+            }
+            else
+            {
+                if (userdata.Ports != null && userdata.Ports != "")
+                {
+                    List<int> PortIds = userdata.Ports.Split(',').Select(int.Parse).ToList();
+                    pDAEstimatorLists = await unitOfWork.PDAEstimitor.GetPDAEstiomatorListOfLast30Days();
+                    pDAEstimatorLists = pDAEstimatorLists.Where(x => PortIds.Contains(x.PortID)).ToList();
+
+                }
+            }
+
+            if (pDAEstimatorLists.Count() > 0)
+            {
+                if (pDAEstimator.CustomerID != null && pDAEstimator.CustomerID != 0)
+                {
+                    pDAEstimatorLists = pDAEstimatorLists.Where(x => x.CustomerID == pDAEstimator.CustomerID && x.PortID == pDAEstimator.PortID).ToList();
+                }
+                if (pDAEstimator.PortID != null && pDAEstimator.PortID != 0)
+                {
+                    pDAEstimatorLists = pDAEstimatorLists.Where(x => x.PortID == pDAEstimator.PortID).ToList();
+                }
+                if (pDAEstimator.TerminalID != null && pDAEstimator.TerminalID != 0)
+                {
+                    pDAEstimatorLists = pDAEstimatorLists.Where(x => x.TerminalID == pDAEstimator.TerminalID).ToList();
+                }
+                if (pDAEstimator.CallTypeID != null && pDAEstimator.CallTypeID != 0)
+                {
+                    pDAEstimatorLists = pDAEstimatorLists.Where(x => x.CallTypeID == pDAEstimator.CallTypeID).ToList();
+                }
+                if (pDAEstimator.CreatedBy != null && pDAEstimator.CreatedBy != "")
+                {
+                    pDAEstimatorLists = pDAEstimatorLists.Where(x => Convert.ToInt64(x.UserId) == Convert.ToInt64(pDAEstimator.CreatedBy)).ToList();
+
+                }
+            }
+            return PartialView("partial/_ReportList", pDAEstimatorLists);
+        }
+
 
         public IActionResult PortNameOnchange(PDAEstimator PDAEstimitor)
         {

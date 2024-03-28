@@ -14,6 +14,7 @@ namespace PDAEstimator_Application.Interfaces
         Task<List<PDATariffRateList>> GetAllPDA_Tariff(int portId, DateTime ETA);
         Task<List<Notes>> GetNotes();
         Task<Company_Customer_Mapping> GetbyCustIdasync(int id);
+        Task<List<PDAEstimatorList>> GetPDAEstiomatorListOfLast30Days();
 
     }
 }

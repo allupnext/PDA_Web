@@ -1,4 +1,5 @@
-﻿
+﻿@model IEnumerable<PDAEstimator_Domain.Entities.PDAEstimatorList>
+@using PDAEstimator_Domain.Entities;
 <section class="content">
     <div class="container-fluid">
         <!-- Small boxes (Stat box) -->
@@ -64,136 +65,87 @@
             </div>
             <!-- ./col -->
         </div>
-        <!-- /.row -->
-        <!-- Main row -->
-        <!-- /.row (main row) -->
-        <div class="row">
-            <!-- Left col -->
-            <section class="col-lg-7 connectedSortable">
-                <!-- Custom tabs (Charts with tabs)-->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">
-                            <i class="fas fa-chart-pie mr-1"></i>
-                            PDA Genrated based on Month wise on Graph
-                        </h3>
-                        <div class="card-tools">
-                            <ul class="nav nav-pills ml-auto">
-                                <li class="nav-item">
-                                    <a class="nav-link active" href="#revenue-chart" data-toggle="tab">Area</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div><!-- /.card-header -->
-                    <div class="card-body">
-                        <div class="tab-content p-0">
-                            <!-- Morris chart - Sales -->
-                            <div class="chart tab-pane active" id="revenue-chart"
-                                 style="position: relative; height: 300px;">
-                                <canvas id="myChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                            </div>
-                            <div class="chart tab-pane" id="sales-chart" style="position: relative; height: 300px;">
-                                <canvas id="sales-chart-canvas" height="300" style="height: 300px;"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
 
-
-            @*<div class="row">
-                <div id="sparkline-1"></div>
-                <div id="sparkline-2"></div>
-                <div id="sparkline-3"></div>
-            </div>*@
-
-        </div>
 
         <div class="row">
             <!-- Left col -->
-            <section class="col-lg-6 connectedSortable">
+            <section class="col-lg-12 connectedSortable">
                 <div class="card">
                     <div class="card-header border-transparent">
-                        <h3 class="card-title">Month wise Customer Register </h3>
+                        <h3 class="card-title"><b>Latest PDA</b></h3>
 
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                            <button type="button" class="btn btn-tool" data-card-widget="remove">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
+                        @*                         <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove">
+                        <i class="fas fa-times"></i>
+                        </button>
+                        </div> *@
                     </div>
+
+
                     <!-- /.card-header -->
                     <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table class="table m-0">
+                            <table class="table m-0" id="PDAEstimator">
                                 <thead>
                                     <tr>
-                                        <th>Order ID</th>
-                                        <th>Item</th>
-                                        <th>Status</th>
-                                        <th>Popularity</th>
+                                        <th>CustomerCompanyName</th>
+                                        <th>Port Name</th>
+                                        <th>Cargo Name</th>
+                                        <th>Cargo Qnty</th>
+                                        <th>Created By</th>
+                                        <th>Creation date</th>
+                                        <th> </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td><a href="pages/examples/invoice.html">OR9842</a></td>
-                                        <td>Call of Duty IV</td>
-                                        <td><span class="badge badge-success">Shipped</span></td>
-                                        <td>
-                                            <div class="sparkbar" data-color="#00a65a" data-height="20">90,80,90,-70,61,-83,63</div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="pages/examples/invoice.html">OR1848</a></td>
-                                        <td>Samsung Smart TV</td>
-                                        <td><span class="badge badge-warning">Pending</span></td>
-                                        <td>
-                                            <div class="sparkbar" data-color="#f39c12" data-height="20">90,80,-90,70,61,-83,68</div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                                        <td>iPhone 6 Plus</td>
-                                        <td><span class="badge badge-danger">Delivered</span></td>
-                                        <td>
-                                            <div class="sparkbar" data-color="#f56954" data-height="20">90,-80,90,70,-61,83,63</div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                                        <td>Samsung Smart TV</td>
-                                        <td><span class="badge badge-info">Processing</span></td>
-                                        <td>
-                                            <div class="sparkbar" data-color="#00c0ef" data-height="20">90,80,-90,70,-61,83,63</div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="pages/examples/invoice.html">OR1848</a></td>
-                                        <td>Samsung Smart TV</td>
-                                        <td><span class="badge badge-warning">Pending</span></td>
-                                        <td>
-                                            <div class="sparkbar" data-color="#f39c12" data-height="20">90,80,-90,70,61,-83,68</div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                                        <td>iPhone 6 Plus</td>
-                                        <td><span class="badge badge-danger">Delivered</span></td>
-                                        <td>
-                                            <div class="sparkbar" data-color="#f56954" data-height="20">90,-80,90,70,-61,83,63</div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="pages/examples/invoice.html">OR9842</a></td>
-                                        <td>Call of Duty IV</td>
-                                        <td><span class="badge badge-success">Shipped</span></td>
-                                        <td>
-                                            <div class="sparkbar" data-color="#00a65a" data-height="20">90,80,90,-70,61,-83,63</div>
-                                        </td>
-                                    </tr>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.CustomerCompanyName)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.PortName)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.CargoName)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.CargoQty)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.CreatedBy)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.CreationDate)
+                                            </td>
+                                            @if (ViewBag.UserPermissionModel != null)
+                                            {
+                                                List<UserPermissionRights> userPermissionRights = new List<UserPermissionRights>();
+                                                List<UserRoleName> userRoleName = new List<UserRoleName>();
+                                                userPermissionRights = ViewBag.UserPermissionModel;
+
+
+                                                userRoleName = ViewBag.UserRoleName;
+
+                                                <td min-width="230px">
+                                                    @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "PDA Estimator" && x.UserRolePermission == "ViewPDA").Count() > 0))
+                                                    { 
+                                                        <a class="btn btn-warning btn-sm" href="@Url.Action("PDAEstimatorDonwload", "PDAEstimator", new { id = @item.PDAEstimatorID})" target="_blank">
+                                                            <i class="fas fa-download"></i> Download
+                                                        </a>
+                                                        <a class="btn btn-success btn-sm" href="@Url.Action("PDAEstimator", "PDAEstimator", new { id = @item.PDAEstimatorID})" target="_blank">
+                                                            <i class="fas fa-eye"></i> View
+                                                        </a>
+                                                    }
+                                                </td>
+                                            }
+
+                                        </tr>
+                                    }
                                 </tbody>
                             </table>
                         </div>
@@ -201,44 +153,35 @@
                     </div>
                     <!-- /.card-body -->
                     <div class="card-footer clearfix">
-                        <a href="javascript:void(0)" class="btn btn-sm btn-info float-left">Place New Order</a>
-                        <a href="javascript:void(0)" class="btn btn-sm btn-secondary float-right">View All Orders</a>
+                        @*                         <a href="javascript:void(0)" class="btn btn-sm btn-info float-left">Place New Order</a>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-secondary float-right">View All Orders</a> *@
                     </div>
                     <!-- /.card-footer -->
                 </div>
 
             </section>
-            <section class="col-lg-6 connectedSortable">
-                <div class="card">
-                    <div class="card-header border-transparent">
-                        <h3 class="card-title">List of Pending Customer for Approval</h3>
-
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                            <button type="button" class="btn btn-tool" data-card-widget="remove">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <!-- /.card-header -->
-                    <div class="card-body p-0">
-                        <!-- /.table-responsive -->
-                    </div>
-                    <!-- /.card-body -->
-                    <div class="card-footer clearfix">
-                        <a href="javascript:void(0)" class="btn btn-sm btn-info float-left">Place New Order</a>
-                        <a href="javascript:void(0)" class="btn btn-sm btn-secondary float-right">View All Orders</a>
-                    </div>
-                    <!-- /.card-footer -->
-                </div>
-            </section>
+          
         </div>
     </div><!-- /.container-fluid -->
 </section>
 
-
+<!-- jQuery -->
+<script src="~/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/plugins/datatables/jquery.datatables.js"></script>
+<script src="~/plugins/datatables/jquery.datatables.min.js"></script>
+<script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="~/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="~/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="~/plugins/jszip/jszip.min.js"></script>
+<script src="~/plugins/pdfmake/pdfmake.min.js"></script>
+<script src="~/plugins/pdfmake/vfs_fonts.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 @section Scripts
     {
@@ -270,9 +213,30 @@
     </script>
     <script>
         $(document).ready(function () {
-          loadData();
+            loadData();
+            $("#PDAEstimator").DataTable({
+                order: [[0, 'desc']],
+                scrollX: true,
+                scrollCollapse: true,
+                scrollY: '400px',
+                fixedHeader: {
+                    header: true,
+                },
+                "responsive": false, "lengthChange": false, "autoWidth": false,
+                "buttons": [{
+                    extend: 'excel',
+                    text: 'Export Results',
+                    className: 'btn btn-default',
+                    exportOptions: {
+                        columns: 'th:not(:last-child)'
+                    }
+                }]
+            }).buttons().container().appendTo('#PDAEstimator_wrapper .col-md-6:eq(0)');
+
         });
         function loadData() {
+            var Padestimator;
+
             $.ajax({
                 type: "GET",
                 url: "/Admin/Home/LoadAll",
@@ -283,6 +247,20 @@
                 error: function () {
                 }
             });
+
+            // $.ajax({
+            //     type: "GET",
+            //     url: "/Admin/Home/LoadAll",
+            //     data: Padestimator,
+            //     dataType: "HTML",
+            //     success: function (data) {
+            //         $("#PDAEstimator").html(data);
+            //         $('.loading').hide();
+            //     },
+            //     error: function () {
+            //         $('.loading').hide();
+            //     }
+            // });
         }
 
     </script>
