@@ -802,14 +802,14 @@ namespace PDA_Web.Areas.Admin.Controllers
             var userwithRole = await unitOfWork.User.GetByIdAsync(Convert.ToInt64(userid));
             if (userwithRole.RoleName == "Admin")
             {
-                pDAEstimatorLists = await unitOfWork.PDAEstimitor.GetAlllistAsync();
+                pDAEstimatorLists = await unitOfWork.PDAEstimitor.GetPDAEstiomatorListOfLast30Days();
             }
             else
             {
                 if (userdata.Ports != null && userdata.Ports != "")
                 {
                     List<int> PortIds = userdata.Ports.Split(',').Select(int.Parse).ToList();
-                    pDAEstimatorLists = await unitOfWork.PDAEstimitor.GetAlllistAsync();
+                    pDAEstimatorLists = await unitOfWork.PDAEstimitor.GetPDAEstiomatorListOfLast30Days();
                     pDAEstimatorLists = pDAEstimatorLists.Where(x => PortIds.Contains(x.PortID)).ToList();
 
                 }
@@ -861,14 +861,14 @@ namespace PDA_Web.Areas.Admin.Controllers
             var userwithRole = await unitOfWork.User.GetByIdAsync(Convert.ToInt64(userid));
             if (userwithRole.RoleName == "Admin")
             {
-                pDAEstimatorLists = await unitOfWork.PDAEstimitor.GetPDAEstiomatorListOfLast30Days();
+                pDAEstimatorLists = await unitOfWork.PDAEstimitor.GetAlllistAsync();
             }
             else
             {
                 if (userdata.Ports != null && userdata.Ports != "")
                 {
                     List<int> PortIds = userdata.Ports.Split(',').Select(int.Parse).ToList();
-                    pDAEstimatorLists = await unitOfWork.PDAEstimitor.GetPDAEstiomatorListOfLast30Days();
+                    pDAEstimatorLists = await unitOfWork.PDAEstimitor.GetAlllistAsync();
                     pDAEstimatorLists = pDAEstimatorLists.Where(x => PortIds.Contains(x.PortID)).ToList();
 
                 }
@@ -1069,13 +1069,14 @@ namespace PDA_Web.Areas.Admin.Controllers
                         decimal taxrate = 0;
                         foreach (var triff in triffdata)
                         {
+                            long? slabattributvalue = 0;
                             if (triff.FormulaID != null && triff.FormulaID > 0)
                             {
                                 string formulastring = string.Empty;
                                 var formulatransdata = await unitOfWork.FormulaTransaction.GetAllTransAsync((int)triff.FormulaID);
                                 if (formulatransdata.Count > 0)
                                 {
-                                    long? slabattributvalue = 0;
+                                   
                                     if (triff.SlabName == "GRT")
                                         slabattributvalue = PDAEstimitor.GRT;
                                     else if (triff.SlabName == "RGRT")
@@ -1400,7 +1401,14 @@ namespace PDA_Web.Areas.Admin.Controllers
                             if (triff.NonIncreemental)
                             {
                                 PDAEstimatorOutPutTariff pDAEstimatorOutPutTariff = new PDAEstimatorOutPutTariff();
-                                pDAEstimatorOutPutTariff.UNITS = triff.UNITS != null ? (decimal)triff.UNITS : 0;
+                                if (triff.Range_TariffID > 0)
+                                {
+                                    pDAEstimatorOutPutTariff.UNITS = slabattributvalue != null? Convert.ToDecimal(slabattributvalue): 0;
+                                }
+                                else
+                                {
+                                    pDAEstimatorOutPutTariff.UNITS = triff.UNITS != null ? (decimal)triff.UNITS : 0;
+                                }
                                 pDAEstimatorOutPutTariff.Amount = triff.Amount;
                                 pDAEstimatorOutPutTariff.PDAEstimatorOutPutID = Convert.ToInt64(PDAEstimitorOUTPUTid);
                                 pDAEstimatorOutPutTariff.ExpenseCategoryID = triff.ExpenseCategoryID;
