@@ -15,7 +15,16 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>PDAEstimator</h1>
+                @if (ViewBag.Report == 0)
+                {
+                    <h1 id="PDAtxt">PDAEstimator</h1>
+                }
+                @if (ViewBag.Report == 1)
+                {
+                    <h1 id="Reporttxt">Report</h1>
+                }
+
+
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
@@ -35,7 +44,15 @@
 
                 <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Add PDAEstimator </h3>
+                        @if (ViewBag.Report == 0)
+                        {
+                            <h3 class="card-title">Add PDAEstimator </h3>
+                        }
+                        @if (ViewBag.Report == 1)
+                        {
+                            <h3 class="card-title">Add Report</h3>
+                        }
+
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                                 <i class="fas fa-minus"></i>
@@ -312,7 +329,15 @@
                 <!-- general form elements -->
                 <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">PDAEstimator List</h3>
+                        @if (ViewBag.Report == 0)
+                        {
+                            <h3 class="card-title" id="PDAtxt">PDAEstimator List</h3>
+                        }
+                        @if (ViewBag.Report == 1)
+                        {
+                            <h3 class="card-title" id="PDAtxt">Report List</h3>
+                        }
+
                     </div>
                     <div class="card-body">
                         <label for="">Filters:</label>
@@ -426,8 +451,20 @@
         $(document).ready(function () {
 
             //$("#").DataTable();
+          if (@ViewBag.Report == 0)
+          {
             loadData();
-            $('#PDAMenu').addClass('active');
+          }
+          if (@ViewBag.Report == 0)
+          {
+                $('#PDAMenu').addClass('active');
+          }
+          if (@ViewBag.Report == 1)
+          {
+                $('#ReportMenu').addClass('active');
+          }
+
+
             $('#CustomerFilter').change(function () {
                 debugger
                 loadData();

@@ -132,7 +132,7 @@
                 <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
             </div>
         </li> *@
-        <li class="nav-item dropdown user-profile">
+@*         <li class="nav-item dropdown user-profile">
             <a class="nav-link" data-toggle="dropdown" href="#" style="padding-top: 0px !important;">
                 <img src="/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
             </a>
@@ -146,7 +146,13 @@
 
             @*<div class="info">
                     <a href="#" class="d-block">Alexander Pierce</a>
-                </div>*@
+                </div>
+        </li> *@
+
+        <li class="nav-item ">
+            <form class="form-inline" asp-area="" asp-controller="login" asp-action="Logout">
+                <button type="submit" class="fas fa-sign-out-alt"><b> Logout</b></button>
+            </form>
         </li>
 
 
