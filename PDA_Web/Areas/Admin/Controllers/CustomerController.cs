@@ -2,7 +2,8 @@
 using NToastNotify;
 using PDAEstimator_Application.Interfaces;
 using PDAEstimator_Domain.Entities;
-using System.Diagnostics;
+using PDAEstimator_Infrastructure_Shared;
+using PDAEstimator_Infrastructure_Shared.Services;
 
 namespace PDA_Web.Areas.Admin.Controllers
 {
@@ -12,11 +13,12 @@ namespace PDA_Web.Areas.Admin.Controllers
 
         private readonly IUnitOfWork unitOfWork;
         private readonly IToastNotification _toastNotification;
-        public CustomerController(IUnitOfWork unitOfWork, IToastNotification toastNotification)
+        private readonly IEmailSender _emailSender;
+        public CustomerController(IUnitOfWork unitOfWork, IToastNotification toastNotification, IEmailSender emailSender)
         {
             this.unitOfWork = unitOfWork;
             _toastNotification = toastNotification;
-
+            _emailSender = emailSender;
         }
 
         public async Task<IActionResult> Index()
@@ -125,6 +127,18 @@ namespace PDA_Web.Areas.Admin.Controllers
                 else
                 {
                     var custId = await unitOfWork.CustomerUserMaster.AddAsync(customer);
+                    List<string> recipients = new List<string>
+                    {
+                       customer.Email
+                    };
+                    //string Content = "You are added in PDA Estimator and you can access our platform using below login credentials: </br> UserName :" + customer.Email + " User Password:" + customer.Password;
+                    string Content = "<html> <head>   <title>PDA Estimator Login Credentials</title> </head> <body>   <p>     You are added in PDA Estimator and you can access our platform using below login credentials:     <br/>     <b>UserName:</b> " +customer.Email + "     <br/>     <b>User Password:</b> " + customer.Password+ "   </p> </body> </html> ";
+                    string Subject = "Welcome to PDAEstimator";
+
+                    var Msg = new Message(recipients, Subject, Content);
+                    /*                   _toastNotification.AddSuccessToastMessage("Email hase been sent to given Email Address");*/
+                    _emailSender.SendEmail(Msg);
+
 
                     _toastNotification.AddSuccessToastMessage("Inserted successfully");
                 }
