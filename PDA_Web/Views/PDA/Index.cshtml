@@ -1,6 +1,8 @@
 ﻿@{
     ViewData["Title"] = "Index";
 }
+@using PDAEstimator_Domain.Entities;
+
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <link href="~/plugins/jquery-ui/jquery-ui.min.css" rel="stylesheet" />
 <link href="~/plugins/jquery-ui/jquery-ui.structure.min.css" rel="stylesheet" />
@@ -13,7 +15,16 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>PDAEstimator</h1>
+                @if (ViewBag.Report == 0)
+                {
+                    <h1 id="PDAtxt">PDAEstimator</h1>
+                }
+                @if (ViewBag.Report == 1)
+                {
+                    <h1 id="Reporttxt">Report</h1>
+                }
+
+
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
@@ -33,7 +44,15 @@
 
                 <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Add PDAEstimator </h3>
+                        @if (ViewBag.Report == 0)
+                        {
+                            <h3 class="card-title">Add PDAEstimator </h3>
+                        }
+                        @if (ViewBag.Report == 1)
+                        {
+                            <h3 class="card-title">Add Report</h3>
+                        }
+
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                                 <i class="fas fa-minus"></i>
@@ -44,7 +63,7 @@
                     <!-- form start -->
                     <div class="card-body">
                         <input type="hidden" id="PDAEstimatorId" name="PDAEstimatorId" value="">
-                      @*   <div class="row">
+                        @*<div class="row">
                             <div class="col-sm-2">
                                 <div class="form-group">
                                     <label for="Customer">Customer <span class="text-danger">*</span></label>
@@ -58,17 +77,13 @@
 
                                 </div>
                             </div>
-
-
-
-                        </div> *@
-
+                        </div>*@
 
                         <div class="row">
                             <div class="col-sm-2">
                                 <div class="form-group">
                                     <label for="PortName">Port<span class="text-danger">*</span></label>
-                                    @Html.DropDownList("PortName", new SelectList(ViewBag.Port, "ID", "PortName"), "Please Select", new { @class = "form-control" })
+                                    @Html.DropDownList("PortName", new SelectList(ViewBag.Port, "ID", "PortName"), "Please Select", new { @class = "form-control" , @onchange = "PortOnChangefunc()" })
                                 </div>
                             </div>
                             <div class="col-sm-2">
@@ -262,12 +277,46 @@
                                     }, new { @class = "form-control" })
                                 </div>
                             </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <div class="form-group">
+                                    <label for="ReducedGRT">Reduced GRT<span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="ReducedGRT" placeholder="Reduced GRT">
+
+                                </div>
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <div class="form-group">
+                                    <label for="IsReducedGRT">IsReduced GRT<span class="text-danger">*</span></label>
+                                    @Html.DropDownList("IsReducedGRT", new List<SelectListItem>
+                                    {
+                                    // new SelectListItem{ Text="Not-Applicable", Value = "0" },
+                                    new SelectListItem{ Text="No", Value = "1" },
+                                    new SelectListItem{ Text="Yes", Value = "2" },
+                                    }, new { @class = "form-control" })
+
+                                </div>
+                            </div>
                         </div>
                         <!-- /.card-body -->
                     </div>
-                    <div class="card-footer">
-                        <button class="btn btn-primary" onclick="PDAEstimatorSave()">Submit</button>
-                    </div>
+                    @if (ViewBag.UserPermissionModel != null)
+                    {
+                        List<UserPermissionRights> userPermissionRights = new List<UserPermissionRights>();
+                        List<UserRoleName> userRoleName = new List<UserRoleName>();
+                        userPermissionRights = ViewBag.UserPermissionModel;
+
+
+                        userRoleName = ViewBag.UserRoleName;
+                        @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "PDA Estimator" && x.UserRolePermission == "Edit").Count() > 0))
+                        {
+                            <div class="card-footer">
+                                <button class="btn btn-primary" onclick="PDAEstimatorSave()">Submit</button>
+                            </div>
+                        }
+                    }
+
+
+
                 </div>
             </div>
         </div>
@@ -276,16 +325,20 @@
                 <!-- general form elements -->
                 <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">PDAEstimator List</h3>
+                        @if (ViewBag.Report == 0)
+                        {
+                            <h3 class="card-title" id="PDAtxt">PDAEstimator List</h3>
+                        }
+                        @if (ViewBag.Report == 1)
+                        {
+                            <h3 class="card-title" id="PDAtxt">Report List</h3>
+                        }
+
                     </div>
                     <div class="card-body">
                         <label for="">Filters:</label>
                         <div class="row" style="padding-bottom: 10px;">
-                            <div class="col-sm-2">
-                                <label for="CustomerFilter">Customer <span class="text-danger">*</span></label>
-                                @Html.DropDownList("CustomerFilter", new SelectList(ViewBag.Customers, "CustomerId", "Company"), "Please select", new { @class = "form-control" })
-                                @*//@Html.DropDownList("CustomerFilter", new SelectList(ViewBag.Customers, "CustomerId", ""), "Please select")*@
-                            </div>
+                           
                             <div class="col-sm-2">
                                 <label for="PortName">Port<span class="text-danger">*</span></label>
                                 @Html.DropDownList("PortFilter", new SelectList(ViewBag.Port, "ID", "PortName"), "Please Select", new { @class = "form-control" })
@@ -300,14 +353,19 @@
                                 <label for="CallType">Call Type<span class="text-danger">*</span></label>
                                 @Html.DropDownList("CallTypeFilter", new SelectList(ViewBag.CallType, "ID", "CallTypeName"), "Please select", new { @class = "form-control" })
                             </div>
+                            <div class="col-sm-2">
+                                <label for="UserFilter">UserFilter<span class="text-danger">*</span></label>
+                                @Html.DropDownList("UserFilter", new SelectList(ViewBag.EmployeeCode, "ID", "EmployCode"), "Please select", new { @class = "form-control" })
+                            </div>
                         </div>
                         <div id="viewAll" class="table-responsive"></div>
+                        <div id="ReportList" class="table-responsive"></div>
                     </div>
                 </div>
             </div>
 
         </div>
-
+    </div>
 </section>
 
 
@@ -323,119 +381,140 @@
             });
         });
 
+        function berthstaycalculation() {
+            var cargoQty = parseFloat($("#CargoQty").val()) || 0;
+            var loadDischargeRate = parseFloat($("#LoadDischargeRate").val()) || 0;
+
+            var berthStayHrs = Math.ceil(((cargoQty / loadDischargeRate) * 24) + 4);
+            var berthStayDay = Math.ceil((cargoQty / loadDischargeRate));
+            var berthStayShift = Math.ceil((cargoQty / loadDischargeRate) * 3);
+
+
+            $("#BerthStayhourCoastal").val(berthStayHrs);
+            $("#BerthStayDayCoastal").val(berthStayDay);
+            $("#BerthStayShiftCoastal").val(berthStayShift);
+            if ($("#CallTypeName option:selected").text() == 'Foreign') {
+                $("#BerthStay").val(berthStayHrs);
+                $("#BerthStayDay").val(berthStayDay);
+                $("#BerthStayShift").val(berthStayShift);
+            }
+            if ($("#CallTypeName option:selected").text() == 'Coastal In Foreign Out' || $("#CallTypeName option:selected").text() == 'Foreign In Coastal Out') {
+                $("#BerthStay").val(6);
+                $("#BerthStayDay").val(1);
+                $("#BerthStayShift").val(1);
+            }
+        }
+
+        function calltypebasehideshowberthstay() {
+            console.log('calltypebasehideshowberthstay')
+            var calltype = $("#CallTypeName option:selected").text();
+            console.log(calltype)
+
+            if (calltype == 'Coastal') {
+                $("#BerthStayForeign").hide();
+
+                $("#BerthStayCoastal").show();
+            }
+            else if (calltype == 'Foreign') {
+                $("#BerthStayForeign").show();
+
+                $("#BerthStayCoastal").hide();
+            }
+            else if (calltype == 'Coastal In Foreign Out') {
+                $("#BerthStayForeign").show();
+
+                $("#BerthStayCoastal").show();
+
+                $("#BerthStay").val(6);
+                $("#BerthStayDay").val(1);
+                $("#BerthStayShift").val(1);
+            }
+            else if (calltype == 'Foreign In Coastal Out') {
+                $("#BerthStayForeign").show();
+
+                $("#BerthStayCoastal").show();
+
+                $("#BerthStay").val(6);
+                $("#BerthStayDay").val(1);
+                $("#BerthStayShift").val(1);
+            }
+        }
+
         $(document).ready(function () {
 
-            //$("#").DataTable();
             loadData();
             $('#PDAMenu').addClass('active');
+
+
             $('#CustomerFilter').change(function () {
-                debugger
                 loadData();
             });
             $('#PortFilter').change(function () {
-                debugger
                 loadData();
             });
             $('#TerminalFilter').change(function () {
-                debugger
                 loadData();
             });
             $('#CallTypeFilter').change(function () {
-                debugger
                 loadData();
             });
-            $("#CargoQty, #LoadDischargeRate").on("input", function () {
-                var cargoQty = parseFloat($("#CargoQty").val()) || 0;
-                var loadDischargeRate = parseFloat($("#LoadDischargeRate").val()) || 0;
-
-                var berthStayHrs = Math.ceil((cargoQty / loadDischargeRate * 24) + 4);
-                var berthStayDay = Math.ceil((cargoQty / loadDischargeRate));
-                var berthStayShift = Math.ceil((cargoQty / loadDischargeRate) * 3);
-
-
-                $("#BerthStayhourCoastal").val(berthStayHrs);
-                $("#BerthStayDayCoastal").val(berthStayDay);
-                $("#BerthStayShiftCoastal").val(berthStayShift);
-                if ($("#CallTypeName option:selected").text() == 'Foreign') {
-                    $("#BerthStay").val(berthStayHrs);
-                    $("#BerthStayDay").val(berthStayDay);
-                    $("#BerthStayShift").val(berthStayShift);
-                }
+            $('#UserFilter').change(function () {
+                loadData();
             });
+
+            $("#CargoQty, #LoadDischargeRate").on("input", function () {
+                berthstaycalculation();
+            });
+
 
             $('#Currency').val(@ViewBag.CurrencyDefault);
             callCurrencyfunc($('#Currency').val());
 
             $("#CallTypeName").change(function () {
-                var calltype = $("#CallTypeName option:selected").text();
-                if (calltype == 'Coastal') {
-                    $("#BerthStayForeign").hide();
-
-                    $("#BerthStayCoastal").show();
-                }
-                else if (calltype == 'Foreign') {
-                    $("#BerthStayForeign").show();
-
-                    $("#BerthStayCoastal").hide();
-                }
-                else if (calltype == 'Coastal In Foreign Out') {
-                    $("#BerthStayForeign").show();
-
-                    $("#BerthStayCoastal").show();
-
-                    $("#BerthStay").val(6);
-                    $("#BerthStayDay").val(1);
-                    $("#BerthStayShift").val(1);
-                }
-                else if (calltype == 'Foreign In Coastal Out') {
-                    $("#BerthStayForeign").show();
-
-                    $("#BerthStayCoastal").show();
-
-                    $("#BerthStay").val(6);
-                    $("#BerthStayDay").val(1);
-                    $("#BerthStayShift").val(1);
-                }
+                calltypebasehideshowberthstay();
             });
 
-            $("#PortName").change(function () {
-                var portid = $('option:selected', this).val();
-                var PDAEstimitor;
-                PDAEstimitor = {
-                    "PortID": portid,
-                    "TerminalID": $('#TerminalName').val(),
-                    "BerthID": $('#BerthName').val(),
-                    //"CargoID": $('#CargoName').val(),
-                }
-
-                $.ajax({
-
-                    type: "GET",
-                    url: "/PDA/PortNameOnchange",
-                    data: PDAEstimitor,
-                    dataType: "HTML",
-                    success: function (data) {
-
-                        $("#terminaldrop").html(data);
-                        $.ajax({
-                            type: "GET",
-                            url: "/PDA/CargoLoad",
-                            data: { selectedPortId: portid },
-                            dataType: "HTML",
-                            success: function (data) {
-                                $("#cargodrop").html(data);
-                            },
-                            error: function () {
-                            }
-                        });
-                    },
-                    error: function () {
-                    }
-                });
-            });
-
+            //$('#PDAEstimator').parent().parent().css("overflow", "scroll").css("height", "400px");
 
         });
+
+        function PortOnChangefunc() {
+            var portid = $('#PortName').val();
+            var PDAEstimitor;
+            PDAEstimitor = {
+                "PortID": portid,
+                "TerminalID": $('#TerminalName').val(),
+                "BerthID": $('#BerthName').val(),
+                //"CargoID": $('#CargoName').val(),
+            }
+
+            $.ajax({
+
+                type: "GET",
+                url: "/PDA/PortNameOnchange",
+                data: PDAEstimitor,
+                dataType: "HTML",
+                async: false,
+                success: function (data) {
+
+                    $("#terminaldrop").html(data);
+                    $.ajax({
+                        type: "GET",
+                        url: "/PDA/CargoLoad",
+                        data: { selectedPortId: portid },
+                        async: false,
+                        dataType: "HTML",
+                        success: function (data) {
+                            $("#cargodrop").html(data);
+                        },
+                        error: function () {
+                        }
+                    });
+                },
+                error: function () {
+                }
+            });
+        };
 
         function callChangefunc(val) {
             var portid = $('option:selected', this).val();
@@ -450,6 +529,7 @@
                 url: "/PDA/TerminalNameOnchange",
                 data: cargoHandled,
                 dataType: "HTML",
+                async: false,
                 success: function (data) {
 
                     $("#berthdrop").html(data);
@@ -492,6 +572,7 @@
                 }
             });
         }
+
         function clear() {
             $('#PDAEstimatorId').val("");
             $('#customerid').val("");
@@ -503,36 +584,36 @@
             $('#CallTypeName').val("");
             $('#CargoName').val("");
             $('#CargoQty').val("");
-            $('#CargoUnitofMasurement').val("");
+            $('#CargoUnitofMasurement').val("MT");
             $('#LoadDischargeRate').val("");
-            $('#Currency').val("");
-            $('#ROERate').val("");
             $('#DWT').val("");
             $('#GRT').val("");
+            $('#ROERate').val("");
+            $('#ReducedGRT').val("");
+            $('#IsReducedGRT').val(1);
+            $('#VesselBallast').val(1);
             $('#ArrivalDraft').val("");
+            $('#Currency').val("");
             $('#NRT').val("");
             $('#BerthStay').val("");
             $('#BerthStayDay').val("");
-            $('#AnchorageStay').val("");
+            $('#AnchorageStay').val("0");
             $('#LOA').val("");
             $('#Beam').val("");
             $('#ETA').val("");
             $('#Company').val("");
             $('#BerthStayShift').val("");
-            $('#VesselBallast').val("");
             $('#BerthStayhourCoastal').val("");
             $('#BerthStayDayCoastal').val("");
             $('#BerthStayShiftCoastal').val("");
 
         }
 
-
         function PDAEstimatorSave() {
             var PDAEstimitor;
-
             PDAEstimitor = {
                 "PDAEstimatorId": $('#PDAEstimatorId').val(),
-                "CustomerId": 0,
+                "CustomerId": $('#customerid').val(),
                 "VesselName": $('#VesselName').val(),
                 "PortID": $('#PortName').val(),
                 "ActivityTypeId": $('#PortActivityName').val(),
@@ -548,6 +629,7 @@
                 "DWT": $('#DWT').val(),
                 "ArrivalDraft": $('#ArrivalDraft').val(),
                 "GRT": $('#GRT').val(),
+                "RGRT": $('#ReducedGRT').val(),
                 "NRT": $('#NRT').val(),
                 "BerthStay": $("#CallTypeName option:selected").text() != 'Coastal' ? $('#BerthStay').val() : null,
                 "BerthStayDay": $("#CallTypeName option:selected").text() != 'Coastal' ? $('#BerthStayDay').val() : null,
@@ -559,6 +641,7 @@
                 "InternalCompanyID": $('#Company').val(),
                 "BerthStayShift": $("#CallTypeName option:selected").text() != 'Coastal' ? $('#BerthStayShift').val() : null,
                 "VesselBallast": $("#VesselBallast").val(),
+                "IsReducedGRT": $("#IsReducedGRT").val(),
                 "BerthStayHoursCoastal": $("#CallTypeName option:selected").text() != 'Foreign' ? $('#BerthStayhourCoastal').val() : null,
                 "BerthStayDayCoastal": $("#CallTypeName option:selected").text() != 'Foreign' ? $('#BerthStayDayCoastal').val() : null,
                 "BerthStayShiftCoastal": $("#CallTypeName option:selected").text() != 'Foreign' ? $('#BerthStayShiftCoastal').val() : null,
@@ -609,6 +692,10 @@
                 toastr.error("Please Enter GRT.", 'Error Alert');
                 $('#GRT').css("border-color", "Red");
             }
+            //else if ($('#ReducedGRT').val() == "") {
+            //    toastr.error("Please Enter Reduced GRT.", 'Error Alert');
+            //    $('#ReducedGRT').css("border-color", "Red");
+            //}
             else if ($('#NRT').val() == "") {
                 toastr.error("Please Enter NRT.", 'Error Alert');
                 $('#NRT').css("border-color", "Red");
@@ -626,37 +713,41 @@
                 $('#ETA').css("border-color", "Red");
             }
             else {
+                //showLoader(this);
                 $.ajax({
                     type: "POST",
                     url: "/PDA/PDAEstimitorSave",
                     data: PDAEstimitor,
                     success: function (data) {
                         if (!data.proceed) {
+                            //$('.loading').hide();
                             return;
                         }
                         else {
                             clear();
+                            //$('.loading').hide();
                             loadData();
+
+
                         }
 
                     },
                     error: function () {
+                        //$('.loading').hide();
                     }
                 });
             }
 
         }
 
-
-        function EditPDAEstimator(id) {
+        function EditPDAEstimator(id, para) {
             $(window).scrollTop(150);
             $('#PDAEstimatorId').val(id);
-
             var PDAEstimitor;
 
             PDAEstimitor = {
                 "PDAEstimatorId": $('#PDAEstimatorId').val(),
-                "CustomerId":0,
+                "CustomerId": $('#customerid').val(),
                 "VesselName": $('#VesselName').val(),
                 "PortID": $('#PortName').val(),
                 "ActivityTypeId": $('#PortActivityName').val(),
@@ -672,6 +763,7 @@
                 "DWT": $('#DWT').val(),
                 "ArrivalDraft": $('#ArrivalDraft').val(),
                 "GRT": $('#GRT').val(),
+                "RGRT": $('#ReducedGRT').val(),
                 "NRT": $('#NRT').val(),
                 "BerthStay": $('#BerthStay').val(),
                 "BerthStayDay": $('#BerthStayDay').val(),
@@ -690,8 +782,10 @@
                     $('#customerid').val(data.pdaEstimitor.customerID);
                     $('#VesselName').val(data.pdaEstimitor.vesselName);
                     $('#PortName').val(data.pdaEstimitor.portID);
+                    PortOnChangefunc();
                     $('#PortActivityName').val(data.pdaEstimitor.activityTypeId);
                     $('#TerminalName').val(data.pdaEstimitor.terminalID);
+                    callChangefunc();
                     debugger;
                     $('#BerthName').val(data.pdaEstimitor.berthId);
                     $('#CallTypeName').val(data.pdaEstimitor.callTypeID);
@@ -704,6 +798,7 @@
                     $('#DWT').val(data.pdaEstimitor.dwt);
                     $('#ArrivalDraft').val(data.pdaEstimitor.arrivalDraft);
                     $('#GRT').val(data.pdaEstimitor.grt);
+                    $('#ReducedGRT').val(data.pdaEstimitor.rgrt);
                     $('#NRT').val(data.pdaEstimitor.nrt);
                     $('#BerthStay').val(data.pdaEstimitor.berthStay);
                     $('#BerthStayDay').val(data.pdaEstimitor.berthStayDay);
@@ -717,11 +812,18 @@
                     $('#Company').val(data.pdaEstimitor.internalCompanyID);
                     $('#BerthStayShift').val(data.pdaEstimitor.berthStayShift);
                     $('#VesselBallast').val(data.pdaEstimitor.vesselBallast);
+                    $('#IsReducedGRT').val(data.pdaEstimitor.isReducedGRT);
+                    calltypebasehideshowberthstay();
+                    berthstaycalculation();
+                    if (para == "Copy") {
+                        $('#PDAEstimatorId').val(0);
+                    }
                 },
                 error: function () {
                 }
             });
         }
+
         function formatDate(date) {
             var day = date.getDate();
             var month = date.getMonth() + 1; //Months are zero-based
@@ -735,14 +837,13 @@
 
         }
 
-
         function deletePDAEstimator(id) {
 
             var PDAEstimitor;
 
             PDAEstimitor = {
                 "PDAEstimatorId": id,
-                "CustomerId": 0,
+                "CustomerId": $('#customerid').val(),
                 "VesselName": $('#VesselName').val(),
                 "PortName": $('#PortName').val(),
                 "PortActivityName": $('#PortActivityName').val(),
@@ -757,6 +858,7 @@
                 "DWT": $('#DWT').val(),
                 "ArrivalDraft": $('#ArrivalDraft').val(),
                 "GRT": $('#GRT').val(),
+                "RGRT": $('#ReducedGRT').val(),
                 "NRT": $('#NRT').val(),
                 "BerthStay": $('#BerthStay').val(),
                 "BerthStayDay": $('#BerthStayDay').val(),
@@ -779,31 +881,33 @@
 
         }
 
-        function pdaEstimatorRedirect() {
-            var customerId = $('#PDAEstimatorId').val()
+        //function pdaEstimatorRedirect() {
+        //    var customerId = $('#PDAEstimatorId').val()
 
-            var customerName = $('#customerid').val()
+        //    var customerName = $('#customerid').val()
 
-            $.ajax({
-                type: "POST",
-                url: "/PDA/PdaEstimatorRedirect" + customerId,
-                data: PDAEstimitor,
-                success: function (data) {
-                    if (!data.proceed) {
-                        return;
-                    }
-                    else {
-                        loadData();
-                    }
+        //    $.ajax({
+        //        type: "POST",
+        //        url: "/PDA/PdaEstimatorRedirect" + customerId,
+        //        data: PDAEstimitor,
+        //        success: function (data) {
+        //            if (!data.proceed) {
+        //                return;
+        //            }
+        //            else {
+        //                loadData();
+        //            }
 
-                },
-                error: function () {
-                }
-            });
-        }
-
+        //        },
+        //        error: function () {
+        //        }
+        //    });
+        //}
 
         function loadData() {
+
+            //showLoader(this);
+            
             var Padestimator;
             debugger
             Padestimator = {
@@ -811,6 +915,7 @@
                 "PortID": $('#PortFilter').val(),
                 "TerminalID": $('#TerminalFilter').val(),
                 "CallTypeID": $('#CallTypeFilter').val(),
+                "CreatedBy": $('#UserFilter').val(),
             };
 
             $.ajax({
@@ -820,28 +925,14 @@
                 dataType: "HTML",
                 success: function (data) {
                     $("#viewAll").html(data);
+                    //$('.loading').hide();
                 },
                 error: function () {
+                    //$('.loading').hide();
                 }
             });
+
         }
-
-
-                                //function ViewPDAEstimator(PDAEstimatorID) {
-                                //    alert('hi')
-                                //    $.ajax({
-                                //        url: "/PDA/PDA?id=" + PDAEstimatorID,
-                                //        dataType: "html",
-                                //        success: function (data) {
-                                //            var url = "https://jsonplaceholder.typicode.com/users/" + userId;
-                                //            window.open(url, "_blank");
-                                //        },
-                                //        error: function (error) {
-                                //            debugger;
-                                //            alert("Error:" + error);
-                                //        }
-                                //    })
-                                //}
 
     </script>
 }

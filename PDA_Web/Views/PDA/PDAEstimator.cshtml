@@ -4,45 +4,48 @@
     Layout = null;
 }
 <html lang="en">
-<head>
-    <title>Merchant Shipping Services </title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
-
-    <!-- css -->
-    <!-- Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&family=Roboto+Slab:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-</head>
-
-
 
 <body>
 
     <header>
+        <title>Merchant Shipping Services </title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico" />
+
+        <!-- css -->
+        <!-- Font -->
+        <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&family=Roboto+Slab:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
         <div class="logo_main">
             @*<div class="logo_img">
             <img src="/companylogo/@ViewBag.CompanyLogo"
             height="80" width="80" id="DownloadFile"
             asp-append-version="true">
             </div>*@
-            <div class="logo_name">
-                <img src="/companylogo/@Model.CompanyLogo"
-                     id="DownloadFile"
-                     asp-append-version="true">
-            </div>
+            @if (Model.CompanyLogoBase64 != "")
+            {
+                <div class="logo_name">
+                    <img src="@Model.CompanyLogoBase64"
+                         id="DownloadFile"
+                         asp-append-version="true" />
+                </div>
+            }
         </div>
         <div class="company_detail">
             <ul class="company_name_address">
                 <li class="valuefont">@Model.CompanyName</li>
-                <li class="valuefont">@Model.CompanyAddress1 <br>@Model.CompanyAddress2</li>
+                <li class="valuefont">@Model.CompanyAddress1 <br />@Model.CompanyAddress2</li>
             </ul>
 
             <ul class="company_contact">
-                <li class="lablebold">TEL: <a href="#" class="valuefont">@Model.CompanyTelephone </a></li>
-                <li class="lablebold">TEL: <a href="#" class="valuefont">@Model.CompanyAlterTel</a></li>
-                <li class="lablebold">EMAIL: <a href="#" class="valuefont">@Model.CompanyEmail</a> </li>
+                <li class="lablebold">TEL: @Model.CompanyTelephone </li>
+
+                @if (Model.CompanyAlterTel != null && Model.CompanyAlterTel != "")
+                {
+                    <li class="lablebold">TEL: @Model.CompanyAlterTel</li>
+                }
+                <li class="lablebold">EMAIL: @Model.CompanyEmail  </li>
             </ul>
         </div>
 
@@ -53,8 +56,8 @@
         <ul>
             <li class="lablebold"> OWNERS/OPERATORS/CUSTOMER</li>
             <li class="valuefont">@Model.FirstName.ToUpper()</li>
-            <li class="lablebold">DATE</li>
-            <li class="valuefont">@DateTime.Now.ToString("dd-MM-yyyy")</li>
+            <li class="lablebold">DATE/PDA REF. NO.</li>
+            <li class="valuefont">@DateTime.Now.ToString("dd-MM-yyyy") / @Model.PDAEstimatorID</li>
         </ul>
         <ul>
             <li class="lablebold">VESSEL</li>
@@ -138,8 +141,15 @@
             }
         </ul>
         <ul>
-            <li class="lablebold">GRT</li>
-            <li class="valuefont">@Model.GRT</li>
+            <li class="lablebold">GRT / RGRT</li>
+            @if (Model.RGRT != null)
+            {
+                <li class="valuefont">@Model.GRT / @Model.RGRT</li>
+            }
+            else
+            {
+                <li class="valuefont">@Model.GRT / - </li>
+            }
             <li class="lablebold">CARGO</li>
             @if (Model.CargoName == null)
             {
@@ -190,12 +200,12 @@
             }
             @if (Model.CallTypeName == "Foreign")
             {
-                <li class="lablebold">BERTH STAY Foreign (DAY/HOUR/SHIFT)</li>
+                <li class="lablebold">BERTH STAY FOREIGN (DAY/HOUR/SHIFT)</li>
                 <li class="valuefont">@Model.BerthStayDay/@Model.BerthStay/@Model.BerthStayShift</li>
             }
             else
             {
-                <li class="lablebold">BERTH STAY Coastal (DAY/HOUR/SHIFT)</li>
+                <li class="lablebold">BERTH STAY COASTAL (DAY/HOUR/SHIFT)</li>
                 <li class="valuefont">@Model.BerthStayDayCoastal/@Model.BerthStayHoursCoastal/@Model.BerthStayShiftCoastal</li>
             }
         </ul>
@@ -250,6 +260,15 @@
 
 
         </ul>
+        @if (Model.CallTypeName != null && (Model.CallTypeName.ToUpper() == "COASTAL IN FOREIGN OUT" || Model.CallTypeName.ToUpper() == "FOREIGN IN COASTAL OUT"))
+        {
+            <ul>
+                <li class="lablebold"> - </li>
+                <li class="valuefont"> - </li>
+                <li class="lablebold">BERTH STAY FOREIGN (DAY/HOUR/SHIFT)</li>
+                <li class="valuefont">@Model.BerthStayDay/@Model.BerthStay/@Model.BerthStayShift</li>
+            </ul>
+        }
     </section>
 
     <section class="expense_items">
@@ -293,7 +312,7 @@
                 foreach (var expitem in Model.Expenses.Where(x => Model.TariffRateList.Any(y => y.ExpenseCategoryID == x.ID)))
                 {
                     decimal gstbasevalue = 0, gstdefaultvalue = 0;
-                    decimal subtotalbaseamount = 0, subtotaldefaultamount = 0, subtotalbasewithgst = 0, subtotaldefaultwithgst = 0;
+                    decimal subtotalbaseamount = 0, subtotaldefaultamount = 0, GSTsubtotalbaseamount = 0, GSTsubtotaldefaultamount = 0, subtotalbasewithgst = 0, subtotaldefaultwithgst = 0;
                     var charcodecount = 1;
                     <div class="expenses_info">
                         <ul class="expenses_head">
@@ -332,6 +351,7 @@
                                         {
                                             <li class="valuefont">@Convert.ToDecimal(chargecodeitem.UNITS).ToString("#,##0.##")</li>
                                         }
+                                        //<li class="valuefont">@Convert.ToDecimal(chargecodeitem.UNITS).ToString("#,##0.##")</li>
                                     }
                                     else
                                     {
@@ -341,6 +361,8 @@
                                     {
                                         <li class="valuefont">₹ @chargecodeitem.Amount.ToString("#,##0.##")</li>
                                         subtotalbaseamount += chargecodeitem.Amount;
+                                        if (chargecodeitem.TaxID != null && chargecodeitem.TaxID > 0)
+                                            GSTsubtotalbaseamount += chargecodeitem.Amount;
                                     }
                                     else
                                     {
@@ -348,11 +370,15 @@
                                         amountconvtbase = @chargecodeitem.Amount * Model.ROE;
                                         <li class="valuefont">₹ @amountconvtbase.ToString("#,##0.##")</li>
                                         subtotalbaseamount += amountconvtbase;
+                                        if (chargecodeitem.TaxID != null && chargecodeitem.TaxID > 0)
+                                            GSTsubtotalbaseamount += amountconvtbase;
                                     }
                                     @if (@chargecodeitem.CurrencyID == Model.DefaultCurrencyCodeID)
                                     {
                                         <li class="valuefont">$ @chargecodeitem.Amount.ToString("#,##0.##")</li>
                                         subtotaldefaultamount += chargecodeitem.Amount;
+                                        if (chargecodeitem.TaxID != null && chargecodeitem.TaxID > 0)
+                                            GSTsubtotaldefaultamount += chargecodeitem.Amount;
                                     }
                                     else
                                     {
@@ -360,6 +386,9 @@
                                         amountconvtdefault = @chargecodeitem.Amount / Model.ROE;
                                         <li class="valuefont">$ @amountconvtdefault.ToString("#,##0.##")</li>
                                         subtotaldefaultamount += amountconvtdefault;
+                                        if (chargecodeitem.TaxID != null && chargecodeitem.TaxID > 0)
+                                            GSTsubtotaldefaultamount += amountconvtdefault;
+
                                     }
                                     @if (@chargecodeitem.Remark != null && @chargecodeitem.Remark != "")
                                     {
@@ -376,8 +405,8 @@
                                 charcodecount++;
                             }
                             @{
-                                gstbasevalue += (subtotalbaseamount * Model.Taxrate) / 100;
-                                gstdefaultvalue += (subtotaldefaultamount * Model.Taxrate) / 100;
+                                gstbasevalue += (GSTsubtotalbaseamount * Model.Taxrate) / 100;
+                                gstdefaultvalue += (GSTsubtotaldefaultamount * Model.Taxrate) / 100;
                             }
 
                             <ul>
@@ -464,10 +493,10 @@
     </section>
 
     <section class="bank_detail">
-        <ul>
+        <ul style="border-bottom: 0px solid rgba(0,0,0,0);">
 
-            <li><p style="font-size: 15px;">PARTICULARS</p></li>
-            <li><p style="font-size: 15px;">BANK DETAILS</p></li>
+            <li><p style="font-size: 14px;">PARTICULARS</p></li>
+            <li><p style="font-size: 14px;">BANK DETAILS</p></li>
         </ul>
         <ul>
             <li class="lablebold"><p>NAME OF BENEFICIARY</p> </li>
@@ -567,7 +596,12 @@
         </ul>
 
         <div class="agent">
-            <h3>@Model.CompanyName<br> (AS AGENTS ONLY)</h3>
+            <h3>@Model.CompanyName<br /> (AS AGENTS ONLY)</h3>
+            <h3>Disclaimer:</h3>
+            <p style="font-size:15px; font-weight:400">
+                Please note that this is a pro-forma disbursement account only. It is intended to be an estimate of the actual disbursement account and is for guidance purposes only. Whilst we, acting as agents only, does take every care to ensure that the figures and information contained in the pro-forma disbursement account are as accurate as possible, the actual disbursement account may, and often does, for various reasons beyond our control, vary from the pro-forma disbursement account. You are required and are liable to pay upon demand, the full amount described and shown in the actual disbursement account. This duty exists regardless of any difference between the figures in this pro-forma disbursement account and the actual disbursement account. For the avoidance of doubt, this pro-forma disbursement account is not a contractual document.
+                PDA has been calculated basis current port tariff and charges applicable as per the local rules, regulations and practices. As per your commercial agreement if any cost item is to be omitted or included in PDA the same should be notified before vessel arrival/berthing. Any Disagreement on the Proforma DA costs shall not be entertained after vessel Berthing/Sailing from port. The final port costs shall be supported by port invoices and shall be payable at actuals. This document is generated through our Web Application and does not require any signature manually to be valid.
+            </p>
         </div>
 
     </section>
@@ -584,7 +618,7 @@
             padding: 0px;
             background: #fff;
             color: #333;
-            font-size: 15px;
+            font-size: 14px;
             line-height: 24px;
             font-weight: 300;
             font-family: Calibri,'Roboto Slab', serif;
@@ -630,7 +664,7 @@
 
         p,
         li {
-            font-size: 15px;
+            font-size: 14px;
             line-height: 24px;
             /*font-weight: 400;*/
             color: #000;
@@ -712,7 +746,7 @@
                 padding: 15px 0;
                 text-decoration: underline;
                 font-weight: 600;
-                font-size: 24px;
+                font-size: 22px;
             }
 
             .port_disb_account ul {
@@ -732,7 +766,7 @@
             overflow: hidden;
             display: flex;
             align-items: center;
-            padding: 0px 15px;
+            padding: 0px 0px;
         }
 
             ul.expense_items_row li {
@@ -740,7 +774,7 @@
                 text-align: center;
                 position: relative;
                 height: 60px;
-                font-size: 15px;
+                font-size: 14px;
             }
 
                 ul.expense_items_row li::after {
@@ -760,7 +794,7 @@
 
                 ul.expense_items_row li:nth-child(2),
                 ul.expense_items_row li:nth-child(6) {
-                    width: 27%;
+                    width: 26%;
                 }
 
                 ul.expense_items_row li:nth-child(3),
@@ -772,9 +806,9 @@
                     width: 10%;
                 }
                 /*
-                                                                                                                ul.expense_items_row li:last-child {
-                                                                                                                    color: #ff0000 !important;
-                                                                                                                }*/
+                                                                                                                                                ul.expense_items_row li:last-child {
+                                                                                                                                                    color: #ff0000 !important;
+                                                                                                                                                }*/
 
                 ul.expense_items_row li ul li {
                     border-top: 1px solid #fff;
@@ -829,7 +863,7 @@
 
             .all_expenses ul {
                 overflow: hidden;
-                padding: 0 15px;
+                padding: 0 0px;
                 border-bottom: 1px solid rgba(0,0,0,0.2);
                 padding-bottom: 0px;
             }
@@ -838,6 +872,8 @@
                     float: left;
                     padding: 5px 0;
                     position: relative;
+                    text-align: center;
+                    /* min-height: 25px; */
                 }
 
                     .all_expenses ul li::after {
@@ -846,7 +882,7 @@
                         top: 0;
                         right: 0;
                         bottom: 0;
-                        height: 50px;
+                        height: 170px;
                         width: 1px;
                         background: rgba(0,0,0,0.5);
                     }
@@ -886,7 +922,7 @@
                     }
 
                     .all_expenses ul li:nth-child(8) {
-                        width: 25%;
+                        width: 26%;
                         text-align: center;
                     }
 
@@ -909,7 +945,7 @@
                     }
 
                     .all_expenses ul.sub_total li:nth-child(4) {
-                        width: 25%;
+                        width: 26%;
                     }
 
 
@@ -959,7 +995,7 @@
                     }
 
                     .grand_total ul li:nth-child(4) {
-                        width: 25%;
+                        width: 26%;
                     }
 
 
@@ -971,7 +1007,7 @@
 
             .notes h4 {
                 color: #000;
-                font-size: 15px;
+                font-size: 14px;
                 margin: 20px 0 10px 0;
             }
 
@@ -1005,8 +1041,7 @@
                         padding: 0 15px;
                     }
 
-                .bank_detail ul:nth-child(1) li,
-                .bank_detail ul:nth-child(2) li {
+                .bank_detail ul:nth-child(1) li {
                     background: #66a0cc;
                     font-weight: 600;
                     padding: 10px 0;
@@ -1023,5 +1058,8 @@
         }
     </style>
 
+    <script>
+
+    </script>
 </body>
 </html>

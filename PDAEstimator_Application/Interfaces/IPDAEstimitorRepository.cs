@@ -15,6 +15,7 @@ namespace PDAEstimator_Application.Interfaces
         Task<List<Notes>> GetNotes();
         Task<Company_Customer_Mapping> GetbyCustIdasync(int id);
         Task<List<PDAEstimatorList>> GetPDAEstiomatorListOfLast30Days();
+        Task<List<PDAEstimatorList>> GetAlllistByCustIdAsync(int CustomerID);
 
     }
 }
