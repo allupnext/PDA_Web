@@ -767,10 +767,19 @@ namespace PDA_Web.Controllers
 
         public async Task<IActionResult> LoadAll(PDAEstimator pDAEstimator)
         {
+            // Temp Solution START
+            var UserPermissionModel = await unitOfWork.Roles.GetUserPermissionRights();
+            ViewBag.UserPermissionModel = UserPermissionModel;
+            var Currentuser = HttpContext.Session.GetString("CustID");
+
+            var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
+            ViewBag.UserRoleName = UserRole;
+            // Temp Solution END
+
             List<PDAEstimatorList> pDAEstimatorLists = new List<PDAEstimatorList>();
             var custID = HttpContext.Session.GetString("CustID");
 
-            int customerID = string.IsNullOrEmpty(custID) ? Convert.ToInt32(custID) : 0;
+            int customerID = string.IsNullOrEmpty(custID) ? 0: Convert.ToInt32(custID);
             pDAEstimatorLists = await unitOfWork.PDAEstimitor.GetAlllistByCustIdAsync(customerID);
 
             if (pDAEstimatorLists.Count() > 0)
