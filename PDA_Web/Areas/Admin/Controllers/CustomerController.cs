@@ -132,11 +132,11 @@ namespace PDA_Web.Areas.Admin.Controllers
                        customer.Email
                     };
                     //string Content = "You are added in PDA Estimator and you can access our platform using below login credentials: </br> UserName :" + customer.Email + " User Password:" + customer.Password;
-                    string Content = "<html> <head>   <title>PDA Estimator Login Credentials</title> </head> <body>   <p>     You are added in PDA Estimator and you can access our platform using below login credentials:     <br/>     <b>UserName:</b> " +customer.Email + "     <br/>     <b>User Password:</b> " + customer.Password+ "   </p> </body> </html> ";
+                    string Content = "<html> <head>   <title>PDA Estimator Login Credentials</title> </head> <body>   <p> Dear User,<br>    Thanks for registering on the PDA portal.Your login details are as follows:     <br/>     <b>UserName:</b> " + customer.Email + "     <br/>     <b>User Password:</b> " + customer.Password+ " <br><br> <b>Regards <br> PDA Portal</b>  </p> </body> </html> ";
                     string Subject = "Welcome to PDAEstimator";
 
                     var Msg = new Message(recipients, Subject, Content);
-                    /*                   _toastNotification.AddSuccessToastMessage("Email hase been sent to given Email Address");*/
+
                     _emailSender.SendEmail(Msg);
 
 

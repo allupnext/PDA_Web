@@ -82,8 +82,8 @@ namespace PDA_Web.Controllers
                     {
                         Email
                     };
-                        string Content = confirmationLink;
-                        string Subject = "To_ResetPassword_Link";
+                        string Content = "<html> <body>   <p>Hello, <br> You recently requested to reset the password for your PDAEstimator account. Click the button below to proceed.    </p> <div> <a  href=" + confirmationLink + "> <button style='height:30px; margin-bottom:30px; font-size:14px;' type='button'> Reset Password </button> </a> </div> </body> </html> ";
+                        string Subject = "Reset Password";
 
                         var Msg = new Message(recipients, Subject, Content);
             /*            _toastNotification.AddSuccessToastMessage("Email hase been sent to given Email Address");*/
