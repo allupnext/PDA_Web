@@ -101,6 +101,14 @@ namespace PDA_Web.Areas.Admin.Controllers
         public async Task<ActionResult> CustomerUserSave(CustomerUserMaster customer)
         {
             var customerdata = await unitOfWork.CustomerUserMaster.GetAllAsync();
+
+            var corecustomerdata = await unitOfWork.Customer.GetByIdAsync(customer.CustomerId);
+
+            Int64 PrimaryCompanyId = Convert.ToInt64(corecustomerdata.PrimaryCompany);
+
+            var FromPrimaryCompany = await unitOfWork.Company.GetByIdAsync(PrimaryCompanyId);
+            var PrimaryCompnayName = FromPrimaryCompany.CompanyName;
+
             if (customer.ID > 0)
             {
                 var CMobileNumber = customerdata.Where(x => x.Mobile == customer.Mobile && x.ID != customer.ID).ToList();
@@ -134,11 +142,18 @@ namespace PDA_Web.Areas.Admin.Controllers
                     //string Content = "You are added in PDA Estimator and you can access our platform using below login credentials: </br> UserName :" + customer.Email + " User Password:" + customer.Password;
                     string Content = "<html> <head>   <title>PDA Estimator Login Credentials</title> </head> <body>   <p> Dear User,<br>    Thanks for registering on the PDA portal.Your login details are as follows:     <br/>     <b>UserName:</b> " + customer.Email + "     <br/>     <b>User Password:</b> " + customer.Password+ " <br><br> <b>Regards <br> PDA Portal</b>  </p> </body> </html> ";
                     string Subject = "Welcome to PDAEstimator";
-
-                    var Msg = new Message(recipients, Subject, Content);
+                    string FromCompany = "";
+                    if (PrimaryCompnayName == "Merchant Shipping Services Private Limited")
+                    {
+                        FromCompany = "FromMerchant";
+                    }
+                    if (PrimaryCompnayName == "Samsara Shipping Private Limited")
+                    {
+                        FromCompany = "FromSamsara";
+                    }
+                    var Msg = new Message(recipients, Subject, Content, FromCompany);
 
                     _emailSender.SendEmail(Msg);
-
 
                     _toastNotification.AddSuccessToastMessage("Inserted successfully");
                 }

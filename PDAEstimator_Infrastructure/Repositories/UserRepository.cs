@@ -59,7 +59,7 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<User> CheckEmailExist(string email)
         {
-            var sql = "SELECT * FROM UserMaster where EmailID= @EmailID";
+            var sql = "SELECT * FROM UserMaster where EmailID= @EmailID and IsDeleted = 0";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();

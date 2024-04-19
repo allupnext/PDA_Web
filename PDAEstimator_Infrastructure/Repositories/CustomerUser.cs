@@ -49,6 +49,18 @@ namespace PDAEstimator_Infrastructure.Repositories
                 return new List<CustomerUserMaster>(result.ToList());
             }
         }
+
+        public async Task<List<CustomerUserMaster>> GetCustomerUserByEmailAsync(string email)
+        {
+            var sql = "select * from CustomerUserMaster where Email = @Email and IsDeleted !=1";
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+            {
+                connection.Open();
+                var result = await connection.QueryAsync<CustomerUserMaster>(sql , new { Email = email } );
+                return new List<CustomerUserMaster>(result.ToList());
+            }
+        }
+
         public async Task<List<CustomerUserMaster>> GetByCustomerIdAsync(long id)
         {
             

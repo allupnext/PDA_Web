@@ -76,6 +76,7 @@ var emailConfig = builder.Configuration
         .Get<EmailConfiguration>();
 builder.Services.AddSingleton(emailConfig);
 
+
 builder.Services.AddMvc()
                .AddNToastNotifyNoty(new NotyOptions
                {

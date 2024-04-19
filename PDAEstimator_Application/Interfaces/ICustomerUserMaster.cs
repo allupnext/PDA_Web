@@ -11,5 +11,7 @@ namespace PDAEstimator_Application.Interfaces
     {
 
         Task<List<CustomerUserMaster>> GetByCustomerIdAsync(long id);
+
+        Task<List<CustomerUserMaster>> GetCustomerUserByEmailAsync(string email);
     }
 }

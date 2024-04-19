@@ -23,12 +23,33 @@ namespace PDAEstimator_Infrastructure_Shared.Services
 
         private MimeMessage CreateEmailMessage(Message message)
         {
-            var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress("email", _emailConfig.From));
-            emailMessage.To.AddRange(message.To);
-            emailMessage.Subject = message.Subject;
-            emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text) { Text = message.Content };
-            return emailMessage;
+            if (message.FromCompany == "FromSamsara")
+            {
+                var emailMessage = new MimeMessage();
+                emailMessage.From.Add(new MailboxAddress("email ", _emailConfig.FromSamsara));
+                emailMessage.To.AddRange(message.To);
+                emailMessage.Subject = message.Subject;
+                emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text) { Text = message.Content };
+                return emailMessage;
+            }
+            else if (message.FromCompany == "FromMerchant")
+            {
+                var emailMessage = new MimeMessage();
+                emailMessage.From.Add(new MailboxAddress("email ", _emailConfig.FromMerchant));
+                emailMessage.To.AddRange(message.To);
+                emailMessage.Subject = message.Subject;
+                emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text) { Text = message.Content };
+                return emailMessage;
+            }
+            else 
+            {
+                var emailMessage = new MimeMessage();
+                emailMessage.From.Add(new MailboxAddress("email ", _emailConfig.From));
+                emailMessage.To.AddRange(message.To);
+                emailMessage.Subject = message.Subject;
+                emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text) { Text = message.Content };
+                return emailMessage;
+            }
         }
 
         private void Send(MimeMessage mailMessage)

@@ -9,6 +9,8 @@ namespace PDAEstimator_Infrastructure_Shared
     public class EmailConfiguration
     {
         public string From { get; set; }
+        public string FromMerchant { get; set; }
+        public string FromSamsara { get; set; }
         public string SmtpServer { get; set; }
         public int Port { get; set; }
         public string UserName { get; set; }
