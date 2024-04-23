@@ -29,7 +29,10 @@ namespace PDAEstimator_Infrastructure_Shared.Services
                 emailMessage.From.Add(new MailboxAddress("email ", _emailConfig.FromSamsara));
                 emailMessage.To.AddRange(message.To);
                 emailMessage.Subject = message.Subject;
-                emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text) { Text = message.Content };
+                //var bodyBuilder = new BodyBuilder();
+                //bodyBuilder.HtmlBody = "<b>This is some html text</b>";
+                //bodyBuilder.TextBody = "This is some plain text";
+                emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = message.Content };
                 return emailMessage;
             }
             else if (message.FromCompany == "FromMerchant")
@@ -38,7 +41,7 @@ namespace PDAEstimator_Infrastructure_Shared.Services
                 emailMessage.From.Add(new MailboxAddress("email ", _emailConfig.FromMerchant));
                 emailMessage.To.AddRange(message.To);
                 emailMessage.Subject = message.Subject;
-                emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text) { Text = message.Content };
+                emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = message.Content };
                 return emailMessage;
             }
             else 
@@ -47,7 +50,7 @@ namespace PDAEstimator_Infrastructure_Shared.Services
                 emailMessage.From.Add(new MailboxAddress("email ", _emailConfig.From));
                 emailMessage.To.AddRange(message.To);
                 emailMessage.Subject = message.Subject;
-                emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text) { Text = message.Content };
+                emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = message.Content };
                 return emailMessage;
             }
         }

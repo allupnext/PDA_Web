@@ -72,9 +72,9 @@
             <th>
             @Html.DisplayNameFor(model => model.Bank_Code)
             </th>
-            <th style="max-width:140px">
+@*             <th style="max-width:140px">
                 @Html.DisplayNameFor(model => model.IsEmailNotification)
-            </th>
+            </th> *@
           
             <th style="width:35%"></th>
         </tr>
@@ -146,9 +146,9 @@
                 <td>
                     @Html.DisplayFor(modelItem => customer.Bank_Code)
                 </td>
-                <td>
+@*                 <td>
                     @Html.DisplayFor(modelItem => customer.IsEmailNotification)
-                </td>
+                </td> *@
                 @using PDAEstimator_Domain.Entities;
                 @if (ViewBag.UserPermissionModel != null)
                 {

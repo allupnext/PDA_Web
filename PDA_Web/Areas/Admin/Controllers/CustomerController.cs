@@ -241,7 +241,7 @@ namespace PDA_Web.Areas.Admin.Controllers
 
             if (customer.FirstName != null /*&& customer.FirstName != 0*/)
             {
-                customerdata = customerdata.Where(x => x.FirstName == customer.FirstName).ToList();
+                customerdata = customerdata.Where(x => x.FirstName.Contains(customer.FirstName)).ToList();
             }
             if (customer.Country != null && customer.Country != 0)
             {
@@ -249,11 +249,11 @@ namespace PDA_Web.Areas.Admin.Controllers
             }
             if (customer.Address1 != null /*&& customer.FirstName != 0*/)
             {
-                customerdata = customerdata.Where(x => x.Address1 == customer.Address1).ToList();
+                customerdata = customerdata.Where(x => x.Address1.Contains(customer.Address1)).ToList();
             }
             if (customer.Email != null /*&& customer.FirstName != 0*/)
             {
-                customerdata = customerdata.Where(x => x.Email == customer.Email).ToList();
+                customerdata = customerdata.Where(x => x.Email.Contains(customer.Email)).ToList();
             }
             if (customer.Company != null /*&& customer.FirstName != 0*/)
             {
@@ -280,7 +280,7 @@ namespace PDA_Web.Areas.Admin.Controllers
 
             if (customer.FirstName != null /*&& customer.FirstName != 0*/)
             {
-                customerdata = customerdata.Where(x => x.FirstName == customer.FirstName).ToList();
+                customerdata = customerdata.Where(x => x.FirstName.Contains(customer.FirstName)).ToList();
             }
             if (customer.Country != null && customer.Country != 0)
             {
@@ -288,15 +288,15 @@ namespace PDA_Web.Areas.Admin.Controllers
             }
             if (customer.Address1 != null /*&& customer.FirstName != 0*/)
             {
-                customerdata = customerdata.Where(x => x.Address1 == customer.Address1).ToList();
+                customerdata = customerdata.Where(x => x.Address1.Contains(customer.Address1)).ToList();
             }
             if (customer.Email != null /*&& customer.FirstName != 0*/)
             {
-                customerdata = customerdata.Where(x => x.Email == customer.Email).ToList();
+                customerdata = customerdata.Where(x => x.Email.Contains(customer.Email)).ToList();
             }
             if (customer.Company != null /*&& customer.FirstName != 0*/)
             {
-                customerdata = customerdata.Where(x => x.Company == customer.Company).ToList();
+                customerdata = customerdata.Where(x => x.Company.Contains(customer.Company)).ToList();
             }
             return PartialView("partial/_ViewAllCustomerUserDetails", customerdata);
 
