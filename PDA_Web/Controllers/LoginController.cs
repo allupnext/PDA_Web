@@ -62,7 +62,7 @@ namespace PDA_Web.Controllers
                     {
                         var CustomerUserData = await unitOfWork.CustomerUserMaster.GetCustomerUserByEmailAsync(Email);
 
-                        var CustomerId = CustomerUserData.Select(x => x.CustomerId).First();
+                        var CustomerId = CustomerUserData.Select(x => x.CustomerId).FirstOrDefault();
 
                         var corecustomerdata = await unitOfWork.Customer.GetByIdAsync(Convert.ToInt32(CustomerId));
 
