@@ -582,8 +582,11 @@
                 "Salutation": $('#Salutation').val(),
                 "FirstName": $('#FirstName').val(),
                 "LastName": $('#LastName').val(),
+                "SearchedName": $('#NameFilter').val(), 
                 "RoleID": $('#RoleFilter').val(),
-                "PrimaryCompanyId": $('#PrimaryCompanyFilter').val()
+                "PrimaryCompanyId": $('#PrimaryCompanyFilter').val(),
+                "PrimaryCompany": $('#PrimaryCompanyFilter').find("option:selected").text()
+
 
             }
             //$('#viewAll').load('/User/LoadAll');

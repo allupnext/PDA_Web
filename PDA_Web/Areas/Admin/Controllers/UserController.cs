@@ -72,6 +72,10 @@ namespace PDA_Web.Areas.Admin.Controllers
             var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
             ViewBag.UserRoleName = UserRole;
             // Temp Solution END
+            if (user.SearchedName != null && user.SearchedName != "")
+            {
+                data = data.Where(u => (u.Salutation + " " + u.FirstName + " " + u.LastName).Contains(user.SearchedName)).ToList();
+            }
 
             if (user.RoleId != null && user.RoleId != 0)
             {

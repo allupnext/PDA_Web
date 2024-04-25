@@ -102,14 +102,14 @@ namespace PDA_Web.Areas.Admin.Controllers
                     string Content = "<html> <body>   <p>Hello, <br> You recently requested to reset the password for your PDAEstimator account. Click the button below to proceed.    </p> <div> <a  href=" + confirmationLink + "> <button style='height:30px; margin-bottom:30px; font-size:14px;' type='button'> Reset Password </button> </a> </div> </body> </html> ";
                     string Subject = "Reset Password";
                     string FromCompany = "";
-                    if (PrimaryCompnayName == "Merchant Shipping Services Private Limited")
+                  /*  if (PrimaryCompnayName == "Merchant Shipping Services Private Limited")
                     {
                         FromCompany = "FromMerchant";
                     }
                     if (PrimaryCompnayName == "Samsara Shipping Private Limited")
                     {
                         FromCompany = "FromSamsara";
-                    }
+                    }*/
 
 
                     var Msg = new Message(recipients, Subject, Content, FromCompany);

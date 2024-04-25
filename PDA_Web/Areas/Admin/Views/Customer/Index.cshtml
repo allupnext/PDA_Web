@@ -38,32 +38,7 @@
                     <div class="card-body">
                         <input type="hidden" id="CustomerId" name="CustomerId" value="">
                         <div class="row">
-@*                             <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="Salutation">Salutation<span class="text-danger">*</span> </label>
-                                    <select class="form-control" id="Salutation">
-                                        <option value="">Please Select</option>
-                                        <option value="Mr">Mr</option>
-                                        <option value="Mrs">Mrs</option>
-                                        <option value="Ms">Ms</option>
-                                        <option value="Dr">Dr</option>
-                                        <option value="Captain">Captain</option>
-                                    </select>
-                                </div>
-                            </div>
                             <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="FirstName">First Name<span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="FirstName" placeholder="First Name">
-                                </div>
-                            </div>
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="LastName">Last Name<span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="LastName" placeholder="Last Name">
-                                </div>
-                            </div>
- *@                            <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="Company">Customer's Company<span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="_Company" placeholder="Company">
@@ -90,106 +65,6 @@
                                     </select>
                                 </div>
                             </div>
-
-                            <div class="col-sm-6">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="CustomerStatus">
-                                    <label class="form-check-label" for="CustomerStatus">Status</label>
-                                </div>
-
-                            </div>
-                        </div>
-
-
-@*                         <div class="row">
-                            <div class="col-sm-3">
-                                <label for="Designation">Designation<span class="text-danger">*</span></label>
-                                @Html.DropDownList("Designation", new SelectList(ViewBag.Designations, "DesignationId", "DesignationName"), "Please Select", new { @class = "form-control" })
-                            </div>
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="Address1">Address Line 1<span class="text-danger">*</span></label>
-                                    <textarea type="text" cols="2" rows="3" class="form-control" id="Address1" placeholder="Address Line 1"></textarea>
-                                </div>
-                            </div>
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="Address2">Address Line 2</label>
-                                    <textarea type="text" cols="2" rows="3" class="form-control" id="Address2" placeholder="Address Line 2"></textarea>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="Country">Country<span class="text-danger">*</span></label>
-                                    @Html.DropDownList("Country", new SelectList(ViewBag.Country, "ID", "CountryName"), "Please Select", new { @class = "form-control"})
-                                </div>
-                            </div>
-                        </div> *@
-@*                         <div class="row">
-                            <div class="col-sm-3">
-                                <div class="form-group" id="Countrydrop">
-                                <label for="State">State@* <span class="text-danger">*</span> *@@*</label>
-                                    @Html.DropDownList("State", new SelectList(ViewBag.State, "ID", "StateName"), "Please select", new { @class = "form-control", @onchange = "callChangefunc(this.value)" })
-                                </div>
-                            </div>
-                            <div class="col-sm-3">
-                                <div class="form-group" id="Statedrop">
-                                <label for="PortName">
-                                    City@* <span class="text-danger">*</span> *@@*</label>
-                                    @Html.DropDownList("City", new SelectList(ViewBag.City, "ID", "CityName"), "Please select", new { @class = "form-control" })
-
-                                </div>
-                            </div>
-                            <div class="col-sm-3">
-                                <div class="form-group">                                    
-                                    <label for="Mobile">Mobile Number<span class="text-danger">*</span></label>
-                                    <div class="row">
-                                        <div class="col-sm-2">
-                                            @Html.DropDownList("CountryCode",new SelectList(ViewBag.CountryCode,"CountryCode"), new { @class = "form-control", style= "width:80px; padding: 0px;"})
-                                        </div>
-                                        <div class="col-sm-7">
-                                            <input type="tel" class="form-control" id="Mobile" maxlength="11" placeholder="Mobile Number">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="Telephone">Telephone Number</label>
-                                    <div class="row">
-                                        <div class="col-sm-2">
-                                            @Html.DropDownList("AlterCountryCode",new SelectList(ViewBag.CountryCode), new { @class = "form-control", style= "width:80px; padding: 0px;"})
-                                        </div>
-                                        <div class="col-sm-7">
-                                            <input type="tel" class="form-control" id="Telephone" maxlength="11" placeholder="Telephone Number">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> *@
-
-@*                             <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="Email">Email<span class="text-danger">*</span></label>
-                                    <input type="email" class="form-control" id="Email" placeholder="Email" oninput="validateEmail(this.value)" onChange="validateEmail(this.value)">
-                                    <span id="emailError" style="color: red;"></span>
-                                </div>
-                            </div>
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="Email">Alternative Email</label>
-                                    <input type="email" class="form-control" id="AlternativeEmail" placeholder="Alternative Email">
-                                </div>
-                            </div>
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="Password">Password<span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="Password" placeholder="Password">
-                                </div>
-                            </div> *@
-
-                        <div class="row">
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="PrimaryCompany">Primary Company<span class="text-danger">*</span></label>
@@ -205,30 +80,31 @@
                                 </div>
 
                             </div>
+                 
+                        </div>
+
+
+
+
+                        <div class="row">
+           
                             <div class="col-sm-3">
-@*                                 <div class="form-group" id="BeneficiaryBank">
-                                    <label for="Bank">Banks<span class="text-danger">*</span></label>
-                                    @Html.DropDownList("Beneficiary", new SelectList(ViewBag.BankData, "BankId", "Beneficiary_Bank_Name"), "Please Select", new { @class = "form-control" })
-                                </div> *@
+
                                 <div class="form-group" id="BeneficiaryBank">
                                     <label for="Bank">Banks<span class="text-danger">*</span></label>
                                     @Html.DropDownList("Beneficiary", new SelectList(ViewBag.BankData, "BankId", "Bank_Code"), "Please Select", new { @class = "form-control" })
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6">
+
+                            <div class="col-sm-3">
                                 <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="EmailNotification">
-                                    <label class="form-check-label" for="EmailNotification">Email Notification</label>
+                                    <input type="checkbox" class="form-check-input" id="CustomerStatus">
+                                    <label class="form-check-label" for="CustomerStatus">Status</label>
                                 </div>
 
                             </div>
-
-
                         </div>
-
-                        <!-- /.card-body -->
+ 
                     </div>
 
                     @using PDAEstimator_Domain.Entities;
@@ -294,23 +170,8 @@
             var Customer;
             Customer = {
                 "CustomerId": $('#CustomerId').val(),
-                // "Salutation": $('#Salutation').val(),
-                // "FirstName": $('#FirstName').val(),
-                // "LastName": $('#LastName').val(),
-                // "Designation": $('#Designation').val(),
-                // "Address1": $('#Address1').val(),
-                // "Address2": $('#Address2').val(),
                 "Company": $('#_Company').val(),
-                // "City": $('#City').val(),
-                // "State": $('#State').val(),
-                // "Country": $('#Country').val(),
-                // "Email": $('#Email').val(),
-                // "Mobile": $('#Mobile').val(),
-                // "Password": $('#Password').val(),
                 "Status": $('#Status').val(),
-                // "CountryCode": $('#CountryCode').val(),
-                // "AlternativeEmail": $('#AlternativeEmail').val(),
-                // "Telephone": $('#Telephone').val(),
                 "IsEmailNotification": $("#EmailNotification").prop('checked'),
                 "PrimaryCompanyId": $('#PrimaryCompany').val(),
                 "SecondaryCompanyId": $('#SecondaryCompany').val(),
@@ -319,44 +180,11 @@
             }
 
             debugger
-            // if ($('#Salutation').val() == "") {
-            //     toastr.error("Please enter salutation.", 'Error Alert');
-            //     $('#Salutation').css("border-color", "Red");
-            // } else if ($('#FirstName').val() == "") {
-            //     toastr.error("Please enter first name.", 'Error Alert');
-            //     $('#FirstName').css("border-color", "Red");
-            // } else if ($('#LastName').val() == "") {
-            //     toastr.error("Please enter last name.", 'Error Alert');
-            //     $('#LastName').css("border-color", "Red");
-            // }
+ 
             if ($('#_Company').val() == "") {
                 toastr.error("Please enter customer's company.", 'Error Alert');
                 $('#_Company').css("border-color", "Red");
             }
-            // else if ($('#Designation').val() == "") {
-            //     toastr.error("Please enter designation.", 'Error Alert');
-            //     $('#Designation').css("border-color", "Red");
-            // } else if ($('#Address1').val() == "") {
-            //     toastr.error("Please enter address 1.", 'Error Alert');
-            //     $('#Address1').css("border-color", "Red");
-            // }
-            // else if ($('#City').val() == "") {
-            //     toastr.error("Please Select city.", 'Error Alert');
-            //     $('#City').css("border-color", "Red");
-            // }
-            // else if ($('#Country').val() == "") {
-            //     toastr.error("Please Select country.", 'Error Alert');
-            //     $('#Country').css("border-color", "Red");
-            // } else if ($('#Email').val() == "") {
-            //     toastr.error("Please enter email.", 'Error Alert');
-            //     $('#Email').css("border-color", "Red");
-            // } else if ($('#Mobile').val() == "") {
-            //     toastr.error("Please enter mobile number.", 'Error Alert');
-            //     $('#Mobile').css("border-color", "Red");
-            // } else if ($('#Password').val() == "") {
-            //     toastr.error("Please enter password.", 'Error Alert');
-            //     $('#Password').css("border-color", "Red");
-            // }
             else if ($('#Status').val() == "") {
                 toastr.error("Please Select Status.", 'Error Alert');
                 $('#Status').css("border-color", "Red");
