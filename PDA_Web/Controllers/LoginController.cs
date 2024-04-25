@@ -128,6 +128,11 @@ namespace PDA_Web.Controllers
            
          }
 
+/*        public async Task<ActionResult> Register()
+        {
+            return View();
+        }*/
+
 
         public async Task<ActionResult> Logout()
         {

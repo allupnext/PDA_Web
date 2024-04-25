@@ -49,24 +49,19 @@
                             </div>
                         </div>
                     </div>
+                    <hr />
                     <div class="row">
-                        <div class="col-8">
-                            <div class="icheck-primary">
-                                @*<input type="checkbox" id="remember">
-                                <label for="remember">
-                                Remember Me
-                                </label>*@
-                            </div>
-                        </div>
-                        <!-- /.col -->
                         <div class="col-8">
                             <a asp-controller="Login" asp-action="ForgotPassword">Reset Password!!!</a>
                         </div>
                         <div class="col-4">
                             <button type="submit" class="btn btn-primary btn-block">Sign In</button>
                         </div>
-                        <!-- /.col -->
+@*                         <div class="col-4">
+                            <a asp-controller="Login" asp-action="Register">Register</a>
+                        </div> *@
                     </div>
+                  
                 </form>
 
 
@@ -78,5 +73,7 @@
     <script src="~/dist/js/adminlte.min.js"></script>
     @*    @await Component.InvokeAsync("NToastNotify")
     *@
+
+    
 </body>
 </html>
