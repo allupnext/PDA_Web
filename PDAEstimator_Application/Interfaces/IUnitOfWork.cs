@@ -10,7 +10,7 @@ namespace PDAEstimator_Application.Interfaces
     {
         IPortDetailsRepository PortDetails { get; }
 
-      
+
         ITerminalDetailsRepository TerminalDetails { get; }
 
         ICargoDetailsRepository CargoDetails { get; }
@@ -30,7 +30,7 @@ namespace PDAEstimator_Application.Interfaces
         ICurrencyRepository Currencys { get; }
 
         IROERateRepository Rates { get; }
-        ICargoHandledRepsitory cargoHandled { get ; }
+        ICargoHandledRepsitory cargoHandled { get; }
         IExpenseRepository Expenses { get; }
         IUserRepository User { get; }
 
@@ -43,9 +43,9 @@ namespace PDAEstimator_Application.Interfaces
 
         IChargeCodeRepository ChargeCodes { get; }
 
-        ITariffMasterRepository TariffMasters { get;}
+        ITariffMasterRepository TariffMasters { get; }
 
-        ITariffRateRepository TariffRates{ get; }
+        ITariffRateRepository TariffRates { get; }
         ITariffSegment tariffSegment { get; }
 
         IFormulaAttributesRepository FormatAttribute { get; }
@@ -67,5 +67,6 @@ namespace PDAEstimator_Application.Interfaces
         IBankMasterRepository BankMaster { get; }
         ICustomerUserMaster CustomerUserMaster { get; }
 
+        IDisclaimersRepository Disclaimers { get; }
     }
 }

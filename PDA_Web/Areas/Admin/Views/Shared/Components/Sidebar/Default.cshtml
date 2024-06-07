@@ -378,6 +378,15 @@
                                 </a>
                             </li>
                         }
+                        @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Disclaimers" && x.UserRolePermission == "View").Count() > 0))
+                        {
+                            <li class="nav-item">
+                                <a asp-area="Admin" asp-controller="Disclaimers" asp-action="Index" class="nav-link" id="DisclaimersMenu">
+                                    <i class="far fa-circle11 nav-icon"></i>
+                                    <p>Disclaimers</p>
+                                </a>
+                            </li>
+                        }
 
                         @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Port Operation Type" && x.UserRolePermission == "View").Count() > 0))
                         {

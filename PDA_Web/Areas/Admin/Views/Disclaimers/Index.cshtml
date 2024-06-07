@@ -1,0 +1,260 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Disclaimers</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Disclaimer</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Add Disclaimers</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <div class="card-body">
+                        <input type="hidden" id="DisclaimerId" name="DisclaimerId" value="">
+                        <div class="row">
+
+                            <div class="col-sm-6">
+
+                                <div class="form-group">
+                                    <label for="PortName">Disclaimer<span class="text-danger">*</span></label>
+                                    <textarea id="editor">@Html.Raw("Hello world")</textarea>
+                                </div>
+                            </div>
+                         
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="isActive">
+                                    <label class="form-check-label" for="IsActive">Status</label>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                        <!-- /.card-body -->
+                    </div>
+
+                    @using PDAEstimator_Domain.Entities;
+                    @if (ViewBag.UserPermissionModel != null)
+                    {
+                        List<UserPermissionRights> userPermissionRights = new List<UserPermissionRights>();
+                        List<UserRoleName> userRoleName = new List<UserRoleName>();
+                        userPermissionRights = ViewBag.UserPermissionModel;
+                        userRoleName = ViewBag.UserRoleName;
+
+                        @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Disclaimers" && x.UserRolePermission == "Edit").Count() > 0))
+                        {
+                            <div class="card-footer">
+                                <button class="btn btn-primary" onclick="DisclaimerSave()">Submit</button>
+                            </div>
+                        }
+                    }
+
+
+
+
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Disclaimers List</h3>
+                    </div>
+                    <div id="viewAll" class="card-body table-responsive"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+<script>
+
+    ClassicEditor
+        .create(document.querySelector('#editor'), {
+            toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote'],
+            heading: {
+                options: [
+                    { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                    { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                    { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' }
+                ]
+            }
+        }).then(editor => {
+            console.log('Editor was initialized', editor);
+            myEditor = editor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+</script>
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            $('#MasterMenu').addClass('active');
+            $('#DisclaimersMenu').addClass('active');
+            $('#DisclaimersMenu').parent().closest('ul').parent().addClass('menu-open');
+            $('#isActive').prop("checked", true);
+            loadData();
+        });
+
+        function onNoteChange(val, inputVal) {
+            if (inputVal == 1) {
+                $('#DisclaimerName').css("border", "1px solid #ced4da");
+            }
+            else if (inputVal == 2) {
+                $('#sequnce').css("border", "1px solid #ced4da");
+            }
+        }
+
+        function DisclaimerSave() {
+
+            var Disclaimereditor = myEditor.getData();
+            var Status = false;
+            if ($('#isActive').is(":checked")) {
+                Status = true;
+            }
+            var Disclaimer;
+            debugger
+            Disclaimer = {
+                "ID": $('#DisclaimerId').val(),
+                "Disclaimer": Disclaimereditor,
+                "isActive": Status
+            }
+
+            if ($('#DisclaimerName').val() == "") {
+                toastr.error("Please enter Disclaimer.", 'Error Alert');
+                $('#DisclaimerName').css("border-color", "Red");
+            }
+           
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/Disclaimers/DisclaimerSave",
+                    data: Disclaimer,
+                    success: function (data) {
+                        if (!data.proceed) {
+                            return;
+                        }
+                        else {
+                            loadData();
+                        }
+                    },
+                    error: function () {
+                    }
+                });
+                $('#DisclaimerId').val("");
+                $('#DisclaimerName').val("");
+               
+            }
+        }
+
+        function deleteDisclaimer(id) {
+            debugger
+
+            var Disclaimers;
+
+            Disclaimers = {
+                "ID": id,
+                "Disclaimer": $('#DisclaimerName').val(),
+                "sequnce": $('#Sequence').val()
+
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Disclaimer/DisclaimerNote",
+                data: notes,
+                success: function (data) {
+                    loadData();
+                },
+                error: function () {
+                }
+            });
+
+        }
+
+        function editDisclaimer(id) {
+            //Id
+            $('#DisclaimerId').val(id);
+            debugger
+            var Disclaimer;
+
+            Disclaimer = {
+                "ID": $('#DisclaimerId').val(),
+                "Disclaimer": $('#DisclaimerName').val(),
+                "sequnce": $('#Sequence').val()
+
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Disclaimer/editDisclaimer",
+                data: Disclaimer,
+                success: function (data) {
+                    debugger;
+                    $('#DisclaimerName').val(data.Disclaimer.note);
+                    $('#Sequence').val(data.Disclaimer.sequnce);
+
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function loadData() {
+            //$('#viewAll').load('/Currency/LoadAll');
+            $.ajax({
+                type: "GET",
+                url: "/Admin/Disclaimer/LoadAll",
+                dataType: "HTML",
+                success: function (data) {
+                    $("#viewAll").html(data);
+                },
+                error: function () {
+                }
+            });
+        }
+
+    </script>
+
+}
