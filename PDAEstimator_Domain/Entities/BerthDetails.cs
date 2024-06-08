@@ -25,7 +25,9 @@ namespace PDAEstimator_Domain.Entities
         [DisplayName("Terminal")]
         public int? TerminalID { get; set; }
         public bool IsDeleted { get; set; }
-
+        public int? MaxLoa { get; set; }
+        public int? MaxBeam { get; set; }
+        public int? MaxArrivalDraft { get; set; }
         public string? TerminalName { get; set; }
 
     }

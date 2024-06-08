@@ -374,6 +374,24 @@
 
         </div>
     </div>
+
+    <div id="BerthDetailsModel" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document" style="max-width: 90% !important;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">Berth Details</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="BerthDetailsModelclose">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div id="BerthDetailsModelbody">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
 
@@ -540,9 +558,10 @@
             });
         };
 
-        function callChangefunc(val) {
-            var portid = $('option:selected', this).val();
+        function callChangefunc(val) {  
             debugger;
+            var portid = $('option:selected', this).val();
+
             var cargoHandled;
             cargoHandled = {
 
@@ -555,21 +574,41 @@
                 dataType: "HTML",
                 async: false,
                 success: function (data) {
-
+                    debugger;
                     $("#berthdrop").html(data);
-
+                    showBrethDetailPopUp();
+                    //$("#BerthDetailsModel").modal('show');
+                    //$("#BerthDetailsModel").find(".modal-body").html(data);
                 },
                 error: function () {
                 }
             });
         }
 
+        function showBrethDetailPopUp() {
+			debugger;
+			var cargoHandled;
+			cargoHandled = {
+				"TerminalID": $('#TerminalName').val()
+			}
+			$.ajax({
+				type: "GET",
+                url: "/Admin/PDAEstimator/OpenBerthDetailsPopUp",
+				data: cargoHandled,
+				dataType: "HTML",
+				success: function (data) {
+					$("#BerthDetailsModel").modal('show');
+					$("#BerthDetailsModel").find(".modal-body").html(data);
+				},
+				error: function () {
+				}
+			});
+		}
         function ViewPDAEstimator(id) {
 
         }
 
         function callCustomerfunc(id) {
-            debugger;
             $.ajax({
                 type: "GET",
                 url: "/Admin/PDAEstimator/CustomerOnchange?CustomerId=" + id,
@@ -711,6 +750,10 @@
             else if ($('#ROERate').val() == "") {
                 toastr.error("Please Enter ROERate.", 'Error Alert');
                 $('#ROERate').css("border-color", "Red");
+            }
+            else if ($('#ArrivalDraft').val() == "") {
+                toastr.error("Please Enter Arrival Draft.", 'Error Alert');
+                $('#ArrivalDraft').css("border-color", "Red");
             }
             else if ($('#GRT').val() == "") {
                 toastr.error("Please Enter GRT.", 'Error Alert');

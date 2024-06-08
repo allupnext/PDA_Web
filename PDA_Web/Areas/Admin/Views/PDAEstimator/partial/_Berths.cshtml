@@ -5,51 +5,51 @@
         <div class="col-md-12">
             <!-- general form elements -->
             @*<form>*@
-                <div class="card card-primary">
-                    <div class="card-header">
-                        <h3 class="card-title">Add Berth Details </h3>
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                        </div>
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Add Berth Details </h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
                     </div>
-                    <!-- /.card-header -->
-                    <!-- form start -->
-                    <div class="card-body">
-                        <input type="hidden" id="BerthId" name="BerthId" value="">
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="PortName">Port</label>
+                </div>
+                <!-- /.card-header -->
+                <!-- form start -->
+                <div class="card-body">
+                    <input type="hidden" id="BerthId" name="BerthId" value="">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="PortName">Port</label>
                                 @Html.DropDownList("BerthPort", new SelectList(ViewBag.Port, "ID", "PortName"), "Please select", new { @class="form-control" })
 
-                                </div>
                             </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="PortName">Terminal</label>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="PortName">Terminal</label>
                                 @Html.DropDownList("Terminal", new SelectList(ViewBag.Terminals, "ID", "TerminalName"), "Please select",new { @class="form-control" })
 
-                                </div>
                             </div>
-
                         </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="BerthCode">Berth Code</label>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="BerthCode">Berth Code</label>
                                 <input type="text" class="form-control" id="BerthCode" placeholder="Berth Code" onchange="onBerthChange(this.val,1)">
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-
-                                <div class="form-group">
-                                    <label for="BerthName">Berth Name</label>
-                                <input type="text" class="form-control" id="BerthName" placeholder="Berth Name" onchange="onBerthChange(this.val,2)">
-                                </div>
                             </div>
                         </div>
+                        <div class="col-sm-6">
+
+                            <div class="form-group">
+                                <label for="BerthName">Berth Name</label>
+                                <input type="text" class="form-control" id="BerthName" placeholder="Berth Name" onchange="onBerthChange(this.val,2)">
+                            </div>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
@@ -73,24 +73,24 @@
                             </div>
                         </div>
                     </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="BerthStatus">
-                                    <label class="form-check-label" for="BerthStatus">Status</label>
-                                </div>
-
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="BerthStatus">
+                                <label class="form-check-label" for="BerthStatus">Status</label>
                             </div>
 
-
                         </div>
-                        <!-- /.card-body -->
-                    </div>
-                    <div class="card-footer">
-                        <button class="btn btn-primary" onclick="BerthsdetailsSave()">Submit</button>
-                    </div>
 
+
+                    </div>
+                    <!-- /.card-body -->
                 </div>
+                <div class="card-footer">
+                    <button class="btn btn-primary" onclick="BerthsdetailsSave()">Submit</button>
+                </div>
+
+            </div>
             @*</form>*@
         </div>
     </div>

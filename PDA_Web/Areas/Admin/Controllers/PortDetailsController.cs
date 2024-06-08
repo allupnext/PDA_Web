@@ -265,6 +265,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             {
                 var berthName = data.Where(x => x.BerthName.ToUpper() == berthDetails.BerthName.ToUpper() && x.TerminalID == berthDetails.TerminalID && x.ID != berthDetails.ID).ToList();
                 var berthCode = data.Where(x => x.BerthCode.ToUpper() == berthDetails.BerthCode.ToUpper() && x.TerminalID == berthDetails.TerminalID && x.ID != berthDetails.ID).ToList();
+                var MaxLoa = data.Where(x => x.MaxLoa > berthDetails.MaxLoa).ToList();
                 if (berthName.Count > 0 && berthName != null)
                 {
                     _toastNotification.AddWarningToastMessage("BerthName already exist.");

@@ -322,7 +322,10 @@
                 "BerthCode": $('#BerthCode').val(),
                 "BerthName": $("#BerthName").val(),
                 "BerthStatus": Status,
-                "TerminalID": $('#Terminal').val()
+                "MaxLoa": $('#MaxLoa').val(),
+                "MaxBeam": $('#MaxBeam').val(),
+                "MaxArrivalDraft": $('#MaxArrivalDraft').val(),
+                "TerminalID": $('#Terminal').val(),
             }
 
             if ($('#BerthCode').val() == "") {
@@ -347,6 +350,7 @@
                     url: "/Admin/PortDetails/berthdetailsSave",
                     data: berthdetails,
                     success: function (data) {
+                        debugger
                         if (!data.proceed) {
                             return;
                         }
@@ -361,6 +365,9 @@
                 $('#BerthId').val("");
                 $('#BerthCode').val("");
                 $('#BerthName').val("");
+                $('#MaxLoa').val("");
+                $('#MaxBeam').val("");
+                $('#MaxArrivalDraft').val("");
                 $('#Terminal').val("");
             }
         }
@@ -644,6 +651,9 @@
                     $('#BerthCode').val(data.berthdetails.berthCode);
                     $('#BerthName').val(data.berthdetails.berthName);
                     //$('#Port').val(data.berthdetails.portID);
+                    $('#MaxLoa').val(data.berthdetails.maxLoa);
+                    $('#MaxBeam').val(data.berthdetails.maxBeam);
+                    $('#MaxArrivalDraft').val(data.berthdetails.maxArrivalDraft);
                     $('#Terminal').val(data.berthdetails.terminalID);
 
                 },
