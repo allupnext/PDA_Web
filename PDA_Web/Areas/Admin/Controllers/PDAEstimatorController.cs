@@ -916,11 +916,25 @@ namespace PDA_Web.Areas.Admin.Controllers
             ViewBag.Berth = BearthDetailData;
             return PartialView("partial/BerthList");
         }
-        public async Task<ActionResult> OpenBerthDetailsPopUp(PDAEstimator PDAEstimitor)
+
+        public IActionResult BerthNameOnchange(PDAEstimator PDAEstimitor)
+        {
+            var BearthDetailData =  unitOfWork.BerthDetails.GetByIdAsync(PDAEstimitor.BerthId).Result;
+            return Json(new
+            {
+                loa= BearthDetailData.MaxLoa,
+                beam = BearthDetailData.MaxBeam,
+                arrivalDraft = BearthDetailData.MaxArrivalDraft,
+                proceed = true,
+                msg = ""
+            });
+        }
+
+        public IActionResult OpenBerthDetailsPopUp(PDAEstimator PDAEstimitor)
         {
             var BearthDetailData = unitOfWork.BerthDetails.GetAllAsync().Result.Where(x => x.TerminalID == PDAEstimitor.TerminalID);
             var Terminals = PartialView("partial/_Berths", BearthDetailData);
-            return Terminals;
+            return PartialView("partial/_Berths", BearthDetailData);
         }
         public async Task<ActionResult> PDAEstimitorSave(PDAEstimator PDAEstimitor)
         {

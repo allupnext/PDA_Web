@@ -117,7 +117,7 @@
                             <div class="col-sm-2">
                                 <div class="form-group" id="berthdrop">
                                     <label for="PortName">Berth<span class="text-danger">*</span></label>
-                                    @Html.DropDownList("BerthName", new SelectList(ViewBag.Berth, "ID", "BerthName"), "Please Select", new { @class="form-control" })
+                                    @Html.DropDownList("BerthName", new SelectList(ViewBag.Berth, "ID", "BerthName"), "Please Select", new { @class = "form-control", @onchange = "BerthChangefunc(this.value)" })
                                 </div>
                             </div>
 
@@ -579,6 +579,33 @@
                     showBrethDetailPopUp();
                     //$("#BerthDetailsModel").modal('show');
                     //$("#BerthDetailsModel").find(".modal-body").html(data);
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function BerthChangefunc(val) {
+            debugger;
+            var portid = $('option:selected', this).val();
+
+            var cargoHandled;
+            cargoHandled = {
+                "BerthId": val,
+                "TerminalID": $('#TerminalName').val()
+            }
+            $.ajax({
+                type: "GET",
+                url: "/Admin/PDAEstimator/BerthNameOnchange",
+                data: cargoHandled,
+                dataType: "JSON",
+                async: false,
+                success: function (data) {
+                    debugger;
+                    $("#LOA").val(data.loa);
+                    $("#Beam").val(data.beam);
+                    $("#ArrivalDraft").val(data.arrivalDraft);
+                    
                 },
                 error: function () {
                 }

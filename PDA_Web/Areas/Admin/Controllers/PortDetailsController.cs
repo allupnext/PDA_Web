@@ -22,19 +22,19 @@ namespace PDA_Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> UploadFiles(IList<IFormFile> files)
+        public async Task<ActionResult> UploadFiles(IList<IFormFile> files, IList<string> filenames)
         {
             try
             {
                 string fileName = null;
-
+                int count = 0;
                 foreach (IFormFile source in files)
                 {
                     // Get original file name to get the extension from it.
                     string orgFileName = ContentDispositionHeaderValue.Parse(source.ContentDisposition).FileName;
 
                     // Create a new file name to avoid existing files on the server with the same names.
-                    fileName = DateTime.Now.ToFileTime() + Path.GetExtension(orgFileName);
+                    fileName = filenames[count].ToString();
 
                     string fullPath = GetFullPathOfFile(fileName.Replace("\"", ""));
 

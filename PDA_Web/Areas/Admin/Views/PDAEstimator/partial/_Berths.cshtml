@@ -4,115 +4,23 @@
     <div class="row">
         <div class="col-md-12">
             <!-- general form elements -->
-            @*<form>*@
             <div class="card card-primary">
-                <div class="card-header">
-                    <h3 class="card-title">Add Berth Details </h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                            <i class="fas fa-minus"></i>
-                        </button>
-                    </div>
-                </div>
-                <!-- /.card-header -->
-                <!-- form start -->
-                <div class="card-body">
-                    <input type="hidden" id="BerthId" name="BerthId" value="">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label for="PortName">Port</label>
-                                @Html.DropDownList("BerthPort", new SelectList(ViewBag.Port, "ID", "PortName"), "Please select", new { @class="form-control" })
-
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label for="PortName">Terminal</label>
-                                @Html.DropDownList("Terminal", new SelectList(ViewBag.Terminals, "ID", "TerminalName"), "Please select",new { @class="form-control" })
-
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label for="BerthCode">Berth Code</label>
-                                <input type="text" class="form-control" id="BerthCode" placeholder="Berth Code" onchange="onBerthChange(this.val,1)">
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-
-                            <div class="form-group">
-                                <label for="BerthName">Berth Name</label>
-                                <input type="text" class="form-control" id="BerthName" placeholder="Berth Name" onchange="onBerthChange(this.val,2)">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label for="MaxLoa">Max LOA</label>
-                                <input type="number" class="form-control" id="MaxLoa" placeholder="Max Loa">
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-
-                            <div class="form-group">
-                                <label for="MaxBeam">Max Beam</label>
-                                <input type="number" class="form-control" id="MaxBeam" placeholder="Max Beam">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label for="MaxArrivalDraft">Max Arrival Draft</label>
-                                <input type="text" class="form-control" id="MaxArrivalDraft" placeholder="Max Arrival Draft">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="BerthStatus">
-                                <label class="form-check-label" for="BerthStatus">Status</label>
-                            </div>
-
-                        </div>
-
-
-                    </div>
-                    <!-- /.card-body -->
-                </div>
-                <div class="card-footer">
-                    <button class="btn btn-primary" onclick="BerthsdetailsSave()">Submit</button>
-                </div>
-
-            </div>
-            @*</form>*@
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <!-- general form elements -->
-            <div class="card card-primary">
-                <div class="card-header">
+              @*   <div class="card-header">
                     <h3 class="card-title">Berth Details List</h3>
-                </div>
+                </div> *@
                 <div id="viewAllBerths" class="card-body table-responsive">
                     <table class="table table-bordered table-striped" id="BerthDetailsTable">
                         <thead>
                             <tr>
-                                <th>
+                               @*  <th>
                                     @Html.DisplayNameFor(model => model.TerminalName)
+                                </th> *@
+                               
+                                <th>
+                                    @Html.DisplayNameFor(model => model.BerthName)
                                 </th>
                                 <th>
                                     @Html.DisplayNameFor(model => model.BerthCode)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.BerthName)
                                 </th>
                                 <th>
                                     @Html.DisplayNameFor(model => model.MaxLoa)
@@ -123,11 +31,7 @@
                                 <th>
                                     @Html.DisplayNameFor(model => model.MaxArrivalDraft)
                                 </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.BerthStatus)
-                                </th>
 
-                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -136,25 +40,28 @@
                                 foreach (var item in Model)
                                 {
                                     <tr>
-                                        <td>
+                                       @*  <td>
                                             @Html.DisplayFor(modelItem => item.TerminalName)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.BerthCode)
-                                        </td>
+                                        </td> *@
+                                       
                                         <td>
                                             @Html.DisplayFor(modelItem => item.BerthName)
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.MaxLoa)
+
+                                            @Html.DisplayFor(modelItem => item.BerthCode)
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.MaxBeam)
+                                            @Html.DisplayFor(modelItem => item.MaxLoa)
+                                        </td>
+
+                                        <td>
+                                            @Html.DisplayFor(modelItem =>item.MaxBeam)
                                         </td>
                                         <td>
                                             @Html.DisplayFor(modelItem => item.MaxArrivalDraft)
                                         </td>
-                                        <td>
+                                        @* <td>
                                             @if (item.BerthStatus == true)
                                             {
                                                 <span class="badge badge-success">Active</span>
@@ -163,7 +70,7 @@
                                             {
                                                 <span class="badge badge-danger">In Active</span>
                                             }
-                                            @*@Html.DisplayFor(modelItem => item.BerthStatus)*@
+                                           
                                         </td>
                                         <td>
                                             <a class="btn btn-info btn-sm" onclick="editBerthDetails(@item.ID)">
@@ -176,7 +83,7 @@
                                                 </i>
                                                 Delete
                                             </a>
-                                        </td>
+                                        </td> *@
                                     </tr>
                                 }
 
@@ -208,27 +115,10 @@
 <script src="~/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="~/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 <script>
-    function onBerthChange(val, inputVal) {
-        if (inputVal == 1) {
-            $('#BerthCode').css("border", "1px solid #ced4da");
-        }
-        else if (inputVal == 2) {
-            $('#BerthName').css("border", "1px solid #ced4da");
-        }
-    }
+   
     $(function () {
         debugger;
-        $('#BerthStatus').prop("checked", true);
-        $('#BerthPort').val(@ViewBag.PortSelected);
-        if (@ViewBag.PortSelected != null) {
-            $('#BerthPort').prop('disabled', true);
-        }
-
-        //$('#Terminal').val(@ViewBag.TerminalSelected);
-        //if (@ViewBag.TerminalSelected != null) {
-        //    $('#Terminal').prop('disabled', true);
-        //}
-
+       
 
         $("#BerthDetailsTable").DataTable({
             "responsive": true, "lengthChange": false, "autoWidth": false,

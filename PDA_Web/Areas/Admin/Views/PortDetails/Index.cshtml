@@ -238,9 +238,10 @@
             var input = document.getElementById(inputId);
             var files = input.files;
             var formData = new FormData();
-
+            var filename = $("#PortName").val();
             for (var i = 0; i !== files.length; i++) {
                 formData.append("files", files[i]);
+                formData.append("filenames", filename);
             }
             $.ajax(
                 {
@@ -306,6 +307,7 @@
                 $('#TerminalId').val("");
                 $('#TerminalCode').val("");
                 $('#TerminalName').val("");
+                $("#exampleInputFileName").text("Choose file");
                 //$('#Port').val("");
             }
         }
@@ -369,6 +371,7 @@
                 $('#MaxBeam').val("");
                 $('#MaxArrivalDraft').val("");
                 $('#Terminal').val("");
+                // $("#exampleInputFileName").text("Choose file");
             }
         }
 
@@ -551,6 +554,7 @@
                 $('#State').val("");
                 $('#Country').val("");
                 $('#ResumeFileName').val("");
+                $("#exampleInputFileName").text("Choose file");
             }
         }
 
