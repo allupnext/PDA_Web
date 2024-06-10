@@ -71,6 +71,8 @@ namespace PDAEstimator_Domain.Entities
 
         public string? CreatedBy { get; set; }
         public DateTime? CreationDate { get; set; }
+        public DateTime? CreationFromDate { get; set; }
+        public DateTime? CreationToDate { get; set; }
         public string? ModifyUserID { get; set; }
         public DateTime? ModifyDate { get; set; }
 

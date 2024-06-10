@@ -670,11 +670,11 @@ namespace PDA_Web.Areas.Admin.Controllers
         {
             if (param2 == "Report")
             {
-                ViewBag.Report = 1;
+                ViewBag.Report = '1';
             }
             if (param2 == "PDA")
             {
-                ViewBag.Report = 0;
+                ViewBag.Report = '0';
             }
             var userid = HttpContext.Session.GetString("UserID");
             if (!string.IsNullOrEmpty(userid))
@@ -819,7 +819,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             {
                 if (pDAEstimator.CustomerID != null && pDAEstimator.CustomerID != 0)
                 {
-                    pDAEstimatorLists = pDAEstimatorLists.Where(x => x.CustomerID == pDAEstimator.CustomerID && x.PortID == pDAEstimator.PortID).ToList();
+                    pDAEstimatorLists = pDAEstimatorLists.Where(x => x.CustomerID == pDAEstimator.CustomerID).ToList();
                 }
                 if (pDAEstimator.PortID != null && pDAEstimator.PortID != 0)
                 {
@@ -878,25 +878,38 @@ namespace PDA_Web.Areas.Admin.Controllers
             {
                 if (pDAEstimator.CustomerID != null && pDAEstimator.CustomerID != 0)
                 {
-                    pDAEstimatorLists = pDAEstimatorLists.Where(x => x.CustomerID == pDAEstimator.CustomerID && x.PortID == pDAEstimator.PortID).ToList();
+                    pDAEstimatorLists = pDAEstimatorLists.Where(x => x.CustomerID == pDAEstimator.CustomerID).ToList();
                 }
                 if (pDAEstimator.PortID != null && pDAEstimator.PortID != 0)
                 {
                     pDAEstimatorLists = pDAEstimatorLists.Where(x => x.PortID == pDAEstimator.PortID).ToList();
                 }
-                if (pDAEstimator.TerminalID != null && pDAEstimator.TerminalID != 0)
+                if (pDAEstimator.CargoID != null && pDAEstimator.CargoID != 0)
                 {
-                    pDAEstimatorLists = pDAEstimatorLists.Where(x => x.TerminalID == pDAEstimator.TerminalID).ToList();
+                    pDAEstimatorLists = pDAEstimatorLists.Where(x => x.CargoID == pDAEstimator.CargoID).ToList();
                 }
-                if (pDAEstimator.CallTypeID != null && pDAEstimator.CallTypeID != 0)
+                if (pDAEstimator.CreationFromDate != null)
                 {
-                    pDAEstimatorLists = pDAEstimatorLists.Where(x => x.CallTypeID == pDAEstimator.CallTypeID).ToList();
+                    pDAEstimatorLists = pDAEstimatorLists.Where(x => x.CreationDate.Date >= Convert.ToDateTime(pDAEstimator.CreationFromDate).Date).ToList();
                 }
-                if (pDAEstimator.CreatedBy != null && pDAEstimator.CreatedBy != "")
+                if (pDAEstimator.CreationToDate != null)
                 {
-                    pDAEstimatorLists = pDAEstimatorLists.Where(x => Convert.ToInt64(x.UserId) == Convert.ToInt64(pDAEstimator.CreatedBy)).ToList();
+                    pDAEstimatorLists = pDAEstimatorLists.Where(x => x.CreationDate.Date <= Convert.ToDateTime(pDAEstimator.CreationToDate).Date).ToList();
+                }
+                
+                //if (pDAEstimator.TerminalID != null && pDAEstimator.TerminalID != 0)
+                //{
+                //    pDAEstimatorLists = pDAEstimatorLists.Where(x => x.TerminalID == pDAEstimator.TerminalID).ToList();
+                //}
+                //if (pDAEstimator.CallTypeID != null && pDAEstimator.CallTypeID != 0)
+                //{
+                //    pDAEstimatorLists = pDAEstimatorLists.Where(x => x.CallTypeID == pDAEstimator.CallTypeID).ToList();
+                //}
+                //if (pDAEstimator.CreatedBy != null && pDAEstimator.CreatedBy != "")
+                //{
+                //    pDAEstimatorLists = pDAEstimatorLists.Where(x => Convert.ToInt64(x.UserId) == Convert.ToInt64(pDAEstimator.CreatedBy)).ToList();
 
-                }
+                //}
             }
             return PartialView("partial/_ReportList", pDAEstimatorLists);
         }
