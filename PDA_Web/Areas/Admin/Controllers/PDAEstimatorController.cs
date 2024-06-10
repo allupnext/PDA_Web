@@ -954,10 +954,11 @@ namespace PDA_Web.Areas.Admin.Controllers
             CultureInfo provider = CultureInfo.InvariantCulture;
             string ETA_String = PDAEstimitor.ETA_String + " " + "12:00:00 AM";
             DateTime Validity_To = DateTime.ParseExact(ETA_String, new string[] { "dd.M.yyyy hh:mm:ss tt", "dd-M-yyyy hh:mm:ss tt", "dd/M/yyyy hh:mm:ss tt" }, provider, DateTimeStyles.None);
-            var BearthDetailData = unitOfWork.BerthDetails.GetAllAsync().Result.Where(x => x.TerminalID == PDAEstimitor.TerminalID);
-            var maxLoa = BearthDetailData.Where(x => x.MaxLoa > PDAEstimitor.LOA);
-            var maxBeam = BearthDetailData.Where(x => x.MaxBeam > PDAEstimitor.Beam);
-            var maxArribvaldraft = BearthDetailData.Where(x => x.MaxArrivalDraft > PDAEstimitor.ArrivalDraft);
+            var BearthDetailData = unitOfWork.BerthDetails.GetAllAsync().Result.Where(x => x.ID == PDAEstimitor.BerthId);
+            
+            var maxLoa = BearthDetailData.FirstOrDefault().MaxLoa;
+            var maxBeam = BearthDetailData.FirstOrDefault().MaxBeam;
+            var maxArribvaldraft = BearthDetailData.FirstOrDefault().MaxArrivalDraft;
             PDAEstimitor.ETA = Validity_To;
 
             decimal berthStayHrs = PDAEstimitor.LoadDischargeRate != 0 ? Math.Ceiling(Convert.ToDecimal(Convert.ToDecimal(PDAEstimitor.CargoQty) / Convert.ToDecimal(PDAEstimitor.LoadDischargeRate)) * 24) + 4 : 0;
@@ -995,18 +996,43 @@ namespace PDA_Web.Areas.Admin.Controllers
                 PDAEstimitor.BerthStayShift = Convert.ToInt64(berthStayShift);
             }
 
-            if (maxLoa.Count() == 0 || maxLoa == null)
+            if (maxLoa != null && maxLoa < PDAEstimitor.LOA)
             {
-                _toastNotification.AddSuccessToastMessage("Please enter Less then Maxloa.");
+                _toastNotification.AddErrorToastMessage("Please enter MaxLOA Less then : " + maxLoa);
+                return Json(new
+                {
+                    proceed = false,
+                    msg = ""
+                });
             }
-            else if (maxBeam.Count() == 0 && maxLoa == null)
+
+            if (maxBeam != null && maxBeam < PDAEstimitor.Beam)
             {
-                _toastNotification.AddSuccessToastMessage("Please enter Less then MaxBeam.");
+                _toastNotification.AddErrorToastMessage("Please enter MaxBeam Less then : " + maxBeam);
+                return Json(new
+                {
+                    proceed = false,
+                    msg = ""
+                });
             }
-            else if (maxArribvaldraft.Count() == 0 && maxLoa == null)
+
+            if (maxArribvaldraft != null && maxBeam < PDAEstimitor.ArrivalDraft)
             {
-                _toastNotification.AddSuccessToastMessage("Please enter Less then Arrival Draft.");
+                _toastNotification.AddErrorToastMessage("Please enter Max Arribval Draft Less then : " + maxArribvaldraft);
+                return Json(new
+                {
+                    proceed = false,
+                    msg = ""
+                });
             }
+            //else if (maxBeam>PDAEstimator && maxLoa == null)
+            //{
+            //    _toastNotification.AddErrorToastMessage("Please enter Less then MaxBeam.");
+            //}
+            //else if (maxArribvaldraft.Count() == 0 && maxLoa == null)
+            //{
+            //    _toastNotification.AddErrorToastMessage("Please enter Less then Arrival Draft.");
+            //}
 
             else if (PDAEstimitor.PDAEstimatorID > 0)
             {
