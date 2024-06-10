@@ -38,12 +38,19 @@ namespace PDA_Web.Areas.Admin.Controllers
 
                     string fullPath = GetFullPathOfFile(fileName.Replace("\"", ""));
 
+
+                    
                     // Create the directory.
                     Directory.CreateDirectory(Directory.GetParent(fullPath).FullName);
 
                     // Save the file to the server.
                     await using FileStream output = System.IO.File.Create(fullPath);
                     await source.CopyToAsync(output);
+
+                    fileName = fileName + orgFileName.Split(".")[1];
+
+
+
                 }
 
                 var response = new { FileName = fileName.Replace("\"", "") };
