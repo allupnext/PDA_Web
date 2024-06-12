@@ -10,6 +10,7 @@ using PDAEstimator_Infrastructure_Shared;
 using PDAEstimator_Infrastructure_Shared.Services;
 using System.Net;
 using System.Net.Mail;
+using System.Net.NetworkInformation;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace PDA_Web.Controllers
@@ -33,11 +34,19 @@ namespace PDA_Web.Controllers
         {
             if (customerAuth != null)
             {
-                CustomerUserMaster isAuthenticated = await unitOfWork.Customer.Authenticate(customerAuth.Email, customerAuth.CustomerPassword);
+				//var macAddress = NetworkInterface
+				//	.GetAllNetworkInterfaces()
+    //                .Where(nic => nic.OperationalStatus == OperationalStatus.Up && nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
+    //                .Select(nic => nic.GetPhysicalAddress().ToString())
+    //                .FirstOrDefault();
+
+				CustomerUserMaster isAuthenticated = await unitOfWork.Customer.Authenticate(customerAuth.Email, customerAuth.CustomerPassword);
                 if (isAuthenticated != null)
                 {
                     HttpContext.Session.SetString("CustID", isAuthenticated.CustomerId.ToString());
                     HttpContext.Session.SetString("ID", isAuthenticated.ID.ToString());
+
+                    //var AddMacAddress = await unitOfWork.User.AddMacAddress(macAddress, isAuthenticated.ID);
                     return RedirectToAction("Index", "Dashboard");
                 }
                 else

@@ -47,6 +47,7 @@ namespace PDAEstimator_Domain.Entities
 
         public string? RoleName { get; set; }
         public string? Token { get; set; }
+        public string MacAddress { get; set; }
 
     }
 }
