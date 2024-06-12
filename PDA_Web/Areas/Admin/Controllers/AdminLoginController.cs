@@ -43,8 +43,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                 if (isAuthenticated != null)
                 {
                     HttpContext.Session.SetString("UserID", isAuthenticated.ID.ToString());
-                    var macAddressa = unitOfWork.User.GetAllAsync().Result.Where(x => x.MacAddress == macAddress && x.EmployCode == user.EmployCode);
-                    if (macAddressa != null)
+                    var macAddressa = unitOfWork.User.GetAllAsync().Result.Where(x => x.MacAddress == macAddress);
+                    if (macAddressa.Count() > 0)
                     {
                         return RedirectToAction("Index", "Home");
                     }
