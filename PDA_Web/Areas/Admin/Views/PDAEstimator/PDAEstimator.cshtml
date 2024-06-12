@@ -600,7 +600,9 @@
             <h3>Disclaimer:</h3>
             @if (Model.Disclaimer != null && Model.Disclaimer != "")
             {
+                <div>
                 @Html.Raw(Model.Disclaimer)
+                </div>
             }
             else
             {
