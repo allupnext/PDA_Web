@@ -22,7 +22,7 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Disclaimer)
+                    @Html.Raw(item.Disclaimer)
                 </td>
                 <td>
                     @if (item.IsActive == true)

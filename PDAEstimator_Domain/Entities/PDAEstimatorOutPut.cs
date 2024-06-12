@@ -34,5 +34,6 @@ namespace PDAEstimator_Domain.Entities
 
         public int BaseCurrencyCodeID { get; set; }
         public int DefaultCurrencyCodeID { get; set; }
+        public string? Disclaimer { get; set; }
     }
 }

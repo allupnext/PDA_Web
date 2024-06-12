@@ -24,6 +24,16 @@ namespace PDAEstimator_Infrastructure.Repositories
         {
             try
             {
+                if(entity.IsActive == true)
+                {
+                    var sqlUpdate = "Update Disclaimers set IsActive = 0";
+                    using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+                    {
+                        connection.Open();
+                        await connection.ExecuteAsync(sqlUpdate);
+                        //return result;
+                    }
+                }
                 var sql = "Insert into Disclaimers (Disclaimer,IsActive,IsDeleted) VALUES (@Disclaimer, @IsActive,0)";
                 using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
                 {
@@ -62,7 +72,7 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<Disclaimers> GetByIdAsync(long id)
         {
-            var sql = "SELECT * FROM Disclaimers WHERE ID = @Id and where IsDeleted != 1";
+            var sql = "SELECT * FROM Disclaimers WHERE ID = @Id and IsDeleted != 1";
             using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
@@ -73,6 +83,16 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<int> UpdateAsync(Disclaimers entity)
         {
+            if (entity.IsActive == true)
+            {
+                var sqlUpdate = "Update Disclaimers set IsActive = 0";
+                using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+                {
+                    connection.Open();
+                    await connection.ExecuteAsync(sqlUpdate);
+                    //return result;
+                }
+            }
             var sql = "UPDATE Disclaimers SET Disclaimer=@Disclaimer, IsActive=@IsActive, IsDeleted=@IsDeleted WHERE ID = @Id";
             using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
