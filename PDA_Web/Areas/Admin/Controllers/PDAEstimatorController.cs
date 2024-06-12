@@ -115,7 +115,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                     BaseCurrencyCodeID = pDAEstimatorOutPutdata.BaseCurrencyCodeID,
                     DefaultCurrencyCode = pDAEstimatorOutPutdata.DefaultCurrencyCode,
                     DefaultCurrencyCodeID = pDAEstimatorOutPutdata.DefaultCurrencyCodeID,
-
+                    Disclaimer = pDAEstimatorOutPutdata.Disclaimer
                 };
 
                 string Companylogo = pDAEstimatorOutPutView.CompanyLogo;
@@ -798,6 +798,11 @@ namespace PDA_Web.Areas.Admin.Controllers
             ViewBag.UserRoleName = UserRole;
             // Temp Solution END
 
+            if(userid == null)
+            {
+                return RedirectToAction("index", "AdminLogin");
+            }
+
             var userdata = await unitOfWork.User.GetAllUsersById(Convert.ToInt64(userid));
             var userwithRole = await unitOfWork.User.GetByIdAsync(Convert.ToInt64(userid));
             if (userwithRole.RoleName == "Admin")
@@ -1120,6 +1125,18 @@ namespace PDA_Web.Areas.Admin.Controllers
 
                     //var taxrate = TaxData.Where(x => x.TaxName.Contains("GST")).Select(x => x.TaxRate).FirstOrDefault();
                     //pDAEstimatorOutPut.Taxrate = taxrate;
+                    var Disclaimersdata = await unitOfWork.Disclaimers.GetAllAsync();
+
+                    if(Disclaimersdata != null && Disclaimersdata.Count() > 0)
+                    {
+                       var ActiveDisclaimersdata =  Disclaimersdata.Where(x => x.IsActive == true);
+                        if (ActiveDisclaimersdata != null && ActiveDisclaimersdata.Count() > 0)
+                        {
+                            pDAEstimatorOutPut.Disclaimer = ActiveDisclaimersdata.FirstOrDefault().Disclaimer;
+                        }
+
+                    }
+                    
                     pDAEstimatorOutPut.PDAEstimatorOutPutDate = DateTime.Now;
                     var PDAEstimitorOUTPUTid = await unitOfWork.PDAEstimitorOUTPUT.AddAsync(pDAEstimatorOutPut);
 

@@ -136,14 +136,14 @@
             loadData();
         });
 
-        function onNoteChange(val, inputVal) {
-            if (inputVal == 1) {
-                $('#DisclaimerName').css("border", "1px solid #ced4da");
-            }
-            else if (inputVal == 2) {
-                $('#sequnce').css("border", "1px solid #ced4da");
-            }
-        }
+        // function onNoteChange(val, inputVal) {
+        //     if (inputVal == 1) {
+        //         $('#DisclaimerName').css("border", "1px solid #ced4da");
+        //     }
+        //     else if (inputVal == 2) {
+        //         $('#sequnce').css("border", "1px solid #ced4da");
+        //     }
+        // }
 
         function DisclaimerSave() {
 
@@ -182,7 +182,7 @@
                     }
                 });
                 $('#DisclaimerId').val("");
-                $('#DisclaimerName').val("");
+                myEditor.setData("");
                
             }
         }
@@ -194,14 +194,13 @@
 
             Disclaimers = {
                 "ID": id,
-                "Disclaimer": $('#DisclaimerName').val(),
-                "sequnce": $('#Sequence').val()
+                "Disclaimer": $('#DisclaimerName').val()
 
             }
 
             $.ajax({
                 type: "POST",
-                url: "/Admin/Disclaimer/DisclaimerNote",
+                url: "/Admin/Disclaimers/deleteDisclaimer",
                 data: notes,
                 success: function (data) {
                     loadData();
@@ -220,21 +219,18 @@
 
             Disclaimer = {
                 "ID": $('#DisclaimerId').val(),
-                "Disclaimer": $('#DisclaimerName').val(),
-                "sequnce": $('#Sequence').val()
+                "Disclaimer": $('#DisclaimerName').val()
 
             }
 
             $.ajax({
                 type: "POST",
-                url: "/Admin/Disclaimer/editDisclaimer",
+                url: "/Admin/Disclaimers/editDisclaimer",
                 data: Disclaimer,
                 success: function (data) {
                     debugger;
-                    $('#DisclaimerName').val(data.Disclaimer.note);
-                    $('#Sequence').val(data.Disclaimer.sequnce);
-
-
+                    myEditor.setData(data.disclaimers.disclaimer);
+                    $('#isActive').prop("checked", data.disclaimers.isActive);
                 },
                 error: function () {
                 }
@@ -245,7 +241,7 @@
             //$('#viewAll').load('/Currency/LoadAll');
             $.ajax({
                 type: "GET",
-                url: "/Admin/Disclaimer/LoadAll",
+                url: "/Admin/Disclaimers/LoadAll",
                 dataType: "HTML",
                 success: function (data) {
                     $("#viewAll").html(data);

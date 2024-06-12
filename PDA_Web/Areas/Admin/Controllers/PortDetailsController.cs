@@ -47,7 +47,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                     await using FileStream output = System.IO.File.Create(fullPath);
                     await source.CopyToAsync(output);
 
-                    fileName = fileName + orgFileName.Split(".")[1];
+                    fileName = fileName + "." + orgFileName.Split(".")[1];
 
 
 
