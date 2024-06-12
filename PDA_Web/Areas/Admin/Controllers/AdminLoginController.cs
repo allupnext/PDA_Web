@@ -6,6 +6,7 @@ using PDAEstimator_Application.Interfaces;
 using PDAEstimator_Domain.Entities;
 using PDAEstimator_Infrastructure_Shared;
 using PDAEstimator_Infrastructure_Shared.Services;
+using System.Net.NetworkInformation;
 
 namespace PDA_Web.Areas.Admin.Controllers
 {
@@ -28,6 +29,12 @@ namespace PDA_Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> Index(UserAuth user)
         {
+            var macAddress = NetworkInterface
+                .GetAllNetworkInterfaces()
+                            .Where(nic => nic.OperationalStatus == OperationalStatus.Up && nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
+                            .Select(nic => nic.GetPhysicalAddress().ToString())
+                            .FirstOrDefault();
+
             if (user != null)
             {
                 User isAuthenticated = await unitOfWork.User.Authenticate(user.EmployCode, user.UserPassword);
@@ -36,8 +43,16 @@ namespace PDA_Web.Areas.Admin.Controllers
                 if (isAuthenticated != null)
                 {
                     HttpContext.Session.SetString("UserID", isAuthenticated.ID.ToString());
-                   
-                    return RedirectToAction("Index", "Home");
+                    var macAddressa = unitOfWork.User.GetAllAsync().Result.Where(x => x.MacAddress == macAddress && x.EmployCode == user.EmployCode);
+                    if (macAddressa != null)
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+						var AddMacAddress = await unitOfWork.User.AddMacAddress(macAddress, isAuthenticated.ID);
+						return RedirectToAction("Index", "Home");
+					}
                 }
                 else
                 {

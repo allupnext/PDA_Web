@@ -9,6 +9,7 @@ using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -302,8 +303,26 @@ namespace PDAEstimator_Infrastructure.Repositories
             }
         }
 
-        #region User Permission
-        public async Task<List<UserRolePermissionMenu>> GetAllUserRolePermissionMenuAsync()
+		public async Task<int> AddMacAddress(string macAddress,long Id)
+		{
+			try
+			{
+				var sql = "UPDATE UserMaster SET MacAddress= @MacAddress WHERE ID = @Id";
+				using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+				{
+					connection.Open();
+					var result = await connection.ExecuteAsync(sql, new { MacAddress = macAddress, ID = Id } );
+					return result;
+				}
+			}
+
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+		}
+		#region User Permission
+		public async Task<List<UserRolePermissionMenu>> GetAllUserRolePermissionMenuAsync()
         {
             try
             {

@@ -10,6 +10,7 @@ namespace PDAEstimator_Domain.Entities
     {
         public string EmployCode { get; set; } = string.Empty;
         public string UserPassword { get; set; } = string.Empty;
+        public string MacAddress { get; set; } = string.Empty;
       
     }
 }
