@@ -602,7 +602,7 @@
 
     </section>
     <section class="Disclaimer">
-        <h3>Disclaimer:</h3>
+        <h3 style="margin-top:0px">Disclaimer:</h3>
         @if (Model.Disclaimer != null && Model.Disclaimer != "")
         {
             <div>
@@ -619,6 +619,20 @@
     </section>
 
     <style>
+        .Disclaimer li {
+            list-style-type: circle;
+            list-style: disc outside;
+            margin: 8px 0;
+        }
+
+        .Disclaimer ul {
+            padding-left: 40px;
+        }
+
+        .Disclaimer {
+            padding: 0px 15px 15px 15px;
+            overflow: hidden;
+        }
 
         html {
             overflow-x: hidden;
