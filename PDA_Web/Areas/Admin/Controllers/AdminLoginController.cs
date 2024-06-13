@@ -41,8 +41,8 @@ namespace PDA_Web.Areas.Admin.Controllers
             if (user != null)
             {
                 User isAuthenticated = await unitOfWork.User.Authenticate(user.EmployCode, user.UserPassword);
-     
-                
+
+
                 if (isAuthenticated != null)
                 {
                     HttpContext.Session.SetString("UserID", isAuthenticated.ID.ToString());
@@ -56,7 +56,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                         {
                             var AddMacAddress = await unitOfWork.User.AddMacAddress(macAddress, isAuthenticated.ID);
                             return RedirectToAction("Index", "Home");
-                          
+
                         }
                         else if (isAuthenticated.MacAddress != macAddress)
                         {
@@ -85,6 +85,43 @@ namespace PDA_Web.Areas.Admin.Controllers
                 return View();
             }
         }
+
+        public async Task<bool> SendOTPEmail(string Email)
+        {
+            var CustomerUserData = await unitOfWork.CustomerUserMaster.GetCustomerUserByEmailAsync(Email);
+
+            var CustomerId = CustomerUserData.Select(x => x.CustomerId).First();
+
+            var corecustomerdata = await unitOfWork.Customer.GetByIdAsync(Convert.ToInt32(CustomerId));
+
+            Int64 PrimaryCompanyId = Convert.ToInt64(corecustomerdata.PrimaryCompany);
+
+            var FromPrimaryCompany = await unitOfWork.Company.GetByIdAsync(PrimaryCompanyId);
+            var PrimaryCompnayName = FromPrimaryCompany.CompanyName;
+
+            List<string> recipients = new List<string>
+            {
+                Email
+            };
+            string Content = "<html> <body>   <p>Hello, <br> You recently requested to reset the password for your PDAEstimator account. Click the button below to proceed.    </p> <div> <a  href=" + confirmationLink + "> <button style='height:30px; margin-bottom:30px; font-size:14px;' type='button'> Reset Password </button> </a> </div> </body> </html> ";
+            string Subject = "Reset Password";
+            string FromCompany = "";
+            if (PrimaryCompnayName == "Merchant Shipping Services Private Limited")
+            {
+                FromCompany = "FromMerchant";
+            }
+            if (PrimaryCompnayName == "Samsara Shipping Private Limited")
+            {
+                FromCompany = "FromSamsara";
+            }
+
+
+            var Msg = new Message(recipients, Subject, Content, FromCompany);
+            _emailSender.SendEmail(Msg);
+
+            return true;
+        }
+
         public async Task<IActionResult> ForgotPassword(string Email)
         {
             if (Email != null)
@@ -94,7 +131,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                 {
                     var CustomerUserData = await unitOfWork.CustomerUserMaster.GetCustomerUserByEmailAsync(Email);
 
-                    var CustomerId =  CustomerUserData.Select(x => x.CustomerId).First();
+                    var CustomerId = CustomerUserData.Select(x => x.CustomerId).First();
 
                     var corecustomerdata = await unitOfWork.Customer.GetByIdAsync(Convert.ToInt32(CustomerId));
 
@@ -133,8 +170,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                     {
                         Email
                     };
-/*                    string Content = confirmationLink;*/
-/*                    string Content = "You recently requested to reset the password for your PDAEstimator account. Click the button below to proceed. ";*/
+                    /*                    string Content = confirmationLink;*/
+                    /*                    string Content = "You recently requested to reset the password for your PDAEstimator account. Click the button below to proceed. ";*/
                     string Content = "<html> <body>   <p>Hello, <br> You recently requested to reset the password for your PDAEstimator account. Click the button below to proceed.    </p> <div> <a  href=" + confirmationLink + "> <button style='height:30px; margin-bottom:30px; font-size:14px;' type='button'> Reset Password </button> </a> </div> </body> </html> ";
                     string Subject = "Reset Password";
                     string FromCompany = "";
@@ -143,15 +180,15 @@ namespace PDA_Web.Areas.Admin.Controllers
                         FromCompany = "FromMerchant";
                     }
                     if (PrimaryCompnayName == "Samsara Shipping Private Limited")
-                    {   
+                    {
                         FromCompany = "FromSamsara";
                     }
 
 
                     var Msg = new Message(recipients, Subject, Content, FromCompany);
- /*                   _toastNotification.AddSuccessToastMessage("Email hase been sent to given Email Address");*/
+                    /*                   _toastNotification.AddSuccessToastMessage("Email hase been sent to given Email Address");*/
                     _emailSender.SendEmail(Msg);
-                   
+
                 }
                 else
                 {
