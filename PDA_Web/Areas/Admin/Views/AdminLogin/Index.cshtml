@@ -18,6 +18,8 @@
     <link rel="stylesheet" href="~/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="~/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 </head>
 <body class="hold-transition login-page">
     <div class="login-box">
@@ -62,7 +64,7 @@
                         <!-- /.col -->
                         <div class="col-8">
                             <a asp-controller="AdminLogin" asp-action="ForgotPassword">Reset Password!!!</a>
-                        </div>
+                        </div>          
                         <div class="col-4">
                             <button type="submit" class="btn btn-primary btn-block">Sign In</button>
                         </div>
@@ -78,6 +80,6 @@
     <script src="~/dist/js/adminlte.min.js"></script>
     @*    @await Component.InvokeAsync("NToastNotify")
     *@
-
+    @await Component.InvokeAsync("NToastNotify")
 </body>
 </html>

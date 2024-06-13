@@ -43,11 +43,17 @@ namespace PDA_Web.Areas.Admin.Controllers
                 if (isAuthenticated != null)
                 {
                     HttpContext.Session.SetString("UserID", isAuthenticated.ID.ToString());
-                    var macAddressa = unitOfWork.User.GetAllAsync().Result.Where(x => x.MacAddress == macAddress);
-                    if (macAddressa.Count() > 0)
+                    var macAddressa = unitOfWork.User.GetAllAsync().Result.Where(x => x.MacAddress == macAddress && x.EmployCode==user.EmployCode);
+                    
+                    if (macAddressa.Count() < 0 && macAddressa.FirstOrDefault().MacAddress.ToString()!= macAddress && macAddressa.FirstOrDefault().MacAddress.ToString() != "" )
+                    {
+                        _toastNotification.AddErrorToastMessage("Your MACAddress does not match with old Mac Address.");
+                        return View();
+                    }
+                    else if (macAddressa.Count() > 0)
                     {
                         return RedirectToAction("Index", "Home");
-                    }
+					}
                     else
                     {
 						var AddMacAddress = await unitOfWork.User.AddMacAddress(macAddress, isAuthenticated.ID);
@@ -117,14 +123,14 @@ namespace PDA_Web.Areas.Admin.Controllers
                     string Content = "<html> <body>   <p>Hello, <br> You recently requested to reset the password for your PDAEstimator account. Click the button below to proceed.    </p> <div> <a  href=" + confirmationLink + "> <button style='height:30px; margin-bottom:30px; font-size:14px;' type='button'> Reset Password </button> </a> </div> </body> </html> ";
                     string Subject = "Reset Password";
                     string FromCompany = "";
-                  /*  if (PrimaryCompnayName == "Merchant Shipping Services Private Limited")
+                    if (PrimaryCompnayName == "Merchant Shipping Services Private Limited")
                     {
                         FromCompany = "FromMerchant";
                     }
                     if (PrimaryCompnayName == "Samsara Shipping Private Limited")
-                    {
+                    {   
                         FromCompany = "FromSamsara";
-                    }*/
+                    }
 
 
                     var Msg = new Message(recipients, Subject, Content, FromCompany);

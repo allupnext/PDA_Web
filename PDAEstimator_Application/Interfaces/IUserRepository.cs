@@ -24,7 +24,7 @@ namespace PDAEstimator_Application.Interfaces
         Task<List<UserPemissionRole_Role_Mapping>> GetAllUserPemissionRole_Role_Mapping();
         Task<User> CheckEmailExist(string email);
         Task<string> GenerateEmailConfirmationTokenAsync(string token, int id);
-        Task<string> ChangePassword(string Password, long id);
+        Task<string> ChangePassword(string Password, long id,string macAddress);
         Task<int> AddMacAddress(string MacAddress, long id);
         Task<int> AuthenticateById(int id, string Password);
 

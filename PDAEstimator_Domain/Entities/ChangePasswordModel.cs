@@ -22,5 +22,6 @@ namespace PDAEstimator_Domain.Entities
         public string ConfirmPassword { get; set; }
 
         public int Changed { get; set; }
+        public string MacAddress { get; set; }
     }
 }

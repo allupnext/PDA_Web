@@ -25,7 +25,7 @@ namespace PDAEstimator_Infrastructure.Repositories
         }
 
         public async Task<User> Authenticate(string username, string password)
-        {
+        {   
             var sql = "SELECT * FROM UserMaster where EmployCode=@EmployCode and UserPassword=@password";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
@@ -222,15 +222,15 @@ namespace PDAEstimator_Infrastructure.Repositories
                 return result;
             }
         }
-        public async Task<string> ChangePassword(string Password, long id)
+        public async Task<string> ChangePassword(string Password, long id,string macAddress)
         {
             try
             {
-                var sql = "update UserMaster set UserPassword = @UserPassword Where ID = @ID";
+                var sql = "update UserMaster set UserPassword = @UserPassword,MacAddress = @macAddress Where ID = @ID";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
                     connection.Open();
-                    var result = await connection.ExecuteAsync(sql, new { UserPassword = Password, ID = id });
+                    var result = await connection.ExecuteAsync(sql, new { UserPassword = Password, ID = id, MacAddress= macAddress });
                     return result.ToString();
                 }
             }

@@ -4,6 +4,7 @@ using NToastNotify;
 using PDA_Web.Controllers;
 using PDAEstimator_Application.Interfaces;
 using PDAEstimator_Domain.Entities;
+using System.Net.NetworkInformation;
 
 namespace PDA_Web.Areas.Admin.Controllers
 {
@@ -38,12 +39,18 @@ namespace PDA_Web.Areas.Admin.Controllers
         }
         public async Task<IActionResult> ChangePassword(ResetPassword resetPassword)
         {
-            if (resetPassword != null)
+			var macAddress = NetworkInterface
+                .GetAllNetworkInterfaces()
+				.Where(nic => nic.OperationalStatus == OperationalStatus.Up && nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
+				.Select(nic => nic.GetPhysicalAddress().ToString())
+				.FirstOrDefault();
+
+			if (resetPassword != null)
             {
-                var ChekCustomer = unitOfWork.User.ChangePassword(resetPassword.Password, resetPassword.userId);
-                var data = new
+                var ChekCustomer = unitOfWork.User.ChangePassword(resetPassword.Password, resetPassword.userId,macAddress);
+				var data = new
                 {
-                    success = true,
+				    success = true,
                     message = 1
                 };
                 return Json(data);
@@ -83,7 +90,7 @@ namespace PDA_Web.Areas.Admin.Controllers
 
                 if (ChekUser.Result == 1)
                 {
-                    var SetPassword = unitOfWork.User.ChangePassword(Data.NewPassword, Data.userId);
+                    var SetPassword = unitOfWork.User.ChangePassword(Data.NewPassword, Data.userId,Data.MacAddress);
                     _toastNotification.AddSuccessToastMessage("PassWord Set Successfully..");
                     var data = new
                     {

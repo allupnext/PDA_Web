@@ -22,5 +22,7 @@ namespace PDAEstimator_Domain.Entities
 
         public int Error { get; set; } = 0;
 
+        public string? MacAddress { get; set; } 
+
     }
 }
