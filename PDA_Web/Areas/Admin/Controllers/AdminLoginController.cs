@@ -6,6 +6,7 @@ using PDAEstimator_Application.Interfaces;
 using PDAEstimator_Domain.Entities;
 using PDAEstimator_Infrastructure_Shared;
 using PDAEstimator_Infrastructure_Shared.Services;
+using System.Configuration;
 using System.Net.NetworkInformation;
 
 namespace PDA_Web.Areas.Admin.Controllers
@@ -17,13 +18,15 @@ namespace PDA_Web.Areas.Admin.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IEmailSender _emailSender;
         private readonly IToastNotification _toastNotification;
-        public AdminLoginController(ILogger<HomeController> logger, IUnitOfWork unitOfWork, IToastNotification toastNotification, IEmailSender emailSender)
+        private readonly IConfiguration _configuration;
+
+        public AdminLoginController(ILogger<HomeController> logger, IUnitOfWork unitOfWork, IToastNotification toastNotification, IEmailSender emailSender, IConfiguration configuration)
         {
             this.unitOfWork = unitOfWork;
             _logger = logger;
             _toastNotification = toastNotification;
             _emailSender = emailSender;
-            
+            _configuration = configuration;
         }
 
         [HttpPost]
@@ -43,30 +46,42 @@ namespace PDA_Web.Areas.Admin.Controllers
                 if (isAuthenticated != null)
                 {
                     HttpContext.Session.SetString("UserID", isAuthenticated.ID.ToString());
-                    var macAddressa = unitOfWork.User.GetAllAsync().Result.Where(x => x.MacAddress == macAddress && x.EmployCode==user.EmployCode);
-                    
-                    if (macAddressa.Count() < 0 && macAddressa.FirstOrDefault().MacAddress.ToString()!= macAddress && macAddressa.FirstOrDefault().MacAddress.ToString() != "" )
+
+                    var isMacIDCheck = _configuration.GetValue<bool>("MacIDCheck");
+                    if (isMacIDCheck)
                     {
-                        _toastNotification.AddErrorToastMessage("Your MACAddress does not match with old Mac Address.");
-                        return View();
+                        //var macAddressa = unitOfWork.User.GetAllAsync().Result.Where(x => x.MacAddress == macAddress && x.EmployCode == user.EmployCode);
+
+                        if (string.IsNullOrEmpty(isAuthenticated.MacAddress))
+                        {
+                            var AddMacAddress = await unitOfWork.User.AddMacAddress(macAddress, isAuthenticated.ID);
+                            return RedirectToAction("Index", "Home");
+                          
+                        }
+                        else if (isAuthenticated.MacAddress != macAddress)
+                        {
+                            _toastNotification.AddErrorToastMessage("Your MACAddress does not match with old MACAddress.");
+                            return View();
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
                     }
-                    else if (macAddressa.Count() > 0)
-                    {
-                        return RedirectToAction("Index", "Home");
-					}
                     else
                     {
-						var AddMacAddress = await unitOfWork.User.AddMacAddress(macAddress, isAuthenticated.ID);
-						return RedirectToAction("Index", "Home");
-					}
+                        return RedirectToAction("Index", "Home");
+                    }
                 }
                 else
                 {
+                    _toastNotification.AddErrorToastMessage("You have entered an invalid username or password.");
                     return View();
                 }
             }
             else
             {
+                _toastNotification.AddErrorToastMessage("You have entered an invalid username or password.");
                 return View();
             }
         }

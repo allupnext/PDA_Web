@@ -40,7 +40,7 @@ namespace PDA_Web.Areas.Admin.Controllers
         public async Task<IActionResult> PDAEstimatorDonwload(int id)
         {
             PDAEstimatorOutPutView pDAEstimatorOutPut = new PDAEstimatorOutPutView();
-            pDAEstimatorOutPut = await PDAModelPrePared(pDAEstimatorOutPut, id);
+            pDAEstimatorOutPut = await GetPDA(id);
 
             return new ViewAsPdf("PDAEstimator", pDAEstimatorOutPut)
             {
@@ -50,7 +50,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                 PageSize = Rotativa.AspNetCore.Options.Size.A3
             };
         }
-        public async Task<IActionResult> PDAEstimator(int id)
+
+        public async Task<PDAEstimatorOutPutView> GetPDA(int id)
         {
             //PDAEstimatorOutPutView pDAEstimatorOutPut = new PDAEstimatorOutPutView();
             //pDAEstimatorOutPut = await PDAModelPrePared(pDAEstimatorOutPut, id);
@@ -202,7 +203,15 @@ namespace PDA_Web.Areas.Admin.Controllers
                 pDAEstimatorOutPutView = await PDAModelPrePared(pDAEstimatorOutPutView, id);
 
             }
-            return View(pDAEstimatorOutPutView);
+            return pDAEstimatorOutPutView;
+        }
+
+        public async Task<IActionResult> PDAEstimator(int id)
+        {
+            PDAEstimatorOutPutView pDAEstimatorOutPut = new PDAEstimatorOutPutView();
+            pDAEstimatorOutPut = await GetPDA(id);
+
+            return View(pDAEstimatorOutPut);
             //return new ViewAsPdf(pDAEstimatorOutPut);
         }
 
