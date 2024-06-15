@@ -46,7 +46,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                 if (isAuthenticated != null)
                 {
                     HttpContext.Session.SetString("UserID", isAuthenticated.ID.ToString());
-
+                  
                     var isMacIDCheck = _configuration.GetValue<bool>("MacIDCheck");
                     if (isMacIDCheck)
                     {
@@ -54,7 +54,7 @@ namespace PDA_Web.Areas.Admin.Controllers
 
                         if (string.IsNullOrEmpty(isAuthenticated.MacAddress))
                         {
-                            var AddMacAddress = await unitOfWork.User.AddMacAddress(macAddress, isAuthenticated.ID);
+                            var AddMacAddress = await unitOfWork.User.AddMacAddress(macAddress, Convert.ToInt64(isAuthenticated.ID));
                             return RedirectToAction("Index", "Home");
 
                         }

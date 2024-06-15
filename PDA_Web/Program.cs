@@ -58,6 +58,7 @@ builder.Services.AddTransient<IPDAEstimatorOutPutTariffRepository, PDAEstimatorO
 builder.Services.AddTransient<ICustomerUserMaster, CustomerUser>();
 builder.Services.AddTransient<IDisclaimersRepository, DisclaimersRepository>();
 
+
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 
