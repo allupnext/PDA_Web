@@ -41,9 +41,29 @@
                     </div>
                 </div>
                 <div class="input-group mb-2">
+                    <div class="col-12">
+                        <label for="Mobile">Mobile Number<span class="text-danger">*</span></label>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                @Html.DropDownList("CountryCode", new SelectList(ViewBag.CountryCode, "CountryCode"), new { @class = "form-control", style = "width:80px; padding: 0px;" })
+                            </div>
+                            <div class="col-sm-7">
+                                <input type="tel" class="form-control" id="Mobile" maxlength="11" placeholder="Mobile Number">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-group mb-2">
+                    <div class="col-12">
+                        <label for="Email">Email<span class="text-danger">*</span></label>
+                        <input type="email" class="form-control" id="Email" placeholder="Email" oninput="validateEmail(this.value)" onChange="validateEmail(this.value)">
+                        <span id="emailError" style="color: red;"></span>
+                    </div>
+                </div>
+                <div class="input-group mb-2">
                     <div class="">
                         <label for="PrimaryCompany">Primary Company<span class="text-danger">*</span></label>
-                        @Html.DropDownList("PrimaryCompany", new SelectList(ViewBag.PrimaryCompany, "CompanyId", "CompanyName"), "Please Select", new { @class = "form-control"})
+                        @Html.DropDownList("PrimaryCompany", new SelectList(ViewBag.PrimaryCompany, "CompanyId", "CompanyName"), "Please Select", new { @class = "form-control" })
                     </div>
 
                 </div>
@@ -51,7 +71,7 @@
                 <div class="input-group mb-2">
                     <div class="">
                         <label for="SecondaryCompany">Secondary Company</label>
-                        @Html.ListBox("SecondaryCompany", new MultiSelectList(ViewBag.SecondaryCompany,  "CompanyId", "CompanyName"),  new { @class = "form-control"})
+                        @Html.ListBox("SecondaryCompany", new MultiSelectList(ViewBag.SecondaryCompany, "CompanyId", "CompanyName"), new { @class = "form-control" })
                     </div>
                 </div>
                 <div class="input-group ">
@@ -64,10 +84,10 @@
 
             <hr />
 
-                <div class="col-4">
+            <div class="col-4">
                 <button type="submit" style="margin: 0px 0 20px 115px;" onclick="RegisterUserSave()" class="btn btn-primary btn-block">Sign In</button>
-                </div>
-         
+            </div>
+
         </div>
     </div>
 
@@ -79,6 +99,20 @@
 
     @await Component.InvokeAsync("NToastNotify")
     <script>
+
+
+        function validateEmail(Email) {
+            var emailRegex = /^[a-zA-Z0-9]+[-.,a-zA-Z0-9]+@@[-.,a-zA-Z.]+\.[a-zA-Z]{2,}$/;
+
+            var emailError = document.getElementById('emailError');
+
+            if (emailRegex.test(Email)) {
+                emailError.textContent = '';
+            } else {
+                emailError.textContent = 'Enter valid Email';
+                emailError.style.color = 'red';
+            }
+        }
 
         $(document).ready(function () {
 
@@ -118,9 +152,10 @@
                 "PrimaryCompanyId": $('#PrimaryCompany').val(),
                 "SecondaryCompanyId": $('#SecondaryCompany').val(),
                 "BankID": $('#Beneficiary').val(),
+                "Email": $('#Email').val(),
+                "Mobile": $('#Mobile').val(),
             }
 
-            debugger
 
             if ($('#_Company').val() == "") {
                 toastr.error("Please enter customer's company.", 'Error Alert');
@@ -130,7 +165,7 @@
                 toastr.error("Please select BankCode.", 'Error Alert');
                 $('#Beneficiary').css("border-color", "Red");
             }
-          
+
             else if ($('#PrimaryCompany').val() == "") {
                 toastr.error("Please primary company.", 'Error Alert');
                 $('#PrimaryCompany').css("border-color", "Red");
@@ -145,7 +180,7 @@
                     success: function (data) {
                         if (data.success) {
                             $("#Successed").show();
-                          
+
                         }
                     },
                     error: function () {

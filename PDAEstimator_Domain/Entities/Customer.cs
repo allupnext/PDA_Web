@@ -24,7 +24,6 @@ namespace PDAEstimator_Domain.Entities
         public int Country { get; set; }
         [Required(ErrorMessage = "Emmail must be valid")]
         [EmailAddress]
-        public string Emmail { get; set; }
         public string Email { get; set; }
         public string Mobile { get; set; }
         public string Telephone { get; set; }
