@@ -113,11 +113,10 @@ namespace PDAEstimator_Infrastructure.Repositories
         {
             try
             {
-/*                string mobwithCode = entity.CountryCode +"-"+ entity.Mobile; 
-                string teleWithCode = entity.CountryCode + "-" + entity.Telephone;*/
+               string mobwithCode = entity.CountryCode +"-"+ entity.Mobile; 
 
                 //var sql = "INSERT INTO CustomerMaster(BankID,Salutation, FirstName, LastName, Designation, Address1, Address2,Company, City, State, Country, Email, Mobile, Password, Status, IsDeleted,Telephone,AlternativeEmail,IsEmailNotification)VALUES (@BankID,@Salutation, @FirstName, @LastName, @Designation, @Address1, @Address2,@Company, @City, @State, @Country, @Email, '" + mobwithCode + "' , @Password, @Status,0,'" + teleWithCode + "' ,@AlternativeEmail,@IsEmailNotification) SELECT CAST(SCOPE_IDENTITY() as int)";
-                var sql = "INSERT INTO CustomerMaster(BankID,Company, Status, IsDeleted,IsEmailNotification)VALUES (@BankID,@Company, @Status,0,@IsEmailNotification) SELECT CAST(SCOPE_IDENTITY() as int)";
+                var sql = "INSERT INTO CustomerMaster(BankID,Company, Status, IsDeleted,IsEmailNotification, Email, Mobile)VALUES (@BankID,@Company, @Status,0,@IsEmailNotification,@Email, '" + mobwithCode + "' ) SELECT CAST(SCOPE_IDENTITY() as int)";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
                     connection.Open();
@@ -238,12 +237,11 @@ namespace PDAEstimator_Infrastructure.Repositories
         }
         public async Task<int> UpdateAsync(Customer entity)
         {
-/*            string mobwithCode = entity.CountryCode + "-" + entity.Mobile;
-            string teleWithCode = entity.CountryCode + "-" + entity.Telephone;*/
+           string mobwithCode = entity.CountryCode + "-" + entity.Mobile;
             try
             {
                 //var sql = "UPDATE CustomerMaster SET Beneficiary_Bank_Name=@Beneficiary_Bank_Name,Salutation = @Salutation, FirstName = @FirstName,LastName = @LastName, Designation = @Designation, Address1 = @Address1, Address2 = @Address2,Company=@Company,City = @City,State = @State,Country = @Country,Email = @Email,Mobile = '" + mobwithCode + "',Telephone = '" + teleWithCode + "',Password = @Password,Status = @Status,IsEmailNotification = @IsEmailNotification WHERE CustomerId = @CustomerId";
-                var sql = "UPDATE CustomerMaster SET BankID = @BankID,Company=@Company,Status = @Status,IsEmailNotification = @IsEmailNotification WHERE CustomerId = @CustomerId";
+                var sql = "UPDATE CustomerMaster SET BankID = @BankID,Company=@Company,Status = @Status,IsEmailNotification = @IsEmailNotification,Email = @Email,Mobile = '" + mobwithCode + "' WHERE CustomerId = @CustomerId";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
                     connection.Open();

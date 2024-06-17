@@ -30,7 +30,7 @@
                 <a class="h1"><b>PDA </b>Estimator</a>
             </div>
             <div class="card-body">
-                <p id="DefaultText" class="login-box-msg">Sign in to start your session</p>
+                <p id="DefaultText" class="login-box-msg">Register Request</p>
                 <p class="login-box-msg" style="display:none; color:green; font-weight:600" id="Successed"> Company Saved Successfully</p>
                 <p class="login-box-msg" style="display:none; color:red; font-weight:600" id="Failed"> Company Can't Saved</p>
 
@@ -47,7 +47,7 @@
                             <div class="col-sm-2">
                                 @Html.DropDownList("CountryCode", new SelectList(ViewBag.CountryCode, "CountryCode"), new { @class = "form-control", style = "width:80px; padding: 0px;" })
                             </div>
-                            <div class="col-sm-7">
+                            <div class="col-sm-10">
                                 <input type="tel" class="form-control" id="Mobile" maxlength="11" placeholder="Mobile Number">
                             </div>
                         </div>
@@ -85,7 +85,7 @@
             <hr />
 
             <div class="col-4">
-                <button type="submit" style="margin: 0px 0 20px 115px;" onclick="RegisterUserSave()" class="btn btn-primary btn-block">Sign In</button>
+                <button type="submit" style="margin: 0px 0 20px 115px;" onclick="RegisterUserSave()" class="btn btn-primary btn-block">Register Request</button>
             </div>
 
         </div>
@@ -154,6 +154,7 @@
                 "BankID": $('#Beneficiary').val(),
                 "Email": $('#Email').val(),
                 "Mobile": $('#Mobile').val(),
+                "CountryCode": $('#CountryCode').val(),
             }
 
 

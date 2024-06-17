@@ -46,6 +46,26 @@
                             </div>
                             <div class="col-sm-3">
                                 <div class="form-group">
+                                    <label for="Mobile">Mobile Number<span class="text-danger">*</span></label>
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            @Html.DropDownList("CountryCode", new SelectList(ViewBag.CountryCode, "CountryCode"), new { @class = "form-control", style = "width:80px; padding: 0px;" })
+                                        </div>
+                                        <div class="col-sm-10">
+                                            <input type="tel" class="form-control" id="Mobile" maxlength="11" placeholder="Mobile Number">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="Email">Email<span class="text-danger">*</span></label>
+                                    <input type="email" class="form-control" id="Email" placeholder="Email" oninput="validateEmail(this.value)" onChange="validateEmail(this.value)">
+                                    <span id="emailError" style="color: red;"></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
                                     <label for="Status">CustomerStatus<span class="text-danger">*</span></label>
                                     <select class="form-control" id="Status">
                                         <option value="">Please Select</option>
@@ -65,10 +85,15 @@
                                     </select>
                                 </div>
                             </div>
+
+
+                        </div>
+
+                        <div class="row">
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="PrimaryCompany">Primary Company<span class="text-danger">*</span></label>
-                                    @Html.DropDownList("PrimaryCompany", new SelectList(ViewBag.PrimaryCompany, "CompanyId", "CompanyName"), "Please Select", new { @class = "form-control"})
+                                    @Html.DropDownList("PrimaryCompany", new SelectList(ViewBag.PrimaryCompany, "CompanyId", "CompanyName"), "Please Select", new { @class = "form-control" })
                                 </div>
 
                             </div>
@@ -76,18 +101,10 @@
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="SecondaryCompany">Secondary Company</label>
-                                    @Html.ListBox("SecondaryCompany", new MultiSelectList(ViewBag.SecondaryCompany,  "CompanyId", "CompanyName"),  new { @class = "form-control"})
+                                    @Html.ListBox("SecondaryCompany", new MultiSelectList(ViewBag.SecondaryCompany, "CompanyId", "CompanyName"), new { @class = "form-control" })
                                 </div>
 
                             </div>
-                 
-                        </div>
-
-
-
-
-                        <div class="row">
-           
                             <div class="col-sm-3">
 
                                 <div class="form-group" id="BeneficiaryBank">
@@ -95,6 +112,12 @@
                                     @Html.DropDownList("Beneficiary", new SelectList(ViewBag.BankData, "BankId", "Bank_Code"), "Please Select", new { @class = "form-control" })
                                 </div>
                             </div>
+
+
+                        </div>
+
+
+                        <div class="row">
 
                             <div class="col-sm-3">
                                 <div class="form-check">
@@ -104,7 +127,7 @@
 
                             </div>
                         </div>
- 
+
                     </div>
 
                     @using PDAEstimator_Domain.Entities;
@@ -124,7 +147,7 @@
                     }
 
 
-               
+
                 </div>
 
             </div>
@@ -135,7 +158,7 @@
                 <div class="card card-primary">
                     <div class="card-header">
                         <h3 class="card-title">Customer List</h3>
-                    </div>  
+                    </div>
 
                     <div id="viewAll" class="card-body table-responsive"></div>
                 </div>
@@ -164,7 +187,7 @@
 
 
 @section Scripts
-    {
+{
     <script>
         function customerSave() {
             var Customer;
@@ -175,12 +198,12 @@
                 "IsEmailNotification": $("#EmailNotification").prop('checked'),
                 "PrimaryCompanyId": $('#PrimaryCompany').val(),
                 "SecondaryCompanyId": $('#SecondaryCompany').val(),
-                "BankID": $('#Beneficiary').val()
-
+                "BankID": $('#Beneficiary').val(),
+                "Email": $('#Email').val(),
+                "Mobile": $('#Mobile').val(),
+                "CountryCode": $('#CountryCode').val(),
             }
 
-            debugger
- 
             if ($('#_Company').val() == "") {
                 toastr.error("Please enter customer's company.", 'Error Alert');
                 $('#_Company').css("border-color", "Red");
@@ -317,6 +340,11 @@
                     $('#SecondaryCompany').val(data.customer.secondaryCompanyId);
                     ///////////
                     $('#Beneficiary').val(data.customer.bankID);
+                    $('#Email').val(data.customer.email);
+                    $('#Mobile').val(data.customer.mobile);
+                    var a = $('#Mobile').val().split("-");
+                    $('#Mobile').val(a[1]);
+                    $('#CountryCode').val(a[0]);
 
                 },
                 error: function () {
@@ -447,8 +475,7 @@
             }
         }
 
-        function ChangeCountryfunc(val)
-        {
+        function ChangeCountryfunc(val) {
 
             var Countryid = val;
             var Customer;
@@ -541,8 +568,7 @@
             loadcustomeruserData();
         }
 
-        function OnChangeCountryFilterfunc()
-        {
+        function OnChangeCountryFilterfunc() {
             loadcustomeruserData();
         }
 
@@ -607,7 +633,7 @@
                 toastr.error("Please enter last name.", 'Error Alert');
                 $('#LastName').css("border-color", "Red");
             }
-             else if ($('#Address1').val() == "") {
+            else if ($('#Address1').val() == "") {
                 toastr.error("Please enter address 1.", 'Error Alert');
                 $('#Address1').css("border-color", "Red");
             }
@@ -615,7 +641,7 @@
             else {
                 $.ajax({
                     type: "POST",
-                url: "/Admin/Customer/CustomerUserSave",
+                    url: "/Admin/Customer/CustomerUserSave",
                     data: Customer,
                     success: function (data) {
                         if (!data.proceed) {
@@ -730,7 +756,7 @@
                     $('#AlterCountryCode').val(T[0]);
                     $('#Password').val(data.customer.password);
                     $('#Status').val(data.customer.status);
-                    
+
 
                 },
                 error: function () {
@@ -764,7 +790,7 @@
         }
 
         function loadcustomeruserData() {
-           
+
             var Customer;
             Customer = {
                 "CustomerId": $('#CompanyDrop').val(),

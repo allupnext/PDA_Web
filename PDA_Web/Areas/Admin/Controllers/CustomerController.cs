@@ -36,17 +36,17 @@ namespace PDA_Web.Areas.Admin.Controllers
                 // Temp Solution END
                 var CountryData = await unitOfWork.Countrys.GetAllAsync();
 
-                /*                ViewBag.Country = CountryData;
-                                ViewBag.CountryCode = CountryData.Select(x => x.CountryCode).ToList();
+                ViewBag.Country = CountryData;
+                ViewBag.CountryCode = CountryData.Select(x => x.CountryCode).ToList();
 
-                                var DesignationData = await unitOfWork.Designation.GetAllAsync();
-                                ViewBag.Designations = DesignationData;
+                /*           var DesignationData = await unitOfWork.Designation.GetAllAsync();
+                         ViewBag.Designations = DesignationData;
 
-                                var StateData = await unitOfWork.States.GetAllAsync();
-                                ViewBag.State = StateData;
+                         var StateData = await unitOfWork.States.GetAllAsync();
+                         ViewBag.State = StateData;
 
-                                var CityData = await unitOfWork.Citys.GetAllAsync();
-                                ViewBag.City = CityData;*/
+                         var CityData = await unitOfWork.Citys.GetAllAsync();
+                         ViewBag.City = CityData;*/
 
                 var PrimaryCompanyData = await unitOfWork.Company.GetAllAsync();
                 ViewBag.PrimaryCompany = PrimaryCompanyData;
@@ -140,7 +140,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                        customer.Email
                     };
                     //string Content = "You are added in PDA Estimator and you can access our platform using below login credentials: </br> UserName :" + customer.Email + " User Password:" + customer.Password;
-                    string Content = "<html> <head>   <title>PDA Estimator Login Credentials</title> </head> <body>   <p> Dear User,<br>    Thanks for registering on the PDA portal.Your login details are as follows:     <br/>     <b>UserName:</b> " + customer.Email + "     <br/>     <b>User Password:</b> " + customer.Password+ " <br><br> <b>Regards <br> PDA Portal</b>  </p> </body> </html> ";
+                    string Content = "<html> <head>   <title>PDA Estimator Login Credentials</title> </head> <body>   <p> Dear User,<br>    Thanks for registering on the PDA portal.Your login details are as follows:     <br/>     <b>UserName:</b> " + customer.Email + "     <br/>     <b>User Password:</b> " + customer.Password + " <br><br> <b>Regards <br> PDA Portal</b>  </p> </body> </html> ";
                     string Subject = "Welcome to PDAEstimator";
                     string FromCompany = "";
                     if (PrimaryCompnayName == "Merchant Shipping Services Private Limited")
@@ -309,32 +309,32 @@ namespace PDA_Web.Areas.Admin.Controllers
             {
 
 
-                    await unitOfWork.Customer.UpdateAsync(customer);
-                    await unitOfWork.Customer.DeleteCustomer_Company_MappingAsync(customer.CustomerId);
-                    if (customer.PrimaryCompanyId != null)
-                    {
-                        Company_Customer_Mapping company_Customer_Mapping = new Company_Customer_Mapping();
+                await unitOfWork.Customer.UpdateAsync(customer);
+                await unitOfWork.Customer.DeleteCustomer_Company_MappingAsync(customer.CustomerId);
+                if (customer.PrimaryCompanyId != null)
+                {
+                    Company_Customer_Mapping company_Customer_Mapping = new Company_Customer_Mapping();
 
-                        company_Customer_Mapping.CustomerID = Convert.ToInt32(customer.CustomerId);
-                        company_Customer_Mapping.CompanyID = (int)customer.PrimaryCompanyId;
-                        company_Customer_Mapping.IsPrimary = true;
-                        await unitOfWork.Customer.AddCustomer_Company_MappingAsync(company_Customer_Mapping);
-                    }
-                    if (customer.SecondaryCompanyId != null)
-                    {
-                        Company_Customer_Mapping company_Customer_Mapping1 = new Company_Customer_Mapping();
+                    company_Customer_Mapping.CustomerID = Convert.ToInt32(customer.CustomerId);
+                    company_Customer_Mapping.CompanyID = (int)customer.PrimaryCompanyId;
+                    company_Customer_Mapping.IsPrimary = true;
+                    await unitOfWork.Customer.AddCustomer_Company_MappingAsync(company_Customer_Mapping);
+                }
+                if (customer.SecondaryCompanyId != null)
+                {
+                    Company_Customer_Mapping company_Customer_Mapping1 = new Company_Customer_Mapping();
 
-                        foreach (int i in customer.SecondaryCompanyId)
-                        {
-                            company_Customer_Mapping1 = new Company_Customer_Mapping();
-                            company_Customer_Mapping1.CustomerID = Convert.ToInt32(customer.CustomerId);
-                            company_Customer_Mapping1.CompanyID = i;
-                            company_Customer_Mapping1.IsPrimary = false;
-                            await unitOfWork.Customer.AddCustomer_Company_MappingAsync(company_Customer_Mapping1);
-                        }
+                    foreach (int i in customer.SecondaryCompanyId)
+                    {
+                        company_Customer_Mapping1 = new Company_Customer_Mapping();
+                        company_Customer_Mapping1.CustomerID = Convert.ToInt32(customer.CustomerId);
+                        company_Customer_Mapping1.CompanyID = i;
+                        company_Customer_Mapping1.IsPrimary = false;
+                        await unitOfWork.Customer.AddCustomer_Company_MappingAsync(company_Customer_Mapping1);
                     }
-                    _toastNotification.AddSuccessToastMessage("Updated Successfully");
-                
+                }
+                _toastNotification.AddSuccessToastMessage("Updated Successfully");
+
             }
             else
             {
@@ -365,7 +365,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                     }
                 }
                 _toastNotification.AddSuccessToastMessage("Inserted successfully");
-                
+
             }
             return Json(new
             {

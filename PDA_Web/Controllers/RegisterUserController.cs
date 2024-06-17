@@ -24,7 +24,9 @@ namespace PDA_Web.Controllers
         }
         public async Task<IActionResult> Index()
         {
-
+            var CountryData = await unitOfWork.Countrys.GetAllAsync();
+            ViewBag.Country = CountryData;
+            ViewBag.CountryCode = CountryData.Select(x => x.CountryCode).ToList();
 
             var PrimaryCompanyData = await unitOfWork.Company.GetAllAsync();
             ViewBag.PrimaryCompany = PrimaryCompanyData;
@@ -65,7 +67,7 @@ namespace PDA_Web.Controllers
                     }
                 }
             }
-            _toastNotification.AddSuccessToastMessage("Inserted successfully");
+            _toastNotification.AddSuccessToastMessage("Your Company register request sent successfully.");
             return Json(new
             {
                 proceed = true,
