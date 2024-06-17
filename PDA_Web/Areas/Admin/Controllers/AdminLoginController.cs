@@ -45,8 +45,7 @@ namespace PDA_Web.Areas.Admin.Controllers
 
                 if (isAuthenticated != null)
                 {
-                    HttpContext.Session.SetString("UserID", isAuthenticated.ID.ToString());
-
+                    
                     var isMacIDCheck = _configuration.GetValue<bool>("MacIDCheck");
                     if (isMacIDCheck)
                     {
@@ -55,55 +54,107 @@ namespace PDA_Web.Areas.Admin.Controllers
                         if (string.IsNullOrEmpty(isAuthenticated.MacAddress))
                         {
                             var AddMacAddress = await unitOfWork.User.AddMacAddress(macAddress, isAuthenticated.ID);
-                            return RedirectToAction("Index", "Home");
+                            await SendOTPEmail(isAuthenticated.EmailID, isAuthenticated.ID);
+                            return Json(new
+                            {
+                                proceed = false,
+                                msg = ""
+                            });
 
                         }
                         else if (isAuthenticated.MacAddress != macAddress)
                         {
                             _toastNotification.AddErrorToastMessage("Your MACAddress does not match with old MACAddress.");
-                            return View();
+                            return Json(new
+                            {
+                                proceed = false,
+                                msg = ""
+                            });
                         }
                         else
                         {
-                            return RedirectToAction("Index", "Home");
+                            await SendOTPEmail(isAuthenticated.EmailID, isAuthenticated.ID);
+                            return Json(new
+                            {
+                                proceed = true,
+                                msg = ""
+                            });
                         }
                     }
                     else
                     {
-                        return RedirectToAction("Index", "Home");
+                        await SendOTPEmail(isAuthenticated.EmailID, isAuthenticated.ID);
+                        return Json(new
+                        {
+                            proceed = true,
+                            msg = ""
+                        });
                     }
                 }
                 else
                 {
                     _toastNotification.AddErrorToastMessage("You have entered an invalid username or password.");
-                    return View();
+                    return Json(new
+                    {
+                        proceed = false,
+                        msg = ""
+                    });
                 }
             }
             else
             {
                 _toastNotification.AddErrorToastMessage("You have entered an invalid username or password.");
-                return View();
+                return Json(new
+                {
+                    proceed = false,
+                    msg = ""
+                });
             }
         }
 
-        public async Task<bool> SendOTPEmail(string Email)
+        [HttpPost]
+        public async Task<ActionResult> LoginwitOTP(UserAuth user)
+        {
+            User isAuthenticated = await unitOfWork.User.Authenticate(user.EmployCode, user.UserPassword);
+            if(isAuthenticated.OTP == user.OTP && isAuthenticated.OTPSentDate != null && isAuthenticated.OTPSentDate.Value.AddMinutes(10) >  DateTime.UtcNow)
+            {
+                HttpContext.Session.SetString("UserID", isAuthenticated.ID.ToString());
+                //return RedirectToAction("Index", "Home");
+
+                return Json(new
+                {
+                    proceed = true,
+                    msg = ""
+                });
+            }
+            else
+            {
+                _toastNotification.AddErrorToastMessage("You have entered an invalid OTP.");
+                return Json(new
+                {
+                    proceed = false,
+                    msg = ""
+                });
+            }
+        }
+
+        public async Task<bool> SendOTPEmail(string Email, int Id)
         {
             var CustomerUserData = await unitOfWork.CustomerUserMaster.GetCustomerUserByEmailAsync(Email);
-
             var CustomerId = CustomerUserData.Select(x => x.CustomerId).First();
-
             var corecustomerdata = await unitOfWork.Customer.GetByIdAsync(Convert.ToInt32(CustomerId));
-
             Int64 PrimaryCompanyId = Convert.ToInt64(corecustomerdata.PrimaryCompany);
-
             var FromPrimaryCompany = await unitOfWork.Company.GetByIdAsync(PrimaryCompanyId);
             var PrimaryCompnayName = FromPrimaryCompany.CompanyName;
+
+            string otp = (GenerateOTP.NextInt() % 1000000).ToString("000000");
+            await unitOfWork.User.UpdateOTP(otp, DateTime.UtcNow, Id);
 
             List<string> recipients = new List<string>
             {
                 Email
             };
-            string Content = "<html> <body>   <p>Hello, <br> You recently requested to reset the password for your PDAEstimator account. Click the button below to proceed.    </p> <div> <a  href=" + confirmationLink + "> <button style='height:30px; margin-bottom:30px; font-size:14px;' type='button'> Reset Password </button> </a> </div> </body> </html> ";
+            string Content = "<html> <body>   <p>Hello, <br>  Your OTP is " + otp + " </p> </body> </html> ";
             string Subject = "Reset Password";
             string FromCompany = "";
             if (PrimaryCompnayName == "Merchant Shipping Services Private Limited")
@@ -197,9 +248,6 @@ namespace PDA_Web.Areas.Admin.Controllers
             }
             return View();
         }
-
-
-
 
         public async Task<ActionResult> Logout()
         {

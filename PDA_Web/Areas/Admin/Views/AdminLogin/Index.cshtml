@@ -34,42 +34,44 @@
             <div class="card-body">
                 <p class="login-box-msg">Sign in to start your session</p>
 
-                <form method="post">
-                    <div class="input-group mb-3">
-@*                         <input type="text" class="form-control"id="EmployCode" placeholder="User Name" asp-for="@Model.EmployCode"> *@
-                        <input type="text" class="form-control"id="EmployCode" placeholder="Email" asp-for="@Model.EmployCode">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-envelope"></span>
-                            </div>
+                @* <form method="post"> *@
+                <div class="input-group mb-3">
+                    @*                         <input type="text" class="form-control"id="EmployCode" placeholder="User Name" asp-for="@Model.EmployCode"> *@
+                    <input type="text" class="form-control" id="EmployCode" placeholder="Email" asp-for="@Model.EmployCode">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-envelope"></span>
                         </div>
                     </div>
-                    <div class="input-group mb-3">
-                        <input type="password" class="form-control" id="Password" placeholder="Password" asp-for="@Model.UserPassword">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-lock"></span>
-                            </div>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="password" class="form-control" id="Password" placeholder="Password" asp-for="@Model.UserPassword">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-lock"></span>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-8">
-                            <div class="icheck-primary">
-                                @*<input type="checkbox" id="remember">
-                                <label for="remember">
-                                Remember Me
-                                </label>*@
-                            </div>
-                        </div>
-                        <!-- /.col -->
-                        <div class="col-8">
-                            <a asp-controller="AdminLogin" asp-action="ForgotPassword">Reset Password!!!</a>
-                        </div>          
-                        <div class="col-4">
-                            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="number" class="form-control" id="txtOtp" placeholder="OTP" asp-for="@Model.OTP" style="display:none;">
+
+                </div>
+                <div class="row">
+                    <div class="col-8">
+                        <div class="icheck-primary">
+                            <div class="countdown"></div>
                         </div>
                     </div>
-                </form>
+                    <!-- /.col -->
+                    <div class="col-8">
+                        <a asp-controller="AdminLogin" asp-action="ForgotPassword">Reset Password!!!</a>
+                    </div>
+                    <div class="col-4">
+                        <button id="RequiestOTP" onclick="RequiestOTP()" class="btn btn-primary btn-block">Send OTP</button>
+                        <button id="BtnLogin" style="display:none;" onclick="BtnLogin()" class="btn btn-primary btn-block">Sign In</button>
+                    </div>
+                </div>
+                @* </form> *@
 
 
             </div>
@@ -78,6 +80,95 @@
     <script src="~/plugins/jquery/jquery.min.js"></script>
     <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="~/dist/js/adminlte.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+    <script>
+        function StartTimer() {
+            var timer2 = "01:00";
+            var interval = setInterval(function () {
+
+                var timer = timer2.split(':');
+                //by parsing integer, I avoid all extra string processing
+                var minutes = parseInt(timer[0], 10);
+                var seconds = parseInt(timer[1], 10);
+                --seconds;
+                minutes = (seconds < 0) ? --minutes : minutes;
+                if (minutes < 0) clearInterval(interval);
+                seconds = (seconds < 0) ? 59 : seconds;
+                seconds = (seconds < 10) ? '0' + seconds : seconds;
+                //minutes = (minutes < 10) ?  minutes : minutes;
+                $('.countdown').html(minutes + ':' + seconds);
+                timer2 = minutes + ':' + seconds;
+
+                if(timer2 == "0:00")
+                {
+                    $('.countdown').html('');
+                    $('#BtnLogin').hide();
+                    $('#RequiestOTP').show();
+                }
+            }, 1000);
+        }
+
+        function RequiestOTP() {
+
+            var user;
+            user = {
+                "EmployCode": $('#EmployCode').val(),
+                "UserPassword": $('#Password').val(),
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/AdminLogin/Index",
+                data: user,
+                success: function (data) {
+                    if (data.proceed == true) {
+                        StartTimer();
+                        $('#BtnLogin').show();
+                        $('#RequiestOTP').hide();
+                        $('#txtOtp').show();
+                        $("#EmployCode").attr("disabled", "disabled");
+                        $("#Password").attr("disabled", "disabled");
+                    }
+                    // loadData();
+                },
+                error: function () {
+                }
+            });
+
+        }
+
+        function BtnLogin() {
+
+            var user;
+            user = {
+                "EmployCode": $('#EmployCode').val(),
+                "UserPassword": $('#Password').val(),
+                "Otp": $('#txtOtp').val()
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/AdminLogin/LoginwitOTP",
+                data: user,
+                success: function (data) {
+                    if (data.proceed == true) {
+                        window.location.href = '/Admin/Home';
+                        $('#txtOtp').val('');
+                    }
+                    // else {
+                    //     window.location.href = '/Admin/AdminLogin/Index/';
+                    // }
+                    // loadData();
+                },
+                error: function () {
+                    window.location.href = '/Admin/AdminLogin';
+                }
+            });
+
+        }
+
+    </script>
     @*    @await Component.InvokeAsync("NToastNotify")
     *@
     @await Component.InvokeAsync("NToastNotify")

@@ -321,8 +321,27 @@ namespace PDAEstimator_Infrastructure.Repositories
 				throw ex;
 			}
 		}
-		#region User Permission
-		public async Task<List<UserRolePermissionMenu>> GetAllUserRolePermissionMenuAsync()
+
+        public async Task<int> UpdateOTP(string OTP, DateTime OTPSentDate, long Id)
+        {
+            try
+            {
+                var sql = "UPDATE UserMaster SET OTP= @OTP, OTPSentDate = @OTPSentDate WHERE ID = @Id";
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                {
+                    connection.Open();
+                    var result = await connection.ExecuteAsync(sql, new { OTP = OTP, OTPSentDate = OTPSentDate, Id = Id });
+                    return result;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        #region User Permission
+        public async Task<List<UserRolePermissionMenu>> GetAllUserRolePermissionMenuAsync()
         {
             try
             {
