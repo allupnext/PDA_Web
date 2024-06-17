@@ -21,6 +21,7 @@ namespace PDA_Web.Controllers
         private readonly ILogger<LoginController> _logger;
         private readonly IEmailSender _emailSender;
         private readonly IToastNotification _toastNotification;
+        
         public LoginController(ILogger<LoginController> logger, IUnitOfWork unitOfWork, IToastNotification toastNotification , IEmailSender emailSender)
         {
             this.unitOfWork = unitOfWork;
@@ -60,6 +61,7 @@ namespace PDA_Web.Controllers
             }
         }
 
+  
         public async Task<IActionResult> ForgotPassword(string Email)
         {
             try 

@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+@{
+    Layout = "";
+}
+@model PDAEstimator_Domain.Entities.Customer
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PDAEstimator | Register </title>
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">
+    <!-- icheck bootstrap -->
+    <link rel="stylesheet" href="~/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/dist/css/adminlte.min.css">
+</head>
+<body class="hold-transition login-page">
+    <div class="login-box">
+        @*<div class="login-logo">
+        <a href="~/index2.html"><b>U & I Holidays</b></a>
+        </div>*@
+        <!-- /.login-logo -->
+        <div class="card card-outline card-primary">
+            <div class="card-header text-center">
+                <a class="h1"><b>PDA </b>Estimator</a>
+            </div>
+            <div class="card-body">
+                <p id="DefaultText" class="login-box-msg">Sign in to start your session</p>
+                <p class="login-box-msg" style="display:none; color:green; font-weight:600" id="Successed"> Company Saved Successfully</p>
+                <p class="login-box-msg" style="display:none; color:red; font-weight:600" id="Failed"> Company Can't Saved</p>
+
+                <div class="input-group mb-2">
+                    <div class="col-12">
+                        <label for="Company">Customer's Company<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="_Company" placeholder="Company">
+                    </div>
+                </div>
+                <div class="input-group mb-2">
+                    <div class="">
+                        <label for="PrimaryCompany">Primary Company<span class="text-danger">*</span></label>
+                        @Html.DropDownList("PrimaryCompany", new SelectList(ViewBag.PrimaryCompany, "CompanyId", "CompanyName"), "Please Select", new { @class = "form-control"})
+                    </div>
+
+                </div>
+
+                <div class="input-group mb-2">
+                    <div class="">
+                        <label for="SecondaryCompany">Secondary Company</label>
+                        @Html.ListBox("SecondaryCompany", new MultiSelectList(ViewBag.SecondaryCompany,  "CompanyId", "CompanyName"),  new { @class = "form-control"})
+                    </div>
+                </div>
+                <div class="input-group ">
+                    <div class="col-12" id="BeneficiaryBank">
+                        <label for="Bank">Banks<span class="text-danger">*</span></label>
+                        @Html.DropDownList("Beneficiary", new SelectList(ViewBag.BankData, "BankId", "Bank_Code"), "Please Select", new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+
+            <hr />
+
+                <div class="col-4">
+                <button type="submit" style="margin: 0px 0 20px 115px;" onclick="RegisterUserSave()" class="btn btn-primary btn-block">Sign In</button>
+                </div>
+         
+        </div>
+    </div>
+
+
+
+    <script src="~/plugins/jquery/jquery.min.js"></script>
+    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/dist/js/adminlte.min.js"></script>
+
+    @await Component.InvokeAsync("NToastNotify")
+    <script>
+
+        $(document).ready(function () {
+
+            $("#PrimaryCompany").change(function () {
+                debugger;
+                var compnayId = $('option:selected', this).val();
+
+                var Banks;
+                Banks = {
+                    "PrimaryCompanyId": compnayId,
+                    "Beneficiary_Bank_Name": $("#Beneficiary").val()
+                }
+                $.ajax({
+                    type: "GET",
+                    url: "/Admin/Customer/PrimaryCompneySelected",
+                    data: Banks,
+                    dataType: "HTML",
+                    success: function (data) {
+                        $("#BeneficiaryBank").html(data);
+
+                    },
+                    error: function () {
+                    }
+                });
+            })
+
+        });
+
+
+
+        function RegisterUserSave() {
+            var Customer;
+            Customer = {
+                // "CustomerId": $('#CustomerId').val(),
+                "Company": $('#_Company').val(),
+                "Status": "pending",
+                "PrimaryCompanyId": $('#PrimaryCompany').val(),
+                "SecondaryCompanyId": $('#SecondaryCompany').val(),
+                "BankID": $('#Beneficiary').val(),
+            }
+
+            debugger
+
+            if ($('#_Company').val() == "") {
+                toastr.error("Please enter customer's company.", 'Error Alert');
+                $('#_Company').css("border-color", "Red");
+            }
+            else if ($('#Beneficiary').val() == "") {
+                toastr.error("Please select BankCode.", 'Error Alert');
+                $('#Beneficiary').css("border-color", "Red");
+            }
+          
+            else if ($('#PrimaryCompany').val() == "") {
+                toastr.error("Please primary company.", 'Error Alert');
+                $('#PrimaryCompany').css("border-color", "Red");
+            }
+
+
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "/RegisterUser/RegisterUserSave",
+                    data: Customer,
+                    success: function (data) {
+                        if (data.success) {
+                            $("#Successed").show();
+                          
+                        }
+                    },
+                    error: function () {
+                        $("#Failed").show();
+                    }
+                });
+                $('#_Company').val("");
+                $('#PrimaryCompany').val("");
+                $('#Beneficiary').val("");
+                $('#SecondaryCompany').val("");
+            }
+        }
+    </script>
+
+
+
+</body>
+</html>
