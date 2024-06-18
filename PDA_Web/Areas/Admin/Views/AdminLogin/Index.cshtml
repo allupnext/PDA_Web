@@ -57,9 +57,9 @@
 
                 </div>
                 <div class="row">
-                    <div class="col-8">
-                        <div class="icheck-primary">
-                            <div class="countdown"></div>
+                    <div class="col-8" id="divCountdown" style="display:none;">
+                        <div style="display:flex;">
+                            <div> Resent OTP in :</div> <div class="countdown col-3" style="color:mediumseagreen"></div>
                         </div>
                     </div>
                     <!-- /.col -->
@@ -84,7 +84,8 @@
 
     <script>
         function StartTimer() {
-            var timer2 = "01:00";
+            $('#divCountdown').show();
+            var timer2 = "05:00";
             var interval = setInterval(function () {
 
                 var timer = timer2.split(':');
@@ -105,8 +106,15 @@
                     $('.countdown').html('');
                     $('#BtnLogin').hide();
                     $('#RequiestOTP').show();
+                    // return;
+                }
+
+                if (timer2 == "-1:59") {
+                    $('.countdown').html('');
+                    $('#divCountdown').hide();
                 }
             }, 1000);
+           
         }
 
         function RequiestOTP() {
@@ -127,6 +135,7 @@
                         $('#BtnLogin').show();
                         $('#RequiestOTP').hide();
                         $('#txtOtp').show();
+                        $('#txtOtp').val(data.otp);
                         $("#EmployCode").attr("disabled", "disabled");
                         $("#Password").attr("disabled", "disabled");
                     }

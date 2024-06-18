@@ -8,6 +8,7 @@ using PDAEstimator_Infrastructure_Shared;
 using PDAEstimator_Infrastructure_Shared.Services;
 using System.Configuration;
 using System.Net.NetworkInformation;
+using static System.Net.WebRequestMethods;
 
 namespace PDA_Web.Areas.Admin.Controllers
 {
@@ -54,11 +55,12 @@ namespace PDA_Web.Areas.Admin.Controllers
                         if (string.IsNullOrEmpty(isAuthenticated.MacAddress))
                         {
                             var AddMacAddress = await unitOfWork.User.AddMacAddress(macAddress, isAuthenticated.ID);
-                            await SendOTPEmail(isAuthenticated.EmailID, isAuthenticated.ID);
+                            string otp = await SendOTPEmail(isAuthenticated.EmailID, isAuthenticated.ID);
                             return Json(new
                             {
-                                proceed = false,
-                                msg = ""
+                                proceed = true,
+                                msg = "",
+                                otp = otp
                             });
 
                         }
@@ -68,26 +70,29 @@ namespace PDA_Web.Areas.Admin.Controllers
                             return Json(new
                             {
                                 proceed = false,
-                                msg = ""
+                                msg = "",
+                                otp = ""
                             });
                         }
                         else
                         {
-                            await SendOTPEmail(isAuthenticated.EmailID, isAuthenticated.ID);
+                            string otp = await SendOTPEmail(isAuthenticated.EmailID, isAuthenticated.ID);
                             return Json(new
                             {
                                 proceed = true,
-                                msg = ""
+                                msg = "",
+                                otp = otp
                             });
                         }
                     }
                     else
                     {
-                        await SendOTPEmail(isAuthenticated.EmailID, isAuthenticated.ID);
+                        string otp = await SendOTPEmail(isAuthenticated.EmailID, isAuthenticated.ID);
                         return Json(new
                         {
                             proceed = true,
-                            msg = ""
+                            msg = "",
+                            otp = otp
                         });
                     }
                 }
@@ -97,7 +102,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                     return Json(new
                     {
                         proceed = false,
-                        msg = ""
+                        msg = "",
+                        otp = ""
                     });
                 }
             }
@@ -107,7 +113,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                 return Json(new
                 {
                     proceed = false,
-                    msg = ""
+                    msg = "",
+                    otp = ""
                 });
             }
         }
@@ -138,7 +145,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             }
         }
 
-        public async Task<bool> SendOTPEmail(string Email, int Id)
+        public async Task<string> SendOTPEmail(string Email, int Id)
         {
             var CustomerUserData = await unitOfWork.CustomerUserMaster.GetCustomerUserByEmailAsync(Email);
             var CustomerId = CustomerUserData.Select(x => x.CustomerId).First();
@@ -170,7 +177,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             var Msg = new Message(recipients, Subject, Content, FromCompany);
             _emailSender.SendEmail(Msg);
 
-            return true;
+            return otp;
         }
 
         public async Task<IActionResult> ForgotPassword(string Email)
