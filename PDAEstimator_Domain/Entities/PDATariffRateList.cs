@@ -68,5 +68,8 @@ namespace PDAEstimator_Domain.Entities
 
         public int Reduced_GRT { get; set; } = 0;
         public int Range_TariffID { get; set; } = 0;
+
+        public int? OperationTypeID { get; set; }
+
     }
 }

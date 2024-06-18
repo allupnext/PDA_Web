@@ -231,6 +231,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                 var dataFormulas = await unitOfWork.Formula.GetAllAsync();
                 ViewBag.Formulas = dataFormulas;
 
+                var PortActivityData = await unitOfWork.PortActivities.GetAllAsync();
+                ViewBag.PortActivity = PortActivityData;
 
                 var dataTaxs = await unitOfWork.Taxs.GetAllAsync();
                 ViewBag.Texs = dataTaxs;
