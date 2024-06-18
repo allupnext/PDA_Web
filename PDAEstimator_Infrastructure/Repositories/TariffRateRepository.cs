@@ -25,7 +25,7 @@ namespace PDAEstimator_Infrastructure.Repositories
             try
             {
 
-                var sql = "Insert into TariffRate (PortID, TerminalID, CurrencyID, CreationDate, CreatedBy, BerthID, CallTypeID, CargoID,ExpenseCategoryID, SlabID, SlabFrom, SlabTo, Rate,status, ChargeCodeID, Validity_From,Validity_To, FormulaID, IsDeleted, Remark, TaxID, SlabIncreemental, VesselBallast, Reduced_GRT, Range_TariffID) VALUES (@PortID, @TerminalID, @CurrencyID, GetDate(), @CreatedBy, @BerthID, @CallTypeID, @CargoID,@ExpenseCategoryID,@SlabID,@SlabFrom, @SlabTo, @Rate,@status, @ChargeCodeID, @Validity_From, @Validity_To, @FormulaID, 0, @Remark, @TaxID, @SlabIncreemental, @VesselBallast, @Reduced_GRT, @Range_TariffID) SELECT CAST(SCOPE_IDENTITY() as int)";
+                var sql = "Insert into TariffRate (PortID, TerminalID, CurrencyID, CreationDate, CreatedBy, BerthID, CallTypeID, CargoID,ExpenseCategoryID, SlabID, SlabFrom, SlabTo, Rate,status, ChargeCodeID, Validity_From,Validity_To, FormulaID, IsDeleted, Remark, TaxID, SlabIncreemental, VesselBallast, Reduced_GRT, Range_TariffID,OperationTypeID) VALUES (@PortID, @TerminalID, @CurrencyID, GetDate(), @CreatedBy, @BerthID, @CallTypeID, @CargoID,@ExpenseCategoryID,@SlabID,@SlabFrom, @SlabTo, @Rate,@status, @ChargeCodeID, @Validity_From, @Validity_To, @FormulaID, 0, @Remark, @TaxID, @SlabIncreemental, @VesselBallast, @Reduced_GRT, @Range_TariffID,@OperationTypeID) SELECT CAST(SCOPE_IDENTITY() as int)";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
                     connection.Open();
@@ -131,7 +131,7 @@ namespace PDAEstimator_Infrastructure.Repositories
         {
             try
             {
-                var sql = "UPDATE TariffRate SET PortID = @PortID, TerminalID=@TerminalID,CurrencyID=@CurrencyID,ModifyDate= GetDate(), ModifyUserID = @ModifyUserID,BerthID=@BerthID,CallTypeID=@CallTypeID,CargoID=@CargoID,ExpenseCategoryID=@ExpenseCategoryID, SlabID=@SlabID, SlabFrom=@SlabFrom, SlabTo = @SlabTo,Rate=@Rate,ChargeCodeID=@ChargeCodeID,Validity_From=@Validity_From, Validity_To=@Validity_To,status=@status, FormulaID = @FormulaID, Remark = @Remark, TaxID = @TaxID, SlabIncreemental = @SlabIncreemental, VesselBallast = @VesselBallast, Reduced_GRT = @Reduced_GRT, Range_TariffID = @Range_TariffID WHERE TariffRateID = @TariffRateID";
+                var sql = "UPDATE TariffRate SET PortID = @PortID, TerminalID=@TerminalID,CurrencyID=@CurrencyID,ModifyDate= GetDate(), ModifyUserID = @ModifyUserID,BerthID=@BerthID,CallTypeID=@CallTypeID,CargoID=@CargoID,ExpenseCategoryID=@ExpenseCategoryID, SlabID=@SlabID, SlabFrom=@SlabFrom, SlabTo = @SlabTo,Rate=@Rate,ChargeCodeID=@ChargeCodeID,Validity_From=@Validity_From, Validity_To=@Validity_To,status=@status, FormulaID = @FormulaID, Remark = @Remark, TaxID = @TaxID, SlabIncreemental = @SlabIncreemental, VesselBallast = @VesselBallast, Reduced_GRT = @Reduced_GRT, Range_TariffID = @Range_TariffID, OperationTypeID = @OperationTypeID WHERE TariffRateID = @TariffRateID";
 
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {

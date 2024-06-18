@@ -23,6 +23,7 @@
             <th style="min-width:150px;">Cargo</th>
             <th style="min-width:110px;">Validity From</th>
             <th style="min-width:110px;">Validity To</th>
+            <th style="min-width:110px;">Operation Type</th>
             <th>Status</th>
             <th style="min-width:110px;">Call Type</th>
             <th style="min-width:150px;">Expenses</th>
@@ -96,6 +97,21 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Validity_To)
+                </td>
+                <td>
+                    @if (item.OperationTypeID == 3)
+                    {
+                        <span>Loading</span>
+                    }
+                    else if (item.OperationTypeID == 2)
+                    {
+                        <span>Discharge</span>
+                    }
+                    else
+                    {
+                        <span>All</span>
+                    }
+
                 </td>
                 <td>
                     @if (item.status == 1)

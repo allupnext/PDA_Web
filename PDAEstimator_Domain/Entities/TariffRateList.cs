@@ -46,6 +46,7 @@ namespace PDAEstimator_Domain.Entities
         public string? ChargeCodeName { get; set; }
 
         public decimal Rate { get; set; }
+        public int OperationTypeID { get; set; }
         public int status { get; set; }
 
         public int? CurrencyID { get; set; }
