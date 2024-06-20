@@ -116,6 +116,11 @@ namespace PDA_Web.Areas.Admin.Controllers
                 if (CMobileNumber.Count > 0 && CMobileNumber != null || CEmailId.Count > 0 && CEmailId != null)
                 {
                     _toastNotification.AddWarningToastMessage("MobileNumber Or Email Exist!..");
+                    return Json(new
+                    {
+                        proceed = false,
+                        msg = ""
+                    });
                 }
                 else
                 {
@@ -131,6 +136,11 @@ namespace PDA_Web.Areas.Admin.Controllers
                 if (CMobileNumber.Count > 0 && CMobileNumber != null || CEmailId.Count > 0 && CEmailId != null)
                 {
                     _toastNotification.AddWarningToastMessage("MobileNumber Or Email Exist!..");
+                    return Json(new
+                    {
+                        proceed = false,
+                        msg = ""
+                    });
                 }
                 else
                 {

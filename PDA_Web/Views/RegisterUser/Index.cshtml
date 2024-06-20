@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="~/dist/css/adminlte.min.css">
 </head>
 <body class="hold-transition login-page">
-    <div class="login-box">
+    <div class="login-box" style="width:600px">
         @*<div class="login-logo">
         <a href="~/index2.html"><b>U & I Holidays</b></a>
         </div>*@
@@ -36,58 +36,128 @@
 
                 <div class="input-group mb-2">
                     <div class="col-12">
-                        <label for="Company">Customer's Company<span class="text-danger">*</span></label>
+                        <label for="Company">Company Name<span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="_Company" placeholder="Company">
+                    </div>
+
+                </div>
+
+                <div class="input-group mb-2">
+
+                    <div class="col-6">
+                        <label for="Salutation">Salutation<span class="text-danger">*</span></label>
+                        <select class="form-control" id="Salutation">
+                            <option value="">Please Select</option>
+                            <option value="Mr">Mr</option>
+                            <option value="Mrs">Mrs</option>
+                            <option value="Ms">Ms</option>
+                            <option value="Dr">Dr</option>
+                            <option value="Captain">Captain</option>
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <label for="FirstName">First Name<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="FirstName" placeholder="First Name">
                     </div>
                 </div>
                 <div class="input-group mb-2">
-                    <div class="col-12">
+
+                    <div class="col-6">
+                        <label for="LastName">Last Name<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="LastName" placeholder="Last Name">
+                    </div>
+                    <div class="col-6">
+                        <label for="Designation">Designation<span class="text-danger">*</span></label>
+                        @Html.DropDownList("Designation", new SelectList(ViewBag.Designations, "DesignationId", "DesignationName"), "Please Select", new { @class = "form-control" })
+
+                    </div>
+                </div>
+                <div class="input-group mb-2">
+
+                    <div class="col-6">
+                        <label for="Address1">Address Line 1<span class="text-danger">*</span></label>
+                        <textarea type="text" cols="2" rows="3" class="form-control" id="Address1" placeholder="Address Line 1"></textarea>
+                    </div>
+                    <div class="col-6">
+                        <label for="Country">Country<span class="text-danger">*</span></label>
+                        @Html.DropDownList("Country", new SelectList(ViewBag.Country, "ID", "CountryName"), "Please Select", new { @class = "form-control", @onchange = "ChangeCountryfunc(this.value)" })
+
+                    </div>
+                </div>
+                <div class="input-group mb-2">
+
+                    <div class="col-6">
+                        <label for="State">State@* <span class="text-danger">*</span> *@</label>
+                        @Html.DropDownList("State", new SelectList(ViewBag.State, "ID", "StateName"), "Please select", new { @class = "form-control", @onchange = "callChangefunc(this.value)" })
+
+                    </div>
+                    <div class="col-6">
+                        <label for="PortName">City@* <span class="text-danger">*</span> *@</label>
+                        @Html.DropDownList("City", new SelectList(ViewBag.City, "ID", "CityName"), "Please select", new { @class = "form-control" })
+
+                    </div>
+
+
+                </div>
+                <div class="input-group mb-2">
+                    <div class="col-6">
                         <label for="Mobile">Mobile Number<span class="text-danger">*</span></label>
                         <div class="row">
                             <div class="col-sm-2">
                                 @Html.DropDownList("CountryCode", new SelectList(ViewBag.CountryCode, "CountryCode"), new { @class = "form-control", style = "width:80px; padding: 0px;" })
                             </div>
-                            <div class="col-sm-10">
+                            <div class="col-sm-7">
                                 <input type="tel" class="form-control" id="Mobile" maxlength="11" placeholder="Mobile Number">
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="input-group mb-2">
-                    <div class="col-12">
+                    <div class="col-6">
                         <label for="Email">Email<span class="text-danger">*</span></label>
                         <input type="email" class="form-control" id="Email" placeholder="Email" oninput="validateEmail(this.value)" onChange="validateEmail(this.value)">
                         <span id="emailError" style="color: red;"></span>
                     </div>
                 </div>
-                <div class="input-group mb-2">
-                    <div class="">
-                        <label for="PrimaryCompany">Primary Company<span class="text-danger">*</span></label>
-                        @Html.DropDownList("PrimaryCompany", new SelectList(ViewBag.PrimaryCompany, "CompanyId", "CompanyName"), "Please Select", new { @class = "form-control" })
-                    </div>
+                @*   <div class="input-group mb-2">
+                <div class="col-6"></div>
+                <div class="col-6"></div>
+                </div> *@
+                @*   <div class="input-group mb-2">
+                <div class="">
+                <label for="PrimaryCompany">Primary Company<span class="text-danger">*</span></label>
+                @Html.DropDownList("PrimaryCompany", new SelectList(ViewBag.PrimaryCompany, "CompanyId", "CompanyName"), "Please Select", new { @class = "form-control" })
+                </div>
 
                 </div>
 
                 <div class="input-group mb-2">
-                    <div class="">
-                        <label for="SecondaryCompany">Secondary Company</label>
-                        @Html.ListBox("SecondaryCompany", new MultiSelectList(ViewBag.SecondaryCompany, "CompanyId", "CompanyName"), new { @class = "form-control" })
-                    </div>
+                <div class="">
+                <label for="SecondaryCompany">Secondary Company</label>
+                @Html.ListBox("SecondaryCompany", new MultiSelectList(ViewBag.SecondaryCompany, "CompanyId", "CompanyName"), new { @class = "form-control" })
+                </div>
                 </div>
                 <div class="input-group ">
-                    <div class="col-12" id="BeneficiaryBank">
-                        <label for="Bank">Banks<span class="text-danger">*</span></label>
-                        @Html.DropDownList("Beneficiary", new SelectList(ViewBag.BankData, "BankId", "Bank_Code"), "Please Select", new { @class = "form-control" })
-                    </div>
+                <div class="col-12" id="BeneficiaryBank">
+                <label for="Bank">Banks<span class="text-danger">*</span></label>
+                @Html.DropDownList("Beneficiary", new SelectList(ViewBag.BankData, "BankId", "Bank_Code"), "Please Select", new { @class = "form-control" })
                 </div>
+                </div> *@
             </div>
 
             <hr />
 
-            <div class="col-4">
-                <button type="submit" style="margin: 0px 0 20px 115px;" onclick="RegisterUserSave()" class="btn btn-primary btn-block">Register Request</button>
+            <div class="card-footer">
+                <div class="row">
+                    <div class="col-4">
+                        <div class="row">
+                            <a asp-controller="Login" asp-action="Index">Back To Login!!!</a>
+                        </div>
+                   
+                    </div>
+                    <div class="col-4">
+                        <button type="submit" onclick="RegisterUserSave()" class="btn btn-primary">Submit Request</button>
+                    </div>
+                </div>
             </div>
-
         </div>
     </div>
 
@@ -149,9 +219,19 @@
                 // "CustomerId": $('#CustomerId').val(),
                 "Company": $('#_Company').val(),
                 "Status": "Pending For Approval",
-                "PrimaryCompanyId": $('#PrimaryCompany').val(),
-                "SecondaryCompanyId": $('#SecondaryCompany').val(),
-                "BankID": $('#Beneficiary').val(),
+                // "PrimaryCompanyId": $('#PrimaryCompany').val(),
+                // "SecondaryCompanyId": $('#SecondaryCompany').val(),
+                // "BankID": $('#Beneficiary').val(),
+
+                "Salutation": $('#Salutation').val(),
+                "FirstName": $('#FirstName').val(),
+                "LastName": $('#LastName').val(),
+                "Designation": $('#Designation').val(),
+                "Address1": $('#Address1').val(),
+                "Company": $('#_Company').val(),
+                "City": $('#City').val(),
+                "State": $('#State').val(),
+                "Country": $('#Country').val(),
                 "Email": $('#Email').val(),
                 "Mobile": $('#Mobile').val(),
                 "CountryCode": $('#CountryCode').val(),
@@ -192,6 +272,17 @@
                 $('#PrimaryCompany').val("");
                 $('#Beneficiary').val("");
                 $('#SecondaryCompany').val("");
+                $('#Salutation').val("");
+                $('#FirstName').val("");
+                $('#LastName').val("");
+                $('#Designation').val("");
+                $('#Address1').val("");
+                $('#City').val("");
+                $('#State').val("");
+                $('#Country').val("");
+                $('#Email').val("");
+                $('#AlternativeEmail').val("");
+                $('#Mobile').val("");
             }
         }
     </script>
