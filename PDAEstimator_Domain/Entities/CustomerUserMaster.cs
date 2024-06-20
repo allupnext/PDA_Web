@@ -32,5 +32,8 @@ namespace PDAEstimator_Domain.Entities
         public string StateName { get; set; }
         public string CityName { get; set; }
         public string? Token { get; set; }
+        public string MacAddress { get; set; }
+        public string? OTP { get; set; }
+        public DateTime? OTPSentDate { get; set; }
     }
 }

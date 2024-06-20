@@ -18,6 +18,8 @@
     <link rel="stylesheet" href="~/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="~/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 </head>
 <body class="hold-transition login-page">
     <div class="login-box">
@@ -32,42 +34,52 @@
             <div class="card-body">
                 <p class="login-box-msg">Sign in to start your session</p>
 
-                <form method="post">
-                    <div class="input-group mb-3">
-                        <input type="email" class="form-control" placeholder="Email" asp-for="@Model.Email">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-envelope"></span>
-                            </div>
+                @* <form method="post"> *@
+                <div class="input-group mb-3">
+                    <input type="email" id="Email" class="form-control" placeholder="Email" asp-for="@Model.Email">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-envelope"></span>
                         </div>
                     </div>
-                    <div class="input-group mb-3">
-                        <input type="password" class="form-control" placeholder="Password" asp-for="@Model.CustomerPassword">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-lock"></span>
-                            </div>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="password" id="CustomerPassword" class="form-control" placeholder="Password" asp-for="@Model.CustomerPassword">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-lock"></span>
                         </div>
                     </div>
-                    <hr />
-                    <div class="row">
-                        <div class="col-8">
-                            <div class="row">
+                </div>
+                <div class="input-group mb-3">
+                    <input type="number" class="form-control" id="txtOtp" placeholder="OTP" asp-for="@Model.OTP" style="display:none;">
+
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-8" id="divCountdown" style="display:none;">
+                        <div style="display:flex;">
+                            <div> Resent OTP in :</div> <div class="countdown col-3" style="color:mediumseagreen"></div>
+                        </div>
+                    </div>
+                    <div class="col-8">
+                        <div class="row">
                             <a asp-controller="Login" asp-action="ForgotPassword">Reset Password!!!</a>
-                            </div>
-                            <div class="row">
-                                <a asp-controller="RegisterUser" asp-action="Index">Don't Have an Account</a>
-                            </div>
                         </div>
-                        <div class="col-4">
-                            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                        <div class="row">
+                            <a asp-controller="RegisterUser" asp-action="Index">Don't Have an Account</a>
                         </div>
-@*                         <div class="col-4">
-                            <a asp-controller="Login" asp-action="Register">Register</a>
-                        </div> *@
                     </div>
-                  
-                </form>
+                    <div class="col-4">
+                        <button id="RequiestOTP" onclick="RequiestOTP()" class="btn btn-primary btn-block">Send OTP</button>
+                        <button id="BtnLogin" style="display:none;" onclick="BtnLogin()" class="btn btn-primary btn-block">Sign In</button>
+                    </div>
+                    @*                         <div class="col-4">
+                    <a asp-controller="Login" asp-action="Register">Register</a>
+                    </div> *@
+                </div>
+
+                @* </form> *@
 
 
             </div>
@@ -76,9 +88,106 @@
     <script src="~/plugins/jquery/jquery.min.js"></script>
     <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="~/dist/js/adminlte.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     @*    @await Component.InvokeAsync("NToastNotify")
     *@
 
-    
+
+    <script>
+        function StartTimer() {
+            $('#divCountdown').show();
+            var timer2 = "05:00";
+            var interval = setInterval(function () {
+
+                var timer = timer2.split(':');
+                //by parsing integer, I avoid all extra string processing
+                var minutes = parseInt(timer[0], 10);
+                var seconds = parseInt(timer[1], 10);
+                --seconds;
+                minutes = (seconds < 0) ? --minutes : minutes;
+                if (minutes < 0) clearInterval(interval);
+                seconds = (seconds < 0) ? 59 : seconds;
+                seconds = (seconds < 10) ? '0' + seconds : seconds;
+                //minutes = (minutes < 10) ?  minutes : minutes;
+                $('.countdown').html(minutes + ':' + seconds);
+                timer2 = minutes + ':' + seconds;
+
+                if (timer2 == "0:00") {
+                    $('.countdown').html('');
+                    $('#BtnLogin').hide();
+                    $('#RequiestOTP').show();
+                    // return;
+                }
+
+                if (timer2 == "-1:59") {
+                    $('.countdown').html('');
+                    $('#divCountdown').hide();
+                }
+            }, 1000);
+
+        }
+
+        function RequiestOTP() {
+
+            var user;
+            user = {
+                "Email": $('#Email').val(),
+                "CustomerPassword": $('#CustomerPassword').val(),
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Login/Index",
+                data: user,
+                success: function (data) {
+                    if (data.proceed == true) {
+                        StartTimer();
+                        $('#BtnLogin').show();
+                        $('#RequiestOTP').hide();
+                        $('#txtOtp').show();
+                        $('#txtOtp').val(data.otp);
+                        $("#EmployCode").attr("disabled", "disabled");
+                        $("#Password").attr("disabled", "disabled");
+                    }
+                    // loadData();
+                },
+                error: function () {
+                }
+            });
+
+        }
+
+        function BtnLogin() {
+
+            var user;
+            user = {
+                "Email": $('#Email').val(),
+                "CustomerPassword": $('#CustomerPassword').val(),
+                "Otp": $('#txtOtp').val()
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Login/LoginwitOTP",
+                data: user,
+                success: function (data) {
+                    if (data.proceed == true) {
+                        window.location.href = '/Dashboard/Index';
+                        $('#txtOtp').val('');
+                    }
+                    // else {
+                    //     window.location.href = '/Admin/AdminLogin/Index/';
+                    // }
+                    // loadData();
+                },
+                error: function () {
+                    window.location.href = '/Dashboard/Index';
+                }
+            });
+
+        }
+
+    </script>
+    @await Component.InvokeAsync("NToastNotify")
 </body>
 </html>

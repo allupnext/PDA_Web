@@ -134,5 +134,43 @@ namespace PDAEstimator_Infrastructure.Repositories
             }
         }
 
+        public async Task<int> AddMacAddress(string macAddress, long Id)
+        {
+            try
+            {
+                var sql = "UPDATE CustomerUserMaster SET MacAddress= @MacAddress WHERE ID = @Id";
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                {
+                    connection.Open();
+                    var result = await connection.ExecuteAsync(sql, new { MacAddress = macAddress, ID = Id });
+                    return result;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<int> UpdateOTP(string OTP, DateTime OTPSentDate, long Id)
+        {
+            try
+            {
+                var sql = "UPDATE CustomerUserMaster SET OTP= @OTP, OTPSentDate = @OTPSentDate WHERE ID = @Id";
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                {
+                    connection.Open();
+                    var result = await connection.ExecuteAsync(sql, new { OTP = OTP, OTPSentDate = OTPSentDate, Id = Id });
+                    return result;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
     }
 }

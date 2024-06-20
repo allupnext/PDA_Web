@@ -1,4 +1,4 @@
-﻿    using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
@@ -21,13 +21,15 @@ namespace PDA_Web.Controllers
         private readonly ILogger<LoginController> _logger;
         private readonly IEmailSender _emailSender;
         private readonly IToastNotification _toastNotification;
-        
-        public LoginController(ILogger<LoginController> logger, IUnitOfWork unitOfWork, IToastNotification toastNotification , IEmailSender emailSender)
+        private readonly IConfiguration _configuration;
+
+        public LoginController(ILogger<LoginController> logger, IUnitOfWork unitOfWork, IToastNotification toastNotification, IEmailSender emailSender, IConfiguration configuration)
         {
             this.unitOfWork = unitOfWork;
             _logger = logger;
             _toastNotification = toastNotification;
             _emailSender = emailSender;
+            _configuration = configuration;
         }
 
         [HttpPost]
@@ -35,36 +37,163 @@ namespace PDA_Web.Controllers
         {
             if (customerAuth != null)
             {
-				//var macAddress = NetworkInterface
-				//	.GetAllNetworkInterfaces()
-    //                .Where(nic => nic.OperationalStatus == OperationalStatus.Up && nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
-    //                .Select(nic => nic.GetPhysicalAddress().ToString())
-    //                .FirstOrDefault();
+                var macAddress = NetworkInterface
+             .GetAllNetworkInterfaces()
+                         .Where(nic => nic.OperationalStatus == OperationalStatus.Up && nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
+                         .Select(nic => nic.GetPhysicalAddress().ToString())
+                         .FirstOrDefault();
 
-				CustomerUserMaster isAuthenticated = await unitOfWork.Customer.Authenticate(customerAuth.Email, customerAuth.CustomerPassword);
+
+                CustomerUserMaster isAuthenticated = await unitOfWork.Customer.Authenticate(customerAuth.Email, customerAuth.CustomerPassword);
                 if (isAuthenticated != null)
                 {
-                    HttpContext.Session.SetString("CustID", isAuthenticated.CustomerId.ToString());
-                    HttpContext.Session.SetString("ID", isAuthenticated.ID.ToString());
+                    var isMacIDCheck = _configuration.GetValue<bool>("MacIDCheck");
+                    if (isMacIDCheck)
+                    {
 
-                    //var AddMacAddress = await unitOfWork.User.AddMacAddress(macAddress, isAuthenticated.ID);
-                    return RedirectToAction("Index", "Dashboard");
+                        if (string.IsNullOrEmpty(isAuthenticated.MacAddress))
+                        {
+                            var AddMacAddress = await unitOfWork.CustomerUserMaster.AddMacAddress(macAddress, isAuthenticated.ID);
+                            string otp = await SendOTPEmail(isAuthenticated.Email, isAuthenticated.ID);
+                            return Json(new
+                            {
+                                proceed = true,
+                                msg = "",
+                                otp = otp
+                            });
+
+                        }
+                        else if (isAuthenticated.MacAddress != macAddress)
+                        {
+                            _toastNotification.AddErrorToastMessage("Your MACAddress does not match with old MACAddress.");
+                            return Json(new
+                            {
+                                proceed = false,
+                                msg = "",
+                                otp = ""
+                            });
+                        }
+                        else
+                        {
+                            string otp = await SendOTPEmail(isAuthenticated.Email, isAuthenticated.ID);
+                            return Json(new
+                            {
+                                proceed = true,
+                                msg = "",
+                                otp = otp
+                            });
+                        }
+
+                    }
+                    else
+                    {
+                        string otp = await SendOTPEmail(isAuthenticated.Email, isAuthenticated.ID);
+                        return Json(new
+                        {
+                            proceed = true,
+                            msg = "",
+                            otp = otp
+                        });
+                    }
                 }
                 else
                 {
-                    return View();
+                    _toastNotification.AddErrorToastMessage("You have entered an invalid username or password.");
+                    return Json(new
+                    {
+                        proceed = false,
+                        msg = "",
+                        otp = ""
+                    });
                 }
             }
             else
             {
-                return View();
+                _toastNotification.AddErrorToastMessage("You have entered an invalid username or password.");
+                return Json(new
+                {
+                    proceed = false,
+                    msg = "",
+                    otp = ""
+                });
             }
         }
 
-  
+        public async Task<string> SendOTPEmail(string Email, int Id)
+        {
+            var CustomerUserData = await unitOfWork.CustomerUserMaster.GetCustomerUserByEmailAsync(Email);
+            var CustomerId = CustomerUserData.Select(x => x.CustomerId).First();
+            var corecustomerdata = await unitOfWork.Customer.GetByIdAsync(Convert.ToInt32(CustomerId));
+            Int64 PrimaryCompanyId = Convert.ToInt64(corecustomerdata.PrimaryCompany);
+            var FromPrimaryCompany = await unitOfWork.Company.GetByIdAsync(PrimaryCompanyId);
+            var PrimaryCompnayName = FromPrimaryCompany.CompanyName;
+
+            string otp = (GenerateOTP.NextInt() % 1000000).ToString("000000");
+            await unitOfWork.CustomerUserMaster.UpdateOTP(otp, DateTime.UtcNow, Id);
+
+            List<string> recipients = new List<string>
+            {
+                Email
+            };
+            string Content = "<div style='font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2'>"
+   + "<div style='margin:50px auto;width:70%;padding:20px 0'>"
+   + "<div style='border-bottom:1px solid #eee'>"
+   + "  <a href='' style='font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600'>samsara PDA Estimation</a>"
+   + "</div>"
+   + "<p style='font-size:1.1em'>Hi,</p>"
+   + "<p>Thank you for choosing samsara PDA Estimation. Use the following OTP to complete your Sign Up procedures. OTP is valid for 5 minutes</p>"
+   + "<h2 style='background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;'>" + otp + "</h2>"
+   + "<p style='font-size:0.9em;'>Regards,<br />samsara PDA Estimation Team</p>"
+   + "<hr style='border:none;border-top:1px solid #eee' />"
+   + "<div style='float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300'>"
+   + "<p>Samsara</p>"
+    + "</div> </div></div> ";
+            string Subject = "Login in PDA Estimation";
+            string FromCompany = "";
+            if (PrimaryCompnayName == "Merchant Shipping Services Private Limited")
+            {
+                FromCompany = "FromMerchant";
+            }
+            if (PrimaryCompnayName == "Samsara Shipping Private Limited")
+            {
+                FromCompany = "FromSamsara";
+            }
+
+
+            var Msg = new Message(recipients, Subject, Content, FromCompany);
+            _emailSender.SendEmail(Msg);
+
+            return otp;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> LoginwitOTP(CustomerAuth customerAuth)
+        {
+            var isAuthenticated = await unitOfWork.Customer.Authenticate(customerAuth.Email, customerAuth.CustomerPassword);
+            if (isAuthenticated.OTP == customerAuth.OTP && isAuthenticated.OTPSentDate != null && isAuthenticated.OTPSentDate.Value.AddMinutes(10) > DateTime.UtcNow)
+            {
+                HttpContext.Session.SetString("CustID", isAuthenticated.CustomerId.ToString());
+                HttpContext.Session.SetString("ID", isAuthenticated.ID.ToString());
+
+                return Json(new
+                {
+                    proceed = true,
+                    msg = ""
+                });
+            }
+            else
+            {
+                _toastNotification.AddErrorToastMessage("You have entered an invalid OTP.");
+                return Json(new
+                {
+                    proceed = false,
+                    msg = ""
+                });
+            }
+        }
         public async Task<IActionResult> ForgotPassword(string Email)
         {
-            try 
+            try
             {
                 if (Email != null)
                 {
@@ -119,7 +248,7 @@ namespace PDA_Web.Controllers
 
 
                         var Msg = new Message(recipients, Subject, Content, FromCompany);
-            /*            _toastNotification.AddSuccessToastMessage("Email hase been sent to given Email Address");*/
+                        /*            _toastNotification.AddSuccessToastMessage("Email hase been sent to given Email Address");*/
                         _emailSender.SendEmail(Msg);
 
 
@@ -136,13 +265,13 @@ namespace PDA_Web.Controllers
             {
                 return BadRequest(ex.Message);
             }
-           
-         }
 
-/*        public async Task<ActionResult> Register()
-        {
-            return View();
-        }*/
+        }
+
+        /*        public async Task<ActionResult> Register()
+                {
+                    return View();
+                }*/
 
 
         public async Task<ActionResult> Logout()
@@ -155,6 +284,6 @@ namespace PDA_Web.Controllers
         {
             return View();
         }
-   
+
     }
 }

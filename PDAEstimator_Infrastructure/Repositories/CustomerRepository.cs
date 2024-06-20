@@ -187,7 +187,6 @@ namespace PDAEstimator_Infrastructure.Repositories
             }
         }
 
-
         public async Task<Customer> GetByIdAsync(long id)
         {
             try
@@ -209,8 +208,6 @@ namespace PDAEstimator_Infrastructure.Repositories
             catch (Exception ex) { throw ex; }
         }
     
-
-
         public async Task<List<CustomerList>> GetAlllistAsync()
         {
             //var sql = "SELECT CustomerId, Salutation,FirstName,LastName,Designation,Address1,Address2,Company,CustomerMaster.City as City,CustomerMaster.State as State,CustomerMaster.Country as Country,Email,Mobile,Password,CityName,StateName,CountryName,AlternativeEmail,Telephone,IsEmailNotification,BankMaster.Bank_Code FROM CustomerMaster left join CityList on CityList.ID =  CustomerMaster.City left join Country on Country.ID =  CustomerMaster.Country left join State on State.ID =  CustomerMaster.State Left join BankMaster ON BankMaster.BankId = CustomerMaster.BankID WHERE CustomerMaster.IsDeleted != 1";
@@ -256,8 +253,24 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         }
 
+        public async Task<int> AddMacAddress(string macAddress, long Id)
+        {
+            try
+            {
+                var sql = "UPDATE UserMaster SET MacAddress= @MacAddress WHERE ID = @Id";
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                {
+                    connection.Open();
+                    var result = await connection.ExecuteAsync(sql, new { MacAddress = macAddress, ID = Id });
+                    return result;
+                }
+            }
 
-
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
     }
 }
