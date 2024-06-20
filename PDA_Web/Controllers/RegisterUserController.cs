@@ -140,17 +140,23 @@ namespace PDA_Web.Controllers
 
         }
 
-/*        public IActionResult CountryOnchange(CustomerUserMaster customer)
+        public IActionResult CountryOnchange(CustomerUserMaster customer)
         {
             var StateData = unitOfWork.States.GetAllAsync().Result.Where(x => x.CountryId == customer.Country);
-            var CityData = unitOfWork.Citys.GetCitylistByCountry(customer.Country, 0);
+            //var CityData = unitOfWork.Citys.GetCitylistByCountry(customer.Country, 0);
 
-            ViewBag.City = CityData;
+            //ViewBag.City = CityData;
             ViewBag.State = StateData;
             return PartialView("partial/StatesList");
         }
+        public IActionResult StateOnchange(PortDetails portDetails)
+        {
+            var CityData = unitOfWork.Citys.GetAllAsync().Result.Where(x => x.StateId == portDetails.State);
 
-        public async Task<IActionResult> CountryOnChangeforCountryCode(CustomerUserMaster customer)
+            ViewBag.City = CityData;
+            return PartialView("partial/CityList");
+        }
+        public async Task<IActionResult> CountryOnChangeforCountryCode(Customer customer)
         {
             var CountryData = await unitOfWork.Countrys.GetCountryCodeByCountryIdAsync(customer.Country);
             ViewBag.CountryCode = CountryData;
@@ -161,14 +167,26 @@ namespace PDA_Web.Controllers
                 msg = ""
             });
         }
-        public IActionResult CountryOnchangeforCity(CustomerUserMaster customer)
-        {
-            var CountryData = unitOfWork.Countrys.GetAllAsync();
 
-            var CityData = unitOfWork.Citys.GetCitylistByCountry(customer.Country, 0).Result;
-            ViewBag.City = CityData;
-            return PartialView("partial/CityList");
-        }*/
+        /*        public async Task<IActionResult> CountryOnChangeforCountryCode(CustomerUserMaster customer)
+                {
+                    var CountryData = await unitOfWork.Countrys.GetCountryCodeByCountryIdAsync(customer.Country);
+                    ViewBag.CountryCode = CountryData;
+                    return Json(new
+                    {
+                        code = CountryData.CountryCode,
+                        proceed = true,
+                        msg = ""
+                    });
+                }
+                public IActionResult CountryOnchangeforCity(CustomerUserMaster customer)
+                {
+                    var CountryData = unitOfWork.Countrys.GetAllAsync();
+
+                    var CityData = unitOfWork.Citys.GetCitylistByCountry(customer.Country, 0).Result;
+                    ViewBag.City = CityData;
+                    return PartialView("partial/CityList");
+                }*/
 
         public IActionResult PrimaryCompneySelected(Customer customer)
         {

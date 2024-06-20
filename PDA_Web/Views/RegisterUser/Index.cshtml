@@ -18,6 +18,8 @@
     <link rel="stylesheet" href="~/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="~/dist/css/adminlte.min.css">
+    @* <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script> *@
 </head>
 <body class="hold-transition login-page">
     <div class="login-box" style="width:600px">
@@ -80,18 +82,18 @@
                     </div>
                     <div class="col-6">
                         <label for="Country">Country<span class="text-danger">*</span></label>
-                        @Html.DropDownList("Country", new SelectList(ViewBag.Country, "ID", "CountryName"), "Please Select", new { @class = "form-control", @onchange = "ChangeCountryfunc(this.value)" })
+                        @Html.DropDownList("Country", new SelectList(ViewBag.Country, "ID", "CountryName"), "Please Select", new { @class = "form-control" })
 
                     </div>
                 </div>
                 <div class="input-group mb-2">
 
-                    <div class="col-6">
+                    <div class="col-6" id="Countrydrop">
                         <label for="State">State@* <span class="text-danger">*</span> *@</label>
                         @Html.DropDownList("State", new SelectList(ViewBag.State, "ID", "StateName"), "Please select", new { @class = "form-control", @onchange = "callChangefunc(this.value)" })
 
                     </div>
-                    <div class="col-6">
+                    <div class="col-6" id="Statedrop">
                         <label for="PortName">City@* <span class="text-danger">*</span> *@</label>
                         @Html.DropDownList("City", new SelectList(ViewBag.City, "ID", "CityName"), "Please select", new { @class = "form-control" })
 
@@ -168,9 +170,34 @@
     <script src="~/dist/js/adminlte.min.js"></script>
 
     @await Component.InvokeAsync("NToastNotify")
+
     <script>
 
+        function callChangefunc(val) {
+            var Stateid = val;
 
+            var portdetails;
+            portdetails = {
+                "State": Stateid,
+                "City": $('#City').val(),
+            }
+
+            $.ajax({
+
+                type: "GET",
+                url: "/Admin/PortDetails/StateOnchange",
+                data: portdetails,
+                dataType: "HTML",
+                success: function (data) {
+
+                    $("#Statedrop").html(data);
+
+                },
+                error: function () {
+                }
+            });
+
+        }
         function validateEmail(Email) {
             var emailRegex = /^[a-zA-Z0-9]+[-.,a-zA-Z0-9]+@@[-.,a-zA-Z.]+\.[a-zA-Z]{2,}$/;
 
@@ -209,12 +236,54 @@
                 });
             })
 
+            $("#Country").change(function () {
+                debugger;
+                var countryid = $('option:selected', this).val();
+
+                var portdetails;
+                portdetails = {
+                    "Country": countryid,
+                    "State": $("#State").val(),
+                    "City": $('#City').val(),
+
+                }
+
+                $.ajax({
+                    type: "GET",
+                    url: "/RegisterUser/CountryOnchange",
+                    data: portdetails,
+                    dataType: "HTML",
+                    success: function (data) {
+
+                        $("#Countrydrop").html(data);
+
+                    },
+                    error: function () {
+                    }
+                });
+
+                $.ajax({
+                    type: "GET",
+                    url: "/RegisterUser/CountryOnChangeforCountryCode",
+                    data: portdetails,
+
+                    success: function (data) {
+                        $('#CountryCode').val(data.code),
+                            $('#AlterCountryCode').val(data.code)
+
+
+                    },
+                    error: function () {
+                    }
+                });
+            });
         });
 
 
 
         function RegisterUserSave() {
             var Customer;
+            debugger;
             Customer = {
                 // "CustomerId": $('#CustomerId').val(),
                 "Company": $('#_Company').val(),
@@ -237,21 +306,56 @@
                 "CountryCode": $('#CountryCode').val(),
             }
 
-
+            
             if ($('#_Company').val() == "") {
                 toastr.error("Please enter customer's company.", 'Error Alert');
                 $('#_Company').css("border-color", "Red");
             }
-            else if ($('#Beneficiary').val() == "") {
-                toastr.error("Please select BankCode.", 'Error Alert');
-                $('#Beneficiary').css("border-color", "Red");
-            }
+            // else if ($('#Salutation').val() == "") {
+            //     toastr.error("Please select Salutation.", 'Error Alert');
+            //     $('#Salutation').css("border-color", "Red");
+            // }
 
-            else if ($('#PrimaryCompany').val() == "") {
-                toastr.error("Please primary company.", 'Error Alert');
-                $('#PrimaryCompany').css("border-color", "Red");
-            }
-
+            // else if ($('#FirstName').val() == "") {
+            //     toastr.error("Please primary FirstName.", 'Error Alert');
+            //     $('#FirstName').css("border-color", "Red");
+            // }
+            // else if ($('#LastName').val() == "") {
+            //     toastr.error("Please primary LastName.", 'Error Alert');
+            //     $('#LastName').css("border-color", "Red");
+            // }
+            // else if ($('#Designation').val() == "") {
+            //     toastr.error("Please primary Designation.", 'Error Alert');
+            //     $('#Designation').css("border-color", "Red");
+            // }
+            // else if ($('#Address1').val() == "") {
+            //     toastr.error("Please primary Address1.", 'Error Alert');
+            //     $('#Address1').css("border-color", "Red");
+            // }
+            // else if ($('#City').val() == "") {
+            //     toastr.error("Please primary City.", 'Error Alert');
+            //     $('#City').css("border-color", "Red");
+            // }
+            // else if ($('#State').val() == "") {
+            //     toastr.error("Please primary State.", 'Error Alert');
+            //     $('#State').css("border-color", "Red");
+            // }
+            // else if ($('#Country').val() == "") {
+            //     toastr.error("Please primary Country.", 'Error Alert');
+            //     $('#Country').css("border-color", "Red");
+            // }
+            // else if ($('#Email').val() == "") {
+            //     toastr.error("Please primary Email.", 'Error Alert');
+            //     $('#Email').css("border-color", "Red");
+            // }
+            // else if ($('#Mobile').val() == "") {
+            //     toastr.error("Please primary Mobile.", 'Error Alert');
+            //     $('#Mobile').css("border-color", "Red");
+            // }
+            // else if ($('#CountryCode').val() == "") {
+            //     toastr.error("Please primary CountryCode.", 'Error Alert');
+            //     $('#CountryCode').css("border-color", "Red");
+            // }
 
             else {
                 $.ajax({
@@ -286,7 +390,7 @@
             }
         }
     </script>
-
+    
 
 
 </body>
