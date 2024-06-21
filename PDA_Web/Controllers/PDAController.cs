@@ -24,6 +24,12 @@ namespace PDA_Web.Controllers
             _hostEnvironment = hostEnvironment;
 
         }
+        public IActionResult OpenBerthDetailsPopUp(PDAEstimator PDAEstimitor)
+        {
+            var BearthDetailData = unitOfWork.BerthDetails.GetAllAsync().Result.Where(x => x.TerminalID == PDAEstimitor.TerminalID);
+            var Terminals = PartialView("partial/_Berths", BearthDetailData);
+            return PartialView("partial/_Berths", BearthDetailData);
+        }
 
         public async Task<IActionResult> CurrencyOnchange(int Currency)
         {
@@ -884,6 +890,18 @@ namespace PDA_Web.Controllers
             return PartialView("partial/BerthList");
         }
 
+        public IActionResult BerthNameOnchange(PDAEstimator PDAEstimitor)
+            {
+            var BearthDetailData = unitOfWork.BerthDetails.GetByIdAsync(PDAEstimitor.BerthId).Result;
+            return Json(new
+            {
+                loa = BearthDetailData.MaxLoa,
+                beam = BearthDetailData.MaxBeam,
+                arrivalDraft = BearthDetailData.MaxArrivalDraft,
+                proceed = true,
+                msg = ""
+            });
+        }
         public async Task<ActionResult> PDAEstimitorSave(PDAEstimator PDAEstimitor)
         {
             var CustID = HttpContext.Session.GetString("CustID");
@@ -894,6 +912,11 @@ namespace PDA_Web.Controllers
                 PDAEstimitor.CustomerID = Convert.ToInt32(CustID);
                 var internalCmpnayId = unitOfWork.PDAEstimitor.GetbyCustIdasync(Convert.ToInt32(CustID));
                 PDAEstimitor.InternalCompanyID = internalCmpnayId.Result.CompanyID;
+                var BearthDetailData = unitOfWork.BerthDetails.GetAllAsync().Result.Where(x => x.ID == PDAEstimitor.BerthId);
+
+                var maxLoa = BearthDetailData.FirstOrDefault().MaxLoa;
+                var maxBeam = BearthDetailData.FirstOrDefault().MaxBeam;
+                var maxArribvaldraft = BearthDetailData.FirstOrDefault().MaxArrivalDraft;
 
                 CultureInfo provider = CultureInfo.InvariantCulture;
                 string ETA_String = PDAEstimitor.ETA_String + " " + "12:00:00 AM";
@@ -935,7 +958,35 @@ namespace PDA_Web.Controllers
                     PDAEstimitor.BerthStayDay = Convert.ToInt64(berthStayDay);
                     PDAEstimitor.BerthStayShift = Convert.ToInt64(berthStayShift);
                 }
+                if (maxLoa != null && maxLoa < PDAEstimitor.LOA)
+                {
+                    _toastNotification.AddErrorToastMessage("Please enter MaxLOA Less then : " + maxLoa);
+                    return Json(new
+                    {
+                        proceed = false,
+                        msg = ""
+                    });
+                }
 
+                if (maxBeam != null && maxBeam < PDAEstimitor.Beam)
+                {
+                    _toastNotification.AddErrorToastMessage("Please enter MaxBeam Less then : " + maxBeam);
+                    return Json(new
+                    {
+                        proceed = false,
+                        msg = ""
+                    });
+                }
+
+                if (maxArribvaldraft != null && maxArribvaldraft < PDAEstimitor.ArrivalDraft)
+                {
+                    _toastNotification.AddErrorToastMessage("Please enter Max Arribval Draft Less then : " + maxArribvaldraft);
+                    return Json(new
+                    {
+                        proceed = false,
+                        msg = ""
+                    });
+                }
                 if (PDAEstimitor.PDAEstimatorID > 0)
                 {
                     var userid = HttpContext.Session.GetString("CustID");
