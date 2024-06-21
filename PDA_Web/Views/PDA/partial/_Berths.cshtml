@@ -1,0 +1,137 @@
+﻿@model IEnumerable<PDAEstimator_Domain.Entities.BerthDetails>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              @*   <div class="card-header">
+                    <h3 class="card-title">Berth Details List</h3>
+                </div> *@
+                <div id="viewAllBerths" class="card-body table-responsive">
+                    <table class="table table-bordered table-striped" id="BerthDetailsTable">
+                        <thead>
+                            <tr>
+                               @*  <th>
+                                    @Html.DisplayNameFor(model => model.TerminalName)
+                                </th> *@
+                               
+                                <th>
+                                    @Html.DisplayNameFor(model => model.BerthName)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.BerthCode)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.MaxLoa)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.MaxBeam)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.MaxArrivalDraft)
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null)
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                       @*  <td>
+                                            @Html.DisplayFor(modelItem => item.TerminalName)
+                                        </td> *@
+                                       
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.BerthName)
+                                        </td>
+                                        <td>
+
+                                            @Html.DisplayFor(modelItem => item.BerthCode)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.MaxLoa)
+                                        </td>
+
+                                        <td>
+                                            @Html.DisplayFor(modelItem =>item.MaxBeam)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.MaxArrivalDraft)
+                                        </td>
+                                        @* <td>
+                                            @if (item.BerthStatus == true)
+                                            {
+                                                <span class="badge badge-success">Active</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge badge-danger">In Active</span>
+                                            }
+                                           
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-info btn-sm" onclick="editBerthDetails(@item.ID)">
+                                                <i class="fas fa-pencil-alt">
+                                                </i>
+                                                Edit
+                                            </a>
+                                            <a class="btn btn-danger btn-sm" onclick="deleteBerthDetails(@item.ID)">
+                                                <i class="fas fa-trash">
+                                                </i>
+                                                Delete
+                                            </a>
+                                        </td> *@
+                                    </tr>
+                                }
+
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- jQuery -->
+<script src="~/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/plugins/datatables/jquery.datatables.js"></script>
+<script src="~/plugins/datatables/jquery.datatables.min.js"></script>
+<script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="~/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="~/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="~/plugins/jszip/jszip.min.js"></script>
+<script src="~/plugins/pdfmake/pdfmake.min.js"></script>
+<script src="~/plugins/pdfmake/vfs_fonts.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="~/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+<script>
+   
+    $(function () {
+        debugger;
+       
+
+        $("#BerthDetailsTable").DataTable({
+            "responsive": true, "lengthChange": false, "autoWidth": false,
+            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        }).buttons().container().appendTo('#BerthDetailsTable_wrapper .col-md-6:eq(0)');
+
+        //$('#portDetailsTable').DataTable({
+        //    "paging": true,
+        //    "lengthChange": false,
+        //    "searching": false,
+        //    "ordering": true,
+        //    "info": true,
+        //    "autoWidth": false,
+        //    "responsive": true,
+        //});
+    });</script>
