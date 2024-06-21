@@ -18,8 +18,8 @@
     <link rel="stylesheet" href="~/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="~/dist/css/adminlte.min.css">
-    @* <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script> *@
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
+    
 </head>
 <body class="hold-transition login-page">
     <div class="login-box" style="width:600px">
@@ -168,7 +168,7 @@
     <script src="~/plugins/jquery/jquery.min.js"></script>
     <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="~/dist/js/adminlte.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     @await Component.InvokeAsync("NToastNotify")
 
     <script>
@@ -311,51 +311,51 @@
                 toastr.error("Please enter customer's company.", 'Error Alert');
                 $('#_Company').css("border-color", "Red");
             }
-            // else if ($('#Salutation').val() == "") {
-            //     toastr.error("Please select Salutation.", 'Error Alert');
-            //     $('#Salutation').css("border-color", "Red");
-            // }
+            else if ($('#Salutation').val() == "") {
+                toastr.error("Please select Salutation.", 'Error Alert');
+                $('#Salutation').css("border-color", "Red");
+            }
 
-            // else if ($('#FirstName').val() == "") {
-            //     toastr.error("Please primary FirstName.", 'Error Alert');
-            //     $('#FirstName').css("border-color", "Red");
-            // }
-            // else if ($('#LastName').val() == "") {
-            //     toastr.error("Please primary LastName.", 'Error Alert');
-            //     $('#LastName').css("border-color", "Red");
-            // }
-            // else if ($('#Designation').val() == "") {
-            //     toastr.error("Please primary Designation.", 'Error Alert');
-            //     $('#Designation').css("border-color", "Red");
-            // }
-            // else if ($('#Address1').val() == "") {
-            //     toastr.error("Please primary Address1.", 'Error Alert');
-            //     $('#Address1').css("border-color", "Red");
-            // }
-            // else if ($('#City').val() == "") {
-            //     toastr.error("Please primary City.", 'Error Alert');
-            //     $('#City').css("border-color", "Red");
-            // }
-            // else if ($('#State').val() == "") {
-            //     toastr.error("Please primary State.", 'Error Alert');
-            //     $('#State').css("border-color", "Red");
-            // }
-            // else if ($('#Country').val() == "") {
-            //     toastr.error("Please primary Country.", 'Error Alert');
-            //     $('#Country').css("border-color", "Red");
-            // }
-            // else if ($('#Email').val() == "") {
-            //     toastr.error("Please primary Email.", 'Error Alert');
-            //     $('#Email').css("border-color", "Red");
-            // }
-            // else if ($('#Mobile').val() == "") {
-            //     toastr.error("Please primary Mobile.", 'Error Alert');
-            //     $('#Mobile').css("border-color", "Red");
-            // }
-            // else if ($('#CountryCode').val() == "") {
-            //     toastr.error("Please primary CountryCode.", 'Error Alert');
-            //     $('#CountryCode').css("border-color", "Red");
-            // }
+            else if ($('#FirstName').val() == "") {
+                toastr.error("Please primary FirstName.", 'Error Alert');
+                $('#FirstName').css("border-color", "Red");
+            }
+            else if ($('#LastName').val() == "") {
+                toastr.error("Please primary LastName.", 'Error Alert');
+                $('#LastName').css("border-color", "Red");
+            }
+            else if ($('#Designation').val() == "") {
+                toastr.error("Please primary Designation.", 'Error Alert');
+                $('#Designation').css("border-color", "Red");
+            }
+            else if ($('#Address1').val() == "") {
+                toastr.error("Please primary Address1.", 'Error Alert');
+                $('#Address1').css("border-color", "Red");
+            }
+            else if ($('#Country').val() == "") {
+                toastr.error("Please primary Country.", 'Error Alert');
+                $('#Country').css("border-color", "Red");
+            }
+            else if ($('#State').val() == "") {
+                toastr.error("Please primary State.", 'Error Alert');
+                $('#State').css("border-color", "Red");
+            }
+            else if ($('#City').val() == "") {
+                toastr.error("Please primary City.", 'Error Alert');
+                $('#City').css("border-color", "Red");
+            }
+            else if ($('#Email').val() == "") {
+                toastr.error("Please primary Email.", 'Error Alert');
+                $('#Email').css("border-color", "Red");
+            }
+            else if ($('#Mobile').val() == "") {
+                toastr.error("Please primary Mobile.", 'Error Alert');
+                $('#Mobile').css("border-color", "Red");
+            }
+            else if ($('#CountryCode').val() == "") {
+                toastr.error("Please primary CountryCode.", 'Error Alert');
+                $('#CountryCode').css("border-color", "Red");
+            }
 
             else {
                 $.ajax({
