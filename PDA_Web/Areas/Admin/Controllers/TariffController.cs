@@ -305,14 +305,15 @@ namespace PDA_Web.Areas.Admin.Controllers
             var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
             ViewBag.UserRoleName = UserRole;
             // Temp Solution END
-
+            var formulatransdata = await unitOfWork.FormulaTransaction.GetAllTransAsync();
             foreach (var TariffRate in TariffRatedata)
             {
                 if (TariffRate.FormulaID != null && TariffRate.FormulaID > 0)
                 {
                     string formulastring = string.Empty;
-                    var formulatransdata = await unitOfWork.FormulaTransaction.GetAllTransAsync((int)TariffRate.FormulaID);
-                    foreach (var formularTransList in formulatransdata)
+                    var formulatran = formulatransdata.Where(x=>x.formulaID == ((int)TariffRate.FormulaID));
+
+                    foreach (var formularTransList in formulatran)
                     {
                         if (formularTransList.formulaAttributeID > 0)
                             formulastring = formulastring != "" ? formulastring + " " + formularTransList.formulaAttributeName : formularTransList.formulaAttributeName;

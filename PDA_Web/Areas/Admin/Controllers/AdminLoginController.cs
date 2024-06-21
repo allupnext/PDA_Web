@@ -147,12 +147,12 @@ namespace PDA_Web.Areas.Admin.Controllers
 
         public async Task<string> SendOTPEmail(string Email, int Id)
         {
-            var CustomerUserData = await unitOfWork.CustomerUserMaster.GetCustomerUserByEmailAsync(Email);
-            var CustomerId = CustomerUserData.Select(x => x.CustomerId).First();
-            var corecustomerdata = await unitOfWork.Customer.GetByIdAsync(Convert.ToInt32(CustomerId));
-            Int64 PrimaryCompanyId = Convert.ToInt64(corecustomerdata.PrimaryCompany);
-            var FromPrimaryCompany = await unitOfWork.Company.GetByIdAsync(PrimaryCompanyId);
-            var PrimaryCompnayName = FromPrimaryCompany.CompanyName;
+            //var CustomerUserData = await unitOfWork.CustomerUserMaster.GetCustomerUserByEmailAsync(Email);
+            //var CustomerId = CustomerUserData.Select(x => x.CustomerId).First();
+            //var corecustomerdata = await unitOfWork.Customer.GetByIdAsync(Convert.ToInt32(CustomerId));
+            //Int64 PrimaryCompanyId = Convert.ToInt64(corecustomerdata.PrimaryCompany);
+            //var FromPrimaryCompany = await unitOfWork.Company.GetByIdAsync(PrimaryCompanyId);
+            //var PrimaryCompnayName = FromPrimaryCompany.CompanyName;
 
             string otp = (GenerateOTP.NextInt() % 1000000).ToString("000000");
             await unitOfWork.User.UpdateOTP(otp, DateTime.UtcNow, Id);
@@ -176,14 +176,14 @@ namespace PDA_Web.Areas.Admin.Controllers
     + "</div> </div></div> ";
             string Subject = "Login in PDA Estimation";
             string FromCompany = "";
-            if (PrimaryCompnayName == "Merchant Shipping Services Private Limited")
-            {
-                FromCompany = "FromMerchant";
-            }
-            if (PrimaryCompnayName == "Samsara Shipping Private Limited")
-            {
+            //if (PrimaryCompnayName == "Merchant Shipping Services Private Limited")
+            //{
+            //    FromCompany = "FromMerchant";
+            //}
+            //if (PrimaryCompnayName == "Samsara Shipping Private Limited")
+            //{
                 FromCompany = "FromSamsara";
-            }
+            //}
 
 
             var Msg = new Message(recipients, Subject, Content, FromCompany);

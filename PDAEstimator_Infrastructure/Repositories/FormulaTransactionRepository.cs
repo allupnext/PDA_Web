@@ -72,6 +72,19 @@ namespace PDAEstimator_Infrastructure.Repositories
             }
         }
 
+        public async Task<List<FormularTransList>> GetAllTransAsync()
+        {
+            //var sql = "SELECT formulaTrasID, FormulaTransaction.formulaID as formulaID, formulaAttributeID,formula_attributes.FormulaName as formulaAttributeName, formulaSlabID, TariffSegmentName as formulaSlabName, FormulaTransaction.formulaOperatorID as formulaOperatorID, formulaOperator as formulaOperatorName, formulaValue FROM FormulaTransaction left join formula_attributes on formula_attributes.FormulaId  = FormulaTransaction.formulaAttributeID left join FormulaOperator on FormulaOperator.formulaOperatorID  = FormulaTransaction.formulaOperatorID left join TariffSegment on TariffSegment.TariffSegmentID  = FormulaTransaction.formulaSlabID";
+            var sql = "GetAllFormularTransList";
+
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+            {
+                connection.Open();
+                var result = await connection.QueryAsync<FormularTransList>(sql);
+                return new List<FormularTransList>(result.ToList());
+            }
+        }
+
         public async Task<List<FormularTransList>> GetAllTransAsync(int formulaID)
         {
             var sql = "SELECT formulaTrasID, FormulaTransaction.formulaID as formulaID, formulaAttributeID,formula_attributes.FormulaName as formulaAttributeName, formulaSlabID, TariffSegmentName as formulaSlabName, FormulaTransaction.formulaOperatorID as formulaOperatorID, formulaOperator as formulaOperatorName, formulaValue FROM FormulaTransaction left join formula_attributes on formula_attributes.FormulaId  = FormulaTransaction.formulaAttributeID left join FormulaOperator on FormulaOperator.formulaOperatorID  = FormulaTransaction.formulaOperatorID left join TariffSegment on TariffSegment.TariffSegmentID  = FormulaTransaction.formulaSlabID where FormulaTransaction.formulaID = @formulaID";
