@@ -92,7 +92,23 @@
     @*    @await Component.InvokeAsync("NToastNotify")
     *@
 
-
+    <script>
+        var showLoader = function (form) {
+            $("<div id='loading' class='loading'/>").css({
+                'position': 'fixed',
+                'left': 0,
+                'right': 0,
+                'bottom': 0,
+                'top': 0,
+                'background': 'rgb(106 106 106 / 38%)',
+                'z-index': '9999',
+                'text-align': 'center'
+            }).appendTo($("body"))
+                .append(
+                    $("<img width='80' style='padding-top:300px;'/>").attr("src", "https://i.gifer.com/Vp3R.gif")
+                );
+        }
+    </script>
     <script>
         function StartTimer() {
             $('#divCountdown').show();
@@ -128,7 +144,7 @@
         }
 
         function RequiestOTP() {
-
+            showLoader(this);
             var user;
             user = {
                 "Email": $('#Email').val(),
@@ -142,16 +158,20 @@
                 success: function (data) {
                     if (data.proceed == true) {
                         StartTimer();
+                        $('.loading').hide();
                         $('#BtnLogin').show();
                         $('#RequiestOTP').hide();
                         $('#txtOtp').show();
                         $('#txtOtp').val(data.otp);
                         $("#EmployCode").attr("disabled", "disabled");
                         $("#Password").attr("disabled", "disabled");
+                    } else {
+                        $('.loading').hide();
                     }
                     // loadData();
                 },
                 error: function () {
+                    $('.loading').hide();
                 }
             });
 
