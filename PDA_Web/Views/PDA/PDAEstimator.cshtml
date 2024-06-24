@@ -597,18 +597,42 @@
 
         <div class="agent">
             <h3>@Model.CompanyName<br /> (AS AGENTS ONLY)</h3>
-            <h3>Disclaimer:</h3>
+          
+        </div>
+
+    </section>
+    <section class="Disclaimer">
+        <h3 style="margin-top:0px">Disclaimer:</h3>
+        @if (Model.Disclaimer != null && Model.Disclaimer != "")
+        {
+            <div>
+                @Html.Raw(Model.Disclaimer)
+            </div>
+        }
+        else
+        {
             <p style="font-size:15px; font-weight:400">
                 Please note that this is a pro-forma disbursement account only. It is intended to be an estimate of the actual disbursement account and is for guidance purposes only. Whilst we, acting as agents only, does take every care to ensure that the figures and information contained in the pro-forma disbursement account are as accurate as possible, the actual disbursement account may, and often does, for various reasons beyond our control, vary from the pro-forma disbursement account. You are required and are liable to pay upon demand, the full amount described and shown in the actual disbursement account. This duty exists regardless of any difference between the figures in this pro-forma disbursement account and the actual disbursement account. For the avoidance of doubt, this pro-forma disbursement account is not a contractual document.
                 PDA has been calculated basis current port tariff and charges applicable as per the local rules, regulations and practices. As per your commercial agreement if any cost item is to be omitted or included in PDA the same should be notified before vessel arrival/berthing. Any Disagreement on the Proforma DA costs shall not be entertained after vessel Berthing/Sailing from port. The final port costs shall be supported by port invoices and shall be payable at actuals. This document is generated through our Web Application and does not require any signature manually to be valid.
             </p>
-        </div>
-
+        }
     </section>
 
-
     <style>
+        .Disclaimer li {
+            list-style-type: circle;
+            list-style: disc outside;
+            margin: 8px 0;
+        }
 
+        .Disclaimer ul {
+            padding-left: 40px;
+        }
+
+        .Disclaimer {
+            padding: 0px 15px 15px 15px;
+            overflow: hidden;
+        }
         html {
             overflow-x: hidden;
         }

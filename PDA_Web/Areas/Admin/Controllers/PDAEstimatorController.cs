@@ -1010,6 +1010,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                 PDAEstimitor.BerthStayShift = Convert.ToInt64(berthStayShift);
             }
 
+            PDAEstimitor.IsCustomerCreated = false;
+
             if (maxLoa != null && maxLoa < PDAEstimitor.LOA)
             {
                 _toastNotification.AddErrorToastMessage("Please enter MaxLOA Less then : " + maxLoa);

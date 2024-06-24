@@ -48,7 +48,7 @@ namespace PDA_Web.Controllers
         public async Task<IActionResult> PDAEstimatorDonwload(int id)
         {
             PDAEstimatorOutPutView pDAEstimatorOutPut = new PDAEstimatorOutPutView();
-            pDAEstimatorOutPut = await PDAModelPrePared(pDAEstimatorOutPut, id);
+            pDAEstimatorOutPut = await GetPDA(id);
 
             return new ViewAsPdf("PDAEstimator", pDAEstimatorOutPut)
             {
@@ -58,7 +58,8 @@ namespace PDA_Web.Controllers
                 PageSize = Rotativa.AspNetCore.Options.Size.A3
             };
         }
-        public async Task<IActionResult> PDAEstimator(int id)
+
+        public async Task<PDAEstimatorOutPutView> GetPDA(int id)
         {
             //PDAEstimatorOutPutView pDAEstimatorOutPut = new PDAEstimatorOutPutView();
             //pDAEstimatorOutPut = await PDAModelPrePared(pDAEstimatorOutPut, id);
@@ -123,6 +124,7 @@ namespace PDA_Web.Controllers
                     BaseCurrencyCodeID = pDAEstimatorOutPutdata.BaseCurrencyCodeID,
                     DefaultCurrencyCode = pDAEstimatorOutPutdata.DefaultCurrencyCode,
                     DefaultCurrencyCodeID = pDAEstimatorOutPutdata.DefaultCurrencyCodeID,
+                    Disclaimer = pDAEstimatorOutPutdata.Disclaimer
 
                 };
 
@@ -210,7 +212,15 @@ namespace PDA_Web.Controllers
                 pDAEstimatorOutPutView = await PDAModelPrePared(pDAEstimatorOutPutView, id);
 
             }
-            return View(pDAEstimatorOutPutView);
+            return pDAEstimatorOutPutView;
+        }
+
+        public async Task<IActionResult> PDAEstimator(int id)
+        {
+            PDAEstimatorOutPutView pDAEstimatorOutPut = new PDAEstimatorOutPutView();
+            pDAEstimatorOutPut = await GetPDA(id);
+
+            return View(pDAEstimatorOutPut);
             //return new ViewAsPdf(pDAEstimatorOutPut);
         }
 
@@ -346,7 +356,7 @@ namespace PDA_Web.Controllers
                 pDAEstimatorOutPut.DefaultCurrencyCodeID = currencyData.Where(x => x.DefaultCurrecny == true) != null ? currencyData.Where(x => x.DefaultCurrecny == true).FirstOrDefault().ID : 0;
 
                 //var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(pDAEstimatorOutPut.PortID).Result.Where(x => (x.CallTypeID == pDAEstimatorOutPut.CallTypeID || x.CallTypeID == null) && (x.SlabFrom == null || x.SlabFrom <= pDAEstimatorOutPut.GRT)) ;
-                var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(pDAEstimatorOutPut.PortID, pDAEstimatorOutPut.ETA != null ? (DateTime)pDAEstimatorOutPut.ETA : DateTime.Now.Date).Result.Where(x => (x.CallTypeID == pDAEstimatorOutPut.CallTypeID || x.CallTypeID == null) && (x.TerminalID == pDAEstimatorOutPut.TerminalID || x.TerminalID == null) && (x.BerthID == pDAEstimatorOutPut.BerthID || x.BerthID == null || x.BerthID == 0) && (x.CargoID == pDAEstimatorOutPut.CargoID || x.CargoID == null) && (x.VesselBallast == pDAEstimatorOutPut.VesselBallast || x.VesselBallast == 0)).OrderBy(o => o.ChargeCodeSequence).ThenBy(o => o.SlabFrom).ThenBy(o => o.TariffRateID);
+                var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(pDAEstimatorOutPut.PortID, pDAEstimatorOutPut.ETA != null ? (DateTime)pDAEstimatorOutPut.ETA : DateTime.Now.Date).Result.Where(x => (x.CallTypeID == pDAEstimatorOutPut.CallTypeID || x.CallTypeID == null) && (x.TerminalID == pDAEstimatorOutPut.TerminalID || x.TerminalID == null) && (x.BerthID == pDAEstimatorOutPut.BerthID || x.BerthID == null || x.BerthID == 0) && (x.CargoID == pDAEstimatorOutPut.CargoID || x.CargoID == null) && (x.OperationTypeID == pDAEstimatorOutPut.ActivityTypeId || x.OperationTypeID == null) && (x.VesselBallast == pDAEstimatorOutPut.VesselBallast || x.VesselBallast == 0)).OrderBy(o => o.ChargeCodeSequence).ThenBy(o => o.SlabFrom).ThenBy(o => o.TariffRateID);
                 List<PDATariffRateList> pDATariffRateList = new List<PDATariffRateList>();
                 decimal taxrate = 0;
                 foreach (var triff in triffdata)
@@ -792,7 +802,7 @@ namespace PDA_Web.Controllers
             {
                 if (pDAEstimator.CustomerID != null && pDAEstimator.CustomerID != 0)
                 {
-                    pDAEstimatorLists = pDAEstimatorLists.Where(x => x.CustomerID == pDAEstimator.CustomerID && x.PortID == pDAEstimator.PortID).ToList();
+                    pDAEstimatorLists = pDAEstimatorLists.Where(x => x.CustomerID == pDAEstimator.CustomerID).ToList();
                 }
                 if (pDAEstimator.PortID != null && pDAEstimator.PortID != 0)
                 {
@@ -958,6 +968,9 @@ namespace PDA_Web.Controllers
                     PDAEstimitor.BerthStayDay = Convert.ToInt64(berthStayDay);
                     PDAEstimitor.BerthStayShift = Convert.ToInt64(berthStayShift);
                 }
+                PDAEstimitor.IsCustomerCreated = true;
+
+
                 if (maxLoa != null && maxLoa < PDAEstimitor.LOA)
                 {
                     _toastNotification.AddErrorToastMessage("Please enter MaxLOA Less then : " + maxLoa);
@@ -998,6 +1011,7 @@ namespace PDA_Web.Controllers
                 {
                     var userid = HttpContext.Session.GetString("CustID");
                     PDAEstimitor.CreatedBy = userid;
+                    
                     var id = await unitOfWork.PDAEstimitor.AddAsync(PDAEstimitor);
                     if (id != "" && Convert.ToInt64(id) > 0)
                     {
@@ -1072,6 +1086,18 @@ namespace PDA_Web.Controllers
 
                         //var taxrate = TaxData.Where(x => x.TaxName.Contains("GST")).Select(x => x.TaxRate).FirstOrDefault();
                         //pDAEstimatorOutPut.Taxrate = taxrate;
+                        var Disclaimersdata = await unitOfWork.Disclaimers.GetAllAsync();
+
+                        if (Disclaimersdata != null && Disclaimersdata.Count() > 0)
+                        {
+                            var ActiveDisclaimersdata = Disclaimersdata.Where(x => x.IsActive == true);
+                            if (ActiveDisclaimersdata != null && ActiveDisclaimersdata.Count() > 0)
+                            {
+                                pDAEstimatorOutPut.Disclaimer = ActiveDisclaimersdata.FirstOrDefault().Disclaimer;
+                            }
+
+                        }
+
                         pDAEstimatorOutPut.PDAEstimatorOutPutDate = DateTime.Now;
                         var PDAEstimitorOUTPUTid = await unitOfWork.PDAEstimitorOUTPUT.AddAsync(pDAEstimatorOutPut);
 
@@ -1091,7 +1117,7 @@ namespace PDA_Web.Controllers
                             }
 
                             List<PDAEstimatorOutPutTariff> pDAEstimatorOutPutTariffs = new List<PDAEstimatorOutPutTariff>();
-                            var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(PDAEstimitor.PortID, PDAEstimitor.ETA != null ? (DateTime)PDAEstimitor.ETA : DateTime.Now.Date).Result.Where(x => (x.CallTypeID == PDAEstimitor.CallTypeID || x.CallTypeID == null) && (x.TerminalID == PDAEstimitor.TerminalID || x.TerminalID == null) && (x.BerthID == PDAEstimitor.BerthId || x.BerthID == null || x.BerthID == 0) && (x.CargoID == PDAEstimitor.CargoID || x.CargoID == null) && (x.VesselBallast == PDAEstimitor.VesselBallast || x.VesselBallast == 0) && (x.Reduced_GRT == PDAEstimitor.IsReducedGRT || x.Reduced_GRT == 0)).OrderBy(o => o.ChargeCodeSequence).ThenBy(o => o.SlabFrom).ThenBy(o => o.TariffRateID);
+                            var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(PDAEstimitor.PortID, PDAEstimitor.ETA != null ? (DateTime)PDAEstimitor.ETA : DateTime.Now.Date).Result.Where(x => (x.CallTypeID == PDAEstimitor.CallTypeID || x.CallTypeID == null) && (x.TerminalID == PDAEstimitor.TerminalID || x.TerminalID == null) && (x.BerthID == PDAEstimitor.BerthId || x.BerthID == null || x.BerthID == 0) && (x.CargoID == PDAEstimitor.CargoID || x.CargoID == null) && (x.OperationTypeID == PDAEstimitor.ActivityTypeId || x.OperationTypeID == null) && (x.VesselBallast == PDAEstimitor.VesselBallast || x.VesselBallast == 0) && (x.Reduced_GRT == PDAEstimitor.IsReducedGRT || x.Reduced_GRT == 0)).OrderBy(o => o.ChargeCodeSequence).ThenBy(o => o.SlabFrom).ThenBy(o => o.TariffRateID);
                             List<PDATariffRateList> pDATariffRateList = new List<PDATariffRateList>();
                             decimal taxrate = 0;
                             foreach (var triff in triffdata)

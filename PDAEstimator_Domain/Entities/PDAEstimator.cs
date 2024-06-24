@@ -73,6 +73,8 @@ namespace PDAEstimator_Domain.Entities
 
         public string? Disclaimer { get; set; }
 
+        public bool IsCustomerCreated { get; set; }
+
     }
 
 }
