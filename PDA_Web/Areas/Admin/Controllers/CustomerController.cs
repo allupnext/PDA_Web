@@ -249,25 +249,29 @@ namespace PDA_Web.Areas.Admin.Controllers
             ViewBag.UserRoleName = UserRole;
             // Temp Solution END
 
-            if (customer.FirstName != null /*&& customer.FirstName != 0*/)
-            {
-                customerdata = customerdata.Where(x => x.FirstName.Contains(customer.FirstName)).ToList();
-            }
-            if (customer.Country != null && customer.Country != 0)
-            {
-                customerdata = customerdata.Where(x => x.Country == customer.Country).ToList();
-            }
-            if (customer.Address1 != null /*&& customer.FirstName != 0*/)
-            {
-                customerdata = customerdata.Where(x => x.Address1.Contains(customer.Address1)).ToList();
-            }
-            if (customer.Email != null /*&& customer.FirstName != 0*/)
-            {
-                customerdata = customerdata.Where(x => x.Email.Contains(customer.Email)).ToList();
-            }
+            //if (customer.FirstName != null /*&& customer.FirstName != 0*/)
+            //{
+            //    customerdata = customerdata.Where(x => x.FirstName.Contains(customer.FirstName)).ToList();
+            //}
+            //if (customer.Country != null && customer.Country != 0)
+            //{
+            //    customerdata = customerdata.Where(x => x.Country == customer.Country).ToList();
+            //}
+            //if (customer.Address1 != null /*&& customer.FirstName != 0*/)
+            //{
+            //    customerdata = customerdata.Where(x => x.Address1.Contains(customer.Address1)).ToList();
+            //}
+            //if (customer.Email != null /*&& customer.FirstName != 0*/)
+            //{
+            //    customerdata = customerdata.Where(x => x.Email.Contains(customer.Email)).ToList();
+            //}
             if (customer.Company != null /*&& customer.FirstName != 0*/)
             {
                 customerdata = customerdata.Where(x => x.Company == customer.Company).ToList();
+            }
+            if (customer.Status != null /*&& customer.FirstName != 0*/)
+            {
+                customerdata = customerdata.Where(x => x.Status == customer.Status).ToList();
             }
             return PartialView("partial/_ViewAll", customerdata);
 

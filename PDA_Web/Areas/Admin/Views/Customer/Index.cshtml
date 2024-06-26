@@ -129,8 +129,35 @@
                     <div class="card-header">
                         <h3 class="card-title">Customer List</h3>
                     </div>
+                    <div class="card-body">
+                        <label for="">Filters:</label>
+                        <div class="row" style="padding-bottom: 10px;">                            
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="CompanyFilter">Customer's Company</label>
+                                <input type="text" class="form-control" id="CompanyFilter" placeholder="Customer's Company">
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="StatusFilter">CustomerStatus</label>
+                                <select class="form-control" id="StatusFilter">
+                                    <option value="">Please Select</option>
+                                    <option value="Active">
+                                        Active
+                                    </option>
+                                    <option value="InActive">
+                                        InActive
+                                    </option>
+                                    <option value="Rejected">
+                                        Rejected
+                                    </option>
+                                    <option value="Pending For Approval">
+                                        Pending For Approval
+                                    </option>
 
+                                </select>
+                            </div>
+                        </div>
                     <div id="viewAll" class="card-body table-responsive"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -296,7 +323,23 @@
             $('#Customer_Menu').parent().closest('ul').parent().addClass('menu-open');
             // $('#Status').prop("checked", true);
             loadData();
-
+            $("#CompanyFilter").change(function () {
+                loadData();
+            });
+            $("#StatusFilter").change(function () {
+                debugger;
+                var Status= $('option:selected', this).val();
+               
+                $.ajax({
+                    url: '/Admin/Customer/LoadAll',
+                    type: 'POST',
+                    data: { Status: Status },
+                    success: function (data) {
+                        $("#viewAll").html(data);
+                    }
+                });
+                //loadData();
+            });
             $("#Country").change(function () {
                 var countryid = $('option:selected', this).val();
                 debugger;
