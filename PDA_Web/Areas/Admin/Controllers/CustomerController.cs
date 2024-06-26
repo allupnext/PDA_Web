@@ -317,8 +317,9 @@ namespace PDA_Web.Areas.Admin.Controllers
             var customerdata = await unitOfWork.Customer.GetAlllistAsync();
             if (customer.CustomerId > 0)
             {
-
-
+                var userid = HttpContext.Session.GetString("UserID");
+                customer.ModifyDate = DateTime.UtcNow;
+                customer.ModifyBy = Convert.ToInt32(userid);
                 await unitOfWork.Customer.UpdateAsync(customer);
                 await unitOfWork.Customer.DeleteCustomer_Company_MappingAsync(customer.CustomerId);
                 if (customer.PrimaryCompanyId != null)
@@ -348,6 +349,9 @@ namespace PDA_Web.Areas.Admin.Controllers
             }
             else
             {
+                var userid = HttpContext.Session.GetString("UserID");
+                customer.CreatedDate = DateTime.UtcNow;
+                customer.CreatedBy = Convert.ToInt32(userid);
                 var custId = await unitOfWork.Customer.AddAsync(customer);
                 if (!string.IsNullOrEmpty(custId))
                 {

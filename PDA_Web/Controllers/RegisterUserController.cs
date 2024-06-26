@@ -58,6 +58,10 @@ namespace PDA_Web.Controllers
             {
                 _toastNotification.AddWarningToastMessage("MobileNumber Or Email Exist!..");
             }
+
+            //var userid = HttpContext.Session.GetString("UserID");
+            customer.CreatedDate= DateTime.UtcNow;
+           
             var custId = await unitOfWork.Customer.AddAsync(customer);
             if (!string.IsNullOrEmpty(custId))
             {

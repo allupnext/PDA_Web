@@ -33,6 +33,7 @@ namespace PDAEstimator_Infrastructure.Repositories
                 return customer;
             }
         }
+
         public async Task<CustomerUserMaster> CheckEmailExist(string email)
         {
             var sql = "SELECT * FROM CustomerUserMaster where Email=@Email";
@@ -66,6 +67,7 @@ namespace PDAEstimator_Infrastructure.Repositories
             }
 
         }
+
         public async Task<string> ChangePassword(string Password, long id)
         {
             try
@@ -85,6 +87,7 @@ namespace PDAEstimator_Infrastructure.Repositories
             }
 
         }
+
         public async Task<int> AuthenticateById(int id, string Password )
         {
             try
@@ -108,7 +111,6 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         }
 
-
         public async Task<string> AddAsync(Customer entity)
         {
             try
@@ -116,7 +118,7 @@ namespace PDAEstimator_Infrastructure.Repositories
                string mobwithCode = entity.CountryCode +"-"+ entity.Mobile; 
 
                 //var sql = "INSERT INTO CustomerMaster(BankID,Salutation, FirstName, LastName, Designation, Address1, Address2,Company, City, State, Country, Email, Mobile, Password, Status, IsDeleted,Telephone,AlternativeEmail,IsEmailNotification)VALUES (@BankID,@Salutation, @FirstName, @LastName, @Designation, @Address1, @Address2,@Company, @City, @State, @Country, @Email, '" + mobwithCode + "' , @Password, @Status,0,'" + teleWithCode + "' ,@AlternativeEmail,@IsEmailNotification) SELECT CAST(SCOPE_IDENTITY() as int)";
-                var sql = "INSERT INTO CustomerMaster(BankID,Company, Status, IsDeleted,IsEmailNotification, Email, Mobile)VALUES (@BankID,@Company, @Status,0,@IsEmailNotification,@Email, '" + mobwithCode + "' ) SELECT CAST(SCOPE_IDENTITY() as int)";
+                var sql = "INSERT INTO CustomerMaster(BankID,Company, Status, IsDeleted,IsEmailNotification, Email, Mobile, CreatedBy, CreatedDate)VALUES (@BankID,@Company, @Status,0,@IsEmailNotification,@Email, '" + mobwithCode + "' ,@CreatedBy, @CreatedDate) SELECT CAST(SCOPE_IDENTITY() as int)";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
                     connection.Open();
@@ -131,8 +133,6 @@ namespace PDAEstimator_Infrastructure.Repositories
            
           
         }
-
-
 
         public async Task<string> AddCustomer_Company_MappingAsync(Company_Customer_Mapping entity)
         {
@@ -211,7 +211,7 @@ namespace PDAEstimator_Infrastructure.Repositories
         public async Task<List<CustomerList>> GetAlllistAsync()
         {
             //var sql = "SELECT CustomerId, Salutation,FirstName,LastName,Designation,Address1,Address2,Company,CustomerMaster.City as City,CustomerMaster.State as State,CustomerMaster.Country as Country,Email,Mobile,Password,CityName,StateName,CountryName,AlternativeEmail,Telephone,IsEmailNotification,BankMaster.Bank_Code FROM CustomerMaster left join CityList on CityList.ID =  CustomerMaster.City left join Country on Country.ID =  CustomerMaster.Country left join State on State.ID =  CustomerMaster.State Left join BankMaster ON BankMaster.BankId = CustomerMaster.BankID WHERE CustomerMaster.IsDeleted != 1";
-            var sql = "SELECT CustomerId,Company,IsEmailNotification,BankMaster.Bank_Code FROM CustomerMaster Left join BankMaster ON BankMaster.BankId = CustomerMaster.BankID WHERE CustomerMaster.IsDeleted != 1";
+            var sql = "SELECT CustomerId,Company,IsEmailNotification,BankMaster.Bank_Code, CreatedBy, ModifyBy, ModifyDate  CreatedDate FROM CustomerMaster Left join BankMaster ON BankMaster.BankId = CustomerMaster.BankID WHERE CustomerMaster.IsDeleted != 1";
 
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
@@ -220,6 +220,7 @@ namespace PDAEstimator_Infrastructure.Repositories
                 return new List<CustomerList>(result.ToList());
             }
         }
+
         public async Task<List<CustomerList>> GetAlllistCustomerAsync(int customerId)
         {
             //var sql = "SELECT CustomerId, Salutation,FirstName,LastName,Designation,Address1,Address2,Company,CustomerMaster.City as City,CustomerMaster.State as State,CustomerMaster.Country as Country,Email,Mobile,Password,Status,CityName,StateName,CountryName FROM CustomerMaster left join CityList on CityList.ID =  CustomerMaster.City left join Country on Country.ID =  CustomerMaster.Country left join State on State.ID =  CustomerMaster.State WHERE CustomerMaster.IsDeleted != 1";
@@ -232,13 +233,14 @@ namespace PDAEstimator_Infrastructure.Repositories
                 return new List<CustomerList>(result.ToList());
             }
         }
+
         public async Task<int> UpdateAsync(Customer entity)
         {
            string mobwithCode = entity.CountryCode + "-" + entity.Mobile;
             try
             {
                 //var sql = "UPDATE CustomerMaster SET Beneficiary_Bank_Name=@Beneficiary_Bank_Name,Salutation = @Salutation, FirstName = @FirstName,LastName = @LastName, Designation = @Designation, Address1 = @Address1, Address2 = @Address2,Company=@Company,City = @City,State = @State,Country = @Country,Email = @Email,Mobile = '" + mobwithCode + "',Telephone = '" + teleWithCode + "',Password = @Password,Status = @Status,IsEmailNotification = @IsEmailNotification WHERE CustomerId = @CustomerId";
-                var sql = "UPDATE CustomerMaster SET BankID = @BankID,Company=@Company,Status = @Status,IsEmailNotification = @IsEmailNotification,Email = @Email,Mobile = '" + mobwithCode + "' WHERE CustomerId = @CustomerId";
+                var sql = "UPDATE CustomerMaster SET BankID = @BankID,Company=@Company,Status = @Status,IsEmailNotification = @IsEmailNotification,Email = @Email,Mobile = '" + mobwithCode + "', CreatedBy = @CreatedBy, CreatedDate = @CreatedDate WHERE CustomerId = @CustomerId";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
                     connection.Open();

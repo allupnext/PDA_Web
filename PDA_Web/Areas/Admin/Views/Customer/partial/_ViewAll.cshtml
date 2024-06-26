@@ -8,40 +8,35 @@
 <table class="table table-bordered table-striped" id="CustomerNameTable">
     <thead>
         <tr>
-           
 
-            <th style="min-width:20%">
+
+            <th style="min-width:150px">
                 @Html.DisplayNameFor(model => model.Company)
             </th>
 
-            <th style="min-width:20%">
+            <th style="min-width:150px">
                 @Html.DisplayNameFor(model => model.PrimaryCompany)
             </th>
 
-            <th style="min-width:20%">
+            <th style="min-width:250px">
                 @Html.DisplayNameFor(model => model.SecondaryCompany)
             </th>
-            <th style="min-width:6%">
+            <th style="min-width:150px">
                 @Html.DisplayNameFor(model => model.Status)
             </th>
-          @*   <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Mobile)
-            </th> *@
-            <th>
+
+            <th style="min-width:150px">
                 @Html.DisplayNameFor(model => model.Bank_Code)
             </th>
-          
-            <th style="width:34%"></th>
+            <th style="min-width:150px">Date Created</th>
+            <th style="min-width:300px"></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var customer in Model)
         {
             <tr>
-           
+
 
                 <td>
                     @Html.DisplayFor(modelItem => customer.Company)
@@ -55,18 +50,13 @@
                 <td>
                     @Html.DisplayFor(modelItem => customer.Status)
                 </td>
-            @*     <td>
-                    @Html.DisplayFor(modelItem => customer.Mobile)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => customer.Email)
-                </td> *@
+
                 <td>
                     @Html.DisplayFor(modelItem => customer.Bank_Code)
                 </td>
-                @*                 <td>
-            @Html.DisplayFor(modelItem => customer.IsEmailNotification)
-            </td> *@
+                <td>
+                    @Html.DisplayFor(modelItem => customer.CreatedDate)
+                </td>
             @using PDAEstimator_Domain.Entities;
                 @if (ViewBag.UserPermissionModel != null)
                 {
