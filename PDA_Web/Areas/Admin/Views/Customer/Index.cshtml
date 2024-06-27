@@ -322,7 +322,17 @@
             $('#Customer_Menu').addClass('active');
             $('#Customer_Menu').parent().closest('ul').parent().addClass('menu-open');
             // $('#Status').prop("checked", true);
-            loadData();
+
+            debugger
+            if ('@ViewBag.CustomerStatus' == '2') {
+                $('#StatusFilter').val("Pending For Approval");
+                loadData();
+            }
+            else
+            {
+                loadData();
+            }
+            
             $("#CompanyFilter").change(function () {
                 loadData();
             });
@@ -415,19 +425,13 @@
 
         });
 
-        function loadData() {
+        function loadData(parm) {
             var Customer;
+
             Customer = {
-                "CustomerId": $('#CustomerId').val(),
-                "FirstName": $("#FirstNameFilter").val(),
-                "Address1": $('#Address1Filter').val(),
-                "Country": $('#CountryFilter').val(),
-                "Company": $('#CompanyFilter').val(),
-                "Email": $('#EmailFilter').val(),
-                "Mobile": $('#MobileFilter').val(),
-
-
+                "Status": $('#StatusFilter').val(),
             }
+
             $.ajax({
                 type: "GET",
                 url: "/Admin/Customer/LoadAll",

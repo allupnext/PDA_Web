@@ -21,8 +21,16 @@ namespace PDA_Web.Areas.Admin.Controllers
             _emailSender = emailSender;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string Parm2)
         {
+            if (Parm2 == "pending")
+            {
+                ViewBag.CustomerStatus = "2";
+            }
+            else
+            {
+                ViewBag.CustomerStatus = "1";
+            }
             var userid = HttpContext.Session.GetString("UserID");
             if (!string.IsNullOrEmpty(userid))
             {
