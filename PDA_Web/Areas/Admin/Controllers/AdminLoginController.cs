@@ -39,14 +39,24 @@ namespace PDA_Web.Areas.Admin.Controllers
                             .Select(nic => nic.GetPhysicalAddress().ToString())
                             .FirstOrDefault();
 
+
             if (user != null)
             {
                 User isAuthenticated = await unitOfWork.User.Authenticate(user.EmployCode, user.UserPassword);
-
+                if (isAuthenticated.EmailID == null || isAuthenticated.EmailID == "")
+                {
+                    _toastNotification.AddErrorToastMessage("We did't not found User Email Id. Please conact to admin.");
+                    return Json(new
+                    {
+                        proceed = false,
+                        msg = "",
+                        otp = ""
+                    });
+                }
 
                 if (isAuthenticated != null)
                 {
-                    
+
                     var isMacIDCheck = _configuration.GetValue<bool>("MacIDCheck");
                     if (isMacIDCheck)
                     {
@@ -123,8 +133,12 @@ namespace PDA_Web.Areas.Admin.Controllers
         public async Task<ActionResult> LoginwitOTP(UserAuth user)
         {
             User isAuthenticated = await unitOfWork.User.Authenticate(user.EmployCode, user.UserPassword);
-            if(isAuthenticated.OTP == user.OTP && isAuthenticated.OTPSentDate != null && isAuthenticated.OTPSentDate.Value.AddMinutes(10) >  DateTime.UtcNow)
+            if (isAuthenticated.OTP == user.OTP && isAuthenticated.OTPSentDate != null && isAuthenticated.OTPSentDate.Value.AddMinutes(5) > DateTime.UtcNow)
             {
+                var LoginMachineName = System.Environment.MachineName;
+                DateTime LoginDateTime = DateTime.UtcNow;
+                await unitOfWork.User.UpdateLoginDetails(LoginMachineName, LoginDateTime, isAuthenticated.ID);
+
                 HttpContext.Session.SetString("UserID", isAuthenticated.ID.ToString());
                 //return RedirectToAction("Index", "Home");
 
@@ -168,7 +182,7 @@ namespace PDA_Web.Areas.Admin.Controllers
    + "</div>"
    + "<p style='font-size:1.1em'>Hi,</p>"
    + "<p>Thank you for choosing samsara PDA Estimation. Use the following OTP to complete your Sign Up procedures. OTP is valid for 5 minutes</p>"
-   + "<h2 style='background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;'>"+otp+"</h2>"
+   + "<h2 style='background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;'>" + otp + "</h2>"
    + "<p style='font-size:0.9em;'>Regards,<br />samsara PDA Estimation Team</p>"
    + "<hr style='border:none;border-top:1px solid #eee' />"
    + "<div style='float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300'>"
@@ -182,7 +196,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             //}
             //if (PrimaryCompnayName == "Samsara Shipping Private Limited")
             //{
-                FromCompany = "FromSamsara";
+            FromCompany = "FromSamsara";
             //}
 
 

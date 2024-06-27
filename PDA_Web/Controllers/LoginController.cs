@@ -170,8 +170,12 @@ namespace PDA_Web.Controllers
         public async Task<ActionResult> LoginwitOTP(CustomerAuth customerAuth)
         {
             var isAuthenticated = await unitOfWork.Customer.Authenticate(customerAuth.Email, customerAuth.CustomerPassword);
-            if (isAuthenticated.OTP == customerAuth.OTP && isAuthenticated.OTPSentDate != null && isAuthenticated.OTPSentDate.Value.AddMinutes(10) > DateTime.UtcNow)
+            if (isAuthenticated.OTP == customerAuth.OTP && isAuthenticated.OTPSentDate != null && isAuthenticated.OTPSentDate.Value.AddMinutes(5) > DateTime.UtcNow)
             {
+                var LoginMachineName = System.Environment.MachineName;
+                DateTime LoginDateTime = DateTime.UtcNow;
+                await unitOfWork.CustomerUserMaster.UpdateLoginDetails(LoginMachineName, LoginDateTime, isAuthenticated.ID);
+
                 HttpContext.Session.SetString("CustID", isAuthenticated.CustomerId.ToString());
                 HttpContext.Session.SetString("ID", isAuthenticated.ID.ToString());
 

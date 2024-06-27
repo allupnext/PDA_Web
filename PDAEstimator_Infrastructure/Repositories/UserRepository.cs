@@ -25,7 +25,7 @@ namespace PDAEstimator_Infrastructure.Repositories
         }
 
         public async Task<User> Authenticate(string username, string password)
-        {   
+        {
             var sql = "SELECT * FROM UserMaster where EmployCode=@EmployCode and UserPassword=@password";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
@@ -222,7 +222,7 @@ namespace PDAEstimator_Infrastructure.Repositories
                 return result;
             }
         }
-        public async Task<string> ChangePassword(string Password, long id,string macAddress)
+        public async Task<string> ChangePassword(string Password, long id, string macAddress)
         {
             try
             {
@@ -230,7 +230,7 @@ namespace PDAEstimator_Infrastructure.Repositories
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
                     connection.Open();
-                    var result = await connection.ExecuteAsync(sql, new { UserPassword = Password, ID = id, MacAddress= macAddress });
+                    var result = await connection.ExecuteAsync(sql, new { UserPassword = Password, ID = id, MacAddress = macAddress });
                     return result.ToString();
                 }
             }
@@ -255,7 +255,7 @@ namespace PDAEstimator_Infrastructure.Repositories
                     dynamicParameters.AddDynamicParams(args);
                     connection.Open();
                     var result = await connection.QuerySingleOrDefaultAsync<int>("AuthenticateUserById", new { ID = id, UserPassword = Password });
-                 
+
                     return result;
                 }
             }
@@ -303,24 +303,24 @@ namespace PDAEstimator_Infrastructure.Repositories
             }
         }
 
-		public async Task<int> AddMacAddress(string macAddress,long Id)
-		{
-			try
-			{
-				var sql = "UPDATE UserMaster SET MacAddress= @MacAddress WHERE ID = @Id";
-				using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
-				{
-					connection.Open();
-					var result = await connection.ExecuteAsync(sql, new { MacAddress = macAddress, ID = Id } );
-					return result;
-				}
-			}
+        public async Task<int> AddMacAddress(string macAddress, long Id)
+        {
+            try
+            {
+                var sql = "UPDATE UserMaster SET MacAddress= @MacAddress WHERE ID = @Id";
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                {
+                    connection.Open();
+                    var result = await connection.ExecuteAsync(sql, new { MacAddress = macAddress, ID = Id });
+                    return result;
+                }
+            }
 
-			catch (Exception ex)
-			{
-				throw ex;
-			}
-		}
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
         public async Task<int> UpdateOTP(string OTP, DateTime OTPSentDate, long Id)
         {
@@ -331,6 +331,25 @@ namespace PDAEstimator_Infrastructure.Repositories
                 {
                     connection.Open();
                     var result = await connection.ExecuteAsync(sql, new { OTP = OTP, OTPSentDate = OTPSentDate, Id = Id });
+                    return result;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<int> UpdateLoginDetails(string LoginMachineName, DateTime LoginDateTime, long Id)
+        {
+            try
+            {
+                var sql = "UPDATE UserMaster SET LoginMachineName= @LoginMachineName, LoginDateTime = @LoginDateTime WHERE ID = @Id";
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                {
+                    connection.Open();
+                    var result = await connection.ExecuteAsync(sql, new { LoginMachineName = LoginMachineName, LoginDateTime = LoginDateTime, Id = Id });
                     return result;
                 }
             }

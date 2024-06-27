@@ -56,14 +56,14 @@ namespace PDAEstimator_Infrastructure.Repositories
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
-                var result = await connection.QueryAsync<CustomerUserMaster>(sql , new { Email = email } );
+                var result = await connection.QueryAsync<CustomerUserMaster>(sql, new { Email = email });
                 return new List<CustomerUserMaster>(result.ToList());
             }
         }
 
         public async Task<List<CustomerUserMaster>> GetByCustomerIdAsync(long id)
         {
-            
+
             try
             {
                 //var sql = "select CustomerUserMAster.* , CustomerMaster.Company from CustomerUserMAster left join CustomerMaster on CustomerMaster.CustomerId = CustomerUserMaster.CustomerId where CustomerUserMAster.IsDeleted != 1 and CustomerMaster.CustomerId = @CustomerId";
@@ -88,14 +88,14 @@ namespace PDAEstimator_Infrastructure.Repositories
                 var sql = "SELECT * FROM CustomerUserMaster WHERE ID = @ID";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
-/*                    var dynamicParameters = new DynamicParameters();
-                    var args = new Dictionary<string, object>()
-                    {
-                        ["CustomerId"] = id
-                    };
-                    dynamicParameters.AddDynamicParams(args);*/
+                    /*                    var dynamicParameters = new DynamicParameters();
+                                        var args = new Dictionary<string, object>()
+                                        {
+                                            ["CustomerId"] = id
+                                        };
+                                        dynamicParameters.AddDynamicParams(args);*/
                     connection.Open();
-                     var result = await connection.QuerySingleOrDefaultAsync<CustomerUserMaster>(sql ,new { ID = id});
+                    var result = await connection.QuerySingleOrDefaultAsync<CustomerUserMaster>(sql, new { ID = id });
                     return result;
                 }
             }
@@ -162,6 +162,25 @@ namespace PDAEstimator_Infrastructure.Repositories
                 {
                     connection.Open();
                     var result = await connection.ExecuteAsync(sql, new { OTP = OTP, OTPSentDate = OTPSentDate, Id = Id });
+                    return result;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<int> UpdateLoginDetails(string LoginMachineName, DateTime LoginDateTime, long Id)
+        {
+            try
+            {
+                var sql = "UPDATE CustomerUserMaster SET LoginMachineName= @LoginMachineName, LoginDateTime = @LoginDateTime WHERE ID = @Id";
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                {
+                    connection.Open();
+                    var result = await connection.ExecuteAsync(sql, new { LoginMachineName = LoginMachineName, LoginDateTime = LoginDateTime, Id = Id });
                     return result;
                 }
             }

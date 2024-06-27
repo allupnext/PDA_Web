@@ -16,8 +16,7 @@ namespace PDA_Web.Areas.Admin.Controllers
         }
         public async Task<IActionResult>  Index()
         {
-
-
+            
             var customerCount = await unitOfWork.Customer.GetAllAsync();
             ViewBag.Customers = customerCount;
 
@@ -49,6 +48,9 @@ namespace PDA_Web.Areas.Admin.Controllers
 
                 var userdata = await unitOfWork.User.GetAllUsersById(Convert.ToInt64(userid));
                 var userwithRole = await unitOfWork.User.GetByIdAsync(Convert.ToInt64(userid));
+                ViewBag.LastLogin = userdata.LoginDateTime != null ? Convert.ToDateTime(userdata.LoginDateTime).AddHours(5).AddMinutes(30).ToString("MMM dd yyyy hh:mm tt") : "First Time Login";
+
+
                 if (userwithRole.RoleName == "Admin")
                 {
                     pDAEstimatorLists = await unitOfWork.PDAEstimitor.GetPDAEstiomatorListOfLast30Days();

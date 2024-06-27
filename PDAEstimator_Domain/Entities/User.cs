@@ -52,5 +52,9 @@ namespace PDAEstimator_Domain.Entities
 
         public string? OTP { get; set; }
         public DateTime? OTPSentDate { get; set; }
+
+        public string? LoginMachineName { get; set; }
+
+        public DateTime? LoginDateTime { get; set; }
     }
 }

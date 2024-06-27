@@ -35,5 +35,7 @@ namespace PDAEstimator_Domain.Entities
         public string MacAddress { get; set; }
         public string? OTP { get; set; }
         public DateTime? OTPSentDate { get; set; }
+        public string? LoginMachineName { get; set; }
+        public DateTime? LoginDateTime { get; set; }
     }
 }

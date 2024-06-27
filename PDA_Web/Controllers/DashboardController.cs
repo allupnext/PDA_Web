@@ -19,12 +19,14 @@ namespace PDA_Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-         
-          
             var CustID = HttpContext.Session.GetString("CustID");
-
+            var CustUserID = HttpContext.Session.GetString("ID");
             if (!string.IsNullOrEmpty(CustID))
             {
+                var custdata = await _unitOfWork.CustomerUserMaster.GetByIdAsync(Convert.ToInt32(CustUserID));
+                if (custdata != null)
+                    ViewBag.LastLogin = custdata.LoginDateTime != null ? Convert.ToDateTime(custdata.LoginDateTime).AddHours(5).AddMinutes(30).ToString("MMM dd yyyy hh:mm tt") : "First Time Login";
+
                 List<PDAEstimatorList> pDAEstimatorLists = new List<PDAEstimatorList>();
 
                 var totalPDA = await _unitOfWork.PDAEstimitor.GetAlllistByCustIdAsync(Convert.ToInt32(CustID));
