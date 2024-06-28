@@ -1,5 +1,11 @@
-﻿@model IEnumerable<PDAEstimator_Domain.Entities.PDAEstimatorList>
+﻿@model PDAEstimator_Domain.Entities.AdminDashboard
 @using PDAEstimator_Domain.Entities;
+<style>
+    table td {
+        /* width: 110px; */
+        word-wrap: break-word;
+    }
+</style>
 <section class="content">
     <div class="container-fluid">
         <!-- Small boxes (Stat box) -->
@@ -15,7 +21,7 @@
                         <i class="fas fa-users"></i>
                         <i class="fas fa-users"></i>
                     </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="/Admin/Customer/Index" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->
@@ -44,7 +50,7 @@
                     <div class="icon">
                         <i class="fa fa-calculator"></i>
                     </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="/Admin/PDAEstimator/Index?param2=PDA" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->
@@ -60,7 +66,7 @@
                     <div class="icon">
                         <i class="ion ion-stats-bars"></i>
                     </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="/Admin/PDAEstimator/Index?param2=PDA" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->
@@ -87,21 +93,21 @@
 
                     <!-- /.card-header -->
                     <div class="card-body p-10">
-                        <div class="table-responsive">
+                        @* <div class="table-responsive"> *@
                             <table class="table table-bordered table-striped" id="PDAEstimator">
                                 <thead>
                                     <tr>
-                                        <th>CustomerCompanyName</th>
-                                        <th>Port Name</th>
-                                        <th>Cargo Name</th>
-                                        <th>Cargo Qnty</th>
-                                        <th>Created By</th>
-                                        <th>Creation date</th>
-                                        <th> </th>
+                                        <th style="width:150px;">CustomerCompanyName</th>
+                                        <th style="width:150px;">Port Name</th>
+                                        <th style="width:150px;">Cargo Name</th>
+                                        <th style="width:150px;">Cargo Qnty</th>
+                                        <th style="width:150px;">Created By</th>
+                                        <th style="width:150px;">Creation date</th>
+                                        <th style="width:200px;"> </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var item in Model)
+                                    @foreach (var item in Model.pDAEstimatorLists)
                                     {
                                         <tr>
                                             <td>
@@ -148,7 +154,7 @@
                                     }
                                 </tbody>
                             </table>
-                        </div>
+                        @* </div> *@
                         <!-- /.table-responsive -->
                     </div>
                     <!-- /.card-body -->
@@ -160,7 +166,71 @@
                 </div>
 
             </section>
+            <section class="col-lg-12 connectedSortable">
+                <div class="card">
+                    <div class="card-header border-transparent">
+                        <h3 class="card-title"><b>Pending Customer</b></h3>
 
+                        @*                         <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove">
+                        <i class="fas fa-times"></i>
+                        </button>
+                        </div> *@
+                    </div>
+
+
+                    <!-- /.card-header -->
+                    <div class="card-body p-10">
+                        @* <div class="table-responsive"> *@
+                            <table class="table table-bordered table-striped" id="PendingCustomer">
+                                <thead>
+                                    <tr>
+                                        <th style="width:150px;">Company Name</th>
+                                        <th style="width:150px;">Primary Company</th>
+                                        <th style="width:150px;">Secondary Company</th>
+                                        <th style="width:150px;">Status</th>
+                                        <th style="width:150px;">Creation date</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.customerList)
+                                    {
+                                        <tr>
+                                            <td style="min-width:150px">
+                                                @Html.DisplayFor(modelItem => item.Company)
+                                            </td>
+
+                                            <td style="min-width:150px">
+                                                @Html.DisplayFor(modelItem => item.PrimaryCompany)
+                                            </td>
+
+                                            <td style="min-width:250px">
+                                                @Html.DisplayFor(modelItem => item.SecondaryCompany)
+                                            </td>
+                                            <td style="min-width:150px">
+                                                @Html.DisplayFor(modelItem => item.Status)
+                                            </td>
+                                        <td style="min-width:150px"> @Html.DisplayFor(modelItem => item.CreatedDate)</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                      @*   </div> *@
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer clearfix">
+                        @*                         <a href="javascript:void(0)" class="btn btn-sm btn-info float-left">Place New Order</a>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-secondary float-right">View All Orders</a> *@
+                    </div>
+                    <!-- /.card-footer -->
+                </div>
+
+            </section>
         </div>
     </div><!-- /.container-fluid -->
 </section>
@@ -169,7 +239,7 @@
 {
 
     <script src="~/plugins/jquery/jquery.min.js"></script>
-   
+
     <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="~/plugins/datatables/jquery.datatables.js"></script>
     <script src="~/plugins/datatables/jquery.datatables.min.js"></script>
@@ -190,7 +260,7 @@
                 order: [[0, 'desc']],
                 scrollX: true,
                 scrollCollapse: true,
-                scrollY: '400px',
+                scrollY: '300px',
                 fixedHeader: {
                     header: true,
                 },
@@ -205,8 +275,27 @@
                 }]
             }).buttons().container().appendTo('#PDAEstimator_wrapper .col-md-6:eq(0)');
 
+            $("#PendingCustomer").DataTable({
+                order: [[0, 'desc']],
+                scrollX: true,
+                scrollCollapse: true,
+                scrollY: '300px',
+                fixedHeader: {
+                    header: true,
+                },
+                "responsive": true, "lengthChange": false, "autoWidth": false,
+                "buttons": [{
+                    extend: 'excel',
+                    text: 'Export Results',
+                    className: 'btn btn-default',
+                    exportOptions: {
+                        columns: 'th:not(:last-child)'
+                    }
+                }]
+            }).buttons().container().appendTo('#PendingCustomer_wrapper .col-md-6:eq(0)');
+
         });
-      
+
 
     </script>
 
