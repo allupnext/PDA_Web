@@ -68,5 +68,7 @@ namespace PDAEstimator_Application.Interfaces
         ICustomerUserMaster CustomerUserMaster { get; }
 
         IDisclaimersRepository Disclaimers { get; }
+
+        IEmailNotificationConfigurationRepository EmailNotificationConfigurations { get; }
     }
 }

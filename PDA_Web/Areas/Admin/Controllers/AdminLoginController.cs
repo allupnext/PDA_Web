@@ -43,20 +43,20 @@ namespace PDA_Web.Areas.Admin.Controllers
             if (user != null)
             {
                 User isAuthenticated = await unitOfWork.User.Authenticate(user.EmployCode, user.UserPassword);
-                if (isAuthenticated.EmailID == null || isAuthenticated.EmailID == "")
-                {
-                    _toastNotification.AddErrorToastMessage("We did't not found User Email Id. Please conact to admin.");
-                    return Json(new
-                    {
-                        proceed = false,
-                        msg = "",
-                        otp = ""
-                    });
-                }
+                
 
                 if (isAuthenticated != null)
                 {
-
+                    if (isAuthenticated.EmailID == null || isAuthenticated.EmailID == "")
+                    {
+                        _toastNotification.AddErrorToastMessage("We did't not found User Email Id. Please conact to admin.");
+                        return Json(new
+                        {
+                            proceed = false,
+                            msg = "",
+                            otp = ""
+                        });
+                    }
                     var isMacIDCheck = _configuration.GetValue<bool>("MacIDCheck");
                     if (isMacIDCheck)
                     {

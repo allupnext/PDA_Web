@@ -398,6 +398,15 @@
                             </li>
                         }
 
+                        @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Email Notification Config" && x.UserRolePermission == "View").Count() > 0))
+                        {
+                            <li class="nav-item">
+                                <a asp-area="Admin" asp-controller="EmailNotificationConfig" asp-action="Index" class="nav-link" id="EmailNotificationConfigMenu">
+                                    <i class="far fa-circle11 nav-icon"></i>
+                                    <p>Email Notification Config</p>
+                                </a>
+                            </li>
+                        }
 
                     </ul>
                 </li>

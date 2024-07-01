@@ -57,7 +57,7 @@ builder.Services.AddTransient<IPDAEstimitorOUTNoteRepository, PDAEstimitorOUTNot
 builder.Services.AddTransient<IPDAEstimatorOutPutTariffRepository, PDAEstimatorOutPutTariffRepository>();
 builder.Services.AddTransient<ICustomerUserMaster, CustomerUser>();
 builder.Services.AddTransient<IDisclaimersRepository, DisclaimersRepository>();
-
+builder.Services.AddTransient<IEmailNotificationConfigurationRepository, EmailNotificationConfigurationRepository>();
 
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 

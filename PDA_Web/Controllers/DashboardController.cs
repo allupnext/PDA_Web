@@ -25,8 +25,10 @@ namespace PDA_Web.Controllers
             {
                 var custdata = await _unitOfWork.CustomerUserMaster.GetByIdAsync(Convert.ToInt32(CustUserID));
                 if (custdata != null)
-                    ViewBag.LastLogin = custdata.LoginDateTime != null ? Convert.ToDateTime(custdata.LoginDateTime).AddHours(5).AddMinutes(30).ToString("MMM dd yyyy hh:mm tt") : "First Time Login";
-
+                {
+                    var LastLogin = custdata.LoginDateTime != null ? Convert.ToDateTime(custdata.LoginDateTime).AddHours(5).AddMinutes(30).ToString("MMM dd yyyy hh:mm tt") : "First Time Login";
+                    HttpContext.Session.SetString("LastLogin", LastLogin.ToString());
+                }
                 List<PDAEstimatorList> pDAEstimatorLists = new List<PDAEstimatorList>();
 
                 var totalPDA = await _unitOfWork.PDAEstimitor.GetAlllistByCustIdAsync(Convert.ToInt32(CustID));
