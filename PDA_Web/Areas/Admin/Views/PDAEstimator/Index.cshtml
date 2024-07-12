@@ -437,13 +437,85 @@
 @section Scripts
     {
     <script>
-
         $(function () {
             $("#ETA").datepicker({
                 dateFormat: 'dd/mm/yy',//check change
                 changeMonth: true,
                 changeYear: true
             });
+
+            $("#customerid").change(function () {
+                debugger
+                $('#customerid').css("border-color", "");
+            })
+            $("#Company").change(function () {
+                debugger
+                $('#Company').css("border-color", "");
+            })
+            $("#PortName").change(function () {
+                debugger
+                $('#PortName').css("border-color", "");
+            })
+            $("#PortActivityName").change(function () {
+                debugger
+                $('#PortActivityName').css("border-color", "");
+            })
+            $("#CallTypeName").change(function () {
+                debugger
+                $('#CallTypeName').css("border-color", "");
+            })
+            $("#CargoName").change(function () {
+                debugger
+                $('#CargoName').css("border-color", "");
+            })
+            $("#CargoQty").change(function () {
+                debugger
+                $('#CargoQty').css("border-color", "");
+            })
+            $("#LoadDischargeRate").change(function () {
+                debugger
+                $('#LoadDischargeRate').css("border-color", "");
+            })
+            $("#ROERate").change(function () {
+                debugger
+                $('#ROERate').css("border-color", "");
+            })
+            $("#VesselName").change(function () {
+                debugger
+                $('#VesselName').css("border-color", "");
+            })
+            $("#ArrivalDraft").change(function () {
+                debugger
+                $('#ArrivalDraft').css("border-color", "");
+            })
+            $("#GRT").change(function () {
+                debugger
+                $('#GRT').css("border-color", "");
+            })
+            $("#NRT").change(function () {
+                debugger
+                $('#NRT').css("border-color", "");
+            })
+            $("#LOA").change(function () {
+                debugger
+                $('#LOA').css("border-color", "");
+            })
+            $("#Beam").change(function () {
+                debugger
+                $('#Beam').css("border-color", "");
+            })
+            $("#VesselBallast").change(function () {
+                debugger
+                $('#VesselBallast').css("border-color", "");
+            })
+            $("#ReducedGRT").change(function () {
+                debugger
+                $('#ReducedGRT').css("border-color", "");
+            })
+            $("#IsReducedGRT").change(function () {
+                debugger
+                $('#IsReducedGRT').css("border-color", "");
+            })
         });
 
         function berthstaycalculation() {
@@ -614,28 +686,30 @@
         function callChangefunc(val) {  
             debugger;
             var portid = $('option:selected', this).val();
-
-            var cargoHandled;
-            cargoHandled = {
-
-                "TerminalID": $('#TerminalName').val()
-            }
-            $.ajax({
-                type: "GET",
-                url: "/Admin/PDAEstimator/TerminalNameOnchange",
-                data: cargoHandled,
-                dataType: "HTML",
-                async: false,
-                success: function (data) {
-                    debugger;
-                    $("#berthdrop").html(data);
-                    showBrethDetailPopUp();
-                    //$("#BerthDetailsModel").modal('show');
-                    //$("#BerthDetailsModel").find(".modal-body").html(data);
-                },
-                error: function () {
+            
+            if(val !=""){
+                $('#TerminalName').css("border-color", "");
+                var cargoHandled;
+                cargoHandled = {
+                    "TerminalID": $('#TerminalName').val()
                 }
-            });
+                $.ajax({
+                    type: "GET",
+                    url: "/Admin/PDAEstimator/TerminalNameOnchange",
+                    data: cargoHandled,
+                    dataType: "HTML",
+                    async: false,
+                    success: function (data) {
+                        debugger;
+                        $("#berthdrop").html(data);
+                        showBrethDetailPopUp();
+                        //$("#BerthDetailsModel").modal('show');
+                        //$("#BerthDetailsModel").find(".modal-body").html(data);
+                    },
+                    error: function () {
+                    }
+                });
+            }
         }
 
         function BerthChangefunc(val) {
@@ -644,25 +718,28 @@
 
             var cargoHandled;
             cargoHandled = {
-                "BerthId": val,
+                "BerthId": val, 
                 "TerminalID": $('#TerminalName').val()
             }
-            $.ajax({
-                type: "GET",
-                url: "/Admin/PDAEstimator/BerthNameOnchange",
-                data: cargoHandled,
-                dataType: "JSON",
-                async: false,
-                success: function (data) {
-                    debugger;
-                    $("#LOA").val(data.loa);
-                    $("#Beam").val(data.beam);
-                    $("#ArrivalDraft").val(data.arrivalDraft);
-                    
-                },
-                error: function () {
-                }
-            });
+            if (val != "") {
+                $('#BerthName').css("border-color", "");
+                $.ajax({
+                    type: "GET",
+                    url: "/Admin/PDAEstimator/BerthNameOnchange",
+                    data: cargoHandled,
+                    dataType: "JSON",
+                    async: false,
+                    success: function (data) {
+                        debugger;
+                        $("#LOA").val(data.loa);
+                        $("#Beam").val(data.beam);
+                        $("#ArrivalDraft").val(data.arrivalDraft);
+
+                    },
+                    error: function () {
+                    }
+                });
+            }
         }
 
         function showBrethDetailPopUp() {
@@ -704,16 +781,20 @@
 
         function callCurrencyfunc(val) {
 
-            $.ajax({
+            if(val !="")
+            {
+                $('#Currency').css("border-color", "");
+                $.ajax({
 
-                type: "GET",
-                url: "/Admin/PDAEstimator/CurrencyOnchange?Currency=" + val,
-                success: function (data) {
-                    $('#ROERate').val(data.roeRate);
-                },
-                error: function () {
-                }
-            });
+                    type: "GET",
+                    url: "/Admin/PDAEstimator/CurrencyOnchange?Currency=" + val,
+                    success: function (data) {
+                        $('#ROERate').val(data.roeRate);
+                    },
+                    error: function () {
+                    }
+                });
+            }
         }
 
         function clear() {
@@ -792,29 +873,35 @@
 
             if ($('#customerid').val() == "") {
                 toastr.error("Please select customer.", 'Error Alert');
+                $('#customerid').css("border-color", "Red");
             }
             else if ($('#Company').val() == "") {
                 toastr.error("Please Select InternalCompany.", 'Error Alert');
-
-            }
-            else if ($('#VesselName').val() == "") {
-                toastr.error("Please enter VesselName.", 'Error Alert');
-                $('#VesselName').css("border-color", "Red");
+                $('#Company').css("border-color", "Red");
             }
             else if ($('#PortName').val() == "") {
                 toastr.error("Please Select PortName.", 'Error Alert');
+                $('#PortName').css("border-color", "Red");
             }
             else if ($('#PortActivityName').val() == "") {
                 toastr.error("Please enter PortOperationType.", 'Error Alert');
-            }
-            else if ($('#TerminalName').val() == "") {
-                toastr.error("Please Select TerminalName.", 'Error Alert');
+                $('#PortActivityName').css("border-color", "Red");
             }
             else if ($('#CallTypeName').val() == "") {
                 toastr.error("Please Select CallTypeName.", 'Error Alert');
+                $('#CallTypeName').css("border-color", "Red");
             }
             else if ($('#CargoName').val() == "") {
                 toastr.error("Please Select CargoName.", 'Error Alert');
+                $('#CargoName').css("border-color", "Red");
+            }
+            else if ($('#TerminalName').val() == "") {
+                toastr.error("Please Select TerminalName.", 'Error Alert');
+                $('#TerminalName').css("border-color", "Red");
+            }
+            else if ($('#BerthName').val() == "") {
+                toastr.error("Please Select BerthName.", 'Error Alert');
+                $('#BerthName').css("border-color", "Red");
             }
             else if ($('#CargoQty').val() == "") {
                 toastr.error("Please Enter CargoName.", 'Error Alert');
@@ -826,10 +913,15 @@
             }
             else if ($('#Currency').val() == "") {
                 toastr.error("Please Enter Currency.", 'Error Alert');
+                $('#Currency').css("border-color", "Red");
             }
             else if ($('#ROERate').val() == "") {
                 toastr.error("Please Enter ROERate.", 'Error Alert');
                 $('#ROERate').css("border-color", "Red");
+            }
+            else if ($('#VesselName').val() == "") {
+                toastr.error("Please enter VesselName.", 'Error Alert');
+                $('#VesselName').css("border-color", "Red");
             }
             else if ($('#ArrivalDraft').val() == "") {
                 toastr.error("Please Enter Arrival Draft.", 'Error Alert');
@@ -839,10 +931,7 @@
                 toastr.error("Please Enter GRT.", 'Error Alert');
                 $('#GRT').css("border-color", "Red");
             }
-            //else if ($('#ReducedGRT').val() == "") {
-            //    toastr.error("Please Enter Reduced GRT.", 'Error Alert');
-            //    $('#ReducedGRT').css("border-color", "Red");
-            //}
+            
             else if ($('#NRT').val() == "") {
                 toastr.error("Please Enter NRT.", 'Error Alert');
                 $('#NRT').css("border-color", "Red");
@@ -858,6 +947,18 @@
             else if ($('#ETA').val() == "") {
                 toastr.error("Please Enter ETA.", 'Error Alert');
                 $('#ETA').css("border-color", "Red");
+            }
+            else if ($('#VesselBallast').val() == "") {
+                toastr.error("Please Enter VesselBallast.", 'Error Alert');
+                $('#VesselBallast').css("border-color", "Red");
+            }
+            else if ($('#ReducedGRT').val() == "") {
+                toastr.error("Please Enter Reduced GRT.", 'Error Alert');
+                $('#ReducedGRT').css("border-color", "Red");
+            }
+            else if ($('#IsReducedGRT').val() == "") {
+                toastr.error("Please Enter Reduced IsReducedGRT.", 'Error Alert');
+                $('#IsReducedGRT').css("border-color", "Red");
             }
             else {
                 showLoader(this);
