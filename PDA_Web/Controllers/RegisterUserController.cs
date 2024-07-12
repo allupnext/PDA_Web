@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using iTextSharp.tool.xml.html;
+using Microsoft.AspNetCore.Mvc;
 using NToastNotify;
 using PDAEstimator_Application.Interfaces;
 using PDAEstimator_Domain.Entities;
@@ -57,6 +58,23 @@ namespace PDA_Web.Controllers
             if (CMobileNumber.Count > 0 && CMobileNumber != null || CEmailId.Count > 0 && CEmailId != null)
             {
                 _toastNotification.AddWarningToastMessage("MobileNumber Or Email Exist!..");
+                return Json(new
+                {
+                    proceed = false,
+                    msg = ""
+                });
+            }
+
+            var companyexist = customerdata.Where(x => x.Company == customer.Company).ToList();
+            if(companyexist.Count > 0)
+            {
+                _toastNotification.AddWarningToastMessage("Your company is already registered. Please conact to admin.");
+                return Json(new
+                {
+                    proceed = false,
+                    msg = ""
+                });
+
             }
 
             //var userid = HttpContext.Session.GetString("UserID");
@@ -102,25 +120,31 @@ namespace PDA_Web.Controllers
                 customerUserMaster.IsDeleted = false;
                 customerUserMaster.FirstName = customer.FirstName;
                 customerUserMaster.LastName = customer.LastName;
-
+                customerUserMaster.Password = PasswordGenerator.GeneratePassword(true, true, true,false,false,8);
                 await unitOfWork.CustomerUserMaster.AddAsync(customerUserMaster);
                 List<string> recipients = new List<string>
-                    {
-                       customer.Email
-                    };
-                //string Content = "You are added in PDA Estimator and you can access our platform using below login credentials: </br> UserName :" + customer.Email + " User Password:" + customer.Password;
+                {
+                    customer.Email
+                };
+
                 string Content = "<html> <head>   <title> Your Company Register Request Successfully Sent to us.</title> </head> <body>   <p> Dear User,<br>    Thanks for registering on the PDA portal. Our Admin will check your request and conact you soon. <br><br> <b>Regards <br> PDA Portal</b>  </p> </body> </html> ";
-                string Subject = "Company Register Requiest on PDAEstimator";
+                string Subject = "Company Register Requiest on PDA Portal";
+
+                List<string> ccrecipients = new List<string>();
                 string FromCompany = "";
-                //if (PrimaryCompnayName == "Merchant Shipping Services Private Limited")
-                //{
-                //    FromCompany = "FromMerchant";
-                //}
-                //if (PrimaryCompnayName == "Samsara Shipping Private Limited")
-                //{
-                    FromCompany = "FromSamsara";
-                //}
-                var Msg = new Message(recipients, Subject, Content, FromCompany);
+                string ToEmail = "";
+                var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByProcessNameAsync("Customer Register");
+                if(emailconfig != null)
+                {
+                    ToEmail = emailconfig.ToEmail;
+                    FromCompany = emailconfig.FromEmail;
+                    if(emailconfig.ToEmail != null)
+                    {
+                        ccrecipients = ToEmail.Split(',').ToList();
+                    }
+                }
+
+                var Msg = new Message(recipients, ccrecipients, Subject, Content, FromCompany);
 
                 _emailSender.SendEmail(Msg);
 

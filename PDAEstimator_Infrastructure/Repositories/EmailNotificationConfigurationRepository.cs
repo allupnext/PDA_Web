@@ -55,8 +55,6 @@ namespace PDAEstimator_Infrastructure.Repositories
             }
         }
 
-      
-
         public async Task<EmailNotificationConfiguration> GetByIdAsync(long EmailConfigID)
         {
             var sql = "SELECT * FROM EmailNotificationConfiguration WHERE EmailConfigID = @EmailConfigID";
@@ -64,6 +62,17 @@ namespace PDAEstimator_Infrastructure.Repositories
             {
                 connection.Open();
                 var result = await connection.QuerySingleOrDefaultAsync<EmailNotificationConfiguration>(sql, new { EmailConfigID = EmailConfigID });
+                return result;
+            }
+        }
+
+        public async Task<EmailNotificationConfiguration> GetByProcessNameAsync(string ProcessName)
+        {
+            var sql = "SELECT * FROM EmailNotificationConfiguration WHERE ProcessName = @ProcessName";
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+            {
+                connection.Open();
+                var result = await connection.QuerySingleOrDefaultAsync<EmailNotificationConfiguration>(sql, new { ProcessName = ProcessName });
                 return result;
             }
         }

@@ -791,6 +791,9 @@
                             return;
                         }
                         else {
+                            if (data.pdaid != 0) {
+                                PDAEstimatorDownloadandSave(data.pdaid);
+                            }
                             clear();
                             $('.loading').hide();
                             loadData();
@@ -948,28 +951,44 @@
 
         }
 
-        //function pdaEstimatorRedirect() {
-        //    var customerId = $('#PDAEstimatorId').val()
+        function PDAEstimatorDownloadandSave(id) {
+           
+           $.ajax({
+               type: "POST",
+                url: "/PDA/PDAEstimatorDownloadandSave/" + id,
+               success: function (data) {
+                   if (!data.proceed) {
+                        PDAEstimatorEmail(id);
+                       // return;
+                   }
+                   else {
+                       PDAEstimatorEmail(id);
+                   }
 
-        //    var customerName = $('#customerid').val()
+               },
+               error: function () {
+               }
+           });
+        }
 
-        //    $.ajax({
-        //        type: "POST",
-        //        url: "/PDA/PdaEstimatorRedirect" + customerId,
-        //        data: PDAEstimitor,
-        //        success: function (data) {
-        //            if (!data.proceed) {
-        //                return;
-        //            }
-        //            else {
-        //                loadData();
-        //            }
+        function PDAEstimatorEmail(id) {
 
-        //        },
-        //        error: function () {
-        //        }
-        //    });
-        //}
+            $.ajax({
+                type: "POST",
+                url: "/PDA/PDAEstimatorEmail/" + id,
+                success: function (data) {
+                    if (!data.proceed) {
+                        return;
+                    }
+                    else {
+                        // loadData();
+                    }
+
+                },
+                error: function () {
+                }
+            });
+        }
 
         function loadData() {
             showLoader(this);

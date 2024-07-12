@@ -4,6 +4,7 @@ using PDAEstimator_Application.Interfaces;
 using PDAEstimator_Domain.Entities;
 using PDAEstimator_Infrastructure_Shared;
 using PDAEstimator_Infrastructure_Shared.Services;
+using static System.Net.WebRequestMethods;
 
 namespace PDA_Web.Areas.Admin.Controllers
 {
@@ -160,16 +161,21 @@ namespace PDA_Web.Areas.Admin.Controllers
                     //string Content = "You are added in PDA Estimator and you can access our platform using below login credentials: </br> UserName :" + customer.Email + " User Password:" + customer.Password;
                     string Content = "<html> <head>   <title>PDA Estimator Login Credentials</title> </head> <body>   <p> Dear User,<br>    Thanks for registering on the PDA portal.Your login details are as follows:     <br/>     <b>UserName:</b> " + customer.Email + "     <br/>     <b>User Password:</b> " + customer.Password + " <br><br> <b>Regards <br> PDA Portal</b>  </p> </body> </html> ";
                     string Subject = "Welcome to PDAEstimator";
+                    List<string> ccrecipients = new List<string>();
                     string FromCompany = "";
-                    if (PrimaryCompnayName == "Merchant Shipping Services Private Limited")
+                    string ToEmail = "";
+                    var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByProcessNameAsync("Customer Register");
+                    if (emailconfig != null)
                     {
-                        FromCompany = "FromMerchant";
+                        ToEmail = emailconfig.ToEmail;
+                        FromCompany = emailconfig.FromEmail;
+                        if (emailconfig.ToEmail != null)
+                        {
+                            ccrecipients = ToEmail.Split(',').ToList();
+                        }
+                        
                     }
-                    if (PrimaryCompnayName == "Samsara Shipping Private Limited")
-                    {
-                        FromCompany = "FromSamsara";
-                    }
-                    var Msg = new Message(recipients, Subject, Content, FromCompany);
+                    var Msg = new Message(recipients, ccrecipients, Subject, Content, FromCompany);
 
                     _emailSender.SendEmail(Msg);
 
@@ -355,6 +361,36 @@ namespace PDA_Web.Areas.Admin.Controllers
                         company_Customer_Mapping1.IsPrimary = false;
                         await unitOfWork.Customer.AddCustomer_Company_MappingAsync(company_Customer_Mapping1);
                     }
+                }
+
+                if(customer.Oldstatus != null && customer.Oldstatus == "Pending For Approval" && customer.Status == "Active")
+                {
+
+                    var custuser = unitOfWork.CustomerUserMaster.GetByCustomerIdAsync(customer.CustomerId).Result.OrderByDescending(x => x.ID).FirstOrDefault();
+                    List<string> recipients = new List<string>
+                    {
+                        custuser.Email
+                    };
+
+                    string Content = "<html> <body>   <p>Hello, <br> Your Register company is approved and Your company is active now and you can access PDA Portal using below login details once your user is Active. </p> <div> </br> <p> <b> User Name :</b> " + custuser.Email + " </br> <b> Password: </b> " + custuser.Password + "  </p> </br> </br> <p> Regard, </br> PDA Portal </p> </div> </body> </html> ";
+
+                    string Subject = "Registion request is Approved and Active";
+                    List<string> ccrecipients = new List<string>();
+                    string FromCompany = "";
+                    string ToEmail = "";
+                    var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByProcessNameAsync("Customer Register");
+                    if (emailconfig != null)
+                    {
+                        ToEmail = emailconfig.ToEmail;
+                        FromCompany = emailconfig.FromEmail;
+                        if (emailconfig.ToEmail != null)
+                        {
+                            ccrecipients = ToEmail.Split(',').ToList();
+                        }
+                    }
+
+                    var Msg = new Message(recipients, ccrecipients, Subject, Content, FromCompany);
+                    _emailSender.SendEmail(Msg);
                 }
                 _toastNotification.AddSuccessToastMessage("Updated Successfully");
 

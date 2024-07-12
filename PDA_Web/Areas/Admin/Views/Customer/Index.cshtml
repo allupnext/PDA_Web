@@ -48,6 +48,7 @@
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="Status">CustomerStatus<span class="text-danger">*</span></label>
+                                    <input type="hidden" id="Oldstatus" value="" />
                                     <select class="form-control" id="Status">
                                         <option value="">Please Select</option>
                                         <option value="Active">
@@ -199,6 +200,7 @@
                 "Email": $('#Email').val(),
                 "Mobile": $('#Mobile').val(),
                 "CountryCode": $('#CountryCode').val(),
+                "Oldstatus": $('#Oldstatus').val(),
             }
 
             if ($('#_Company').val() == "") {
@@ -292,7 +294,6 @@
                 "CustomerId": $('#CustomerId').val(),
                
                 "Status": $('#Status').val(),
-                ////////////////////
                 "BankID": $('#Beneficiary').val()
 
             }
@@ -305,6 +306,7 @@
                     debugger
                     $('#_Company').val(data.customer.company);
                     $('#Status').val(data.customer.status);
+                    $('#Oldstatus').val(data.customer.status);
                     $('#PrimaryCompany').val(data.customer.primaryCompany);
                     $('#SecondaryCompany').val(data.customer.secondaryCompanyId);
                     ///////////
@@ -583,7 +585,10 @@
         }
 
         function CustomerUserSave() {
-
+            var Status = false;
+            if ($('#CustomerUserStatus').is(":checked")) {
+                Status = true;
+            }
             var Customer;
             Customer = {
                 "ID": $('#CustomerUserId').val(),
@@ -605,6 +610,7 @@
                 "AlterCountryCode": $('#AlterCountryCode').val(),
                 "AlternativeEmail": $('#AlternativeEmail').val(),
                 "Telephone": $('#Telephone').val(),
+                "Status": Status
             }
 
             debugger
@@ -656,7 +662,7 @@
                 $('#Mobile').val("");
                 $('#Telephone').val("");
                 $('#Password').val("");
-                $('#Status').val("");
+                $('#CustomerUserStatus').prop("checked", true);
 
                 $('#PrimaryCompany').val("");
             }
@@ -683,7 +689,10 @@
         }
 
         function editCustomerUserDetails(id) {
-            //Id
+            var Status = false;
+            if ($('#CustomerUserStatus').is(":checked")) {
+                Status = true;
+            }
             var ID = id;
             debugger
             var Customer;
@@ -706,7 +715,7 @@
                 "Mobile": $('#Mobile').val(),
                 "Telephone": $('#Telephone').val(),
                 "Password": $('#Password').val(),
-                "Status": $('#Status').val(),
+                "Status": Status
             }
 
             $.ajax({

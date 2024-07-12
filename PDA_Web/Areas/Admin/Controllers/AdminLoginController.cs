@@ -65,6 +65,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                         if (string.IsNullOrEmpty(isAuthenticated.MacAddress))
                         {
                             var AddMacAddress = await unitOfWork.User.AddMacAddress(macAddress, isAuthenticated.ID);
+                           
+
                             string otp = await SendOTPEmail(isAuthenticated.EmailID, isAuthenticated.ID);
                             return Json(new
                             {
@@ -76,13 +78,27 @@ namespace PDA_Web.Areas.Admin.Controllers
                         }
                         else if (isAuthenticated.MacAddress != macAddress)
                         {
-                            _toastNotification.AddErrorToastMessage("Your MACAddress does not match with old MACAddress.");
-                            return Json(new
+                            var LoginMachineName = System.Environment.MachineName;
+                            if (isAuthenticated.LoginMachineName != null && isAuthenticated.LoginMachineName == LoginMachineName)
                             {
-                                proceed = false,
-                                msg = "",
-                                otp = ""
-                            });
+                                string otp = await SendOTPEmail(isAuthenticated.EmailID, isAuthenticated.ID);
+                                return Json(new
+                                {
+                                    proceed = true,
+                                    msg = "",
+                                    otp = otp
+                                });
+                            }
+                            else
+                            {
+                                _toastNotification.AddErrorToastMessage("This device is not registered. Please login through your registered device (" + isAuthenticated.LoginMachineName + ") Or reset your password");
+                                return Json(new
+                                {
+                                    proceed = false,
+                                    msg = "",
+                                    otp = ""
+                                });
+                            }
                         }
                         else
                         {
@@ -175,6 +191,8 @@ namespace PDA_Web.Areas.Admin.Controllers
             {
                 Email
             };
+
+            
             string Content = "<div style='font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2'>"
    + "<div style='margin:50px auto;width:70%;padding:20px 0'>"
    + "<div style='border-bottom:1px solid #eee'>"
@@ -189,18 +207,21 @@ namespace PDA_Web.Areas.Admin.Controllers
    + "<p></p>"
     + "</div> </div></div> ";
             string Subject = "Login in PDA Portal";
+            List<string> ccrecipients = new List<string>();
             string FromCompany = "";
-            //if (PrimaryCompnayName == "Merchant Shipping Services Private Limited")
-            //{
-            //    FromCompany = "FromMerchant";
-            //}
-            //if (PrimaryCompnayName == "Samsara Shipping Private Limited")
-            //{
-            FromCompany = "FromSamsara";
-            //}
+            string ToEmail = "";
+            var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByProcessNameAsync("Customer Register");
+            if (emailconfig != null)
+            {
+                ToEmail = emailconfig.ToEmail;
+                FromCompany = emailconfig.FromEmail;
+                if (emailconfig.ToEmail != null)
+                {
+                    ccrecipients = ToEmail.Split(',').ToList();
+                }
+            }
 
-
-            var Msg = new Message(recipients, Subject, Content, FromCompany);
+            var Msg = new Message(recipients, ccrecipients, Subject, Content, FromCompany);
             _emailSender.SendEmail(Msg);
 
             return otp;
@@ -258,18 +279,22 @@ namespace PDA_Web.Areas.Admin.Controllers
                     /*                    string Content = "You recently requested to reset the password for your PDAEstimator account. Click the button below to proceed. ";*/
                     string Content = "<html> <body>   <p>Hello, <br> You recently requested to reset the password for your PDAEstimator account. Click the button below to proceed.    </p> <div> <a  href=" + confirmationLink + "> <button style='height:30px; margin-bottom:30px; font-size:14px;' type='button'> Reset Password </button> </a> </div> </body> </html> ";
                     string Subject = "Reset Password";
+                    List<string> ccrecipients = new List<string>();
                     string FromCompany = "";
-                    if (PrimaryCompnayName == "Merchant Shipping Services Private Limited")
+                    string ToEmail = "";
+                    var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByProcessNameAsync("Customer Register");
+                    if (emailconfig != null)
                     {
-                        FromCompany = "FromMerchant";
-                    }
-                    if (PrimaryCompnayName == "Samsara Shipping Private Limited")
-                    {
-                        FromCompany = "FromSamsara";
+                        ToEmail = emailconfig.ToEmail;
+                        FromCompany = emailconfig.FromEmail;
+                        if (emailconfig.ToEmail != null)
+                        {
+                            ccrecipients = ToEmail.Split(',').ToList();
+                        }
                     }
 
 
-                    var Msg = new Message(recipients, Subject, Content, FromCompany);
+                    var Msg = new Message(recipients, ccrecipients, Subject, Content, FromCompany);
                     /*                   _toastNotification.AddSuccessToastMessage("Email hase been sent to given Email Address");*/
                     _emailSender.SendEmail(Msg);
 

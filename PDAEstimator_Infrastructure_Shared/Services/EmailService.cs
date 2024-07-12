@@ -15,44 +15,41 @@ namespace PDAEstimator_Infrastructure_Shared.Services
         {
             _emailConfig = emailConfig;
         }
-        public void SendEmail(Message message)
+        public void SendEmail(Message message, string filepath = "")
         {
-            var emailMessage = CreateEmailMessage(message);
+            var emailMessage = CreateEmailMessage(message, filepath);
             Send(emailMessage);
         }
 
-        private MimeMessage CreateEmailMessage(Message message)
+        private MimeMessage CreateEmailMessage(Message message, string filepath="")
         {
+            var emailMessage = new MimeMessage();
             if (message.FromCompany == "FromSamsara")
             {
-                var emailMessage = new MimeMessage();
                 emailMessage.From.Add(new MailboxAddress("email ", _emailConfig.FromSamsara));
-                emailMessage.To.AddRange(message.To);
-                emailMessage.Subject = message.Subject;
-                //var bodyBuilder = new BodyBuilder();
-                //bodyBuilder.HtmlBody = "<b>This is some html text</b>";
-                //bodyBuilder.TextBody = "This is some plain text";
-                emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = message.Content };
-                return emailMessage;
             }
             else if (message.FromCompany == "FromMerchant")
             {
-                var emailMessage = new MimeMessage();
                 emailMessage.From.Add(new MailboxAddress("email ", _emailConfig.FromMerchant));
-                emailMessage.To.AddRange(message.To);
-                emailMessage.Subject = message.Subject;
-                emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = message.Content };
-                return emailMessage;
             }
-            else 
+            else
             {
-                var emailMessage = new MimeMessage();
-                emailMessage.From.Add(new MailboxAddress("email ", _emailConfig.From));
-                emailMessage.To.AddRange(message.To);
-                emailMessage.Subject = message.Subject;
-                emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = message.Content };
-                return emailMessage;
+                if (!string.IsNullOrEmpty(message.FromCompany))
+                    emailMessage.From.Add(new MailboxAddress("email ", message.FromCompany));
+                else
+                    emailMessage.From.Add(new MailboxAddress("email ", _emailConfig.FromMerchant));
             }
+            emailMessage.To.AddRange(message.To);
+            emailMessage.Cc.AddRange(message.Cc);
+            emailMessage.Subject = message.Subject;
+
+            
+            BodyBuilder emailBodyBuilder = new BodyBuilder();
+            emailBodyBuilder.HtmlBody = message.Content;
+            if(filepath != "")      
+                emailBodyBuilder.Attachments.Add(filepath);
+            emailMessage.Body = emailBodyBuilder.ToMessageBody();
+            return emailMessage;
         }
 
         private void Send(MimeMessage mailMessage)
@@ -69,7 +66,7 @@ namespace PDAEstimator_Infrastructure_Shared.Services
                 catch
                 {
                     //log an error message or throw an exception or both.
-                    throw;
+                    return;
                 }
                 finally
                 {

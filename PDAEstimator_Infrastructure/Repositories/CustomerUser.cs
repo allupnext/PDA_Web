@@ -26,7 +26,7 @@ namespace PDAEstimator_Infrastructure.Repositories
                 string mobwithCode = entity.CountryCode + "-" + entity.Mobile;
                 string teleWithCode = entity.AlterCountryCode + "-" + entity.Telephone;
 
-                var sql = "INSERT INTO CustomerUserMaster(Salutation, FirstName, LastName, Designation, Address1, Address2,Company, City, State, Country, Email, Mobile, Password, CustomerId, IsDeleted,Telephone,AlternativeEmail)VALUES (@Salutation, @FirstName, @LastName, @Designation, @Address1, @Address2,@Company, @City, @State, @Country, @Email, '" + mobwithCode + "' , @Password, @CustomerId, 0,'" + teleWithCode + "' ,@AlternativeEmail) SELECT CAST(SCOPE_IDENTITY() as int)";
+                var sql = "INSERT INTO CustomerUserMaster(Salutation, FirstName, LastName, Designation, Address1, Address2,Company, City, State, Country, Email, Mobile, Password, CustomerId, IsDeleted,Telephone,AlternativeEmail, Status)VALUES (@Salutation, @FirstName, @LastName, @Designation, @Address1, @Address2,@Company, @City, @State, @Country, @Email, '" + mobwithCode + "' , @Password, @CustomerId, 0,'" + teleWithCode + "' ,@AlternativeEmail, @Status) SELECT CAST(SCOPE_IDENTITY() as int)";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
                     connection.Open();
@@ -109,7 +109,7 @@ namespace PDAEstimator_Infrastructure.Repositories
             try
             {
                 //var sql = "UPDATE CustomerMaster SET Beneficiary_Bank_Name=@Beneficiary_Bank_Name,Salutation = @Salutation, FirstName = @FirstName,LastName = @LastName, Designation = @Designation, Address1 = @Address1, Address2 = @Address2,Company=@Company,City = @City,State = @State,Country = @Country,Email = @Email,Mobile = '" + mobwithCode + "',Telephone = '" + teleWithCode + "',Password = @Password,Status = @Status,IsEmailNotification = @IsEmailNotification WHERE CustomerId = @CustomerId";
-                var sql = "UPDATE CustomerUserMaster SET Salutation = @Salutation, FirstName = @FirstName,LastName = @LastName, Designation = @Designation, Address1 = @Address1, Address2 = @Address2,Company=@Company,City = @City,State = @State,Country = @Country,Email = @Email,Mobile = '" + mobwithCode + "',Telephone = '" + teleWithCode + "',AlternativeEmail = @AlternativeEmail,Password = @Password WHERE ID = @ID";
+                var sql = "UPDATE CustomerUserMaster SET Salutation = @Salutation, FirstName = @FirstName,LastName = @LastName, Designation = @Designation, Address1 = @Address1, Address2 = @Address2,Company=@Company,City = @City,State = @State,Country = @Country,Email = @Email,Mobile = '" + mobwithCode + "',Telephone = '" + teleWithCode + "',AlternativeEmail = @AlternativeEmail,Password = @Password, Status = @Status WHERE ID = @ID";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
                     connection.Open();

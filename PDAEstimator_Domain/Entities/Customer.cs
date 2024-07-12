@@ -47,6 +47,8 @@ namespace PDAEstimator_Domain.Entities
         public DateTime? CreatedDate { get; set; }
         public int? ModifyBy { get; set; }
         public DateTime? ModifyDate { get; set; }
+
+        public string? Oldstatus {  get; set; }
     }
 
 }
