@@ -113,11 +113,6 @@ namespace PDA_Web.Areas.Admin.Controllers
 
             var corecustomerdata = await unitOfWork.Customer.GetByIdAsync(customer.CustomerId);
 
-            Int64 PrimaryCompanyId = Convert.ToInt64(corecustomerdata.PrimaryCompany);
-
-            var FromPrimaryCompany = await unitOfWork.Company.GetByIdAsync(PrimaryCompanyId);
-            var PrimaryCompnayName = FromPrimaryCompany.CompanyName;
-
             if (customer.ID > 0)
             {
                 var CMobileNumber = customerdata.Where(x => x.Mobile == customer.Mobile && x.ID != customer.ID).ToList();
@@ -378,7 +373,65 @@ namespace PDA_Web.Areas.Admin.Controllers
                     List<string> ccrecipients = new List<string>();
                     string FromCompany = "";
                     string ToEmail = "";
-                    var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByProcessNameAsync("Customer Register");
+                    var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByProcessNameAsync("Customer Approved");
+                    if (emailconfig != null)
+                    {
+                        ToEmail = emailconfig.ToEmail;
+                        FromCompany = emailconfig.FromEmail;
+                        if (emailconfig.ToEmail != null)
+                        {
+                            ccrecipients = ToEmail.Split(',').ToList();
+                        }
+                    }
+
+                    var Msg = new Message(recipients, ccrecipients, Subject, Content, FromCompany);
+                    _emailSender.SendEmail(Msg);
+                }
+                else if (customer.Oldstatus != null && customer.Oldstatus != "Rejected" && customer.Status == "Rejected")
+                {
+
+                    var custuser = unitOfWork.CustomerUserMaster.GetByCustomerIdAsync(customer.CustomerId).Result.OrderByDescending(x => x.ID).FirstOrDefault();
+                    List<string> recipients = new List<string>
+                    {
+                        custuser.Email
+                    };
+
+                    string Content = "<html> <body>   <p>Hello, <br> Your Register company is not approved and you can not access PDA Portal. For further question conact to Admin. </p> <div> </br> <p> <b> User Name :</b> " + custuser.Email + " </br> <b> Password: </b> " + custuser.Password + "  </p> </br> </br> <p> Regard, </br> PDA Portal </p> </div> </body> </html> ";
+
+                    string Subject = "Registion request is not approved";
+                    List<string> ccrecipients = new List<string>();
+                    string FromCompany = "";
+                    string ToEmail = "";
+                    var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByProcessNameAsync("Customer Rejected");
+                    if (emailconfig != null)
+                    {
+                        ToEmail = emailconfig.ToEmail;
+                        FromCompany = emailconfig.FromEmail;
+                        if (emailconfig.ToEmail != null)
+                        {
+                            ccrecipients = ToEmail.Split(',').ToList();
+                        }
+                    }
+
+                    var Msg = new Message(recipients, ccrecipients, Subject, Content, FromCompany);
+                    _emailSender.SendEmail(Msg);
+                }
+                else if (customer.Oldstatus != null && customer.Oldstatus != "InActive" && customer.Status == "InActive")
+                {
+
+                    var custuser = unitOfWork.CustomerUserMaster.GetByCustomerIdAsync(customer.CustomerId).Result.OrderByDescending(x => x.ID).FirstOrDefault();
+                    List<string> recipients = new List<string>
+                    {
+                        custuser.Email
+                    };
+
+                    string Content = "<html> <body>   <p>Hello, <br> Your Register company is not Active any more and you can not access PDA Portal from now. For further question conact to Admin. </p> <div> </br> <p> <b> User Name :</b> " + custuser.Email + " </br> <b> Password: </b> " + custuser.Password + "  </p> </br> </br> <p> Regard, </br> PDA Portal </p> </div> </body> </html> ";
+
+                    string Subject = "PDA Protal Account Inactive";
+                    List<string> ccrecipients = new List<string>();
+                    string FromCompany = "";
+                    string ToEmail = "";
+                    var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByProcessNameAsync("Customer InActive");
                     if (emailconfig != null)
                     {
                         ToEmail = emailconfig.ToEmail;

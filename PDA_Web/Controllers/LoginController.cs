@@ -50,7 +50,7 @@ namespace PDA_Web.Controllers
                     var Companydata = await unitOfWork.Customer.GetByIdAsync(isAuthenticated.CustomerId);
                     if (Companydata.Status != "Active")
                     {
-                        _toastNotification.AddErrorToastMessage("Your company is not active. Please contact to Admin.");
+                        _toastNotification.AddErrorToastMessage("Your company is not active. Please contact to Admin (Email on: bulkopsindia@samsarashipping.com).");
                         return Json(new
                         {
                             proceed = false,
@@ -60,7 +60,7 @@ namespace PDA_Web.Controllers
                     }
                     else if (!isAuthenticated.Status)
                     {
-                        _toastNotification.AddErrorToastMessage("You are not active user. Please contact to Admin.");
+                        _toastNotification.AddErrorToastMessage("You are not active user. Please contact to Admin (Email on: bulkopsindia@samsarashipping.com).");
                         return Json(new
                         {
                             proceed = false,
