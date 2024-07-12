@@ -946,12 +946,20 @@ namespace PDA_Web.Areas.Admin.Controllers
 
         public IActionResult BerthNameOnchange(PDAEstimator PDAEstimitor)
         {
-            var BearthDetailData =  unitOfWork.BerthDetails.GetByIdAsync(PDAEstimitor.BerthId).Result;
+            if(PDAEstimitor.BerthId != 0)
+            {
+                var BearthDetailData = unitOfWork.BerthDetails.GetByIdAsync(PDAEstimitor.BerthId).Result;
+                return Json(new
+                {
+                    loa = BearthDetailData.MaxLoa,
+                    beam = BearthDetailData.MaxBeam,
+                    arrivalDraft = BearthDetailData.MaxArrivalDraft,
+                    proceed = true,
+                    msg = ""
+                });
+            }
             return Json(new
             {
-                loa= BearthDetailData.MaxLoa,
-                beam = BearthDetailData.MaxBeam,
-                arrivalDraft = BearthDetailData.MaxArrivalDraft,
                 proceed = true,
                 msg = ""
             });
