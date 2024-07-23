@@ -120,7 +120,7 @@ namespace PDA_Web.Controllers
                 customerUserMaster.IsDeleted = false;
                 customerUserMaster.FirstName = customer.FirstName;
                 customerUserMaster.LastName = customer.LastName;
-                customerUserMaster.Password = PasswordGenerator.GeneratePassword(true, true, true,false,false,8);
+                customerUserMaster.Password = PasswordGenerator.GeneratePassword(8);
                 await unitOfWork.CustomerUserMaster.AddAsync(customerUserMaster);
                 List<string> recipients = new List<string>
                 {

@@ -133,11 +133,11 @@
                     <div class="card-body">
                         <label for="">Filters:</label>
                         <div class="row" style="padding-bottom: 10px;">                            
-                            <div class="col-sm-2" style="max-width: 15%;">
+                            <div class="col-sm-4" style="max-width: 20%;">
                                 <label for="CompanyFilter">Customer's Company</label>
                                 <input type="text" class="form-control" id="CompanyFilter" placeholder="Customer's Company">
                             </div>
-                            <div class="col-sm-2" style="max-width: 15%;">
+                            <div class="col-sm-4" style="max-width: 20%;">
                                 <label for="StatusFilter">CustomerStatus</label>
                                 <select class="form-control" id="StatusFilter">
                                     <option value="">Please Select</option>
@@ -157,7 +157,7 @@
                                 </select>
                             </div>
                         </div>
-                    <div id="viewAll" class="card-body table-responsive"></div>
+                    <div id="viewAll" class="table-responsive"></div>
                     </div>
                 </div>
             </div>
@@ -432,6 +432,7 @@
 
             Customer = {
                 "Status": $('#StatusFilter').val(),
+                 "Company": $('#CompanyFilter').val(),
             }
 
             $.ajax({

@@ -1042,7 +1042,7 @@ namespace PDA_Web.Areas.Admin.Controllers
 
             if (maxArribvaldraft != null && maxArribvaldraft < PDAEstimitor.ArrivalDraft)
             {
-                _toastNotification.AddErrorToastMessage("Please enter Max Arribval Draft Less then : " + maxArribvaldraft);
+                _toastNotification.AddErrorToastMessage("Please enter Max Arrival Draft Less then : " + maxArribvaldraft);
                 return Json(new
                 {
                     proceed = false,

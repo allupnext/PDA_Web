@@ -47,50 +47,13 @@ namespace PDAEstimator_Infrastructure_Shared.Services
         /// <param name="includeSpaces">Bool to say if spaces are required</param>
         /// <param name="lengthOfPassword">Length of password required. Should be between 8 and 128</param>
         /// <returns></returns>
-        public static string GeneratePassword(bool includeLowercase, bool includeUppercase, bool includeNumeric, bool includeSpecial, bool includeSpaces, int lengthOfPassword)
+        public static string GeneratePassword(int length = 6)
         {
-            const int MAXIMUM_IDENTICAL_CONSECUTIVE_CHARS = 2;
-            const string LOWERCASE_CHARACTERS = "abcdefghijklmnopqrstuvwxyz";
-            const string UPPERCASE_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            const string NUMERIC_CHARACTERS = "0123456789";
-            const string SPECIAL_CHARACTERS = @"!#$%&amp;*@\";
-            const string SPACE_CHARACTER = " ";
-            const int PASSWORD_LENGTH_MIN = 8;
-            const int PASSWORD_LENGTH_MAX = 128;
-
-            if (lengthOfPassword < PASSWORD_LENGTH_MIN || lengthOfPassword > PASSWORD_LENGTH_MAX)
-            {
-                return "Password length must be between 8 and 128.";
-            }
-
-            string characterSet = "";
-
-            if (includeLowercase)
-            {
-                characterSet += LOWERCASE_CHARACTERS;
-            }
-
-            if (includeUppercase)
-            {
-                characterSet += UPPERCASE_CHARACTERS;
-            }
-
-            if (includeNumeric)
-            {
-                characterSet += NUMERIC_CHARACTERS;
-            }
-
-            if (includeSpecial)
-            {
-                characterSet += SPECIAL_CHARACTERS;
-            }
-
-            if (includeSpaces)
-            {
-                characterSet += SPACE_CHARACTER;
-            }
-
-            return "not random";
+             string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
+             Random random = new Random();
+             string password = new string(Enumerable.Repeat(chars, length)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
+            return password;
         }
 
     }

@@ -84,7 +84,8 @@ builder.Services.AddMvc()
                {
                    ProgressBar = true,
                    Timeout = 5000,
-                   Theme = "metroui"
+                   Theme = "metroui",
+                   Force = true
                });
 var app = builder.Build();
 

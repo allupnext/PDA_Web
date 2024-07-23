@@ -276,7 +276,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             //}
             if (customer.Company != null /*&& customer.FirstName != 0*/)
             {
-                customerdata = customerdata.Where(x => x.Company == customer.Company).ToList();
+                customerdata = customerdata.Where(x => x.Company.Contains(customer.Company)).ToList();
             }
             if (customer.Status != null /*&& customer.FirstName != 0*/)
             {

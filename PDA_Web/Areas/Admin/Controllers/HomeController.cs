@@ -51,8 +51,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                 var userwithRole = await unitOfWork.User.GetByIdAsync(Convert.ToInt64(userid));
                 var LastLogin = userdata.LoginDateTime != null ? Convert.ToDateTime(userdata.LoginDateTime).AddHours(5).AddMinutes(30).ToString("MMM dd yyyy hh:mm tt") : "First Time Login";
                 HttpContext.Session.SetString("LastLogin", LastLogin.ToString());
-
-
+                HttpContext.Session.SetString("loginusername", userdata.FirstName + " " + userdata.LastName);
                 if (userwithRole.RoleName == "Admin")
                 {
                     pDAEstimatorLists = await unitOfWork.PDAEstimitor.GetPDAEstiomatorListOfLast30Days();
