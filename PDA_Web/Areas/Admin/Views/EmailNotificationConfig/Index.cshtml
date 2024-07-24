@@ -38,12 +38,19 @@
                         <input type="hidden" id="EmailConfigID" name="EmailConfigID" value="">
                     
                         <div class="row">
-
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="Company">Primary Company<span class="text-danger">*</span></label>
+                                    @Html.DropDownList("Company", new SelectList(ViewBag.Company, "CompanyId", "CompanyName"), "Please Select", new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-sm-6">
 
                                 <div class="form-group">
                                     <label for="ProcessName">Process Name</label>
-                                    <input type="text" class="form-control" readonly="readonly" id="ProcessName" placeholder="Process Name">
+                                    <input type="text" class="form-control" id="ProcessName" placeholder="Process Name">
                                 </div>
                             </div>
 
@@ -85,10 +92,10 @@
                         userPermissionRights = ViewBag.UserPermissionModel;
                         userRoleName = ViewBag.UserRoleName;
 
-                        @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Email Notification Config" && x.UserRolePermission == "Edit").Count() > 0))
+                        @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Email Notification Config").Count() > 0))
                         {
                             <div class="card-footer">
-                                <button class="btn btn-primary" id="EmailNotificationConfigSave" style="display:none;" onclick="EmailNotificationConfigSave()">Submit</button>
+                                <button class="btn btn-primary" id="EmailNotificationConfigSave" onclick="EmailNotificationConfigSave()">Submit</button>
                             </div>
                         }
                     }

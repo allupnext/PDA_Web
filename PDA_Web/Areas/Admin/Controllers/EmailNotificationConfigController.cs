@@ -28,6 +28,9 @@ namespace PDA_Web.Areas.Admin.Controllers
                 ViewBag.UserPermissionModel = UserPermissionModel;
                 var Currentuser = HttpContext.Session.GetString("UserID");
 
+                var CompanyData = await unitOfWork.Company.GetAllAsync();
+                ViewBag.Company = CompanyData;
+
                 var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
                 ViewBag.UserRoleName = UserRole;
                 // Temp Solution END
