@@ -717,7 +717,7 @@
 
         function ArrivalDraftOnchange() {
             var MAXArrivalDraft = $("#MAXArrivalDraft").val();
-            if (MAXArrivalDraft < $("#ArrivalDraft").val()) {
+            if (MAXArrivalDraft != "" && MAXArrivalDraft > 0 && MAXArrivalDraft < $("#ArrivalDraft").val()) {
                 toastr.error("Please enter Max Arrival Draft Less then :" + MAXArrivalDraft, 'Error Alert');
                 $("#ArrivalDraft").val(MAXArrivalDraft);
             }
@@ -725,7 +725,7 @@
 
         function LOAOnchange() {
             var MAXLOA = $("#MAXLOA").val();
-            if (MAXLOA < $("#LOA").val()) {
+            if (MAXLOA != "" && MAXLOA > 0 && MAXLOA < $("#LOA").val()) {
                 toastr.error("Please enter MaxLOA Less then :" + MAXLOA, 'Error Alert');
                 $("#LOA").val(MAXLOA);
             }
@@ -733,7 +733,7 @@
 
         function BeamOnchange() {
             var MAXBeam = $("#MAXBeam").val();
-            if (MAXBeam < $("#Beam").val()) {
+            if (MAXBeam != "" && MAXBeam > 0 && MAXBeam < $("#Beam").val()) {
                 toastr.error("Please enter MaxBeam Less then :" + MAXBeam, 'Error Alert');
                 $("#Beam").val(MAXBeam);
             }
