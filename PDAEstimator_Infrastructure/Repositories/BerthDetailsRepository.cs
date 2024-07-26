@@ -21,7 +21,7 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<string> AddAsync(BerthDetails entity)
         {
-            var sql = "Insert into BerthDetails (BerthCode, BerthName, BerthStatus, MaxLoa, MaxBeam, MaxArrivalDraft, TerminalID, IsDeleted) VALUES (@BerthCode, @BerthName, @BerthStatus, @MaxLoa, @MaxBeam, @MaxArrivalDraft, @TerminalID,0)";
+            var sql = "Insert into BerthDetails (BerthCode, BerthName, BerthStatus, MaxLoa, MaxBeam, MaxArrivalDraft, DWT ,TerminalID, IsDeleted) VALUES (@BerthCode, @BerthName, @BerthStatus, @MaxLoa, @MaxBeam, @MaxArrivalDraft, @DWT,@TerminalID,0)";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
@@ -76,7 +76,7 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<int> UpdateAsync(BerthDetails entity)
         {
-            var sql = "UPDATE BerthDetails SET BerthCode=@BerthCode, BerthName=@BerthName, BerthStatus=@BerthStatus, MaxLoa=@MaxLoa, MaxBeam=@MaxBeam, MaxArrivalDraft=@MaxArrivalDraft, TerminalID=@TerminalID WHERE ID = @Id";
+            var sql = "UPDATE BerthDetails SET BerthCode=@BerthCode, BerthName=@BerthName, BerthStatus=@BerthStatus, MaxLoa=@MaxLoa, MaxBeam=@MaxBeam, MaxArrivalDraft=@MaxArrivalDraft, TerminalID=@TerminalID,DWT=@DWT WHERE ID = @Id";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();

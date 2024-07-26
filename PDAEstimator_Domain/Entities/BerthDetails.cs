@@ -28,6 +28,7 @@ namespace PDAEstimator_Domain.Entities
         public decimal? MaxLoa { get; set; }
         public decimal? MaxBeam { get; set; }
         public decimal? MaxArrivalDraft { get; set; }
+        public decimal? DWT { get; set; }
         public string? TerminalName { get; set; }
 
     }

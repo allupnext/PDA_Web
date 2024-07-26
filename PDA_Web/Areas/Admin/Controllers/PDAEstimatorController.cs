@@ -954,6 +954,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                     loa = BearthDetailData.MaxLoa,
                     beam = BearthDetailData.MaxBeam,
                     arrivalDraft = BearthDetailData.MaxArrivalDraft,
+                    dwt = BearthDetailData.DWT,
                     proceed = true,
                     msg = ""
                 });

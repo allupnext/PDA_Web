@@ -31,6 +31,9 @@
                                 <th>
                                     @Html.DisplayNameFor(model => model.MaxArrivalDraft)
                                 </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.DWT)
+                                </th>
 
                             </tr>
                         </thead>
@@ -60,6 +63,9 @@
                                         </td>
                                         <td>
                                             @Html.DisplayFor(modelItem => item.MaxArrivalDraft)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.DWT)
                                         </td>
                                         @* <td>
                                             @if (item.BerthStatus == true)

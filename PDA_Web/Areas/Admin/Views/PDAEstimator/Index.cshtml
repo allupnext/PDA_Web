@@ -174,7 +174,7 @@
 
                                 <div class="col-sm-2">
                                     <div class="form-group">
-                                        <label for="DWT">DWT</label>
+                                        <label for="DWT">DWT<span class="text-danger">*</span></label>
                                         <input type="number" class="form-control" id="DWT" placeholder="DWT">
                                     </div>
                                 </div>
@@ -764,6 +764,7 @@
                         $("#ArrivalDraft").val(data.arrivalDraft);
                         $("#MAXLOA").val(data.loa);
                         $("#MAXBeam").val(data.beam);
+                        $("#DWT").val(data.dwt);
                         $("#MAXArrivalDraft").val(data.arrivalDraft);
                         
                     },
@@ -953,6 +954,10 @@
             else if ($('#VesselName').val() == "") {
                 toastr.error("Please enter VesselName.", 'Error Alert');
                 $('#VesselName').css("border-color", "Red");
+            }
+            else if ($('#DWT').val() == "") {
+                toastr.error("Please enter DWT.", 'Error Alert');
+                $('#DWT').css("border-color", "Red");
             }
             else if ($('#ArrivalDraft').val() == "") {
                 toastr.error("Please Enter Arrival Draft.", 'Error Alert');

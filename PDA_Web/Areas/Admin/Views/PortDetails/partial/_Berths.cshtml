@@ -72,6 +72,12 @@
                                 <input type="text" class="form-control" id="MaxArrivalDraft" placeholder="Max Arrival Draft">
                             </div>
                         </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="DWT">DWT</label>
+                                <input type="text" class="form-control" id="DWT" placeholder="DWT">
+                            </div>
+                        </div>
                     </div>
                         <div class="row">
                             <div class="col-sm-6">
@@ -124,6 +130,9 @@
                                     @Html.DisplayNameFor(model => model.MaxArrivalDraft)
                                 </th>
                                 <th>
+                                    @Html.DisplayNameFor(model => model.DWT)
+                                </th>
+                                <th>
                                     @Html.DisplayNameFor(model => model.BerthStatus)
                                 </th>
 
@@ -153,6 +162,9 @@
                                         </td>
                                         <td>
                                             @Html.DisplayFor(modelItem => item.MaxArrivalDraft)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.DWT)
                                         </td>
                                         <td>
                                             @if (item.BerthStatus == true)
