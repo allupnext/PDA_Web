@@ -3,6 +3,7 @@ using NToastNotify;
 using PDAEstimator_Application.Interfaces;
 using PDAEstimator_Domain.Entities;
 using System.Diagnostics.Metrics;
+using System.Runtime.InteropServices;
 
 namespace PDA_Web.Areas.Admin.Controllers
 {
@@ -73,19 +74,21 @@ namespace PDA_Web.Areas.Admin.Controllers
                     _toastNotification.AddSuccessToastMessage("Updated Successfully");
                 }
             }
-            //else
-            //{
-            //    var CallTypeName = data.Where(x => x.CallTypeName.ToUpper() == callType.CallTypeName.ToUpper()).ToList();
-            //    if (CallTypeName != null && CallTypeName.Count > 0)
-            //    {
-            //        _toastNotification.AddWarningToastMessage("CallTypeName already exists.");
-            //    }
-            //    else
-            //    {
-            //        await unitOfWork.CallTypes.AddAsync(callType);
-            //        _toastNotification.AddSuccessToastMessage("Inserted successfully");
-            //    }
-            //}
+            else
+            {
+                var data1 = await unitOfWork.EmailNotificationConfigurations.GetAllAsync();
+                var CompnyHasSameProcessName = data1.Where(x => x.CompneyName == emailNotificationConfiguration.CompneyName && x.ProcessName == emailNotificationConfiguration.ProcessName).ToList();
+
+                if (CompnyHasSameProcessName != null && CompnyHasSameProcessName.Count >0)
+                {
+                    _toastNotification.AddWarningToastMessage("Compney already has ProcessName " + emailNotificationConfiguration.ProcessName);
+                }
+                else
+                {
+                    var savevalue = await unitOfWork.EmailNotificationConfigurations.AddAsync(emailNotificationConfiguration);
+                    _toastNotification.AddSuccessToastMessage("Inserted successfully");
+                }
+            }
             return Json(new
             {
                 proceed = true,

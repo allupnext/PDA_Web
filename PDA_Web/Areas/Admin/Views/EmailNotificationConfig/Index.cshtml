@@ -50,7 +50,31 @@
 
                                 <div class="form-group">
                                     <label for="ProcessName">Process Name</label>
-                                    <input type="text" class="form-control" id="ProcessName" placeholder="Process Name">
+                                    @*<input type="text" class="form-control" id="ProcessName" placeholder="Process Name">*@
+                                    <select class="form-control" id="ProcessName">
+                                        <option value="">Please Select</option>
+                                        <option value="Customer Approved">
+                                            Customer Approved
+                                        </option>
+                                        <option value="Customer InActive">
+                                            Customer InActive
+                                        </option>
+                                        <option value="Customer OTP Sent Email">
+                                            Customer OTP Sent Email
+                                        </option>
+                                        <option value="Customer Register">
+                                            Customer Register
+                                        </option>
+                                        <option value="Customer Rejected">
+                                            Customer Rejected
+                                        </option>
+                                        <option value="Customer Reset Password">
+                                            Customer Reset Password
+                                        </option>
+                                        <option value="PDA Generate">
+                                            PDA Generate
+                                        </option>
+                                    </select>
                                 </div>
                             </div>
 
@@ -133,22 +157,27 @@
             $('#MasterMenu').addClass('active');
             $('#EmailNotificationConfigMenu').addClass('active');
             $('#EmailNotificationConfigMenu').parent().closest('ul').parent().addClass('menu-open');
-            loadData();
-           
+            loadData();           
         });
 
         function EmailNotificationConfigSave() {
-
+            var selectedText = $('#Company option:selected').text();
             var EmailNotificationConfig;
 
             EmailNotificationConfig = {
                 "EmailConfigID": $('#EmailConfigID').val(),
+                "CompanyId": $('#Company').val(),
+                "CompneyName": selectedText,
                 "ProcessName": $('#ProcessName').val(),
                 "FromEmail": $('#FromEmail').val(),
                 "ToEmail": $('#ToEmail').val(),
             }
             if ($('#ProcessName').val() == "") {
                 toastr.error("Please Process Name.", 'Error Alert');
+                $('#ProcessName').css("border", "1px solid red");
+            }
+            if ($('#Company').val() == "") {
+                toastr.error("Please Company.", 'Error Alert');
                 $('#ProcessName').css("border", "1px solid red");
             }
             else if ($('#FromEmail').val() == "") {
@@ -176,7 +205,8 @@
                 $('#ProcessName').val("");
                 $('#FromEmail').val("");
                 $('#ToEmail').val("");
-                $('#EmailNotificationConfigSave').hide();
+                $('#Company').val("");
+                //$('#EmailNotificationConfigSave').hide();
             }
         }
 

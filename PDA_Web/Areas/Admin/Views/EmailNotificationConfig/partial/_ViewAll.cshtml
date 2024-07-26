@@ -9,6 +9,9 @@
     <thead>
         <tr>
             <th>
+                Comney Name
+            </th>
+            <th>
                 Process Name
             </th>
             <th>
@@ -24,6 +27,9 @@
         @foreach (var item in Model)
         {
             <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompneyName)
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.ProcessName)
                 </td>

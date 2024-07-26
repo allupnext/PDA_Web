@@ -19,7 +19,7 @@ namespace PDAEstimator_Infrastructure.Repositories
         {
             try
             {
-                var sql = "Insert into EmailNotificationConfiguration (ProcessName,ProcessName, FromEmail, ToEmail) VALUES (@ProcessName, @ProcessName, @FromEmail, @ToEmail)";
+                var sql = "Insert into EmailNotificationConfiguration (CompneyName,ProcessName, FromEmail, ToEmail) VALUES (@CompneyName, @ProcessName, @FromEmail, @ToEmail)";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
                     connection.Open();
@@ -79,7 +79,7 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<int> UpdateAsync(EmailNotificationConfiguration entity)
         {
-            var sql = "UPDATE EmailNotificationConfiguration SET ProcessName=@ProcessName, FromEmail=@FromEmail, ToEmail = @ToEmail WHERE EmailConfigID = @EmailConfigID";
+            var sql = "UPDATE EmailNotificationConfiguration SET CompneyName=@CompneyName,ProcessName=@ProcessName, FromEmail=@FromEmail, ToEmail = @ToEmail WHERE EmailConfigID = @EmailConfigID";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
