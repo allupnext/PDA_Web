@@ -79,16 +79,28 @@
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="PortName">Port Information</label>
+                                    <label for="PortName">Port Information(Dry Bulk)</label>
                                     <div class="input-group">
                                         <div class="custom-file">
-                                            <input type="file" class="custom-file-input" id="exampleInputFile" onchange="uploadFiles('exampleInputFile');">
+                                            <input type="file" class="custom-file-input" id="exampleInputFile" onchange="uploadFiles('exampleInputFile','1');">
                                             <label class="custom-file-label" for="exampleInputFile" id="exampleInputFileName">Choose file</label>
                                             <input type="hidden" id="ResumeFileName" name="ResumeFileName" />
                                         </div>
                                      @*    <div class="input-group-append">
                                             <span class="input-group-text">Upload</span>
                                         </div> *@
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="PortName">Port Information(Tanker)</label>
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="exampleInputFileTanker" onchange="uploadFiles('exampleInputFile','2');">
+                                            <label class="custom-file-label" for="exampleInputFile" id="exampleInputFileNameTanker">Choose file</label>
+                                            <input type="hidden" id="ResumeFileNameTanker" name="ResumeFileNameTanker" />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -234,30 +246,60 @@
         }
       
 
-        function uploadFiles(inputId) {
-            var input = document.getElementById(inputId);
-            var files = input.files;
-            var formData = new FormData();
-            var filename = $("#PortName").val();
-            for (var i = 0; i !== files.length; i++) {
-                formData.append("files", files[i]);
-                formData.append("filenames", filename);
-            }
-            $.ajax(
-                {
-                    url: "/Admin/PortDetails/uploadfiles",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    type: "POST",
-                    success: function (data) {
-                        // Set the property of the Model.
-
-                        $("#exampleInputFileName").text(data.fileName);
-                        $("#ResumeFileName").val(data.fileName);
-                    }
+        function uploadFiles(inputId,val) {
+            if (val == "1") {
+                debugger
+                var input = document.getElementById(inputId);
+                var files = input.files;
+                var formData = new FormData();
+                var filename = $("#PortName").val() + "_DryBulk";
+                for (var i = 0; i !== files.length; i++) {
+                    formData.append("files", files[i]);
+                    formData.append("filenames", filename);
                 }
-            );
+                $.ajax(
+                    {
+                        url: "/Admin/PortDetails/uploadfiles",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        type: "POST",
+                        success: function (data) {
+                            // Set the property of the Model.
+
+                            $("#exampleInputFileName").text(data.fileName);
+                            $("#ResumeFileName").val(data.fileName);
+                        }
+                    }
+                );
+            }
+
+            if (val == "2") {
+                debugger
+                var input = document.getElementById(inputId);
+                var files = input.files;
+                var formData = new FormData();
+                var filename = $("#PortName").val()+ "_Tanker";
+                for (var i = 0; i !== files.length; i++) {
+                    formData.append("files", files[i]);
+                    formData.append("filenames", filename);
+                }
+                $.ajax(
+                    {
+                        url: "/Admin/PortDetails/uploadfiles",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        type: "POST",
+                        success: function (data) {
+                            // Set the property of the Model.
+
+                            $("#exampleInputFileNameTanker").text(data.fileName);
+                            $("#ResumeFileNameTanker").val(data.fileName);
+                        }
+                    }
+                );
+            }
         }
 
         function TerminaldetailsSave() {
@@ -495,6 +537,7 @@
         }
 
         function portdetailsSave() {
+            debugger;
             var portdetails;
             var Status = false;
             if ($('#Status').is(":checked")) {
@@ -509,6 +552,7 @@
                 "State": $("#State").val(),
                 "Country": $('#Country').val(),
                 "PortFile": $("#ResumeFileName").val(),
+                "PortFileTanker": $("#ResumeFileNameTanker").val(),
                 "Status": Status,
             }
             if ($('#PortCode').val() == "") {
@@ -555,7 +599,9 @@
                 $('#State').val("");
                 $('#Country').val("");
                 $('#ResumeFileName').val("");
+                $('#ResumeFileNameTanker').val("");
                 $("#exampleInputFileName").text("Choose file");
+                $("#exampleInputFileNameTanker").text("Choose file");
             }
         }
 
