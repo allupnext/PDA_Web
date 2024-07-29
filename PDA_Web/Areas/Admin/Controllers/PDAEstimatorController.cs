@@ -613,6 +613,10 @@ namespace PDA_Web.Areas.Admin.Controllers
             return pDAEstimatorOutPut;
         }
 
+        private string GetFullPathOfFile1(string fileName)
+        {
+            return $"{_hostEnvironment.WebRootPath}\\uploads\\{fileName}";
+        }
         private string GetFullPathOfFile(string fileName)
         {
             return $"{_hostEnvironment.WebRootPath}\\companylogo\\{fileName}";
@@ -755,6 +759,17 @@ namespace PDA_Web.Areas.Admin.Controllers
             {
                 return RedirectToAction("index", "AdminLogin");
             }
+        }
+        public FileResult DownloadFile(string fileName)
+        {
+            //Build the File Path.
+            //string path = Path.Combine(this.Environment.WebRootPath, "Files/") + fileName;
+            string fullPath = GetFullPathOfFile1(fileName.Replace("\"", ""));
+            //Read the File data into Byte Array.
+            byte[] bytes = System.IO.File.ReadAllBytes(fullPath);
+
+            //Send the File to Download.
+            return File(bytes, "application/octet-stream", fileName);
         }
         public async Task<IActionResult> TempData()
         {

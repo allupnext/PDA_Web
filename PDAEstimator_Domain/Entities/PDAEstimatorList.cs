@@ -81,5 +81,8 @@ namespace PDAEstimator_Domain.Entities
         public string ModifyUser { get; set; }
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime ModifyDate { get; set; }
+        
+        public string? PortFile { get; set; }
+        public string? PortFileTanker { get; set; }
     }
 }

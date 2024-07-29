@@ -75,6 +75,8 @@ namespace PDAEstimator_Domain.Entities
 
         public bool IsCustomerCreated { get; set; }
 
+        public string? PortFile { get; set; }
+        public string? PortFileTanker { get; set; }
     }
 
 }

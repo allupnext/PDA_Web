@@ -25,6 +25,12 @@
             <th>
                 Port Name
             </th>
+            <th>
+                Port Information(Dry Bulk)
+            </th>
+            <th>
+                Port Information(Tanker)
+            </th>
             <th style="min-width:120px">
                 Port Activity Type
             </th>
@@ -126,6 +132,16 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.PortName)
+                </td>
+                <td width="20">
+                    @if (item.PortFile != null)
+                    @Html.ActionLink(item.PortFile, "DownloadFile", new { fileName = item.PortFile })
+                    @*@Html.DisplayFor(modelItem => item.PortFile)*@
+                </td>
+                <td width="20">
+                    @if (item.PortFileTanker != null)
+                        @Html.ActionLink(item.PortFileTanker, "DownloadFile", new { fileName = item.PortFileTanker })
+                    @*@Html.DisplayFor(modelItem => item.PortFile)*@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.ActivityType)

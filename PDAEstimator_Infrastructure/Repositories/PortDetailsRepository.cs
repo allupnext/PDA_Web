@@ -65,7 +65,7 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<int> UpdateAsync(PortDetails entity)
         {
-            var sql = "UPDATE PortDetails SET PortCode= @PortCode,PortName=@PortName, City=@City, State=@State, Country =@Country, Status= @Status, PortFile =@PortFile WHERE Id = @Id";
+            var sql = "UPDATE PortDetails SET PortCode= @PortCode,PortName=@PortName, City=@City, State=@State, Country =@Country, Status= @Status, PortFile =@PortFile, PortFileTanker =@PortFileTanker WHERE Id = @Id";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
