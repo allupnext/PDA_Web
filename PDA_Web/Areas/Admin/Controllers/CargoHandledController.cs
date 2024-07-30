@@ -33,6 +33,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                 ViewBag.UserRoleName = UserRole;
                 // Temp Solution END
                 var data2 = await unitOfWork.PortDetails.GetAllAsync();
+                if (data2.Count > 0)
+                    data2 = data2.Where(x => x.Status == true).ToList();
                 ViewBag.Port = data2;
 
                 var data = await unitOfWork.TerminalDetails.GetAllAsync();

@@ -43,7 +43,7 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<List<PortDetails>> GetAllAsync()
         {
-            var sql = "SELECT * FROM PortDetails where  IsDeleted! = 1 ORDER BY PortName";
+            var sql = "SELECT * FROM PortDetails where  IsDeleted! = 1  ORDER BY PortName";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();

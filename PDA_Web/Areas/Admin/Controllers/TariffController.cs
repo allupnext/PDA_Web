@@ -9,6 +9,8 @@ using System.Globalization;
 using static System.Reflection.Metadata.BlobBuilder;
 using Azure.Core;
 using Microsoft.AspNetCore.Http.Features;
+using PDA_Web.Models;
+using iTextSharp.text.pdf;
 
 namespace PDA_Web.Areas.Admin.Controllers
 {
@@ -60,6 +62,8 @@ namespace PDA_Web.Areas.Admin.Controllers
             var FormulaOprator = await unitOfWork.FormulaOprator.GetAllAsync();
             ViewBag.FormulaOprator = FormulaOprator;
             var PortsData = await unitOfWork.PortDetails.GetAllAsync();
+            if (PortsData.Count > 0)
+                PortsData = PortsData.Where(x => x.Status == true).ToList();
             ViewBag.Ports = PortsData;
             return View();
 
@@ -201,28 +205,44 @@ namespace PDA_Web.Areas.Admin.Controllers
                 var UserRole = await unitOfWork.Roles.GetUserRoleName(Convert.ToInt64(Currentuser));
                 ViewBag.UserRoleName = UserRole;
                 // Temp Solution END
-                var data2 = await unitOfWork.PortDetails.GetAllAsync();
-                ViewBag.Port = data2;
+                var dataPortDetails = await unitOfWork.PortDetails.GetAllAsync();
+                if (dataPortDetails.Count > 0)
+                    dataPortDetails = dataPortDetails.Where(x => x.Status == true).ToList();
+                ViewBag.Port = dataPortDetails;
 
-                var data = await unitOfWork.TerminalDetails.GetAllAsync();
-                ViewBag.Terminal = data;
+                var dataTerminalDetails = await unitOfWork.TerminalDetails.GetAllAsync();
+                if (dataTerminalDetails.Count > 0)
+                    dataTerminalDetails = dataTerminalDetails.Where(x => x.Status == true).ToList();
+                ViewBag.Terminal = dataTerminalDetails;
 
-                var data1 = await unitOfWork.BerthDetails.GetAllAsync();
-                ViewBag.Berth = data1;
+                var dataBerthDetails = await unitOfWork.BerthDetails.GetAllAsync();
+                if (dataBerthDetails.Count > 0)
+                    dataBerthDetails = dataBerthDetails.Where(x => x.BerthStatus == true).ToList();
+                ViewBag.Berth = dataBerthDetails;
 
-                var data3 = await unitOfWork.CargoDetails.GetAllAsync();
-                ViewBag.Cargo = data3;
+                var dataCargoDetails = await unitOfWork.CargoDetails.GetAllAsync();
+                if (dataCargoDetails.Count > 0)
+                    dataCargoDetails = dataCargoDetails.Where(x => x.CargoStatus == true).ToList();
+                ViewBag.Cargo = dataCargoDetails;
 
                 var dataCallTypes = await unitOfWork.CallTypes.GetAllAsync();
+                if (dataCallTypes.Count > 0)
+                    dataCallTypes = dataCallTypes.Where(x => x.Status == true).ToList();
                 ViewBag.CallTypes = dataCallTypes;
 
                 var dataExpenses = await unitOfWork.Expenses.GetAllAsync();
+                if (dataExpenses.Count > 0)
+                    dataExpenses = dataExpenses.Where(x => x.Status == true).ToList();
                 ViewBag.Expenses = dataExpenses;
 
                 var dataChargeCodes = await unitOfWork.ChargeCodes.GetAllAsync();
+                if (dataChargeCodes.Count > 0)
+                    dataChargeCodes = dataChargeCodes.Where(x => x.Status == true).ToList();
                 ViewBag.ChargeCodes = dataChargeCodes;
 
                 var dataCurrency = await unitOfWork.Currencys.GetAllAsync();
+                if (dataCurrency.Count > 0)
+                    dataCurrency = dataCurrency.Where(x => x.Status == true).ToList();
                 ViewBag.Currency = dataCurrency;
 
                 var dataSlabs = await unitOfWork.tariffSegment.GetAllAsync();
@@ -248,7 +268,8 @@ namespace PDA_Web.Areas.Admin.Controllers
         public IActionResult PortNameOnchange(CargoHandleds cargoHandleds)
         {
             var TerminalDetailData = unitOfWork.TerminalDetails.GetAllAsync().Result.Where(x => x.PortID == cargoHandleds.PortID);
-
+            if (TerminalDetailData.Count()> 0)
+                TerminalDetailData = TerminalDetailData.Where(x => x.Status == true).ToList();
             ViewBag.Terminal = TerminalDetailData;
             return PartialView("partial/TerminalList");
         }
@@ -256,7 +277,8 @@ namespace PDA_Web.Areas.Admin.Controllers
         public IActionResult PortNameOnchangeTterminalFilter(CargoHandleds cargoHandleds)
         {
             var TerminalDetailData = unitOfWork.TerminalDetails.GetAllAsync().Result.Where(x => x.PortID == cargoHandleds.PortID);
-
+            if (TerminalDetailData.Count() > 0)
+                TerminalDetailData = TerminalDetailData.Where(x => x.Status == true).ToList();
             ViewBag.Terminal = TerminalDetailData;
             return PartialView("partial/_TerminalFilterList");
         }
@@ -266,6 +288,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             var TerminalId = cargoHandleds.TerminalID;
             var PortId = cargoHandleds.PortID;
             var cargoList = await unitOfWork.PDAEstimitor.GetCargoByTerminalAndPortAsync(TerminalId, PortId);
+
             ViewBag.Cargo = cargoList;
             return PartialView("partial/_CargoFilterList");
         }
@@ -281,6 +304,8 @@ namespace PDA_Web.Areas.Admin.Controllers
         public IActionResult TerminalNameOnchange(CargoHandleds cargoHandleds)
         {
             var BerthDetailData = unitOfWork.BerthDetails.GetAllAsync().Result.Where(x => x.TerminalID == cargoHandleds.TerminalID);
+            if (BerthDetailData.Count() > 0)
+                BerthDetailData = BerthDetailData.Where(x => x.BerthStatus == true).ToList();
             ViewBag.Berth = BerthDetailData;
             return PartialView("partial/BerthList");
         }

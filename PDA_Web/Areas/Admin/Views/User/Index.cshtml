@@ -293,6 +293,10 @@
                                 <label for="NameFilter">Name</label>
                                 <input type="text" class="form-control" id="NameFilter" placeholder="Name">
                             </div>
+                             <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="EmployeeCode">Employee Code</label>
+                                <input type="text" class="form-control" id="EmployeeCode" placeholder="Name">
+                            </div>
                             <div class="col-sm-2" style="max-width: 15%;">
                                 <label for="RoleFilter">Role</label>
                                 @Html.DropDownList("RoleFilter", new SelectList(ViewBag.Roles, "RoleID", "RoleName"), "Please Select", new { @class = "form-control" })
@@ -585,6 +589,7 @@
                 "SearchedName": $('#NameFilter').val(), 
                 "RoleID": $('#RoleFilter').val(),
                 "PrimaryCompanyId": $('#PrimaryCompanyFilter').val(),
+                "EmployCode": $('#EmployeeCode').val(),
                 "PrimaryCompany": $('#PrimaryCompanyFilter').find("option:selected").text()
 
 

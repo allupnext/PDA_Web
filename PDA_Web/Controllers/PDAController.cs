@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using NToastNotify;
+using PDA_Web.Models;
 using PDAEstimator_Application.Interfaces;
 using PDAEstimator_Domain.Entities;
 using PDAEstimator_Infrastructure.Repositories;
@@ -31,6 +32,8 @@ namespace PDA_Web.Controllers
         public IActionResult OpenBerthDetailsPopUp(PDAEstimator PDAEstimitor)
         {
             var BearthDetailData = unitOfWork.BerthDetails.GetAllAsync().Result.Where(x => x.TerminalID == PDAEstimitor.TerminalID);
+            if (BearthDetailData != null && BearthDetailData.Count() > 0)
+                BearthDetailData = BearthDetailData.Where(x => x.BerthStatus == true).ToList();
             var Terminals = PartialView("partial/_Berths", BearthDetailData);
             return PartialView("partial/_Berths", BearthDetailData);
         }
@@ -776,6 +779,8 @@ namespace PDA_Web.Controllers
                 // Temp Solution END
 
                 var CallTypeData = await unitOfWork.CallTypes.GetAllAsync();
+                if (CallTypeData.Count > 0)
+                    CallTypeData = CallTypeData.Where(x => x.Status == true).ToList();
                 ViewBag.CallType = CallTypeData;
 
                 var EmployeeCode = await unitOfWork.User.GetAllAsync();
@@ -785,25 +790,39 @@ namespace PDA_Web.Controllers
                 ViewBag.PortActivity = PortActivityData;
 
                 var PortCallData = await unitOfWork.PortDetails.GetAllAsync();
+                if (PortCallData.Count > 0)
+                    PortCallData = PortCallData.Where(x => x.Status == true).ToList();
                 ViewBag.Port = PortCallData;
 
 
                 var TerminalData = await unitOfWork.TerminalDetails.GetAllAsync();
+                if (TerminalData.Count > 0)
+                    TerminalData = TerminalData.Where(x => x.Status == true).ToList();
                 ViewBag.Terminal = TerminalData;
 
                 var data1 = await unitOfWork.BerthDetails.GetAllAsync();
+                if (data1.Count > 0)
+                    data1 = data1.Where(x => x.BerthStatus == true).ToList();
                 ViewBag.Berth = data1;
 
                 var CargoType = await unitOfWork.CargoDetails.GetAllAsync();
+                if (CargoType.Count > 0)
+                    CargoType = CargoType.Where(x => x.CargoStatus == true).ToList();
                 ViewBag.Cargo = CargoType;
 
                 var dataCurrency = await unitOfWork.Currencys.GetAllwithoutBaseCurrencyAsync();
+                if (dataCurrency.Count > 0)
+                    dataCurrency = dataCurrency.Where(x => x.Status == true).ToList();
                 ViewBag.Currency = dataCurrency;
 
                 var ROEData = await unitOfWork.ROENames.GetAllAsync();
+                 if (ROEData.Count > 0)
+                    ROEData = ROEData.Where(x => x.Status == true).ToList();
                 ViewBag.ROEName = ROEData;
 
                 var CompanyData = await unitOfWork.Company.GetAllAsync();
+                if (CompanyData.Count > 0)
+                    CompanyData = CompanyData.Where(x => x.Status == true).ToList();
                 ViewBag.Companys = CompanyData;
 
                 var DefaultCurrecnydata = dataCurrency.Where(x => x.DefaultCurrecny == true);
@@ -962,7 +981,8 @@ namespace PDA_Web.Controllers
         public IActionResult PortNameOnchange(PDAEstimator PDAEstimitor)
         {
             var TerminalDetailData = unitOfWork.TerminalDetails.GetAllAsync().Result.Where(x => x.PortID == PDAEstimitor.PortID);
-
+            if (TerminalDetailData != null && TerminalDetailData.Count() > 0)
+                TerminalDetailData = TerminalDetailData.Where(x => x.Status == true).ToList();
             ViewBag.Terminal = TerminalDetailData;
             return PartialView("partial/TerminalList");
         }
@@ -970,6 +990,8 @@ namespace PDA_Web.Controllers
         public IActionResult TerminalNameOnchange(PDAEstimator PDAEstimitor)
         {
             var BearthDetailData = unitOfWork.BerthDetails.GetAllAsync().Result.Where(x => x.TerminalID == PDAEstimitor.TerminalID);
+            if (BearthDetailData != null && BearthDetailData.Count() > 0)
+                BearthDetailData = BearthDetailData.Where(x => x.BerthStatus == true).ToList();
             ViewBag.Berth = BearthDetailData;
             return PartialView("partial/BerthList");
         }
@@ -977,6 +999,7 @@ namespace PDA_Web.Controllers
         public IActionResult BerthNameOnchange(PDAEstimator PDAEstimitor)
         {
             var BearthDetailData = unitOfWork.BerthDetails.GetByIdAsync(PDAEstimitor.BerthId).Result;
+
             return Json(new
             {
                 loa = BearthDetailData.MaxLoa,

@@ -276,11 +276,11 @@ namespace PDA_Web.Areas.Admin.Controllers
             //}
             if (customer.Company != null /*&& customer.FirstName != 0*/)
             {
-                customerdata = customerdata.Where(x => x.Company.Contains(customer.Company)).ToList();
+                customerdata = customerdata.Where(x => x.Company.ToLower().Contains(customer.Company.ToLower())).ToList();
             }
             if (customer.Status != null /*&& customer.FirstName != 0*/)
             {
-                customerdata = customerdata.Where(x => x.Status == customer.Status).ToList();
+                customerdata = customerdata.Where(x => x.Status.ToLower() == customer.Status.ToLower()).ToList();
             }
             return PartialView("partial/_ViewAll", customerdata);
 
@@ -303,7 +303,7 @@ namespace PDA_Web.Areas.Admin.Controllers
 
             if (customer.FirstName != null /*&& customer.FirstName != 0*/)
             {
-                customerdata = customerdata.Where(x => x.FirstName.Contains(customer.FirstName)).ToList();
+                customerdata = customerdata.Where(x => x.FirstName.ToLower().Contains(customer.FirstName.ToLower())).ToList();
             }
             if (customer.Country != null && customer.Country != 0)
             {
@@ -315,11 +315,11 @@ namespace PDA_Web.Areas.Admin.Controllers
             }
             if (customer.Email != null /*&& customer.FirstName != 0*/)
             {
-                customerdata = customerdata.Where(x => x.Email.Contains(customer.Email)).ToList();
+                customerdata = customerdata.Where(x => x.Email.ToLower().Contains(customer.Email.ToLower())).ToList();
             }
             if (customer.Company != null /*&& customer.FirstName != 0*/)
             {
-                customerdata = customerdata.Where(x => x.Company.Contains(customer.Company)).ToList();
+                customerdata = customerdata.Where(x => x.Company.ToLower().Contains(customer.Company.ToLower())).ToList();
             }
             return PartialView("partial/_ViewAllCustomerUserDetails", customerdata);
 
