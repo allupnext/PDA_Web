@@ -175,7 +175,8 @@
                                 <div class="col-sm-2">
                                     <div class="form-group">
                                         <label for="DWT">DWT<span class="text-danger">*</span></label>
-                                        <input type="number" class="form-control" id="DWT" placeholder="DWT">
+                                        <input type="number" class="form-control" id="DWT" placeholder="DWT" onchange="DWTOnchange()">
+                                        <input type="hidden" class="form-control" id="MAXDWT" placeholder="">
                                     </div>
                                 </div>
 
@@ -715,6 +716,16 @@
             }
         }
 
+
+
+        function DWTOnchange() {
+            var MAXDWT = $("#MAXDWT").val();
+            if (MAXDWT != "" && MAXDWT > 0 && MAXDWT < $("#DWT").val()) {
+                toastr.error("Please enter Max DWT Less then :" + MAXDWT, 'Error Alert');
+                $("#DWT").val(MAXDWT);
+            }
+        }
+
         function ArrivalDraftOnchange() {
             var MAXArrivalDraft = $("#MAXArrivalDraft").val();
             if (MAXArrivalDraft != "" && MAXArrivalDraft > 0 && MAXArrivalDraft < $("#ArrivalDraft").val()) {
@@ -762,9 +773,10 @@
                         $("#LOA").val(data.loa);
                         $("#Beam").val(data.beam);
                         $("#ArrivalDraft").val(data.arrivalDraft);
+                        $("#DWT").val(data.dwt);
                         $("#MAXLOA").val(data.loa);
                         $("#MAXBeam").val(data.beam);
-                        $("#DWT").val(data.dwt);
+                        $("#MAXDWT").val(data.dwt);
                         $("#MAXArrivalDraft").val(data.arrivalDraft);
                         
                     },
