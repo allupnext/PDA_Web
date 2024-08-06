@@ -173,15 +173,15 @@
                 "ToEmail": $('#ToEmail').val(),
             }
             if ($('#ProcessName').val() == "") {
-                toastr.error("Please Process Name.", 'Error Alert');
+                toastr.error("Please Select Process Name.", 'Error Alert');
                 $('#ProcessName').css("border", "1px solid red");
             }
             if ($('#Company').val() == "") {
-                toastr.error("Please Company.", 'Error Alert');
+                toastr.error("Please Select Company.", 'Error Alert');
                 $('#ProcessName').css("border", "1px solid red");
             }
             else if ($('#FromEmail').val() == "") {
-                toastr.error("Please From Email.", 'Error Alert');
+                toastr.error("Please Enter From Email.", 'Error Alert');
                 $('#FromEmail').css("border", "1px solid red");
             } 
             else {
@@ -258,6 +258,7 @@
                     $('#ProcessName').val(data.editEmailNotificationConfig.processName);
                     $('#FromEmail').val(data.editEmailNotificationConfig.fromEmail);
                     $('#ToEmail').val(data.editEmailNotificationConfig.toEmail);
+                    $('#Company').val(data.editEmailNotificationConfig.companyId);
                     
                 },
                 error: function () {

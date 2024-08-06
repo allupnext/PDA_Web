@@ -81,7 +81,7 @@ namespace PDA_Web.Areas.Admin.Controllers
 
                 if (CompnyHasSameProcessName != null && CompnyHasSameProcessName.Count >0)
                 {
-                    _toastNotification.AddWarningToastMessage("Compney already has ProcessName " + emailNotificationConfiguration.ProcessName);
+                    _toastNotification.AddWarningToastMessage("Company already has ProcessName " + emailNotificationConfiguration.ProcessName);
                 }
                 else
                 {

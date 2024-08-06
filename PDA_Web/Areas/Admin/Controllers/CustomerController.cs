@@ -15,6 +15,7 @@ namespace PDA_Web.Areas.Admin.Controllers
         private readonly IUnitOfWork unitOfWork;
         private readonly IToastNotification _toastNotification;
         private readonly IEmailSender _emailSender;
+        private static TimeZoneInfo INDIAN_ZONE = TimeZoneInfo.FindSystemTimeZoneById("India Standard Time");
         public CustomerController(IUnitOfWork unitOfWork, IToastNotification toastNotification, IEmailSender emailSender)
         {
             this.unitOfWork = unitOfWork;
@@ -327,6 +328,8 @@ namespace PDA_Web.Areas.Admin.Controllers
 
         public async Task<ActionResult> CustomerSave(Customer customer)
         {
+            string mailcontent = "";
+            string emailsubject = "";
             var customerdata = await unitOfWork.Customer.GetAlllistAsync();
             if (customer.CustomerId > 0)
             {
@@ -358,34 +361,35 @@ namespace PDA_Web.Areas.Admin.Controllers
                     }
                 }
 
-                if(customer.Oldstatus != null && customer.Oldstatus == "Pending For Approval" && customer.Status == "Active")
+                var companydata = await unitOfWork.Company.GetAlllistAsync();
+                int Samsaracompanyid = 0;
+                if (companydata != null && companydata.Count > 0)
+                {
+                    var samsaracompanydata = companydata.Where(x => x.CompanyName.ToLower() == "samsara shipping private limited");
+                    if (samsaracompanydata.Count() > 0)
+                    {
+                        Samsaracompanyid = samsaracompanydata.FirstOrDefault().CompanyId;
+                    }
+                }
+
+                if (customer.Oldstatus != null && customer.Oldstatus == "Pending For Approval" && customer.Status == "Active")
                 {
 
                     var custuser = unitOfWork.CustomerUserMaster.GetByCustomerIdAsync(customer.CustomerId).Result.OrderByDescending(x => x.ID).FirstOrDefault();
-                    List<string> recipients = new List<string>
-                    {
-                        custuser.Email
-                    };
 
-                    string Content = "<html> <body>   <p>Hello, <br> Your Register company is approved and Your company is active now and you can access PDA Portal using below login details once your user is Active. </p> <div> </br> <p> <b> User Name :</b> " + custuser.Email + " </br> <b> Password: </b> " + custuser.Password + "  </p> </br> </br> <p> Regard, </br> PDA Portal </p> </div> </body> </html> ";
-
-                    string Subject = "Registion request is Approved and Active";
-                    List<string> ccrecipients = new List<string>();
-                    string FromCompany = "";
-                    string ToEmail = "";
-                    var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByProcessNameAsync("Customer Approved");
-                    if (emailconfig != null)
+                    if (custuser != null)
                     {
-                        ToEmail = emailconfig.ToEmail;
-                        FromCompany = emailconfig.FromEmail;
-                        if (emailconfig.ToEmail != null)
-                        {
-                            ccrecipients = ToEmail.Split(',').ToList();
-                        }
+                        string customerfullname = string.Concat(custuser.FirstName, ' ', custuser.LastName);
+                        string customerphone = string.Concat(customer.CountryCode, ' ', customer.Mobile);
+
+                        DateTime indianTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, INDIAN_ZONE);
+                        mailcontent = "<html><head><title> Welcome to PDA Portal.</title> </head><body><p> Dear " + customerfullname + ", <br> Thank you for registering on PDA portal. <br> Your company registration process is now complete. <br> Your login credentials are as below. <br><br> <b> Username - </b> " + customer.Email + " <br><b>User Password – </b> " + customer.Password + " <br><br> Your free trial starts from " + indianTime.ToString("dd-MM-yyyy") + " and is valid up to " + indianTime.AddDays(15).ToString("dd-MM-yyyy") + ". <br> <br>Appreciate your valuable feedback and if you wish to continue using the PDA portal please complete formalities. <br> Our team will be happy to assist you on any additional information that you may require. <br> <br> PIC - " + customerfullname + " <br>  Contact -  " + customerphone + " <br> E-mail ID - " + customer.Email + " <br><br> <b>Regards <br> PDA Portal</b> </p></body></html>";
+                        emailsubject = "Welcome to PDA Portal";
+
+                        int companyid = customer.PrimaryCompanyId != null ? (int)customer.PrimaryCompanyId : Samsaracompanyid;
+
+                        CustomerRegisterEmail("Customer Approved", mailcontent, emailsubject, customer.Email, companyid);
                     }
-
-                    var Msg = new Message(recipients, ccrecipients, Subject, Content, FromCompany);
-                    _emailSender.SendEmail(Msg);
                 }
                 else if (customer.Oldstatus != null && customer.Oldstatus != "Rejected" && customer.Status == "Rejected")
                 {
@@ -489,6 +493,36 @@ namespace PDA_Web.Areas.Admin.Controllers
             });
         }
 
+        public async Task<bool> CustomerRegisterEmail(string processname, string mailcontent, string emailsubject, string customeremail, int companyid)
+        {
+            List<string> recipients = new List<string>
+                {
+                    customeremail
+                };
+
+            string Content = mailcontent;
+            string Subject = emailsubject;
+
+            List<string> ccrecipients = new List<string>();
+            string FromCompany = "";
+            string ccEmail = "";
+            var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByCompanyandProcessNameAsync(companyid, processname);
+
+            if (emailconfig != null)
+            {
+                ccEmail = emailconfig.ToEmail;
+                FromCompany = emailconfig.FromEmail;
+                if (emailconfig.ToEmail != null)
+                {
+                    ccrecipients = ccEmail.Split(',').ToList();
+                }
+            }
+
+            var Msg = new Message(recipients, ccrecipients, Subject, Content, FromCompany);
+
+            _emailSender.SendEmail(Msg);
+            return true;
+        }
 
         public IActionResult PrimaryCompneySelected(Customer customer)
         {

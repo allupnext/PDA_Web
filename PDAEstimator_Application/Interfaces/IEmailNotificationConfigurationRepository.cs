@@ -10,5 +10,6 @@ namespace PDAEstimator_Application.Interfaces
     public interface IEmailNotificationConfigurationRepository : IGenericRepository<EmailNotificationConfiguration>
     {
         Task<EmailNotificationConfiguration> GetByProcessNameAsync(string ProcessName);
+        Task<EmailNotificationConfiguration> GetByCompanyandProcessNameAsync(int CompanyId, string ProcessName);
     }
 }

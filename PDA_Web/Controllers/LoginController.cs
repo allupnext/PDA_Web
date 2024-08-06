@@ -280,7 +280,7 @@ namespace PDA_Web.Controllers
                         Email
                     };
                         string Content = "<html> <body>   <p>Hello, <br> You recently requested to reset the password for your PDA Portal account. Click the button below to proceed.    </p> <div> <a  href=" + confirmationLink + "> <button style='height:30px; margin-bottom:30px; font-size:14px;' type='button'> Reset Password </button> </a> </div> </body> </html> ";
-                        string Subject = "Reset Password on PDA Portal";
+                        string Subject = "Reset your Password for PDA Portal";
                         List<string> ccrecipients = new List<string>();
                         string FromCompany = "";
                         string ToEmail = "";

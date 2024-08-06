@@ -19,7 +19,7 @@ namespace PDAEstimator_Infrastructure.Repositories
         {
             try
             {
-                var sql = "Insert into EmailNotificationConfiguration (CompneyName,ProcessName, FromEmail, ToEmail) VALUES (@CompneyName, @ProcessName, @FromEmail, @ToEmail)";
+                var sql = "Insert into EmailNotificationConfiguration (CompanyId,ProcessName, FromEmail, ToEmail) VALUES (@CompanyId, @ProcessName, @FromEmail, @ToEmail)";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
                     connection.Open();
@@ -46,7 +46,7 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<List<EmailNotificationConfiguration>> GetAllAsync()
         {
-            var sql = "SELECT * FROM EmailNotificationConfiguration";
+            var sql = "SELECT EmailNotificationConfiguration.*, CompanyName as CompneyName FROM EmailNotificationConfiguration LEFT Join CompanyMaster On CompanyMaster.CompanyId = EmailNotificationConfiguration.CompanyId";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
@@ -57,7 +57,7 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<EmailNotificationConfiguration> GetByIdAsync(long EmailConfigID)
         {
-            var sql = "SELECT * FROM EmailNotificationConfiguration WHERE EmailConfigID = @EmailConfigID";
+            var sql = "SELECT EmailNotificationConfiguration.*, CompanyName as CompneyName FROM EmailNotificationConfiguration LEFT Join CompanyMaster On CompanyMaster.CompanyId = EmailNotificationConfiguration.CompanyId WHERE EmailConfigID = @EmailConfigID";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
@@ -77,9 +77,20 @@ namespace PDAEstimator_Infrastructure.Repositories
             }
         }
 
+        public async Task<EmailNotificationConfiguration> GetByCompanyandProcessNameAsync(int CompanyId, string ProcessName)
+        {
+            var sql = "SELECT * FROM EmailNotificationConfiguration WHERE CompanyId = @CompanyId and ProcessName = @ProcessName";
+            using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+            {
+                connection.Open();
+                var result = await connection.QuerySingleOrDefaultAsync<EmailNotificationConfiguration>(sql, new { CompanyId = CompanyId, ProcessName = ProcessName });
+                return result;
+            }
+        }
+
         public async Task<int> UpdateAsync(EmailNotificationConfiguration entity)
         {
-            var sql = "UPDATE EmailNotificationConfiguration SET CompneyName=@CompneyName,ProcessName=@ProcessName, FromEmail=@FromEmail, ToEmail = @ToEmail WHERE EmailConfigID = @EmailConfigID";
+            var sql = "UPDATE EmailNotificationConfiguration SET CompanyId=@CompanyId, ProcessName=@ProcessName, FromEmail=@FromEmail, ToEmail = @ToEmail WHERE EmailConfigID = @EmailConfigID";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
