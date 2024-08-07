@@ -209,17 +209,17 @@ namespace PDA_Web.Areas.Admin.Controllers
             string Subject = "Login in PDA Portal";
             List<string> ccrecipients = new List<string>();
             string FromCompany = "";
-            string ToEmail = "";
-            var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByProcessNameAsync("Customer Register");
-            if (emailconfig != null)
-            {
-                ToEmail = emailconfig.ToEmail;
-                FromCompany = emailconfig.FromEmail;
-                if (emailconfig.ToEmail != null)
-                {
-                    ccrecipients = ToEmail.Split(',').ToList();
-                }
-            }
+            //string ToEmail = "";
+            //var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByProcessNameAsync("Customer Register");
+            //if (emailconfig != null)
+            //{
+            //    ToEmail = emailconfig.ToEmail;
+            //    FromCompany = emailconfig.FromEmail;
+            //    if (emailconfig.ToEmail != null)
+            //    {
+            //        ccrecipients = ToEmail.Split(',').ToList();
+            //    }
+            //}
 
             var Msg = new Message(recipients, ccrecipients, Subject, Content, FromCompany);
             _emailSender.SendEmail(Msg);

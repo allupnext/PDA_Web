@@ -158,13 +158,19 @@ namespace PDA_Web.Controllers
 
         public async Task<string> SendOTPEmail(string Email, int Id)
         {
-            var CustomerUserData = await unitOfWork.CustomerUserMaster.GetCustomerUserByEmailAsync(Email);
-            var CustomerId = CustomerUserData.Select(x => x.CustomerId).First();
-            var corecustomerdata = await unitOfWork.Customer.GetByIdAsync(Convert.ToInt32(CustomerId));
-            Int64 PrimaryCompanyId = Convert.ToInt64(corecustomerdata.PrimaryCompany);
-            var FromPrimaryCompany = await unitOfWork.Company.GetByIdAsync(PrimaryCompanyId);
-            var PrimaryCompnayName = FromPrimaryCompany.CompanyName;
+            int PrimaryCompanyId = 0;
 
+            var CustomerUserData = await unitOfWork.CustomerUserMaster.GetCustomerUserByEmailAsync(Email);
+            if (CustomerUserData != null && CustomerUserData.Count > 0)
+            {
+                var CustomerId = CustomerUserData.Select(x => x.CustomerId).First();
+                
+                var corecustomerdata = await unitOfWork.Customer.GetByIdAsync(Convert.ToInt32(CustomerId));
+
+                PrimaryCompanyId = Convert.ToInt32(corecustomerdata.PrimaryCompany);
+                //var FromPrimaryCompany = await unitOfWork.Company.GetByIdAsync(PrimaryCompanyId);
+                //var PrimaryCompnayName = FromPrimaryCompany.CompanyName;
+            }
             string otp = (GenerateOTP.NextInt() % 1000000).ToString("000000");
             await unitOfWork.CustomerUserMaster.UpdateOTP(otp, DateTime.UtcNow, Id);
 
@@ -189,7 +195,7 @@ namespace PDA_Web.Controllers
             List<string> ccrecipients = new List<string>();
             string FromCompany = "";
             string ToEmail = "";
-            var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByProcessNameAsync("Customer Register");
+            var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByCompanyandProcessNameAsync(PrimaryCompanyId, "Customer OTP Sent Email");
             if (emailconfig != null)
             {
                 ToEmail = emailconfig.ToEmail;
@@ -199,6 +205,7 @@ namespace PDA_Web.Controllers
                     ccrecipients = ToEmail.Split(',').ToList();
                 }
             }
+           
 
 
             var Msg = new Message(recipients, ccrecipients, Subject, Content, FromCompany);

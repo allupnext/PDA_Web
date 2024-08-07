@@ -63,7 +63,7 @@ namespace PDA_Web.Controllers
             return new ViewAsPdf("PDAEstimator", pDAEstimatorOutPut)
             {
                 //FileName = "MyPdf.pdf";
-                FileName = "PDA_" + pDAEstimatorOutPut.PortName + "_" + pDAEstimatorOutPut.PDAEstimatorID + ".pdf",
+                FileName = "PDA_" + pDAEstimatorOutPut.PortName + "_" + pDAEstimatorOutPut.ActivityType + "_ " + pDAEstimatorOutPut.CargoName + "_" + pDAEstimatorOutPut.PDAEstimatorID + ".pdf",
                 PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
                 PageSize = Rotativa.AspNetCore.Options.Size.A3
             };
@@ -73,14 +73,14 @@ namespace PDA_Web.Controllers
         {
             PDAEstimatorOutPutView pDAEstimatorOutPut = new PDAEstimatorOutPutView();
             pDAEstimatorOutPut = await GetPDA(id);
-            string PDAfilename = "PDA_" + pDAEstimatorOutPut.PortName + "_" + pDAEstimatorOutPut.PDAEstimatorID + ".pdf";
+            string PDAfilename = "PDA_" + pDAEstimatorOutPut.PortName + "_" + pDAEstimatorOutPut.ActivityType + "_ " + pDAEstimatorOutPut.CargoName + "_" + pDAEstimatorOutPut.PDAEstimatorID + ".pdf";
             string path = $"{_hostEnvironment.WebRootPath}\\PDAFile\\";
             var rootpath = Path.Combine(path, PDAfilename);
             rootpath = Path.GetFullPath(rootpath);
             return new ViewAsPdf("PDAEstimator", pDAEstimatorOutPut)
             {
                 //FileName = "MyPdf.pdf";
-                FileName = "PDA_" + pDAEstimatorOutPut.PortName + "_" + pDAEstimatorOutPut.PDAEstimatorID + ".pdf",
+                FileName = "PDA_" + pDAEstimatorOutPut.PortName + "_" + pDAEstimatorOutPut.ActivityType + "_ " + pDAEstimatorOutPut.CargoName + "_" + pDAEstimatorOutPut.PDAEstimatorID + ".pdf",
                 PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
                 PageSize = Rotativa.AspNetCore.Options.Size.A3,
                 SaveOnServerPath = rootpath
@@ -100,7 +100,7 @@ namespace PDA_Web.Controllers
 
             if (!string.IsNullOrEmpty(custid))
             {
-                var custuser = unitOfWork.CustomerUserMaster.GetByCustomerIdAsync(Convert.ToInt32(custid)).Result.OrderByDescending(x => x.ID).FirstOrDefault();
+                var custuser = unitOfWork.CustomerUserMaster.GetByIdAsync(Convert.ToInt32(custid)).Result;
 
                 if (custuser != null)
                 {

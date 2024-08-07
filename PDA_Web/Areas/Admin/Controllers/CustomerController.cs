@@ -380,15 +380,15 @@ namespace PDA_Web.Areas.Admin.Controllers
                     if (custuser != null)
                     {
                         string customerfullname = string.Concat(custuser.FirstName, ' ', custuser.LastName);
-                        string customerphone = string.Concat(customer.CountryCode, ' ', customer.Mobile);
+                        string customerphone = string.Concat(custuser.CountryCode, ' ', custuser.Mobile);
 
                         DateTime indianTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, INDIAN_ZONE);
-                        mailcontent = "<html><head><title> Welcome to PDA Portal.</title> </head><body><p> Dear " + customerfullname + ", <br> Thank you for registering on PDA portal. <br> Your company registration process is now complete. <br> Your login credentials are as below. <br><br> <b> Username - </b> " + customer.Email + " <br><b>User Password – </b> " + customer.Password + " <br><br> Your free trial starts from " + indianTime.ToString("dd-MM-yyyy") + " and is valid up to " + indianTime.AddDays(15).ToString("dd-MM-yyyy") + ". <br> <br>Appreciate your valuable feedback and if you wish to continue using the PDA portal please complete formalities. <br> Our team will be happy to assist you on any additional information that you may require. <br> <br> PIC - " + customerfullname + " <br>  Contact -  " + customerphone + " <br> E-mail ID - " + customer.Email + " <br><br> <b>Regards <br> PDA Portal</b> </p></body></html>";
+                        mailcontent = "<html><head><title> Welcome to PDA Portal.</title> </head><body><p> Dear " + customerfullname + ", <br> Thank you for registering on PDA portal. <br> Your company registration process is now complete. <br> Your login credentials are as below. <br><br> <b> Username - </b> " + custuser.Email + " <br><b>User Password – </b> " + custuser.Password + " <br><br> Your free trial starts from <b>" + indianTime.ToString("dd-MM-yyyy") + "</b> and is valid up to <b>" + indianTime.AddDays(15).ToString("dd-MM-yyyy") + "</b>. <br> <br>Appreciate your valuable feedback and if you wish to continue using the PDA portal please complete formalities. <br> Our team will be happy to assist you on any additional information that you may require. <br> <br> PIC - " + customerfullname + " <br>  Contact -  " + customerphone + " <br> E-mail ID - " + custuser.Email + " <br><br> <b>Regards <br> PDA Portal</b> </p></body></html>";
                         emailsubject = "Welcome to PDA Portal";
 
                         int companyid = customer.PrimaryCompanyId != null ? (int)customer.PrimaryCompanyId : Samsaracompanyid;
 
-                        CustomerRegisterEmail("Customer Approved", mailcontent, emailsubject, customer.Email, companyid);
+                        CustomerRegisterEmail("Customer Approved", mailcontent, emailsubject, custuser.Email, companyid);
                     }
                 }
                 else if (customer.Oldstatus != null && customer.Oldstatus != "Rejected" && customer.Status == "Rejected")

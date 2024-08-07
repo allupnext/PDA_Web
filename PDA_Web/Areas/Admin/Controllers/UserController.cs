@@ -47,6 +47,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                 ViewBag.SecondaryCompany = SecondryCompanyData;
 
                 var PortList = await unitOfWork.PortDetails.GetAllAsync();
+                if (PortList.Count > 0)
+                    PortList = PortList.Where(x => x.Status == true).ToList();
                 ViewBag.PortList = PortList;
 
                 var RoleData = await unitOfWork.Roles.GetAllAsync();
