@@ -128,20 +128,22 @@
                             <div class="row">
                                 <div class="col-sm-2">
                                     <div class="form-group">
-                                        <label for="CargoQty">Cargo Qty<span class="text-danger">*</span></label>
-                                        <input type="number" class="form-control" id="CargoQty" placeholder="Cargo Qty">
+                                        <label for="CargoQty">Cargo Qty (MT)<span class="text-danger">*</span></label>
+                                        <input type="number" class="form-control" id="CargoQty" placeholder="Cargo Qty (MT)">
                                     </div>
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="form-group">
-                                        <label for="CargoUnitofMasurement">Cargo Unit of Measurement</label>
+                                        <label for="CargoQtyCBM">Cargo Qty (CBM)</label>
+                                        <input type="number" class="form-control" id="CargoQtyCBM" placeholder="Cargo Qty (CBM)">
+                                        @* <label for="CargoUnitofMasurement">Cargo Unit of Measurement</label>
                                         <select class="form-control" id="CargoUnitofMasurement">
 
                                             <option value="MT">MT</option>
                                             <option value="KGs">KGs</option>
                                             <option value="CBM">CBM</option>
                                             <option value="Nos/Units">Nos/Units</option>
-                                        </select>
+                                        </select> *@
                                     </div>
                                 </div>
                                 <div class="col-sm-2">
@@ -852,7 +854,9 @@
             $('#CallTypeName').val("");
             $('#CargoName').val("");
             $('#CargoQty').val("");
-            $('#CargoUnitofMasurement').val("MT");
+            $('#CargoQtyCBM').val("");
+            
+            // $('#CargoUnitofMasurement').val("MT");
             $('#LoadDischargeRate').val("");
             $('#DWT').val("");
             $('#GRT').val("");
@@ -890,7 +894,8 @@
                 "CallTypeID": $('#CallTypeName').val(),
                 "CargoID": $('#CargoName').val(),
                 "CargoQty": $('#CargoQty').val(),
-                "CargoUnitofMasurement": $('#CargoUnitofMasurement').val(),
+                "CargoQtyCBM": $('#CargoQtyCBM').val(),
+                // "CargoUnitofMasurement": $('#CargoUnitofMasurement').val(),
                 "LoadDischargeRate": $('#LoadDischargeRate').val(),
                 "CurrencyID": $('#Currency').val(),
                 "ROE": $('#ROERate').val(),
@@ -1052,7 +1057,9 @@
                 "CallTypeID": $('#CallTypeName').val(),
                 "CargoID": $('#CargoName').val(),
                 "CargoQty": $('#CargoQty').val(),
-                "CargoUnitofMasurement": $('#CargoUnitofMasurement').val(),
+                "CargoQtyCBM": $('#CargoQtyCBM').val(),
+                
+                // "CargoUnitofMasurement": $('#CargoUnitofMasurement').val(),
                 "LoadDischargeRate": $('#LoadDischargeRate').val(),
                 "CurrencyID": $('#Currency').val(),
                 "ROERate": $('#ROERate').val(),
@@ -1087,7 +1094,9 @@
                     $('#CallTypeName').val(data.pdaEstimitor.callTypeID);
                     $('#CargoName').val(data.pdaEstimitor.cargoID);
                     $('#CargoQty').val(data.pdaEstimitor.cargoQty);
-                    $('#CargoUnitofMasurement').val(data.pdaEstimitor.cargoUnitofMasurement);
+                    $('#CargoQtyCBM').val(data.pdaEstimitor.CargoQtyCBM);
+                    
+                    // $('#CargoUnitofMasurement').val(data.pdaEstimitor.cargoUnitofMasurement);
                     $('#LoadDischargeRate').val(data.pdaEstimitor.loadDischargeRate);
                     $('#Currency').val(data.pdaEstimitor.currencyID);
                     $('#ROERate').val(data.pdaEstimitor.roe);
@@ -1147,7 +1156,9 @@
                 "CallTypeName": $('#CallTypeName').val(),
                 "CargoName": $('#CargoName').val(),
                 "CargoQty": $('#CargoQty').val(),
-                "CargoUnitofMasurement": $('#CargoUnitofMasurement').val(),
+                "CargoQtyCBM": $('#CargoQtyCBM').val(),
+                
+                // "CargoUnitofMasurement": $('#CargoUnitofMasurement').val(),
                 "LoadDischargeRate": $('#LoadDischargeRate').val(),
                 "Currency": $('#Currency').val(),
                 "ROERate": $('#ROERate').val(),

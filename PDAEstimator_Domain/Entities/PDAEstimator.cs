@@ -22,7 +22,9 @@ namespace PDAEstimator_Domain.Entities
 
         public int CargoQty { get; set; }
 
-        public string CargoUnitofMasurement { get; set; }
+        public int? CargoQtyCBM { get; set; }
+
+        public string? CargoUnitofMasurement { get; set; }
 
         public int LoadDischargeRate { get; set; }
 

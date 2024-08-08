@@ -40,8 +40,10 @@ namespace PDAEstimator_Domain.Entities
         public int CargoID { get; set; }
 
         public int CargoQty { get; set; }
+        public int? CargoQtyCBM { get; set; }
 
-        public string CargoUnitofMasurement { get; set; }
+
+        public string? CargoUnitofMasurement { get; set; }
 
         public int LoadDischargeRate { get; set; }
         public string CargoName { get; set; } = string.Empty;

@@ -83,6 +83,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                     CurrencyName = PDAData.CurrencyName,
                     CargoID = PDAData.CargoID,
                     CargoQty = PDAData.CargoQty,
+                    CargoQtyCBM = PDAData.CargoQtyCBM,
                     CargoUnitofMasurement = PDAData.CargoUnitofMasurement,
                     LoadDischargeRate = PDAData.LoadDischargeRate,
                     CargoName = PDAData.CargoName,
@@ -240,6 +241,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                     CurrencyName = PDAData.CurrencyName,
                     CargoID = PDAData.CargoID,
                     CargoQty = PDAData.CargoQty,
+                    CargoQtyCBM = PDAData.CargoQtyCBM,
                     CargoUnitofMasurement = PDAData.CargoUnitofMasurement,
                     LoadDischargeRate = PDAData.LoadDischargeRate,
                     CargoName = PDAData.CargoName,
@@ -381,6 +383,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                                 slabattributvalue = pDAEstimatorOutPut.AnchorageStay;
                             else if (triff.SlabName == "QTYMT")
                                 slabattributvalue = pDAEstimatorOutPut.CargoQty;
+                            else if (triff.SlabName == "QTYCBM")
+                                slabattributvalue = pDAEstimatorOutPut.CargoQtyCBM;
                             UnitCalculation(triff, pDAEstimatorOutPut.GRT, (long)slabattributvalue);
 
                             foreach (var formularTransList in formulatransdata)
@@ -527,6 +531,18 @@ namespace PDA_Web.Areas.Admin.Controllers
                                         else
                                         {
                                             formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.CargoQty.ToString() : pDAEstimatorOutPut.CargoQty.ToString();
+                                        }
+                                    }
+                                    else if (FormulaAttributedata.Contains("QTYCBM"))
+                                    {
+                                        //UnitCalculation(triff, pDAEstimatorOutPut.CargoQtyCBM);
+                                        if (triff.SlabID != null && triff.SlabID > 0 && FormulaAttributedata == triff.SlabName)
+                                        {
+                                            formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        }
+                                        else
+                                        {
+                                            formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.CargoQtyCBM.ToString() : pDAEstimatorOutPut.CargoQtyCBM.ToString();
                                         }
                                     }
                                     else
@@ -1249,7 +1265,9 @@ namespace PDA_Web.Areas.Admin.Controllers
                                         slabattributvalue = PDAEstimitor.AnchorageStay;
                                     else if (triff.SlabName == "QTYMT")
                                         slabattributvalue = PDAEstimitor.CargoQty;
-
+                                    else if (triff.SlabName == "QTYCBM")
+                                        slabattributvalue = PDAEstimitor.CargoQtyCBM;
+                                    
                                     bool Range_Tariff = triff.Range_TariffID > 0 ? true : false;
                                     UnitCalculation(triff, PDAEstimitor.GRT, (long)slabattributvalue, Range_Tariff);
                                     foreach (var formularTransList in formulatransdata)
@@ -1398,6 +1416,18 @@ namespace PDA_Web.Areas.Admin.Controllers
                                                     formulastring = formulastring != "" ? formulastring + " " + PDAEstimitor.CargoQty.ToString() : PDAEstimitor.CargoQty.ToString();
                                                 }
                                             }
+                                            else if (FormulaAttributedata.Contains("QTYCBM"))
+                                            {
+                                                //UnitCalculation(triff, pDAEstimatorOutPut.CargoQty);
+                                                if (triff.SlabID != null && triff.SlabID > 0 && FormulaAttributedata == triff.SlabName)
+                                                {
+                                                    formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                                }
+                                                else
+                                                {
+                                                    formulastring = formulastring != "" ? formulastring + " " + PDAEstimitor.CargoQtyCBM.ToString() : PDAEstimitor.CargoQtyCBM.ToString();
+                                                }
+                                            }
                                             else
                                             {
                                                 if (triff.UNITS == null || triff.UNITS == 0)
@@ -1495,6 +1525,10 @@ namespace PDA_Web.Areas.Admin.Controllers
                                             else if (FormulaAttributedata.Contains("QTYMT"))
                                             {
                                                 formulastringref = formulastringref != "" ? formulastringref + " " + PDAEstimitor.CargoQty.ToString() : PDAEstimitor.CargoQty.ToString();
+                                            }
+                                            else if (FormulaAttributedata.Contains("QTYCBM"))
+                                            {
+                                                formulastringref = formulastringref != "" ? formulastringref + " " + PDAEstimitor.CargoQtyCBM.ToString() : PDAEstimitor.CargoQty.ToString();
                                             }
                                             else
                                             {
