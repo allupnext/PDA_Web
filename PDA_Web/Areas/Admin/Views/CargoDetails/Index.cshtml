@@ -23,76 +23,76 @@
         <div class="row">
             <div class="col-md-12">
                 <!-- general form elements -->
-             
-                    <div class="card card-primary">
-                        <div class="card-header">
-                            <h3 class="card-title">Add Cargo Details </h3>
-                            <div class="card-tools">
-                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                    <i class="fas fa-minus"></i>
-                                </button>
-                            </div>
+
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Add Cargo Details </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
                         </div>
-                        <!-- /.card-header -->
-                        <!-- form start -->
-                        <div class="card-body">
-                            <input type="hidden" id="CargoDetailsId" name="CargoDetailsId" value="">
-                            <div class="row">
-                                <div class="col-sm-6">
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <div class="card-body">
+                        <input type="hidden" id="CargoDetailsId" name="CargoDetailsId" value="">
+                        <div class="row">
+                            <div class="col-sm-6">
 
-                                    <div class="form-group">
+                                <div class="form-group">
                                     <label for="PortName">Cargo Type<span class="text-danger">*</span></label>
-                                        @Html.DropDownList("CargoType", new SelectList(ViewBag.CargoType, "ID", "CargoTypeName"),"Please Select" ,new { @class="form-control" })
-                                    </div>
+                                    @Html.DropDownList("CargoType", new SelectList(ViewBag.CargoType, "ID", "CargoTypeName"), "Please Select", new { @class = "form-control" })
                                 </div>
-                                <div class="col-sm-6">
+                            </div>
+                            <div class="col-sm-6">
 
-                                    <div class="form-group">
+                                <div class="form-group">
                                     <label for="PortName">Cargo Name<span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="CargoName" placeholder="Cargo Name" onchange="onCargoChange(this.val,1)">
-                                    </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-sm-6">
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
 
-                                    <div class="form-group">
+                                <div class="form-group">
                                     <label for="PortName">Cargo Family<span class="text-danger">*</span></label>
-                                    @Html.DropDownList("CargoFamily", new SelectList(ViewBag.CargoFamilys, "ID", "CargoFamilyName"),"Please Select", new { @class="form-control" })
-                                    </div>
+                                    @Html.DropDownList("CargoFamily", new SelectList(ViewBag.CargoFamilys, "ID", "CargoFamilyName"), "Please Select", new { @class = "form-control" })
                                 </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group">
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
                                     <label for="exampleInputFile">Cargo Information</label>
-                                        <div class="input-group">
-                                            <div class="custom-file">
-                                                <input type="file" class="custom-file-input" id="exampleInputFile" onchange="uploadFiles('exampleInputFile');">
-                                                <label class="custom-file-label" for="exampleInputFile" >Choose file</label>
-                                                <input type="hidden" id="ResumeFileName" name="ResumeFileName" />
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="exampleInputFile" onchange="uploadFiles('exampleInputFile');">
+                                            <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                                            <input type="hidden" id="ResumeFileName" name="ResumeFileName" />
 
-                                            </div>
-                                            <div class="input-group-append">
-                                                <span class="input-group-text">Upload</span>
-                                            </div>
+                                        </div>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">Upload</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" id="Status">
-                                        <label class="form-check-label" for="Status">Status</label>
-                                    </div>
+                        </div>
 
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="Status">
+                                    <label class="form-check-label" for="Status">Status</label>
                                 </div>
-
 
                             </div>
 
-                            <!-- /.card-body -->
+
                         </div>
+
+                        <!-- /.card-body -->
+                    </div>
 
                     @using PDAEstimator_Domain.Entities;
                     @if (ViewBag.UserPermissionModel != null)
@@ -109,8 +109,8 @@
                             </div>
                         }
                     }
-                    </div>
-               
+                </div>
+
             </div>
         </div>
         <div class="row">
@@ -129,14 +129,14 @@
                             </div>
                             <div class="col-sm-2" style="max-width: 15%;">
                                 <label for="CargoTypeFilter">CargoType</label>
-                                @Html.DropDownList("CargoTypeFilter", new SelectList(ViewBag.CargoType, "ID", "CargoTypeName"),"Please Select" ,new { @class="form-control" })
+                                @Html.DropDownList("CargoTypeFilter", new SelectList(ViewBag.CargoType, "ID", "CargoTypeName"), "Please Select", new { @class = "form-control" })
                             </div>
                             <div class="col-sm-2" style="max-width: 15%;">
                                 <label for="CargoFamilyFilter">CargoFamily</label>
-                                @Html.DropDownList("CargoFamilyFilter", new SelectList(ViewBag.CargoFamilys, "ID", "CargoFamilyName"),"Please Select", new { @class="form-control" })
+                                @Html.DropDownList("CargoFamilyFilter", new SelectList(ViewBag.CargoFamilys, "ID", "CargoFamilyName"), "Please Select", new { @class = "form-control" })
                             </div>
                         </div>
-                    <div id="viewAll" class="table-responsive"></div>
+                        <div id="viewAll" class="table-responsive"></div>
                     </div>
                 </div>
             </div>
@@ -148,9 +148,9 @@
 
 
 @section Scripts
-    {
+{
     <script>
-        
+
         $(document).ready(function () {
             $('#CargoMainMenu').addClass('active');
             $('#CargoDetailsMenu').addClass('active');
@@ -173,10 +173,10 @@
         });
 
         function onCargoChange(val, inputVal) {
-            if(inputVal==1){
+            if (inputVal == 1) {
                 $('#CargoName').css("border", "1px solid #ced4da");
             }
-            else if(inputVal==2){
+            else if (inputVal == 2) {
                 $('#CargoName').css("border", "1px solid #ced4da");
             }
         }
@@ -207,13 +207,17 @@
 
         function cargoDetailsSave() {
             var cargoDetails;
-
+            var Status = false;
+            if ($('#Status').is(":checked")) {
+                Status = true;
+            }
             cargoDetails = {
                 "ID": $('#CargoDetailsId').val(),
                 "CargoTypeID": $('#CargoType').val(),
                 "CargoName": $('#CargoName').val(),
                 "CargoFamilyID": $('#CargoFamily').val(),
-                "CargoFile": $("#ResumeFileName").val()
+                "CargoFile": $("#ResumeFileName").val(),
+                "CargoStatus": Status
             }
 
             if ($('#CargoName').val() == "") {
@@ -298,6 +302,7 @@
                     $('#CargoType').val(data.cargoDetails.cargoTypeID);
                     $('#CargoName').val(data.cargoDetails.cargoName);
                     $('#CargoFamily').val(data.cargoDetails.cargoFamilyID);
+                    $('#Status').val(data.cargoDetails.cargoStatus);
                 },
                 error: function () {
                 }
@@ -305,7 +310,7 @@
         }
 
         function loadData() {
-             var cargodetails;
+            var cargodetails;
             debugger
             cargodetails = {
                 "CargoName": $('#CargoNameFilter').val(),

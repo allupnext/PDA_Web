@@ -369,6 +369,7 @@
                 "MaxLoa": $('#MaxLoa').val(),
                 "MaxBeam": $('#MaxBeam').val(),
                 "MaxArrivalDraft": $('#MaxArrivalDraft').val(),
+                "MaxDisplacement": $('#MaxDisplacement').val(),
                 "DWT": $('#DWT').val(),
                 "TerminalID": $('#Terminal').val(),
             }
@@ -413,6 +414,8 @@
                 $('#MaxLoa').val("");
                 $('#MaxBeam').val("");
                 $('#MaxArrivalDraft').val("");
+                 $('#DWT').val("");
+                $('#MaxDisplacement').val("");
                 $('#Terminal').val("");
                 // $("#exampleInputFileName").text("Choose file");
             }
@@ -705,6 +708,8 @@
                     $('#MaxLoa').val(data.berthdetails.maxLoa);
                     $('#MaxBeam').val(data.berthdetails.maxBeam);
                     $('#MaxArrivalDraft').val(data.berthdetails.maxArrivalDraft);
+                    $('#DWT').val(data.berthdetails.dwt);
+                    $('#MaxDisplacement').val(data.berthdetails.maxDisplacement);
                     $('#Terminal').val(data.berthdetails.terminalID);
 
                 },
