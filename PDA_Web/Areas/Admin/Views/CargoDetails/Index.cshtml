@@ -42,7 +42,7 @@
 
                                 <div class="form-group">
                                     <label for="PortName">Cargo Type<span class="text-danger">*</span></label>
-                                    @Html.DropDownList("CargoType", new SelectList(ViewBag.CargoType, "ID", "CargoTypeName"), "Please Select", new { @class = "form-control" })
+                                    @Html.DropDownList("CargoType", new SelectList(ViewBag.CargoType, "ID", "CargoTypeName"), "Please Select", new { @class = "form-control", @onchange = "CargoTypeChangefunc(this.value)" })
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -56,7 +56,7 @@
                         <div class="row">
                             <div class="col-sm-6">
 
-                                <div class="form-group">
+                                <div class="form-group" id="cargoTypedrop">
                                     <label for="PortName">Cargo Family<span class="text-danger">*</span></label>
                                     @Html.DropDownList("CargoFamily", new SelectList(ViewBag.CargoFamilys, "ID", "CargoFamilyName"), "Please Select", new { @class = "form-control" })
                                 </div>
@@ -150,7 +150,39 @@
 @section Scripts
 {
     <script>
+        function CargoTypeChangefunc(val) {
+            var Stateid = val;
 
+            var cargoDetails;
+            var Status = false;
+            if ($('#Status').is(":checked")) {
+                Status = true;
+            }
+            cargoDetails = {
+                "ID": $('#CargoDetailsId').val(),
+                "CargoTypeID": $('#CargoType').val(),
+                "CargoName": $('#CargoName').val(),
+                "CargoFamilyID": $('#CargoFamily').val(),
+                "CargoFile": $("#ResumeFileName").val(),
+                "CargoStatus": Status
+            }
+
+            $.ajax({
+
+                type: "GET",
+                url: "/Admin/CargoDetails/CargoTypeOnChange",
+                data: cargoDetails,
+                dataType: "HTML",
+                success: function (data) {
+
+                    $("#cargoTypedrop").html(data);
+
+                },
+                error: function () {
+                }
+            });
+
+        }
         $(document).ready(function () {
             $('#CargoMainMenu').addClass('active');
             $('#CargoDetailsMenu').addClass('active');

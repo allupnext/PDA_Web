@@ -1,0 +1,2 @@
+﻿<label for="PortName">Cargo Family<span class="text-danger">*</span></label>
+@Html.DropDownList("CargoFamily", new SelectList(ViewBag.CargoFamilys, "ID", "CargoFamilyName"), "Please Select", new { @class = "form-control" })

@@ -49,7 +49,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="PortName">Sequence<span class="text-danger">*</span></label>
-                                    <input type="number" class="form-control" id="Sequence" placeholder="Sequence Code" onchange="onNoteChange(this.val,2)">
+                                    <input type="number" class="form-control" id="Sequence" placeholder="Sequence Code" onchange="onExpenseChange(this.val,2)">
                                 </div>
                             </div>
                         </div>
@@ -149,6 +149,10 @@
             }
         }
         function expenseSave() {
+             var Status = false;
+            if ($('#Status').is(":checked")) {
+                Status = true;
+            }
             var expenses;
 
             expenses = {
@@ -156,7 +160,7 @@
                 "CargoID": $('#CargoDetails').val(),
                 "ExpenseName": $('#ExpenseName').val(),
                 "sequnce": $('#Sequence').val(),
-
+                "Status": Status,
             }
             if ($('#ExpenseName').val() == "") {
                 toastr.error("Please enter expense name.", 'Error Alert');
@@ -185,6 +189,8 @@
                 });
                 $('#Sequence').val("");
                 $('#ExpenseName').val("");
+                $('#Status').prop("checked", true);
+
             }
         }
 
@@ -231,7 +237,8 @@
                 success: function (data) {
                     debugger;
                     $('#ExpenseName').val(data.expenses.expenseName);
-                    $('#Sequence').val(data.notes.sequence);
+                    $('#Sequence').val(data.expenses.sequnce);
+                    $('#Status').prop("checked", data.expenses.status);
 
                 },
                 error: function () {
