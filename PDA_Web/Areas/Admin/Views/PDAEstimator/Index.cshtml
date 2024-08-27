@@ -107,7 +107,7 @@
                                 <div class="col-sm-2">
                                     <div class="form-group" id="cargodrop">
                                         <label for="Cargo">Cargo<span class="text-danger">*</span></label>
-                                        @Html.DropDownList("CargoName", new SelectList(ViewBag.Cargo, "ID", "CargoName"), "Please select", new { @class = "form-control" })
+                                        @Html.DropDownList("CargoName", new SelectList(ViewBag.Cargo, "ID", "CargoName"), "Please select", new { @class = "form-control", @onchange = "CargoNameOnChangefunc()" })
                                     </div>
                                 </div>
                                 <div class="col-sm-2">
@@ -688,6 +688,26 @@
                 }
             });
         };
+
+        function CargoNameOnChangefunc() {
+            
+              var portid = $('#PortName').val();
+
+            var cargoId = $('#CargoName').val();
+
+            $.ajax({
+                type: "GET",
+                url: "/Admin/PDAEstimator/TeaminalLoad",
+                data: { selectedCargoId: cargoId, selectedPortId: portid },
+                async: false,
+                dataType: "HTML",
+                success: function (data) {
+                    $("#terminaldrop").html(data);
+                },
+                error: function () {
+                }
+            });
+        }
 
         function callChangefunc(val) {  
             debugger;

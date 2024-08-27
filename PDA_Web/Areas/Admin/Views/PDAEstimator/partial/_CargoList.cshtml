@@ -1,2 +1,2 @@
 ﻿<label for="Cargo">Cargo<span class="text-danger">*</span></label>
-@Html.DropDownList("CargoName", new SelectList(ViewBag.Cargo, "ID", "CargoName"), "Please select", new { @class = "form-control" })
+@Html.DropDownList("CargoName", new SelectList(ViewBag.Cargo, "ID", "CargoName"), "Please select", new { @class = "form-control", @onchange = "CargoNameOnChangefunc()" })

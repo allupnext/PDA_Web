@@ -63,7 +63,7 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<List<ChargeCodeList>> GetAlllistAsync()
         {
-            var sql = "SELECT ChargeCodeMaster.ID as ID, ChargeCodeName, ChargeCodeMaster.ExpenseCategoryID as ExpenseCategoryID,ExpenseMaster.ExpenseName,Sequence FROM ChargeCodeMaster left join ExpenseMaster on ExpenseMaster.ID =  ChargeCodeMaster.ExpenseCategoryID WHERE ChargeCodeMaster.IsDeleted != 1";
+            var sql = "SELECT ChargeCodeMaster.ID as ID, ChargeCodeName, ChargeCodeMaster.ExpenseCategoryID as ExpenseCategoryID,ExpenseMaster.ExpenseName,Sequence, ChargeCodeMaster.Status FROM ChargeCodeMaster left join ExpenseMaster on ExpenseMaster.ID =  ChargeCodeMaster.ExpenseCategoryID WHERE ChargeCodeMaster.IsDeleted != 1";
 
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {

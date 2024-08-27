@@ -987,6 +987,17 @@ namespace PDA_Web.Areas.Admin.Controllers
             return PartialView("partial/TerminalList");
         }
 
+        public IActionResult TeaminalLoad(int selectedCargoId, int selectedPortId)
+        {
+          
+            var TerminalDetailData = unitOfWork.PDAEstimitor.GetTerminalByCargoIdAndPortAsync(selectedCargoId, selectedPortId).Result;
+            if (TerminalDetailData != null && TerminalDetailData.Count() > 0)
+                TerminalDetailData = TerminalDetailData.Where(x => x.Status == true).ToList();
+            ViewBag.Terminal = TerminalDetailData;
+            return PartialView("partial/TerminalList");
+        }
+
+
         public IActionResult TerminalNameOnchange(PDAEstimator PDAEstimitor)
         {
             var BearthDetailData = unitOfWork.BerthDetails.GetAllAsync().Result.Where(x => x.TerminalID == PDAEstimitor.TerminalID);

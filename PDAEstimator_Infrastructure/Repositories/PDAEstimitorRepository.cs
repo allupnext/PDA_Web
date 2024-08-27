@@ -93,6 +93,8 @@ namespace PDAEstimator_Infrastructure.Repositories
         }
 
 
+
+
         public async Task<List<CargoDetails>> GetCargoByTerminalAndPortAsync(int terminalId, int portId)
         {
             try
@@ -103,7 +105,7 @@ namespace PDAEstimator_Infrastructure.Repositories
                 SELECT DISTINCT CargoDetails.*
                 FROM CargoDetails
                 left JOIN CargoHandled ON CargoDetails.ID = CargoHandled.CargoID
-                WHERE CargoHandled.TerminalID = @TerminalId AND CargoHandled.PortID = @PortId";
+                WHERE CargoHandled.TerminalID = @TerminalId AND CargoHandled.PortID = @PortId and CargoDetails.Isdeleted = 0";
 
                     using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                     {
@@ -118,12 +120,49 @@ namespace PDAEstimator_Infrastructure.Repositories
                 SELECT DISTINCT CargoDetails.*
                 FROM CargoDetails
                 left JOIN CargoHandled ON CargoDetails.ID = CargoHandled.CargoID
-                WHERE CargoHandled.PortID = @PortId";
+                WHERE CargoHandled.PortID = @PortId and CargoDetails.Isdeleted = 0";
 
                     using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                     {
                         connection.Open();
                         var result = await connection.QueryAsync<CargoDetails>(sql, new { PortId = portId });
+                        return result.ToList();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<TerminalDetails>> GetTerminalByCargoIdAndPortAsync(int CargoID, int PortID)
+        {
+            try
+            {
+                if (CargoID > 0)
+                {
+                    var sql = @"
+                SELECT TerminalDetails.* FROM TerminalDetails 
+                Left Join CargoHandled ON TerminalDetails.ID = CargoHandled.TerminalID where CargoHandled.CargoID = @CargoID and TerminalDetails.PortID = @PortID and TerminalDetails.Isdeleted = 0";
+
+                    using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                    {
+                        connection.Open();
+                        var result = await connection.QueryAsync<TerminalDetails>(sql, new { CargoID = CargoID, PortId = PortID });
+                        return result.ToList();
+                    }
+                }
+                else
+                {
+                    var sql = @"
+                 SELECT TerminalDetails.* FROM TerminalDetails 
+                Left Join CargoHandled ON TerminalDetails.ID = CargoHandled.TerminalID where TerminalDetails.PortID = @PortID and TerminalDetails.Isdeleted = 0";
+
+                    using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                    {
+                        connection.Open();
+                        var result = await connection.QueryAsync<TerminalDetails>(sql, new { PortId = PortID });
                         return result.ToList();
                     }
                 }
