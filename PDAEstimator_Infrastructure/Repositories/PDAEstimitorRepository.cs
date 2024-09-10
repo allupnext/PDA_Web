@@ -143,7 +143,7 @@ namespace PDAEstimator_Infrastructure.Repositories
                 if (CargoID > 0)
                 {
                     var sql = @"
-                SELECT TerminalDetails.* FROM TerminalDetails 
+                SELECT Distinct TerminalDetails.* FROM TerminalDetails 
                 Left Join CargoHandled ON TerminalDetails.ID = CargoHandled.TerminalID where CargoHandled.CargoID = @CargoID and TerminalDetails.PortID = @PortID and TerminalDetails.Isdeleted = 0";
 
                     using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
@@ -156,7 +156,7 @@ namespace PDAEstimator_Infrastructure.Repositories
                 else
                 {
                     var sql = @"
-                 SELECT TerminalDetails.* FROM TerminalDetails 
+                 SELECT Distinct TerminalDetails.* FROM TerminalDetails 
                 Left Join CargoHandled ON TerminalDetails.ID = CargoHandled.TerminalID where TerminalDetails.PortID = @PortID and TerminalDetails.Isdeleted = 0";
 
                     using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
