@@ -34,8 +34,9 @@ namespace PDAEstimator_Domain.Entities
         public int CargoID { get; set; }
 
         public int CargoQty { get; set; }
+        public int? CargoQtyCBM { get; set; }
 
-        public string CargoUnitofMasurement { get; set; }
+        public string? CargoUnitofMasurement { get; set; }
 
         public int LoadDischargeRate { get; set; }
         public string CargoName { get; set; } = string.Empty;
@@ -81,5 +82,8 @@ namespace PDAEstimator_Domain.Entities
         public string ModifyUser { get; set; }
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime ModifyDate { get; set; }
+        
+        public string? PortFile { get; set; }
+        public string? PortFileTanker { get; set; }
     }
 }

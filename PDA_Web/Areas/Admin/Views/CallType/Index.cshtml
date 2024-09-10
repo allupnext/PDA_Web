@@ -215,6 +215,7 @@
                 success: function (data) {
                     debugger;
                     $('#CallTypeName').val(data.callTypes.callTypeName);
+                    $('#Status').prop("checked", data.callTypes.status);
 
                 },
                 error: function () {

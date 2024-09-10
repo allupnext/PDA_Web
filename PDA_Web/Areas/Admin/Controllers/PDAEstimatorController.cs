@@ -83,6 +83,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                     CurrencyName = PDAData.CurrencyName,
                     CargoID = PDAData.CargoID,
                     CargoQty = PDAData.CargoQty,
+                    CargoQtyCBM = PDAData.CargoQtyCBM,
                     CargoUnitofMasurement = PDAData.CargoUnitofMasurement,
                     LoadDischargeRate = PDAData.LoadDischargeRate,
                     CargoName = PDAData.CargoName,
@@ -240,6 +241,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                     CurrencyName = PDAData.CurrencyName,
                     CargoID = PDAData.CargoID,
                     CargoQty = PDAData.CargoQty,
+                    CargoQtyCBM = PDAData.CargoQtyCBM,
                     CargoUnitofMasurement = PDAData.CargoUnitofMasurement,
                     LoadDischargeRate = PDAData.LoadDischargeRate,
                     CargoName = PDAData.CargoName,
@@ -347,7 +349,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                 pDAEstimatorOutPut.DefaultCurrencyCodeID = currencyData.Where(x => x.DefaultCurrecny == true) != null ? currencyData.Where(x => x.DefaultCurrecny == true).FirstOrDefault().ID : 0;
 
                 //var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(pDAEstimatorOutPut.PortID).Result.Where(x => (x.CallTypeID == pDAEstimatorOutPut.CallTypeID || x.CallTypeID == null) && (x.SlabFrom == null || x.SlabFrom <= pDAEstimatorOutPut.GRT)) ;
-                var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(pDAEstimatorOutPut.PortID, pDAEstimatorOutPut.ETA != null ? (DateTime)pDAEstimatorOutPut.ETA : DateTime.Now.Date).Result.Where(x => (x.CallTypeID == pDAEstimatorOutPut.CallTypeID || x.CallTypeID == null) && (x.TerminalID == pDAEstimatorOutPut.TerminalID || x.TerminalID == null) && (x.BerthID == pDAEstimatorOutPut.BerthID || x.BerthID == null || x.BerthID == 0) && (x.CargoID == pDAEstimatorOutPut.CargoID || x.CargoID == null) && (x.VesselBallast == pDAEstimatorOutPut.VesselBallast || x.VesselBallast == 0)).OrderBy(o => o.ChargeCodeSequence).ThenBy(o => o.SlabFrom).ThenBy(o => o.TariffRateID);
+                var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(pDAEstimatorOutPut.PortID, pDAEstimatorOutPut.ETA != null ? (DateTime)pDAEstimatorOutPut.ETA : DateTime.Now.Date).Result.Where(x => (x.CallTypeID == pDAEstimatorOutPut.CallTypeID || x.CallTypeID == null) && (x.TerminalID == pDAEstimatorOutPut.TerminalID || x.TerminalID == null) && (x.BerthID == pDAEstimatorOutPut.BerthID || x.BerthID == null || x.BerthID == 0) && (x.CargoID == pDAEstimatorOutPut.CargoID || x.CargoID == null) && (x.OperationTypeID == pDAEstimatorOutPut.ActivityTypeId || x.OperationTypeID == null) && (x.VesselBallast == pDAEstimatorOutPut.VesselBallast || x.VesselBallast == 0)).OrderBy(o => o.ChargeCodeSequence).ThenBy(o => o.SlabFrom).ThenBy(o => o.TariffRateID);
                 List<PDATariffRateList> pDATariffRateList = new List<PDATariffRateList>();
                 decimal taxrate = 0;
                 foreach (var triff in triffdata)
@@ -381,6 +383,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                                 slabattributvalue = pDAEstimatorOutPut.AnchorageStay;
                             else if (triff.SlabName == "QTYMT")
                                 slabattributvalue = pDAEstimatorOutPut.CargoQty;
+                            else if (triff.SlabName == "QTYCBM")
+                                slabattributvalue = pDAEstimatorOutPut.CargoQtyCBM;
                             UnitCalculation(triff, pDAEstimatorOutPut.GRT, (long)slabattributvalue);
 
                             foreach (var formularTransList in formulatransdata)
@@ -529,6 +533,18 @@ namespace PDA_Web.Areas.Admin.Controllers
                                             formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.CargoQty.ToString() : pDAEstimatorOutPut.CargoQty.ToString();
                                         }
                                     }
+                                    else if (FormulaAttributedata.Contains("QTYCBM"))
+                                    {
+                                        //UnitCalculation(triff, pDAEstimatorOutPut.CargoQtyCBM);
+                                        if (triff.SlabID != null && triff.SlabID > 0 && FormulaAttributedata == triff.SlabName)
+                                        {
+                                            formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        }
+                                        else
+                                        {
+                                            formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.CargoQtyCBM.ToString() : pDAEstimatorOutPut.CargoQtyCBM.ToString();
+                                        }
+                                    }
                                     else
                                     {
                                         if (triff.UNITS == null || triff.UNITS == 0)
@@ -613,6 +629,10 @@ namespace PDA_Web.Areas.Admin.Controllers
             return pDAEstimatorOutPut;
         }
 
+        private string GetFullPathOfFile1(string fileName)
+        {
+            return $"{_hostEnvironment.WebRootPath}\\uploads\\{fileName}";
+        }
         private string GetFullPathOfFile(string fileName)
         {
             return $"{_hostEnvironment.WebRootPath}\\companylogo\\{fileName}";
@@ -700,6 +720,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                 // Temp Solution END
 
                 var CallTypeData = await unitOfWork.CallTypes.GetAllAsync();
+                if (CallTypeData.Count > 0)
+                    CallTypeData = CallTypeData.Where(x => x.Status == true).ToList();
                 ViewBag.CallType = CallTypeData;
 
                 var EmployeeCode = await unitOfWork.User.GetAllAsync();
@@ -714,6 +736,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                 if (userwithRole.RoleName == "Admin")
                 {
                     portDetails = await unitOfWork.PortDetails.GetAllAsync();
+                    if (portDetails.Count > 0)
+                        portDetails = portDetails.Where(x => x.Status == true).ToList();
                     ViewBag.Port = portDetails;
                 }
                 else
@@ -722,26 +746,40 @@ namespace PDA_Web.Areas.Admin.Controllers
                     {
                         List<int> PortIds = userdata.Ports.Split(',').Select(int.Parse).ToList();
                         portDetails = unitOfWork.PortDetails.GetAllAsync().Result.Where(x => PortIds.Contains(x.ID)).ToList();
+                        if (portDetails.Count > 0)
+                            portDetails = portDetails.Where(x => x.Status == true).ToList();
                     }
                     ViewBag.Port = portDetails;
                 }
 
                 var TerminalData = await unitOfWork.TerminalDetails.GetAllAsync();
+                if (TerminalData.Count > 0)
+                    TerminalData = TerminalData.Where(x => x.Status == true).ToList();
                 ViewBag.Terminal = TerminalData;
 
                 var data1 = await unitOfWork.BerthDetails.GetAllAsync();
+                if (data1.Count > 0)
+                    data1 = data1.Where(x => x.BerthStatus == true).ToList();
                 ViewBag.Berth = data1;
 
                 var CargoType = await unitOfWork.CargoDetails.GetAllAsync();
+                if (CargoType.Count > 0)
+                    CargoType = CargoType.Where(x => x.CargoStatus == true).ToList();
                 ViewBag.Cargo = CargoType;
 
                 var dataCurrency = await unitOfWork.Currencys.GetAllwithoutBaseCurrencyAsync();
+                if (dataCurrency.Count > 0)
+                    dataCurrency = dataCurrency.Where(x => x.Status == true).ToList();
                 ViewBag.Currency = dataCurrency;
 
                 var ROEData = await unitOfWork.ROENames.GetAllAsync();
+                if (ROEData.Count > 0)
+                    ROEData = ROEData.Where(x => x.Status == true).ToList();
                 ViewBag.ROEName = ROEData;
 
                 var CompanyData = await unitOfWork.Company.GetAllAsync();
+                if (CompanyData.Count > 0)
+                    CompanyData = CompanyData.Where(x => x.Status == true).ToList();
                 ViewBag.Companys = CompanyData;
 
                 var DefaultCurrecnydata = dataCurrency.Where(x => x.DefaultCurrecny == true);
@@ -755,6 +793,17 @@ namespace PDA_Web.Areas.Admin.Controllers
             {
                 return RedirectToAction("index", "AdminLogin");
             }
+        }
+        public FileResult DownloadFile(string fileName)
+        {
+            //Build the File Path.
+            //string path = Path.Combine(this.Environment.WebRootPath, "Files/") + fileName;
+            string fullPath = GetFullPathOfFile1(fileName.Replace("\"", ""));
+            //Read the File data into Byte Array.
+            byte[] bytes = System.IO.File.ReadAllBytes(fullPath);
+
+            //Send the File to Download.
+            return File(bytes, "application/octet-stream", fileName);
         }
         public async Task<IActionResult> TempData()
         {
@@ -932,26 +981,49 @@ namespace PDA_Web.Areas.Admin.Controllers
         public IActionResult PortNameOnchange(PDAEstimator PDAEstimitor)
         {
             var TerminalDetailData = unitOfWork.TerminalDetails.GetAllAsync().Result.Where(x => x.PortID == PDAEstimitor.PortID);
-
+            if (TerminalDetailData != null && TerminalDetailData.Count() > 0)
+                TerminalDetailData = TerminalDetailData.Where(x => x.Status == true).ToList();
             ViewBag.Terminal = TerminalDetailData;
             return PartialView("partial/TerminalList");
         }
 
+        public IActionResult TeaminalLoad(int selectedCargoId, int selectedPortId)
+        {
+          
+            var TerminalDetailData = unitOfWork.PDAEstimitor.GetTerminalByCargoIdAndPortAsync(selectedCargoId, selectedPortId).Result;
+            if (TerminalDetailData != null && TerminalDetailData.Count() > 0)
+                TerminalDetailData = TerminalDetailData.Where(x => x.Status == true).ToList();
+            ViewBag.Terminal = TerminalDetailData;
+            return PartialView("partial/TerminalList");
+        }
+
+
         public IActionResult TerminalNameOnchange(PDAEstimator PDAEstimitor)
         {
             var BearthDetailData = unitOfWork.BerthDetails.GetAllAsync().Result.Where(x => x.TerminalID == PDAEstimitor.TerminalID);
+            if (BearthDetailData != null && BearthDetailData.Count() > 0)
+                BearthDetailData = BearthDetailData.Where(x => x.BerthStatus == true).ToList();
             ViewBag.Berth = BearthDetailData;
             return PartialView("partial/BerthList");
         }
 
         public IActionResult BerthNameOnchange(PDAEstimator PDAEstimitor)
         {
-            var BearthDetailData =  unitOfWork.BerthDetails.GetByIdAsync(PDAEstimitor.BerthId).Result;
+            if(PDAEstimitor.BerthId != 0)
+            {
+                var BearthDetailData = unitOfWork.BerthDetails.GetByIdAsync(PDAEstimitor.BerthId).Result;
+                return Json(new
+                {
+                    loa = BearthDetailData.MaxLoa,
+                    beam = BearthDetailData.MaxBeam,
+                    arrivalDraft = BearthDetailData.MaxArrivalDraft,
+                    dwt = BearthDetailData.DWT,
+                    proceed = true,
+                    msg = ""
+                });
+            }
             return Json(new
             {
-                loa= BearthDetailData.MaxLoa,
-                beam = BearthDetailData.MaxBeam,
-                arrivalDraft = BearthDetailData.MaxArrivalDraft,
                 proceed = true,
                 msg = ""
             });
@@ -960,6 +1032,8 @@ namespace PDA_Web.Areas.Admin.Controllers
         public IActionResult OpenBerthDetailsPopUp(PDAEstimator PDAEstimitor)
         {
             var BearthDetailData = unitOfWork.BerthDetails.GetAllAsync().Result.Where(x => x.TerminalID == PDAEstimitor.TerminalID);
+            if (BearthDetailData != null && BearthDetailData.Count() > 0)
+                BearthDetailData = BearthDetailData.Where(x => x.BerthStatus == true).ToList();
             var Terminals = PartialView("partial/_Berths", BearthDetailData);
             return PartialView("partial/_Berths", BearthDetailData);
         }
@@ -1010,6 +1084,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                 PDAEstimitor.BerthStayShift = Convert.ToInt64(berthStayShift);
             }
 
+            PDAEstimitor.IsCustomerCreated = false;
+
             if (maxLoa != null && maxLoa < PDAEstimitor.LOA)
             {
                 _toastNotification.AddErrorToastMessage("Please enter MaxLOA Less then : " + maxLoa);
@@ -1030,9 +1106,9 @@ namespace PDA_Web.Areas.Admin.Controllers
                 });
             }
 
-            if (maxArribvaldraft != null && maxBeam < PDAEstimitor.ArrivalDraft)
+            if (maxArribvaldraft != null && maxArribvaldraft < PDAEstimitor.ArrivalDraft)
             {
-                _toastNotification.AddErrorToastMessage("Please enter Max Arribval Draft Less then : " + maxArribvaldraft);
+                _toastNotification.AddErrorToastMessage("Please enter Max Arrival Draft Less then : " + maxArribvaldraft);
                 return Json(new
                 {
                     proceed = false,
@@ -1165,7 +1241,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                         }
 
                         List<PDAEstimatorOutPutTariff> pDAEstimatorOutPutTariffs = new List<PDAEstimatorOutPutTariff>();
-                        var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(PDAEstimitor.PortID, PDAEstimitor.ETA != null ? (DateTime)PDAEstimitor.ETA : DateTime.Now.Date).Result.Where(x => (x.CallTypeID == PDAEstimitor.CallTypeID || x.CallTypeID == null) && (x.TerminalID == PDAEstimitor.TerminalID || x.TerminalID == null) && (x.BerthID == PDAEstimitor.BerthId || x.BerthID == null || x.BerthID == 0) && (x.CargoID == PDAEstimitor.CargoID || x.CargoID == null) && (x.VesselBallast == PDAEstimitor.VesselBallast || x.VesselBallast == 0) && (x.Reduced_GRT == PDAEstimitor.IsReducedGRT || x.Reduced_GRT == 0)).OrderBy(o => o.ChargeCodeSequence).ThenBy(o => o.SlabFrom).ThenBy(o => o.TariffRateID);
+                        var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(PDAEstimitor.PortID, PDAEstimitor.ETA != null ? (DateTime)PDAEstimitor.ETA : DateTime.Now.Date).Result.Where(x => (x.CallTypeID == PDAEstimitor.CallTypeID || x.CallTypeID == null) && (x.TerminalID == PDAEstimitor.TerminalID || x.TerminalID == null) && (x.BerthID == PDAEstimitor.BerthId || x.BerthID == null || x.BerthID == 0) && (x.CargoID == PDAEstimitor.CargoID || x.CargoID == null) && (x.OperationTypeID == PDAEstimitor.ActivityTypeId || x.OperationTypeID == null) && (x.VesselBallast == PDAEstimitor.VesselBallast || x.VesselBallast == 0) && (x.Reduced_GRT == PDAEstimitor.IsReducedGRT || x.Reduced_GRT == 0)).OrderBy(o => o.ChargeCodeSequence).ThenBy(o => o.SlabFrom).ThenBy(o => o.TariffRateID);
                         List<PDATariffRateList> pDATariffRateList = new List<PDATariffRateList>();
                         decimal taxrate = 0;
                         foreach (var triff in triffdata)
@@ -1200,7 +1276,9 @@ namespace PDA_Web.Areas.Admin.Controllers
                                         slabattributvalue = PDAEstimitor.AnchorageStay;
                                     else if (triff.SlabName == "QTYMT")
                                         slabattributvalue = PDAEstimitor.CargoQty;
-
+                                    else if (triff.SlabName == "QTYCBM")
+                                        slabattributvalue = PDAEstimitor.CargoQtyCBM;
+                                    
                                     bool Range_Tariff = triff.Range_TariffID > 0 ? true : false;
                                     UnitCalculation(triff, PDAEstimitor.GRT, (long)slabattributvalue, Range_Tariff);
                                     foreach (var formularTransList in formulatransdata)
@@ -1349,6 +1427,18 @@ namespace PDA_Web.Areas.Admin.Controllers
                                                     formulastring = formulastring != "" ? formulastring + " " + PDAEstimitor.CargoQty.ToString() : PDAEstimitor.CargoQty.ToString();
                                                 }
                                             }
+                                            else if (FormulaAttributedata.Contains("QTYCBM"))
+                                            {
+                                                //UnitCalculation(triff, pDAEstimatorOutPut.CargoQty);
+                                                if (triff.SlabID != null && triff.SlabID > 0 && FormulaAttributedata == triff.SlabName)
+                                                {
+                                                    formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                                }
+                                                else
+                                                {
+                                                    formulastring = formulastring != "" ? formulastring + " " + PDAEstimitor.CargoQtyCBM.ToString() : PDAEstimitor.CargoQtyCBM.ToString();
+                                                }
+                                            }
                                             else
                                             {
                                                 if (triff.UNITS == null || triff.UNITS == 0)
@@ -1446,6 +1536,10 @@ namespace PDA_Web.Areas.Admin.Controllers
                                             else if (FormulaAttributedata.Contains("QTYMT"))
                                             {
                                                 formulastringref = formulastringref != "" ? formulastringref + " " + PDAEstimitor.CargoQty.ToString() : PDAEstimitor.CargoQty.ToString();
+                                            }
+                                            else if (FormulaAttributedata.Contains("QTYCBM"))
+                                            {
+                                                formulastringref = formulastringref != "" ? formulastringref + " " + PDAEstimitor.CargoQtyCBM.ToString() : PDAEstimitor.CargoQty.ToString();
                                             }
                                             else
                                             {

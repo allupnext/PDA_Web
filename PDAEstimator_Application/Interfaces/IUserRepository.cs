@@ -27,7 +27,8 @@ namespace PDAEstimator_Application.Interfaces
         Task<string> ChangePassword(string Password, long id,string macAddress);
         Task<int> AddMacAddress(string MacAddress, long id);
         Task<int> AuthenticateById(int id, string Password);
+        Task<int> UpdateOTP(string OTP, DateTime OTPSent, long Id);
 
-
+        Task<int> UpdateLoginDetails(string LoginMachineName, DateTime LoginDateTime, long Id);
     }
 }

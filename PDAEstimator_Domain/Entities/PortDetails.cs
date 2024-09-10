@@ -29,6 +29,10 @@ namespace PDAEstimator_Domain.Entities
         [StringLength(500)]
         [DisplayName("Port File")]
         public string? PortFile { get; set; }
+
+        [StringLength(500)]
+        [DisplayName("Port File")]
+        public string? PortFileTanker { get; set; }
         public bool IsDeleted { get; set; }
 
     }

@@ -4,7 +4,7 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="#" class="brand-link">
-        <img src="/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+        <img src="/dist/img/samsara_group_logo.jpg" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
         <span class="brand-text font-weight-light">PDA Estimator</span>
     </a>
     <!-- Sidebar -->
@@ -47,7 +47,7 @@
                 {
                     <li class="nav-item" >
                         <a href="/Admin/PDAEstimator/Index?param2=PDA" class="nav-link" id="PDAMenu">
-                            <i class="nav-icon  fas fa-percent"></i>
+                            <i class="nav-icon  fas fa-calculator"></i>
                             <p>
                                 PDA Estimator
                             </p>
@@ -398,6 +398,15 @@
                             </li>
                         }
 
+                        @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Email Notification Config" && x.UserRolePermission == "View").Count() > 0))
+                        {
+                            <li class="nav-item">
+                                <a asp-area="Admin" asp-controller="EmailNotificationConfig" asp-action="Index" class="nav-link" id="EmailNotificationConfigMenu">
+                                    <i class="far fa-circle11 nav-icon"></i>
+                                    <p>Email Notification Config</p>
+                                </a>
+                            </li>
+                        }
 
                     </ul>
                 </li>
@@ -466,7 +475,7 @@
                     @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Company" && x.UserRolePermission == "View").Count() > 0 || userPermissionRights.Where(x => x.MenuName == "Bank Master" && x.UserRolePermission == "View").Count() > 0))
              {
                     <a href="#" class="nav-link" id="Comney_Master">
-                        <i class="nav-icon fa fa-users"></i>
+                            <i class="nav-icon fa fa-building"></i>
                         <p>
                             Company Master
                             <i class="right fas fa-angle-left"></i>
@@ -503,7 +512,7 @@
                 </li>
                 <li class="nav-item">
                     <a asp-area="Admin" asp-controller="UserResetPassword" asp-action="ChangePasswordByCurrentPassword" class="nav-link" id="ChangePassMenu">
-                        <i class="nav-icon  fas fa-percent"></i>
+                        <i class="nav-icon  fas fa-unlock"></i>
                         <p>
                             Change Password
                         </p>

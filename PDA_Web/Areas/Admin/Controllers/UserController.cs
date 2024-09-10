@@ -47,6 +47,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                 ViewBag.SecondaryCompany = SecondryCompanyData;
 
                 var PortList = await unitOfWork.PortDetails.GetAllAsync();
+                if (PortList.Count > 0)
+                    PortList = PortList.Where(x => x.Status == true).ToList();
                 ViewBag.PortList = PortList;
 
                 var RoleData = await unitOfWork.Roles.GetAllAsync();
@@ -74,7 +76,12 @@ namespace PDA_Web.Areas.Admin.Controllers
             // Temp Solution END
             if (user.SearchedName != null && user.SearchedName != "")
             {
-                data = data.Where(u => (u.Salutation + " " + u.FirstName + " " + u.LastName).Contains(user.SearchedName)).ToList();
+                data = data.Where(u => (u.Salutation.ToLower() + " " + u.FirstName.ToLower() + " " + u.LastName.ToLower()).Contains(user.SearchedName.ToLower())).ToList();
+            }
+
+            if (user.EmployCode != null && user.EmployCode != "")
+            {
+                data = data.Where(u => u.EmployCode.ToLower().Contains(user.EmployCode.ToLower())).ToList();
             }
 
             if (user.RoleId != null && user.RoleId != 0)

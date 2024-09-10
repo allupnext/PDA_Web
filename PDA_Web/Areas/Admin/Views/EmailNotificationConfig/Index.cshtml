@@ -1,0 +1,289 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Email Notification Configuration</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Email Notification Configuration</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Update Email Notification Configuration </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <div class="card-body">
+                        <input type="hidden" id="EmailConfigID" name="EmailConfigID" value="">
+                    
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="Company">Primary Company<span class="text-danger">*</span></label>
+                                    @Html.DropDownList("Company", new SelectList(ViewBag.Company, "CompanyId", "CompanyName"), "Please Select", new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+
+                                <div class="form-group">
+                                    <label for="ProcessName">Process Name</label>
+                                    @*<input type="text" class="form-control" id="ProcessName" placeholder="Process Name">*@
+                                    <select class="form-control" id="ProcessName">
+                                        <option value="">Please Select</option>
+                                        <option value="Customer Approved">
+                                            Customer Approved
+                                        </option>
+                                        <option value="Customer InActive">
+                                            Customer InActive
+                                        </option>
+                                        <option value="Customer OTP Sent Email">
+                                            Customer OTP Sent Email
+                                        </option>
+                                        <option value="Customer Register">
+                                            Customer Register
+                                        </option>
+                                        <option value="Customer Rejected">
+                                            Customer Rejected
+                                        </option>
+                                        <option value="Customer Reset Password">
+                                            Customer Reset Password
+                                        </option>
+                                        <option value="PDA Generate">
+                                            PDA Generate
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="row">
+
+                            <div class="col-sm-6">
+
+                                <div class="form-group">
+                                    <label for="FromEmail">From Email<span class="text-danger">*</span></label>
+                                    <input type="email" class="form-control" id="FromEmail" placeholder="From Email">
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="row">
+
+                            <div class="col-sm-6">
+
+                                <div class="form-group">
+                                    <label for="FromEmail">CC Email (comma separated)</label>
+                                    <input type="email" class="form-control" id="ToEmail" placeholder="To Email">
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <!-- /.card-body -->
+                    </div>
+
+                    @using PDAEstimator_Domain.Entities;
+                    @if (ViewBag.UserPermissionModel != null)
+                    {
+                        List<UserPermissionRights> userPermissionRights = new List<UserPermissionRights>();
+                        List<UserRoleName> userRoleName = new List<UserRoleName>();
+                        userPermissionRights = ViewBag.UserPermissionModel;
+                        userRoleName = ViewBag.UserRoleName;
+
+                        @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Email Notification Config").Count() > 0))
+                        {
+                            <div class="card-footer">
+                                <button class="btn btn-primary" id="EmailNotificationConfigSave" onclick="EmailNotificationConfigSave()">Submit</button>
+                            </div>
+                        }
+                    }
+
+
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Email Notification Configuration List</h3>
+                    </div>
+                    <div class="card-body">
+                        
+                        <div id="viewAll" class="table-responsive"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            $('#MasterMenu').addClass('active');
+            $('#EmailNotificationConfigMenu').addClass('active');
+            $('#EmailNotificationConfigMenu').parent().closest('ul').parent().addClass('menu-open');
+            loadData();           
+        });
+
+        function EmailNotificationConfigSave() {
+            var selectedText = $('#Company option:selected').text();
+            var EmailNotificationConfig;
+
+            EmailNotificationConfig = {
+                "EmailConfigID": $('#EmailConfigID').val(),
+                "CompanyId": $('#Company').val(),
+                "CompneyName": selectedText,
+                "ProcessName": $('#ProcessName').val(),
+                "FromEmail": $('#FromEmail').val(),
+                "ToEmail": $('#ToEmail').val(),
+            }
+            if ($('#ProcessName').val() == "") {
+                toastr.error("Please Select Process Name.", 'Error Alert');
+                $('#ProcessName').css("border", "1px solid red");
+            }
+            if ($('#Company').val() == "") {
+                toastr.error("Please Select Company.", 'Error Alert');
+                $('#ProcessName').css("border", "1px solid red");
+            }
+            else if ($('#FromEmail').val() == "") {
+                toastr.error("Please Enter From Email.", 'Error Alert');
+                $('#FromEmail').css("border", "1px solid red");
+            } 
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/EmailNotificationConfig/EmailNotificationConfigSave",
+                    data: EmailNotificationConfig,
+                    success: function (data) {
+                        if (!data.proceed) {
+                            return;
+                        }
+                        else {
+                            loadData();
+                        }
+
+                    },
+                    error: function () {
+                    }
+                });
+                $('#EmailConfigID').val("");
+                $('#ProcessName').val("");
+                $('#FromEmail').val("");
+                $('#ToEmail').val("");
+                $('#Company').val("");
+                //$('#EmailNotificationConfigSave').hide();
+            }
+        }
+
+        function deleteCallType(id) {
+            debugger
+
+            var EmailNotificationConfig;
+
+            EmailNotificationConfig = {
+                "EmailConfigID": $('#EmailConfigID').val(),
+                "ProcessName": $('#ProcessName').val(),
+                "FromEmail": $('#FromEmail').val(),
+                "ToEmail": $('#ToEmail').val(),
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/EmailNotificationConfig/deleteEmailNotificationConfig",
+                data: EmailNotificationConfig,
+                success: function (data) {
+                    loadData();
+                },
+                error: function () {
+                }
+            });
+
+        }
+
+        function editCallType(id) {
+            $('#EmailNotificationConfigSave').show();
+            //Id
+            $('#EmailConfigID').val(id);
+
+            var EmailNotificationConfig;
+
+            EmailNotificationConfig = {
+                "EmailConfigID": $('#EmailConfigID').val(),
+                "ProcessName": $('#ProcessName').val(),
+                "FromEmail": $('#FromEmail').val(),
+                "ToEmail": $('#ToEmail').val(),
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/EmailNotificationConfig/editEmailNotificationConfig",
+                data: EmailNotificationConfig,
+                success: function (data) {
+                    debugger;
+                    $('#ProcessName').val(data.editEmailNotificationConfig.processName);
+                    $('#FromEmail').val(data.editEmailNotificationConfig.fromEmail);
+                    $('#ToEmail').val(data.editEmailNotificationConfig.toEmail);
+                    $('#Company').val(data.editEmailNotificationConfig.companyId);
+                    
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function loadData() {
+            var emailNotificationConfiguration;
+            $.ajax({
+
+                type: "GET",
+                url: "/Admin/EmailNotificationConfig/LoadAll",
+                // data: emailNotificationConfiguration,
+                dataType: "HTML",
+                success: function (data) {
+
+                    $("#viewAll").html(data);
+
+                },
+                error: function () {
+                }
+            });
+        }
+
+    </script>
+
+}

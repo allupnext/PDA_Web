@@ -23,7 +23,7 @@ namespace PDAEstimator_Infrastructure.Repositories
         {
             try
             {
-                var sql = "INSERT INTO PDAEstimator (CreatedBy,CreationDate, CustomerID, VesselName, PortID, TerminalID,BerthId, CallTypeID, CargoID, CargoQty, CargoUnitofMasurement, LoadDischargeRate, CurrencyID, ROE, DWT, ArrivalDraft, GRT, NRT,BerthStay, AnchorageStay, LOA, Beam, IsDeleted,ActivityTypeId,ETA,BerthStayDay, InternalCompanyID, BerthStayShift,VesselBallast,IsReducedGRT, BerthStayDayCoastal, BerthStayShiftCoastal, BerthStayHoursCoastal, RGRT) VALUES (@CreatedBy,GetDate(), @CustomerID, @VesselName, @PortID, @TerminalID,@BerthId, @CallTypeID, @CargoID, @CargoQty, @CargoUnitofMasurement, @LoadDischargeRate, @CurrencyID, @ROE, @DWT, @ArrivalDraft, @GRT,@NRT, @BerthStay, @AnchorageStay, @LOA, @Beam, 0 , @ActivityTypeId ,@ETA,@BerthStayDay, @InternalCompanyID, @BerthStayShift , @VesselBallast ,@IsReducedGRT, @BerthStayDayCoastal, @BerthStayShiftCoastal, @BerthStayHoursCoastal, @RGRT) SELECT CAST(SCOPE_IDENTITY() as bigint)";
+                var sql = "INSERT INTO PDAEstimator (CreatedBy,CreationDate, CustomerID, VesselName, PortID, TerminalID,BerthId, CallTypeID, CargoID, CargoQty,CargoQtyCBM, CargoUnitofMasurement, LoadDischargeRate, CurrencyID, ROE, DWT, ArrivalDraft, GRT, NRT,BerthStay, AnchorageStay, LOA, Beam, IsDeleted,ActivityTypeId,ETA,BerthStayDay, InternalCompanyID, BerthStayShift,VesselBallast,IsReducedGRT, BerthStayDayCoastal, BerthStayShiftCoastal, BerthStayHoursCoastal, RGRT, IsCustomerCreated) VALUES (@CreatedBy,GetDate(), @CustomerID, @VesselName, @PortID, @TerminalID,@BerthId, @CallTypeID, @CargoID, @CargoQty,@CargoQtyCBM, @CargoUnitofMasurement, @LoadDischargeRate, @CurrencyID, @ROE, @DWT, @ArrivalDraft, @GRT,@NRT, @BerthStay, @AnchorageStay, @LOA, @Beam, 0 , @ActivityTypeId ,@ETA,@BerthStayDay, @InternalCompanyID, @BerthStayShift , @VesselBallast ,@IsReducedGRT, @BerthStayDayCoastal, @BerthStayShiftCoastal, @BerthStayHoursCoastal, @RGRT, @IsCustomerCreated) SELECT CAST(SCOPE_IDENTITY() as bigint)";
         
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
@@ -93,6 +93,8 @@ namespace PDAEstimator_Infrastructure.Repositories
         }
 
 
+
+
         public async Task<List<CargoDetails>> GetCargoByTerminalAndPortAsync(int terminalId, int portId)
         {
             try
@@ -103,7 +105,7 @@ namespace PDAEstimator_Infrastructure.Repositories
                 SELECT DISTINCT CargoDetails.*
                 FROM CargoDetails
                 left JOIN CargoHandled ON CargoDetails.ID = CargoHandled.CargoID
-                WHERE CargoHandled.TerminalID = @TerminalId AND CargoHandled.PortID = @PortId";
+                WHERE CargoHandled.TerminalID = @TerminalId AND CargoHandled.PortID = @PortId and CargoDetails.Isdeleted = 0";
 
                     using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                     {
@@ -118,12 +120,49 @@ namespace PDAEstimator_Infrastructure.Repositories
                 SELECT DISTINCT CargoDetails.*
                 FROM CargoDetails
                 left JOIN CargoHandled ON CargoDetails.ID = CargoHandled.CargoID
-                WHERE CargoHandled.PortID = @PortId";
+                WHERE CargoHandled.PortID = @PortId and CargoDetails.Isdeleted = 0";
 
                     using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                     {
                         connection.Open();
                         var result = await connection.QueryAsync<CargoDetails>(sql, new { PortId = portId });
+                        return result.ToList();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<TerminalDetails>> GetTerminalByCargoIdAndPortAsync(int CargoID, int PortID)
+        {
+            try
+            {
+                if (CargoID > 0)
+                {
+                    var sql = @"
+                SELECT TerminalDetails.* FROM TerminalDetails 
+                Left Join CargoHandled ON TerminalDetails.ID = CargoHandled.TerminalID where CargoHandled.CargoID = @CargoID and TerminalDetails.PortID = @PortID and TerminalDetails.Isdeleted = 0";
+
+                    using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                    {
+                        connection.Open();
+                        var result = await connection.QueryAsync<TerminalDetails>(sql, new { CargoID = CargoID, PortId = PortID });
+                        return result.ToList();
+                    }
+                }
+                else
+                {
+                    var sql = @"
+                 SELECT TerminalDetails.* FROM TerminalDetails 
+                Left Join CargoHandled ON TerminalDetails.ID = CargoHandled.TerminalID where TerminalDetails.PortID = @PortID and TerminalDetails.Isdeleted = 0";
+
+                    using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                    {
+                        connection.Open();
+                        var result = await connection.QueryAsync<TerminalDetails>(sql, new { PortId = PortID });
                         return result.ToList();
                     }
                 }
@@ -140,7 +179,7 @@ namespace PDAEstimator_Infrastructure.Repositories
             try
             {
                 //var sql = "SELECT PDAEstimator.PDAEstimatorID as PDAEstimatorID, PDAEstimator.CustomerID as CustomerID,CustomerMaster.Company as CustomerCompanyName,PDAEstimator.PortID as PortID, PDAEstimator.TerminalID as TerminalID,PDAEstimator.CallTypeID as CallTypeID,PDAEstimator.CargoID as CargoID,PDAEstimator.ActivityTypeId as ActivityTypeId,PDAEstimator.CurrencyID as CurrencyID,CurrencyCode as CurrencyName,BerthStayDay,ETA,CargoQty,CargoUnitofMasurement,LoadDischargeRate,PDAEstimator.CurrencyID as CurrencyID,ROE,DWT,ArrivalDraft,GRT,NRT,BerthStay,VesselName,AnchorageStay,LOA,Beam,FirstName,ActivityType,PortName,TerminalName,CallTypeName,CargoName,InternalCompanyID, CompanyMaster.CompanyName as InternalCompanyName, BerthStayShift, VesselBallast, BerthStayDayCoastal, BerthStayShiftCoastal, BerthStayHoursCoastal  FROM PDAEstimator  left join CustomerMaster on CustomerMaster.CustomerId =  PDAEstimator.CustomerID  left join PortDetails on PortDetails.ID =  PDAEstimator.PortID  left join TerminalDetails on TerminalDetails.ID =  PDAEstimator.TerminalID left join CallType on CallType.ID =  PDAEstimator.CallTypeID left join Currency on Currency.ID =  PDAEstimator.CurrencyID left join PortActivityType on PortActivityType.ID =  PDAEstimator.ActivityTypeId left join CargoDetails on CargoDetails.ID =  PDAEstimator.CargoID left join CompanyMaster on CompanyMaster.CompanyId =  PDAEstimator.InternalCompanyID WHERE PDAEstimator.IsDeleted != 1 ORDER BY PDAEstimatorID DESC";
-                var sql = "SELECT PDAEstimator.ModifyUserID as ModifyUserID, ModifyUser.EmployCode as ModifyUser, PDAEstimator.CreatedBy as UserId,CreatedByUser.EmployCode as CreatedBy,  PDAEstimator.PDAEstimatorID as PDAEstimatorID, PDAEstimator.CustomerID as CustomerID, CustomerMaster.Company as CustomerCompanyName, PDAEstimator.PortID as PortID, PDAEstimator.TerminalID as TerminalID, PDAEstimator.BerthId as BerthId, PDAEstimator.CallTypeID as CallTypeID, PDAEstimator.CargoID as CargoID, PDAEstimator.ActivityTypeId as ActivityTypeId, PDAEstimator.CurrencyID as CurrencyID, CurrencyCode as CurrencyName, BerthStayDay,ETA,CargoQty,CargoUnitofMasurement,LoadDischargeRate, PDAEstimator.CurrencyID as CurrencyID, ROE,DWT,ArrivalDraft,GRT,RGRT,NRT,BerthStay, VesselName,AnchorageStay,LOA,Beam,CustomerMaster.FirstName,ActivityType,PortName,TerminalName,BerthName, CallTypeName,CargoName,InternalCompanyID, CompanyMaster.CompanyName as InternalCompanyName, BerthStayShift, VesselBallast,IsReducedGRT, BerthStayDayCoastal, BerthStayShiftCoastal, BerthStayHoursCoastal , PDAEstimator.ModifyDate,PDAEstimator.CreationDate  FROM PDAEstimator  left join UserMaster AS ModifyUser on PDAEstimator.ModifyUserID = ModifyUser.ID left join UserMaster AS CreatedByUser on PDAEstimator.CreatedBy = CreatedByUser.ID left join CustomerMaster on CustomerMaster.CustomerId =  PDAEstimator.CustomerID   left join PortDetails on PortDetails.ID =  PDAEstimator.PortID left join TerminalDetails on TerminalDetails.ID =  PDAEstimator.TerminalID left join BerthDetails on BerthDetails.Id = PDAEstimator.BerthID left join CallType on CallType.ID =  PDAEstimator.CallTypeID left join Currency on Currency.ID =  PDAEstimator.CurrencyID left join PortActivityType on PortActivityType.ID =  PDAEstimator.ActivityTypeId left join CargoDetails on CargoDetails.ID =  PDAEstimator.CargoID left join CompanyMaster on CompanyMaster.CompanyId =  PDAEstimator.InternalCompanyID WHERE PDAEstimator.IsDeleted != 1  ORDER BY PDAEstimatorID DESC ";
+                var sql = "SELECT PDAEstimator.ModifyUserID as ModifyUserID, ModifyUser.EmployCode as ModifyUser, PDAEstimator.CreatedBy as UserId,CreatedByUser.EmployCode as CreatedBy,  PDAEstimator.PDAEstimatorID as PDAEstimatorID, PDAEstimator.CustomerID as CustomerID, CustomerMaster.Company as CustomerCompanyName, PDAEstimator.PortID as PortID, PDAEstimator.TerminalID as TerminalID, PDAEstimator.BerthId as BerthId, PDAEstimator.CallTypeID as CallTypeID, PDAEstimator.CargoID as CargoID, PDAEstimator.ActivityTypeId as ActivityTypeId, PDAEstimator.CurrencyID as CurrencyID, CurrencyCode as CurrencyName, BerthStayDay,ETA,CargoQty,CargoQtyCBM, CargoUnitofMasurement,LoadDischargeRate, PDAEstimator.CurrencyID as CurrencyID, ROE,PDAEstimator.DWT,ArrivalDraft,GRT,RGRT,NRT,BerthStay, VesselName,AnchorageStay,LOA,Beam,CustomerMaster.FirstName,ActivityType,PortName,TerminalName,BerthName, CallTypeName,CargoName,InternalCompanyID, CompanyMaster.CompanyName as InternalCompanyName, BerthStayShift, VesselBallast,IsReducedGRT, BerthStayDayCoastal, BerthStayShiftCoastal, BerthStayHoursCoastal , PDAEstimator.ModifyDate,PDAEstimator.CreationDate  FROM PDAEstimator  left join UserMaster AS ModifyUser on PDAEstimator.ModifyUserID = ModifyUser.ID left join UserMaster AS CreatedByUser on PDAEstimator.CreatedBy = CreatedByUser.ID left join CustomerMaster on CustomerMaster.CustomerId =  PDAEstimator.CustomerID   left join PortDetails on PortDetails.ID =  PDAEstimator.PortID left join TerminalDetails on TerminalDetails.ID =  PDAEstimator.TerminalID left join BerthDetails on BerthDetails.Id = PDAEstimator.BerthID left join CallType on CallType.ID =  PDAEstimator.CallTypeID left join Currency on Currency.ID =  PDAEstimator.CurrencyID left join PortActivityType on PortActivityType.ID =  PDAEstimator.ActivityTypeId left join CargoDetails on CargoDetails.ID =  PDAEstimator.CargoID left join CompanyMaster on CompanyMaster.CompanyId =  PDAEstimator.InternalCompanyID WHERE PDAEstimator.IsDeleted != 1  ORDER BY PDAEstimatorID DESC ";
                 
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
@@ -161,7 +200,7 @@ namespace PDAEstimator_Infrastructure.Repositories
             try
             {
                 //var sql = "SELECT PDAEstimator.PDAEstimatorID as PDAEstimatorID, PDAEstimator.CustomerID as CustomerID,CustomerMaster.Company as CustomerCompanyName,PDAEstimator.PortID as PortID, PDAEstimator.TerminalID as TerminalID,PDAEstimator.CallTypeID as CallTypeID,PDAEstimator.CargoID as CargoID,PDAEstimator.ActivityTypeId as ActivityTypeId,PDAEstimator.CurrencyID as CurrencyID,CurrencyCode as CurrencyName,BerthStayDay,ETA,CargoQty,CargoUnitofMasurement,LoadDischargeRate,PDAEstimator.CurrencyID as CurrencyID,ROE,DWT,ArrivalDraft,GRT,NRT,BerthStay,VesselName,AnchorageStay,LOA,Beam,FirstName,ActivityType,PortName,TerminalName,CallTypeName,CargoName,InternalCompanyID, CompanyMaster.CompanyName as InternalCompanyName, BerthStayShift, VesselBallast, BerthStayDayCoastal, BerthStayShiftCoastal, BerthStayHoursCoastal  FROM PDAEstimator  left join CustomerMaster on CustomerMaster.CustomerId =  PDAEstimator.CustomerID  left join PortDetails on PortDetails.ID =  PDAEstimator.PortID  left join TerminalDetails on TerminalDetails.ID =  PDAEstimator.TerminalID left join CallType on CallType.ID =  PDAEstimator.CallTypeID left join Currency on Currency.ID =  PDAEstimator.CurrencyID left join PortActivityType on PortActivityType.ID =  PDAEstimator.ActivityTypeId left join CargoDetails on CargoDetails.ID =  PDAEstimator.CargoID left join CompanyMaster on CompanyMaster.CompanyId =  PDAEstimator.InternalCompanyID WHERE PDAEstimator.IsDeleted != 1 ORDER BY PDAEstimatorID DESC";
-                var sql = "SELECT PDAEstimator.ModifyUserID as ModifyUserID, ModifyUser.EmployCode as ModifyUser, PDAEstimator.CreatedBy as UserId,CreatedByUser.EmployCode as CreatedBy,  PDAEstimator.PDAEstimatorID as PDAEstimatorID, PDAEstimator.CustomerID as CustomerID, CustomerMaster.Company as CustomerCompanyName, PDAEstimator.PortID as PortID, PDAEstimator.TerminalID as TerminalID, PDAEstimator.BerthId as BerthId, PDAEstimator.CallTypeID as CallTypeID, PDAEstimator.CargoID as CargoID, PDAEstimator.ActivityTypeId as ActivityTypeId, PDAEstimator.CurrencyID as CurrencyID, CurrencyCode as CurrencyName, BerthStayDay,ETA,CargoQty,CargoUnitofMasurement,LoadDischargeRate, PDAEstimator.CurrencyID as CurrencyID, ROE,DWT,ArrivalDraft,GRT,RGRT,NRT,BerthStay, VesselName,AnchorageStay,LOA,Beam,CustomerMaster.FirstName,ActivityType,PortName,TerminalName,BerthName, CallTypeName,CargoName,InternalCompanyID, CompanyMaster.CompanyName as InternalCompanyName, BerthStayShift, VesselBallast,IsReducedGRT, BerthStayDayCoastal, BerthStayShiftCoastal, BerthStayHoursCoastal , PDAEstimator.ModifyDate,PDAEstimator.CreationDate  FROM PDAEstimator  left join UserMaster AS ModifyUser on PDAEstimator.ModifyUserID = ModifyUser.ID left join UserMaster AS CreatedByUser on PDAEstimator.CreatedBy = CreatedByUser.ID left join CustomerMaster on CustomerMaster.CustomerId =  PDAEstimator.CustomerID   left join PortDetails on PortDetails.ID =  PDAEstimator.PortID left join TerminalDetails on TerminalDetails.ID =  PDAEstimator.TerminalID left join BerthDetails on BerthDetails.Id = PDAEstimator.BerthID left join CallType on CallType.ID =  PDAEstimator.CallTypeID left join Currency on Currency.ID =  PDAEstimator.CurrencyID left join PortActivityType on PortActivityType.ID =  PDAEstimator.ActivityTypeId left join CargoDetails on CargoDetails.ID =  PDAEstimator.CargoID left join CompanyMaster on CompanyMaster.CompanyId =  PDAEstimator.InternalCompanyID WHERE PDAEstimator.CustomerID = @CustomerID and PDAEstimator.IsDeleted != 1  ORDER BY PDAEstimatorID DESC ";
+                var sql = "SELECT PDAEstimator.ModifyUserID as ModifyUserID, ModifyUser.EmployCode as ModifyUser, PDAEstimator.CreatedBy as UserId,CreatedByUser.EmployCode as CreatedBy,  PDAEstimator.PDAEstimatorID as PDAEstimatorID, PDAEstimator.CustomerID as CustomerID, CustomerMaster.Company as CustomerCompanyName, PDAEstimator.PortID as PortID, PDAEstimator.TerminalID as TerminalID, PDAEstimator.BerthId as BerthId, PDAEstimator.CallTypeID as CallTypeID, PDAEstimator.CargoID as CargoID, PDAEstimator.ActivityTypeId as ActivityTypeId, PDAEstimator.CurrencyID as CurrencyID, CurrencyCode as CurrencyName, BerthStayDay,ETA,CargoQty,CargoQtyCBM, CargoUnitofMasurement,LoadDischargeRate, PDAEstimator.CurrencyID as CurrencyID, ROE,PDAEstimator.DWT,ArrivalDraft,GRT,RGRT,NRT,BerthStay, VesselName,AnchorageStay,LOA,Beam,CustomerMaster.FirstName,ActivityType,PortName,TerminalName,BerthName, CallTypeName,CargoName,InternalCompanyID, CompanyMaster.CompanyName as InternalCompanyName, BerthStayShift, VesselBallast,IsReducedGRT, BerthStayDayCoastal, BerthStayShiftCoastal, BerthStayHoursCoastal , PDAEstimator.ModifyDate,PDAEstimator.CreationDate  FROM PDAEstimator  left join UserMaster AS ModifyUser on PDAEstimator.ModifyUserID = ModifyUser.ID left join UserMaster AS CreatedByUser on PDAEstimator.CreatedBy = CreatedByUser.ID left join CustomerMaster on CustomerMaster.CustomerId =  PDAEstimator.CustomerID   left join PortDetails on PortDetails.ID =  PDAEstimator.PortID left join TerminalDetails on TerminalDetails.ID =  PDAEstimator.TerminalID left join BerthDetails on BerthDetails.Id = PDAEstimator.BerthID left join CallType on CallType.ID =  PDAEstimator.CallTypeID left join Currency on Currency.ID =  PDAEstimator.CurrencyID left join PortActivityType on PortActivityType.ID =  PDAEstimator.ActivityTypeId left join CargoDetails on CargoDetails.ID =  PDAEstimator.CargoID left join CompanyMaster on CompanyMaster.CompanyId =  PDAEstimator.InternalCompanyID WHERE PDAEstimator.CustomerID = @CustomerID and PDAEstimator.IsDeleted != 1 and PDAEstimator.IsCustomerCreated = 1  ORDER BY PDAEstimatorID DESC";
 
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
@@ -229,7 +268,7 @@ namespace PDAEstimator_Infrastructure.Repositories
         {
             try
             {
-                var sql = "UPDATE PDAEstimator SET ModifyUserID = @ModifyUserID,ModifyDate = GetDate(),CustomerId = @CustomerId,VesselName = @VesselName,PortId = @PortId,TerminalId = @TerminalId,BerthId = @BerthId,CallTypeID = @CallTypeID,CargoId = @CargoId,CargoQty = @CargoQty,CargoUnitofMasurement = @CargoUnitofMasurement,LoadDischargeRate = @LoadDischargeRate,CurrencyId = @CurrencyId,ROE = @ROE,DWT = @DWT,ArrivalDraft = @ArrivalDraft,GRT = @GRT,RGRT = @RGRT,NRT = @NRT,BerthStay = @BerthStay,AnchorageStay = @AnchorageStay,LOA = @LOA,Beam = @Beam,ActivityTypeId=@ActivityTypeId ,ETA=@ETA,BerthStayDay=@BerthStayDay, InternalCompanyID = @InternalCompanyID, BerthStayShift = @BerthStayShift, VesselBallast = @VesselBallast,IsReducedGRT = @IsReducedGRT BerthStayDayCoastal = @BerthStayDayCoastal, BerthStayShiftCoastal = @BerthStayShiftCoastal, BerthStayHoursCoastal = @BerthStayHoursCoastal WHERE PDAEstimatorID = @PDAEstimatorID";
+                var sql = "UPDATE PDAEstimator SET ModifyUserID = @ModifyUserID,ModifyDate = GetDate(),CustomerId = @CustomerId,VesselName = @VesselName,PortId = @PortId,TerminalId = @TerminalId,BerthId = @BerthId,CallTypeID = @CallTypeID,CargoId = @CargoId,CargoQty = @CargoQty,CargoQtyCBM = @CargoQtyCBM, CargoUnitofMasurement = @CargoUnitofMasurement,LoadDischargeRate = @LoadDischargeRate,CurrencyId = @CurrencyId,ROE = @ROE,DWT = @DWT,ArrivalDraft = @ArrivalDraft,GRT = @GRT,RGRT = @RGRT,NRT = @NRT,BerthStay = @BerthStay,AnchorageStay = @AnchorageStay,LOA = @LOA,Beam = @Beam,ActivityTypeId=@ActivityTypeId ,ETA=@ETA,BerthStayDay=@BerthStayDay, InternalCompanyID = @InternalCompanyID, BerthStayShift = @BerthStayShift, VesselBallast = @VesselBallast,IsReducedGRT = @IsReducedGRT BerthStayDayCoastal = @BerthStayDayCoastal, BerthStayShiftCoastal = @BerthStayShiftCoastal, BerthStayHoursCoastal = @BerthStayHoursCoastal WHERE PDAEstimatorID = @PDAEstimatorID";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
                     connection.Open();

@@ -21,7 +21,7 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<string> AddAsync(PortDetails entity)
         {
-            var sql = "Insert into PortDetails (PortCode,PortName,City, State, Country, Status, PortFile, IsDeleted) VALUES (@PortCode,@PortName,@City,@State,@Country, @Status, @PortFile, 0)";
+            var sql = "Insert into PortDetails (PortCode,PortName,City, State, Country, Status, PortFile,PortFileTanKer, IsDeleted) VALUES (@PortCode,@PortName,@City,@State,@Country, @Status, @PortFile,@PortFileTanker, 0)";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
@@ -43,7 +43,7 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<List<PortDetails>> GetAllAsync()
         {
-            var sql = "SELECT * FROM PortDetails where  IsDeleted! = 1 ORDER BY PortName";
+            var sql = "SELECT * FROM PortDetails where  IsDeleted! = 1  ORDER BY PortName";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
@@ -65,7 +65,7 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<int> UpdateAsync(PortDetails entity)
         {
-            var sql = "UPDATE PortDetails SET PortCode= @PortCode,PortName=@PortName, City=@City, State=@State, Country =@Country, Status= @Status, PortFile =@PortFile WHERE Id = @Id";
+            var sql = "UPDATE PortDetails SET PortCode= @PortCode,PortName=@PortName, City=@City, State=@State, Country =@Country, Status= @Status, PortFile =@PortFile, PortFileTanker =@PortFileTanker WHERE Id = @Id";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();

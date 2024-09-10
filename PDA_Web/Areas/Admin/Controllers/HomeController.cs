@@ -16,8 +16,7 @@ namespace PDA_Web.Areas.Admin.Controllers
         }
         public async Task<IActionResult>  Index()
         {
-
-
+            
             var customerCount = await unitOfWork.Customer.GetAllAsync();
             ViewBag.Customers = customerCount;
 
@@ -46,9 +45,13 @@ namespace PDA_Web.Areas.Admin.Controllers
             if (!string.IsNullOrEmpty(userid))
             {
                 List<PDAEstimatorList> pDAEstimatorLists = new List<PDAEstimatorList>();
+                AdminDashboard adminDashboards = new AdminDashboard();
 
                 var userdata = await unitOfWork.User.GetAllUsersById(Convert.ToInt64(userid));
                 var userwithRole = await unitOfWork.User.GetByIdAsync(Convert.ToInt64(userid));
+                var LastLogin = userdata.LoginDateTime != null ? Convert.ToDateTime(userdata.LoginDateTime).AddHours(5).AddMinutes(30).ToString("MMM dd yyyy hh:mm tt") : "First Time Login";
+                HttpContext.Session.SetString("LastLogin", LastLogin.ToString());
+                HttpContext.Session.SetString("loginusername", userdata.FirstName + " " + userdata.LastName);
                 if (userwithRole.RoleName == "Admin")
                 {
                     pDAEstimatorLists = await unitOfWork.PDAEstimitor.GetPDAEstiomatorListOfLast30Days();
@@ -63,7 +66,12 @@ namespace PDA_Web.Areas.Admin.Controllers
 
                     }
                 }
-                return View(pDAEstimatorLists);
+                var customerdata = await unitOfWork.Customer.GetAlllistAsync();
+                customerdata = customerdata.Where(x => x.Status == "Pending For Approval").ToList();
+                adminDashboards.pDAEstimatorLists = pDAEstimatorLists;
+                adminDashboards.customerList = customerdata;
+
+                return View(adminDashboards);
             }
             else
             {

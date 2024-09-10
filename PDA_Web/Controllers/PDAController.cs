@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Hosting;
-using Microsoft.VisualBasic;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using NToastNotify;
 using PDA_Web.Models;
 using PDAEstimator_Application.Interfaces;
 using PDAEstimator_Domain.Entities;
+using PDAEstimator_Infrastructure.Repositories;
+using PDAEstimator_Infrastructure_Shared;
+using PDAEstimator_Infrastructure_Shared.Services;
 using Rotativa.AspNetCore;
 using SelectPdf;
 using System.Data;
@@ -17,12 +19,23 @@ namespace PDA_Web.Controllers
         private readonly IWebHostEnvironment _hostEnvironment;
         private readonly IUnitOfWork unitOfWork;
         private readonly IToastNotification _toastNotification;
-        public PDAController(IUnitOfWork unitOfWork, IToastNotification toastNotification, IWebHostEnvironment hostEnvironment)
+        private readonly IEmailSender _emailSender;
+
+        public PDAController(IUnitOfWork unitOfWork, IToastNotification toastNotification, IWebHostEnvironment hostEnvironment, IEmailSender emailSender)
         {
             this.unitOfWork = unitOfWork;
             _toastNotification = toastNotification;
             _hostEnvironment = hostEnvironment;
+            _emailSender = emailSender;
 
+        }
+        public IActionResult OpenBerthDetailsPopUp(PDAEstimator PDAEstimitor)
+        {
+            var BearthDetailData = unitOfWork.BerthDetails.GetAllAsync().Result.Where(x => x.TerminalID == PDAEstimitor.TerminalID);
+            if (BearthDetailData != null && BearthDetailData.Count() > 0)
+                BearthDetailData = BearthDetailData.Where(x => x.BerthStatus == true).ToList();
+            var Terminals = PartialView("partial/_Berths", BearthDetailData);
+            return PartialView("partial/_Berths", BearthDetailData);
         }
 
         public async Task<IActionResult> CurrencyOnchange(int Currency)
@@ -42,17 +55,91 @@ namespace PDA_Web.Controllers
         public async Task<IActionResult> PDAEstimatorDonwload(int id)
         {
             PDAEstimatorOutPutView pDAEstimatorOutPut = new PDAEstimatorOutPutView();
-            pDAEstimatorOutPut = await PDAModelPrePared(pDAEstimatorOutPut, id);
-
+            pDAEstimatorOutPut = await GetPDA(id);
+            //string PDAfilename = "PDA_" + pDAEstimatorOutPut.PortName + "_" + pDAEstimatorOutPut.PDAEstimatorID + ".pdf";
+            //string path = $"{_hostEnvironment.WebRootPath}\\PDAFile\\";
+            //var rootpath = Path.Combine(path, PDAfilename);
+            //rootpath = Path.GetFullPath(rootpath);
             return new ViewAsPdf("PDAEstimator", pDAEstimatorOutPut)
             {
                 //FileName = "MyPdf.pdf";
-                FileName = "PDA_" + pDAEstimatorOutPut.PortName + "_" + pDAEstimatorOutPut.PDAEstimatorID + ".pdf",
+                FileName = "PDA_" + pDAEstimatorOutPut.PortName + "_" + pDAEstimatorOutPut.ActivityType + "_ " + pDAEstimatorOutPut.CargoName + "_" + pDAEstimatorOutPut.PDAEstimatorID + ".pdf",
                 PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
                 PageSize = Rotativa.AspNetCore.Options.Size.A3
             };
         }
-        public async Task<IActionResult> PDAEstimator(int id)
+
+        public async Task<IActionResult> PDAEstimatorDownloadandSave(int id)
+        {
+            PDAEstimatorOutPutView pDAEstimatorOutPut = new PDAEstimatorOutPutView();
+            pDAEstimatorOutPut = await GetPDA(id);
+            string PDAfilename = "PDA_" + pDAEstimatorOutPut.PortName + "_" + pDAEstimatorOutPut.ActivityType + "_ " + pDAEstimatorOutPut.CargoName + "_" + pDAEstimatorOutPut.PDAEstimatorID + ".pdf";
+            string path = $"{_hostEnvironment.WebRootPath}\\PDAFile\\";
+            var rootpath = Path.Combine(path, PDAfilename);
+            rootpath = Path.GetFullPath(rootpath);
+            return new ViewAsPdf("PDAEstimator", pDAEstimatorOutPut)
+            {
+                //FileName = "MyPdf.pdf";
+                FileName = "PDA_" + pDAEstimatorOutPut.PortName + "_" + pDAEstimatorOutPut.ActivityType + "_ " + pDAEstimatorOutPut.CargoName + "_" + pDAEstimatorOutPut.PDAEstimatorID + ".pdf",
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+                PageSize = Rotativa.AspNetCore.Options.Size.A3,
+                SaveOnServerPath = rootpath
+            };
+        }
+
+        public async Task<IActionResult> PDAEstimatorEmail(int id)
+        {
+            PDAEstimatorOutPutView pDAEstimatorOutPut = new PDAEstimatorOutPutView();
+            pDAEstimatorOutPut = await GetPDA(id);
+            string PDAfilename = "PDA_" + pDAEstimatorOutPut.PortName + "_"+ pDAEstimatorOutPut.ActivityType + "_ " + pDAEstimatorOutPut.CargoName + "_" + pDAEstimatorOutPut.PDAEstimatorID + ".pdf";
+            string path = $"{_hostEnvironment.WebRootPath}\\PDAFile\\";
+            var rootpath = Path.Combine(path, PDAfilename);
+            rootpath = Path.GetFullPath(rootpath);
+
+            var custid = HttpContext.Session.GetString("ID");
+
+            if (!string.IsNullOrEmpty(custid))
+            {
+                var custuser = unitOfWork.CustomerUserMaster.GetByIdAsync(Convert.ToInt32(custid)).Result;
+
+                if (custuser != null)
+                {
+                    string customerfullname = string.Concat(custuser.FirstName, ' ', custuser.LastName);
+
+                    string Content = "<html><head><title> PDA .</title></head><body><p> Dear "+ customerfullname + ", <br><br>  Thank you for using PDA portal. <br> Please find attached PDA for [Port] - [Port Operation type] - [cargo] - [PDA ID]. <br> Please be advised that this PDA is only for estimation Please contact our team for more details. <br> [E-mail ID - Common E-mail ID of Bulk Ops team] <br> We look forward to your successful business and agency appointment.   <br><br> <b>Regards <br> PDA Portal</b> </p></body></html>";
+                    string Subject = "PDA for "+ pDAEstimatorOutPut.PortName + " - "+ pDAEstimatorOutPut.ActivityType +" - "+ pDAEstimatorOutPut.CargoName + " - "+ pDAEstimatorOutPut.PDAEstimatorID + "";
+                    List<string> ccrecipients = new List<string>();
+
+                    List<string> recipients = new List<string>
+                    {
+                        custuser.Email
+                    };
+                    string FromCompany = "";
+                    string ToEmail = "";
+                    var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByProcessNameAsync("PDA Generate");
+                    if (emailconfig != null)
+                    {
+                        ToEmail = emailconfig.ToEmail;
+                        FromCompany = emailconfig.FromEmail;
+                        if (emailconfig.ToEmail != null)
+                        {
+                            ccrecipients = ToEmail.Split(',').ToList();
+                        }
+                    }
+
+                    var Msg = new Message(recipients, ccrecipients, Subject, Content, FromCompany);
+                    /*            _toastNotification.AddSuccessToastMessage("Email hase been sent to given Email Address");*/
+                    _emailSender.SendEmail(Msg, rootpath);
+                }
+            }
+            return Json(new
+            {
+                proceed = true,
+                msg = ""
+            });
+        }
+
+        public async Task<PDAEstimatorOutPutView> GetPDA(int id)
         {
             //PDAEstimatorOutPutView pDAEstimatorOutPut = new PDAEstimatorOutPutView();
             //pDAEstimatorOutPut = await PDAModelPrePared(pDAEstimatorOutPut, id);
@@ -117,6 +204,7 @@ namespace PDA_Web.Controllers
                     BaseCurrencyCodeID = pDAEstimatorOutPutdata.BaseCurrencyCodeID,
                     DefaultCurrencyCode = pDAEstimatorOutPutdata.DefaultCurrencyCode,
                     DefaultCurrencyCodeID = pDAEstimatorOutPutdata.DefaultCurrencyCodeID,
+                    Disclaimer = pDAEstimatorOutPutdata.Disclaimer
 
                 };
 
@@ -204,7 +292,15 @@ namespace PDA_Web.Controllers
                 pDAEstimatorOutPutView = await PDAModelPrePared(pDAEstimatorOutPutView, id);
 
             }
-            return View(pDAEstimatorOutPutView);
+            return pDAEstimatorOutPutView;
+        }
+
+        public async Task<IActionResult> PDAEstimator(int id)
+        {
+            PDAEstimatorOutPutView pDAEstimatorOutPut = new PDAEstimatorOutPutView();
+            pDAEstimatorOutPut = await GetPDA(id);
+
+            return View(pDAEstimatorOutPut);
             //return new ViewAsPdf(pDAEstimatorOutPut);
         }
 
@@ -340,7 +436,7 @@ namespace PDA_Web.Controllers
                 pDAEstimatorOutPut.DefaultCurrencyCodeID = currencyData.Where(x => x.DefaultCurrecny == true) != null ? currencyData.Where(x => x.DefaultCurrecny == true).FirstOrDefault().ID : 0;
 
                 //var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(pDAEstimatorOutPut.PortID).Result.Where(x => (x.CallTypeID == pDAEstimatorOutPut.CallTypeID || x.CallTypeID == null) && (x.SlabFrom == null || x.SlabFrom <= pDAEstimatorOutPut.GRT)) ;
-                var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(pDAEstimatorOutPut.PortID, pDAEstimatorOutPut.ETA != null ? (DateTime)pDAEstimatorOutPut.ETA : DateTime.Now.Date).Result.Where(x => (x.CallTypeID == pDAEstimatorOutPut.CallTypeID || x.CallTypeID == null) && (x.TerminalID == pDAEstimatorOutPut.TerminalID || x.TerminalID == null) && (x.BerthID == pDAEstimatorOutPut.BerthID || x.BerthID == null || x.BerthID == 0) && (x.CargoID == pDAEstimatorOutPut.CargoID || x.CargoID == null) && (x.VesselBallast == pDAEstimatorOutPut.VesselBallast || x.VesselBallast == 0)).OrderBy(o => o.ChargeCodeSequence).ThenBy(o => o.SlabFrom).ThenBy(o => o.TariffRateID);
+                var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(pDAEstimatorOutPut.PortID, pDAEstimatorOutPut.ETA != null ? (DateTime)pDAEstimatorOutPut.ETA : DateTime.Now.Date).Result.Where(x => (x.CallTypeID == pDAEstimatorOutPut.CallTypeID || x.CallTypeID == null) && (x.TerminalID == pDAEstimatorOutPut.TerminalID || x.TerminalID == null) && (x.BerthID == pDAEstimatorOutPut.BerthID || x.BerthID == null || x.BerthID == 0) && (x.CargoID == pDAEstimatorOutPut.CargoID || x.CargoID == null) && (x.OperationTypeID == pDAEstimatorOutPut.ActivityTypeId || x.OperationTypeID == null) && (x.VesselBallast == pDAEstimatorOutPut.VesselBallast || x.VesselBallast == 0)).OrderBy(o => o.ChargeCodeSequence).ThenBy(o => o.SlabFrom).ThenBy(o => o.TariffRateID);
                 List<PDATariffRateList> pDATariffRateList = new List<PDATariffRateList>();
                 decimal taxrate = 0;
                 foreach (var triff in triffdata)
@@ -686,6 +782,8 @@ namespace PDA_Web.Controllers
                 // Temp Solution END
 
                 var CallTypeData = await unitOfWork.CallTypes.GetAllAsync();
+                if (CallTypeData.Count > 0)
+                    CallTypeData = CallTypeData.Where(x => x.Status == true).ToList();
                 ViewBag.CallType = CallTypeData;
 
                 var EmployeeCode = await unitOfWork.User.GetAllAsync();
@@ -695,25 +793,39 @@ namespace PDA_Web.Controllers
                 ViewBag.PortActivity = PortActivityData;
 
                 var PortCallData = await unitOfWork.PortDetails.GetAllAsync();
+                if (PortCallData.Count > 0)
+                    PortCallData = PortCallData.Where(x => x.Status == true).ToList();
                 ViewBag.Port = PortCallData;
 
 
                 var TerminalData = await unitOfWork.TerminalDetails.GetAllAsync();
+                if (TerminalData.Count > 0)
+                    TerminalData = TerminalData.Where(x => x.Status == true).ToList();
                 ViewBag.Terminal = TerminalData;
 
                 var data1 = await unitOfWork.BerthDetails.GetAllAsync();
+                if (data1.Count > 0)
+                    data1 = data1.Where(x => x.BerthStatus == true).ToList();
                 ViewBag.Berth = data1;
 
                 var CargoType = await unitOfWork.CargoDetails.GetAllAsync();
+                if (CargoType.Count > 0)
+                    CargoType = CargoType.Where(x => x.CargoStatus == true).ToList();
                 ViewBag.Cargo = CargoType;
 
                 var dataCurrency = await unitOfWork.Currencys.GetAllwithoutBaseCurrencyAsync();
+                if (dataCurrency.Count > 0)
+                    dataCurrency = dataCurrency.Where(x => x.Status == true).ToList();
                 ViewBag.Currency = dataCurrency;
 
                 var ROEData = await unitOfWork.ROENames.GetAllAsync();
+                 if (ROEData.Count > 0)
+                    ROEData = ROEData.Where(x => x.Status == true).ToList();
                 ViewBag.ROEName = ROEData;
 
                 var CompanyData = await unitOfWork.Company.GetAllAsync();
+                if (CompanyData.Count > 0)
+                    CompanyData = CompanyData.Where(x => x.Status == true).ToList();
                 ViewBag.Companys = CompanyData;
 
                 var DefaultCurrecnydata = dataCurrency.Where(x => x.DefaultCurrecny == true);
@@ -779,14 +891,14 @@ namespace PDA_Web.Controllers
             List<PDAEstimatorList> pDAEstimatorLists = new List<PDAEstimatorList>();
             var custID = HttpContext.Session.GetString("CustID");
 
-            int customerID = string.IsNullOrEmpty(custID) ? 0: Convert.ToInt32(custID);
+            int customerID = string.IsNullOrEmpty(custID) ? 0 : Convert.ToInt32(custID);
             pDAEstimatorLists = await unitOfWork.PDAEstimitor.GetAlllistByCustIdAsync(customerID);
 
             if (pDAEstimatorLists.Count() > 0)
             {
                 if (pDAEstimator.CustomerID != null && pDAEstimator.CustomerID != 0)
                 {
-                    pDAEstimatorLists = pDAEstimatorLists.Where(x => x.CustomerID == pDAEstimator.CustomerID && x.PortID == pDAEstimator.PortID).ToList();
+                    pDAEstimatorLists = pDAEstimatorLists.Where(x => x.CustomerID == pDAEstimator.CustomerID).ToList();
                 }
                 if (pDAEstimator.PortID != null && pDAEstimator.PortID != 0)
                 {
@@ -872,7 +984,8 @@ namespace PDA_Web.Controllers
         public IActionResult PortNameOnchange(PDAEstimator PDAEstimitor)
         {
             var TerminalDetailData = unitOfWork.TerminalDetails.GetAllAsync().Result.Where(x => x.PortID == PDAEstimitor.PortID);
-
+            if (TerminalDetailData != null && TerminalDetailData.Count() > 0)
+                TerminalDetailData = TerminalDetailData.Where(x => x.Status == true).ToList();
             ViewBag.Terminal = TerminalDetailData;
             return PartialView("partial/TerminalList");
         }
@@ -880,10 +993,27 @@ namespace PDA_Web.Controllers
         public IActionResult TerminalNameOnchange(PDAEstimator PDAEstimitor)
         {
             var BearthDetailData = unitOfWork.BerthDetails.GetAllAsync().Result.Where(x => x.TerminalID == PDAEstimitor.TerminalID);
+            if (BearthDetailData != null && BearthDetailData.Count() > 0)
+                BearthDetailData = BearthDetailData.Where(x => x.BerthStatus == true).ToList();
             ViewBag.Berth = BearthDetailData;
             return PartialView("partial/BerthList");
         }
 
+        public IActionResult BerthNameOnchange(PDAEstimator PDAEstimitor)
+        {
+            var BearthDetailData = unitOfWork.BerthDetails.GetByIdAsync(PDAEstimitor.BerthId).Result;
+
+            return Json(new
+            {
+                loa = BearthDetailData.MaxLoa,
+                beam = BearthDetailData.MaxBeam,
+                arrivalDraft = BearthDetailData.MaxArrivalDraft,
+                proceed = true,
+                msg = ""
+            });
+        }
+
+        [Obsolete]
         public async Task<ActionResult> PDAEstimitorSave(PDAEstimator PDAEstimitor)
         {
             var CustID = HttpContext.Session.GetString("CustID");
@@ -894,6 +1024,11 @@ namespace PDA_Web.Controllers
                 PDAEstimitor.CustomerID = Convert.ToInt32(CustID);
                 var internalCmpnayId = unitOfWork.PDAEstimitor.GetbyCustIdasync(Convert.ToInt32(CustID));
                 PDAEstimitor.InternalCompanyID = internalCmpnayId.Result.CompanyID;
+                var BearthDetailData = unitOfWork.BerthDetails.GetAllAsync().Result.Where(x => x.ID == PDAEstimitor.BerthId);
+
+                var maxLoa = BearthDetailData.FirstOrDefault().MaxLoa;
+                var maxBeam = BearthDetailData.FirstOrDefault().MaxBeam;
+                var maxArribvaldraft = BearthDetailData.FirstOrDefault().MaxArrivalDraft;
 
                 CultureInfo provider = CultureInfo.InvariantCulture;
                 string ETA_String = PDAEstimitor.ETA_String + " " + "12:00:00 AM";
@@ -935,7 +1070,38 @@ namespace PDA_Web.Controllers
                     PDAEstimitor.BerthStayDay = Convert.ToInt64(berthStayDay);
                     PDAEstimitor.BerthStayShift = Convert.ToInt64(berthStayShift);
                 }
+                PDAEstimitor.IsCustomerCreated = true;
 
+
+                if (maxLoa != null && maxLoa < PDAEstimitor.LOA)
+                {
+                    _toastNotification.AddErrorToastMessage("Please enter MaxLOA Less then : " + maxLoa);
+                    return Json(new
+                    {
+                        proceed = false,
+                        msg = ""
+                    });
+                }
+
+                if (maxBeam != null && maxBeam < PDAEstimitor.Beam)
+                {
+                    _toastNotification.AddErrorToastMessage("Please enter MaxBeam Less then : " + maxBeam);
+                    return Json(new
+                    {
+                        proceed = false,
+                        msg = ""
+                    });
+                }
+
+                if (maxArribvaldraft != null && maxArribvaldraft < PDAEstimitor.ArrivalDraft)
+                {
+                    _toastNotification.AddErrorToastMessage("Please enter Max Arribval Draft Less then : " + maxArribvaldraft);
+                    return Json(new
+                    {
+                        proceed = false,
+                        msg = ""
+                    });
+                }
                 if (PDAEstimitor.PDAEstimatorID > 0)
                 {
                     var userid = HttpContext.Session.GetString("CustID");
@@ -947,6 +1113,7 @@ namespace PDA_Web.Controllers
                 {
                     var userid = HttpContext.Session.GetString("CustID");
                     PDAEstimitor.CreatedBy = userid;
+
                     var id = await unitOfWork.PDAEstimitor.AddAsync(PDAEstimitor);
                     if (id != "" && Convert.ToInt64(id) > 0)
                     {
@@ -1021,6 +1188,18 @@ namespace PDA_Web.Controllers
 
                         //var taxrate = TaxData.Where(x => x.TaxName.Contains("GST")).Select(x => x.TaxRate).FirstOrDefault();
                         //pDAEstimatorOutPut.Taxrate = taxrate;
+                        var Disclaimersdata = await unitOfWork.Disclaimers.GetAllAsync();
+
+                        if (Disclaimersdata != null && Disclaimersdata.Count() > 0)
+                        {
+                            var ActiveDisclaimersdata = Disclaimersdata.Where(x => x.IsActive == true);
+                            if (ActiveDisclaimersdata != null && ActiveDisclaimersdata.Count() > 0)
+                            {
+                                pDAEstimatorOutPut.Disclaimer = ActiveDisclaimersdata.FirstOrDefault().Disclaimer;
+                            }
+
+                        }
+
                         pDAEstimatorOutPut.PDAEstimatorOutPutDate = DateTime.Now;
                         var PDAEstimitorOUTPUTid = await unitOfWork.PDAEstimitorOUTPUT.AddAsync(pDAEstimatorOutPut);
 
@@ -1040,7 +1219,7 @@ namespace PDA_Web.Controllers
                             }
 
                             List<PDAEstimatorOutPutTariff> pDAEstimatorOutPutTariffs = new List<PDAEstimatorOutPutTariff>();
-                            var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(PDAEstimitor.PortID, PDAEstimitor.ETA != null ? (DateTime)PDAEstimitor.ETA : DateTime.Now.Date).Result.Where(x => (x.CallTypeID == PDAEstimitor.CallTypeID || x.CallTypeID == null) && (x.TerminalID == PDAEstimitor.TerminalID || x.TerminalID == null) && (x.BerthID == PDAEstimitor.BerthId || x.BerthID == null || x.BerthID == 0) && (x.CargoID == PDAEstimitor.CargoID || x.CargoID == null) && (x.VesselBallast == PDAEstimitor.VesselBallast || x.VesselBallast == 0) && (x.Reduced_GRT == PDAEstimitor.IsReducedGRT || x.Reduced_GRT == 0)).OrderBy(o => o.ChargeCodeSequence).ThenBy(o => o.SlabFrom).ThenBy(o => o.TariffRateID);
+                            var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(PDAEstimitor.PortID, PDAEstimitor.ETA != null ? (DateTime)PDAEstimitor.ETA : DateTime.Now.Date).Result.Where(x => (x.CallTypeID == PDAEstimitor.CallTypeID || x.CallTypeID == null) && (x.TerminalID == PDAEstimitor.TerminalID || x.TerminalID == null) && (x.BerthID == PDAEstimitor.BerthId || x.BerthID == null || x.BerthID == 0) && (x.CargoID == PDAEstimitor.CargoID || x.CargoID == null) && (x.OperationTypeID == PDAEstimitor.ActivityTypeId || x.OperationTypeID == null) && (x.VesselBallast == PDAEstimitor.VesselBallast || x.VesselBallast == 0) && (x.Reduced_GRT == PDAEstimitor.IsReducedGRT || x.Reduced_GRT == 0)).OrderBy(o => o.ChargeCodeSequence).ThenBy(o => o.SlabFrom).ThenBy(o => o.TariffRateID);
                             List<PDATariffRateList> pDATariffRateList = new List<PDATariffRateList>();
                             decimal taxrate = 0;
                             foreach (var triff in triffdata)
@@ -1401,15 +1580,38 @@ namespace PDA_Web.Controllers
                             }
 
                         }
-                    }
+                        _toastNotification.AddSuccessToastMessage("Submitted successfully");
 
-                    _toastNotification.AddSuccessToastMessage("Submitted successfully");
+                        //PDAEstimatorOutPutView pDAEstimatorOutPutview = new PDAEstimatorOutPutView();
+                        //pDAEstimatorOutPutview = await GetPDA(Convert.ToInt32(id));
+
+                        //string PDAfilename = "PDA_" + pDAEstimatorOutPutview.PortName + "_" + pDAEstimatorOutPutview.PDAEstimatorID + ".pdf";
+                        //string path = $"{_hostEnvironment.WebRootPath}\\PDAFile\\";
+                        //var rootpath = Path.Combine(path, PDAfilename);
+                        //rootpath = Path.GetFullPath(rootpath);
+                        //return new ViewAsPdf("PDAEstimator", pDAEstimatorOutPutview)
+                        //{
+                        //    //FileName = "MyPdf.pdf";
+                        //    FileName = PDAfilename,
+                        //    PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+                        //    PageSize = Rotativa.AspNetCore.Options.Size.A3,
+                        //    SaveOnServerPath = rootpath
+                        //};
+
+                        return Json(new
+                        {
+                            PDAID = Convert.ToInt32(id),
+                            proceed = true,
+                            msg = ""
+                        });
+                    }
 
 
                     //return RedirectToAction("PDAEstimator", "PDAEstimator", id);
                 }
                 return Json(new
                 {
+                    PDAID = 0,
                     proceed = true,
                     msg = ""
                 });

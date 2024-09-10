@@ -7,7 +7,7 @@
             @*<form>*@
             <div class="card card-primary">
                 <div class="card-header">
-                    <h3 class="card-title">Add Terminal Details </h3>
+                    <h3 class="card-title">Add Customer User Details </h3>
                     <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-card-widget="collapse">
                             <i class="fas fa-minus"></i>
@@ -18,21 +18,21 @@
                 <!-- form start -->
                 <div class="card-body">
                     <input type="hidden" id="CustomerUserId" name="CustomerUserId" value="">
-@*                     <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label for="PortName">Customer's Company</label>
-                                @Html.DropDownList("CompanyDrop", new SelectList(ViewBag.Customer, "CustomerId", "Company"), new { @class="form-control" })
+                    @*                     <div class="row">
+                    <div class="col-sm-6">
+                    <div class="form-group">
+                    <label for="PortName">Customer's Company</label>
+                    @Html.DropDownList("CompanyDrop", new SelectList(ViewBag.Customer, "CustomerId", "Company"), new { @class="form-control" })
 
-                            </div>
-                        </div>
+                    </div>
+                    </div>
 
                     </div> *@
                     <div class="row">
                         <div class="col-sm-3">
                             <div class="form-group">
                                 <label for="PortName">Customer's Company</label>
-                                @Html.DropDownList("CompanyDrop", new SelectList(ViewBag.Customer, "CustomerId", "Company"), new { @class="form-control" })
+                                @Html.DropDownList("CompanyDrop", new SelectList(ViewBag.Customer, "CustomerId", "Company"), new { @class = "form-control" })
 
                             </div>
                         </div>
@@ -107,7 +107,7 @@
                                 <label for="Mobile">Mobile Number<span class="text-danger">*</span></label>
                                 <div class="row">
                                     <div class="col-sm-2">
-                                        @Html.DropDownList("CountryCode",new SelectList(ViewBag.CountryCode,"CountryCode"), new { @class = "form-control", style= "width:80px; padding: 0px;"})
+                                        @Html.DropDownList("CountryCode", new SelectList(ViewBag.CountryCode, "CountryCode"), new { @class = "form-control", style = "width:80px; padding: 0px;" })
                                     </div>
                                     <div class="col-sm-7">
                                         <input type="tel" class="form-control" id="Mobile" maxlength="11" placeholder="Mobile Number">
@@ -120,7 +120,7 @@
                                 <label for="Telephone">Telephone Number</label>
                                 <div class="row">
                                     <div class="col-sm-2">
-                                        @Html.DropDownList("AlterCountryCode",new SelectList(ViewBag.CountryCode,"AlterCountryCode"), new { @class = "form-control", style= "width:80px; padding: 0px;"})
+                                        @Html.DropDownList("AlterCountryCode", new SelectList(ViewBag.CountryCode, "AlterCountryCode"), new { @class = "form-control", style = "width:80px; padding: 0px;" })
                                     </div>
                                     <div class="col-sm-7">
                                         <input type="tel" class="form-control" id="Telephone" maxlength="11" placeholder="Telephone Number">
@@ -149,28 +149,34 @@
                                 <input type="text" class="form-control" id="Password" placeholder="Password">
                             </div>
                         </div>
-    
-
-@*                         <div class="col-sm-3">
-                            <div class="form-group">
-                                <label for="Status">CustomerStatus<span class="text-danger">*</span></label>
-                                <select class="form-control" id="Status">
-                                    <option value="">Please Select</option>
-                                    <option value="Active">
-                                        Active
-                                    </option>
-                                    <option value="InActive">
-                                        InActive
-                                    </option>
-                                    <option value="Rejected">
-                                        Rejected
-                                    </option>
-                                    <option value="pending">
-                                        Pending For Approval
-                                    </option>
-
-                                </select>
+                        <div class="col-sm-6">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="CustomerUserStatus">
+                                <label class="form-check-label" for="CustomerUserStatus">Active</label>
                             </div>
+
+                        </div>
+
+                        @*                         <div class="col-sm-3">
+                        <div class="form-group">
+                        <label for="Status">CustomerStatus<span class="text-danger">*</span></label>
+                        <select class="form-control" id="Status">
+                        <option value="">Please Select</option>
+                        <option value="Active">
+                        Active
+                        </option>
+                        <option value="InActive">
+                        InActive
+                        </option>
+                        <option value="Rejected">
+                        Rejected
+                        </option>
+                        <option value="pending">
+                        Pending For Approval
+                        </option>
+
+                        </select>
+                        </div>
                         </div> *@
 
                         @* <div class="col-sm-6">
@@ -211,7 +217,7 @@
             <!-- general form elements -->
             <div class="card card-primary">
                 <div class="card-header">
-                    <h3 class="card-title">CustomerUSerList</h3>
+                    <h3 class="card-title">Customer Users List</h3>
                 </div>
                 <div class="card-body">
                     <div class="">
@@ -228,7 +234,7 @@
                             </div>
                             <div class="col-sm-2" style="max-width: 15%;">
                                 <label for="CountryFilter">Country</label>
-                                @Html.DropDownList("CountryFilter", new SelectList(ViewBag.Country, "ID", "CountryName"), "Please Select", new { @class = "form-control", @onchange = "OnChangeCountryFilterfunc(this.value)"  })
+                                @Html.DropDownList("CountryFilter", new SelectList(ViewBag.Country, "ID", "CountryName"), "Please Select", new { @class = "form-control", @onchange = "OnChangeCountryFilterfunc(this.value)" })
                             </div>
                             @*      <div class="col-sm-2" style="max-width: 15%;">
                             <label for="MobileFilter">Mobile Number</label>
@@ -248,7 +254,6 @@
 
                 </div>
                 <div id="viewAllCustomerUser" class="card-body table-responsive">
-                    
                 </div>
             </div>
         </div>
@@ -275,21 +280,14 @@
 <script src="~/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="~/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 <script>
-    // function onTerminalChange(val, inputVal) {
-    //     if (inputVal == 1) {
-    //         $('#TerminalCode').css("border", "1px solid #ced4da");
-    //     }
-    //     else if (inputVal == 2) {
-    //         $('#TerminalName').css("border", "1px solid #ced4da");
-    //     }
-    // }
-
-
+    $(document).ready(function () {
+        $('#CustomerUserStatus').prop("checked", true);
+    });
 
     $(function () {
         //random password
         function generateRandomPassword(length) {
-        
+
             const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             let password = "";
             for (let i = 0; i < length; i++) {

@@ -148,6 +148,10 @@
 
         function chargeCodeSave() {
             debugger
+            var Status = false;
+            if ($('#Status').is(":checked")) {
+                Status = true;
+            }
             var ChargeCodes;
 
             ChargeCodes = {
@@ -155,7 +159,7 @@
                 "ExpenseCategoryID": $('#ExpenseCategory').val(),
                 "ChargeCodeName": $('#ChargeCodeName').val(),
                 "Sequence": $('#Sequence').val(),
-
+                "Status": Status
             }
 
             if ($('#ExpenseCategory').val() == "") {
@@ -194,7 +198,7 @@
 
             ChargeCodes = {
                 "ID": id,
-                "ExpenseCategoryID": $('#ExpenseName').val(),
+                "ExpenseCategoryID": $('#ExpenseCategory').val(),
                 "ChargeCodeName": $('#ChargeCodeName').val(),
             }
 
@@ -220,7 +224,7 @@
             chargeCodes = {
                
                 "ID": $('#ChargeCodeId').val(),
-                "ExpenseCategoryID": $('#ExpenseName').val(),
+                "ExpenseCategoryID": $('#ExpenseCategory').val(),
                 "ChargeCodeName": $('#ChargeCodeName').val(),
                 "Sequence": $('#Sequence').val(),
 
@@ -232,9 +236,11 @@
                 data: chargeCodes,
                 success: function (data) {
                     debugger;
-                    $('#ExpenseName').val(data.chargeCodes.expenseCategoryID);
+                    $('#ExpenseCategory').val(data.chargeCodes.expenseCategoryID);
                     $('#ChargeCodeName').val(data.chargeCodes.chargeCodeName);
-                    $('#Sequence').val(data.chargeCodes.Sequence);
+                    $('#Sequence').val(data.chargeCodes.sequence);
+                    $('#Status').val(data.chargeCodes.status);
+                    $('#Status').prop("checked", data.chargeCodes.status);
 
                 },
                 error: function () {

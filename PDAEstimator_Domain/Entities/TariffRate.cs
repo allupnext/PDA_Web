@@ -31,6 +31,7 @@ namespace PDAEstimator_Domain.Entities
         public string? IPAddress { get; set; }
         public string? ModifyUserID { get; set; }
         public DateTime? ModifyDate { get; set; }
+        public int? OperationTypeID { get; set; }
         public int status { get; set; }
         [DisplayFormat(DataFormatString = "{0:MM-dd-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? Validity_From { get; set; }

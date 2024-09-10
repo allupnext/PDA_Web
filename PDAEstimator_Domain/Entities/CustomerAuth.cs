@@ -10,5 +10,7 @@ namespace PDAEstimator_Domain.Entities
     {
         public string Email { get; set; } = string.Empty;
         public string CustomerPassword { get; set; } = string.Empty;
+        public string MacAddress { get; set; } = string.Empty;
+        public string OTP { get; set; } = string.Empty;
     }
 }

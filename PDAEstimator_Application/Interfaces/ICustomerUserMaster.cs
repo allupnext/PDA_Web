@@ -13,5 +13,9 @@ namespace PDAEstimator_Application.Interfaces
         Task<List<CustomerUserMaster>> GetByCustomerIdAsync(long id);
 
         Task<List<CustomerUserMaster>> GetCustomerUserByEmailAsync(string email);
+        Task<int> AddMacAddress(string MacAddress, long id);
+        Task<int> UpdateOTP(string OTP, DateTime OTPSent, long Id);
+
+        Task<int> UpdateLoginDetails(string LoginMachineName, DateTime LoginDateTime, long Id);
     }
 }

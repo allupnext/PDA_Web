@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace PDAEstimator_Domain.Entities
 {
@@ -49,5 +50,11 @@ namespace PDAEstimator_Domain.Entities
         public string? Token { get; set; }
         public string MacAddress { get; set; }
 
+        public string? OTP { get; set; }
+        public DateTime? OTPSentDate { get; set; }
+
+        public string? LoginMachineName { get; set; }
+
+        public DateTime? LoginDateTime { get; set; }
     }
 }

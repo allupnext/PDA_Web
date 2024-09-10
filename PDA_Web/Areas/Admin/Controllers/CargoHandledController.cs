@@ -33,6 +33,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                 ViewBag.UserRoleName = UserRole;
                 // Temp Solution END
                 var data2 = await unitOfWork.PortDetails.GetAllAsync();
+                if (data2.Count > 0)
+                    data2 = data2.Where(x => x.Status == true).ToList();
                 ViewBag.Port = data2;
 
                 var data = await unitOfWork.TerminalDetails.GetAllAsync();
@@ -76,11 +78,26 @@ namespace PDA_Web.Areas.Admin.Controllers
             return PartialView("partial/TerminalList");
         }
 
+        public IActionResult PortNameFilterOnchange(CargoHandleds cargoHandleds)
+        {
+            var TerminalDetailData = unitOfWork.TerminalDetails.GetAllAsync().Result.Where(x => x.PortID == cargoHandleds.PortID);
+
+            ViewBag.Terminal = TerminalDetailData;
+            return PartialView("partial/TerminalFilterList");
+        }
+
         public IActionResult TerminalNameOnchange(CargoHandleds cargoHandleds)
         {
             var BerthDetailData = unitOfWork.BerthDetails.GetAllAsync().Result.Where(x => x.TerminalID == cargoHandleds.TerminalID).ToList();
             ViewBag.Berth = BerthDetailData;
             return PartialView("partial/BerthList");
+        }
+
+        public IActionResult TerminalNameFilterOnchange(CargoHandleds cargoHandleds)
+        {
+            var BerthDetailData = unitOfWork.BerthDetails.GetAllAsync().Result.Where(x => x.TerminalID == cargoHandleds.TerminalID).ToList();
+            ViewBag.Berth = BerthDetailData;
+            return PartialView("partial/BerthFilterList");
         }
 
         public async Task<IActionResult> LoadAll(CargoHandleds cargoHandleds)

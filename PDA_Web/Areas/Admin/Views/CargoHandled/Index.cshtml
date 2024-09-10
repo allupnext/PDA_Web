@@ -115,15 +115,15 @@
                     <div class="card-body">
                         <label for="">Filters:</label>
                         <div class="row" style="padding-bottom: 10px;">
-                            <div class="col-sm-2" style="max-width: 15%;">
+                            <div class="col-sm-2" style="max-width: 15%;" >
                                 <label for="PortNameFilter">Port Name</label>
-                                @Html.DropDownList("PortNameFilter", new SelectList(ViewBag.Port, "ID", "PortName"), "Please Select", new { @class = "form-control" })
+                                @Html.DropDownList("PortNameFilter", new SelectList(ViewBag.Port, "ID", "PortName"), "Please Select", new { @class = "form-control", @onchange = "PortFilterOnChangefunc()" })
                             </div>
-                            <div class="col-sm-2" style="max-width: 15%;">
+                            <div class="col-sm-2" style="max-width: 15%;" id="terminalfilterdrop">
                                 <label for="TerminalNamefilter">Terminal Name</label>
-                                @Html.DropDownList("TerminalNamefilter", new SelectList(ViewBag.Terminal, "ID", "TerminalName"), "Please Select", new { @class = "form-control", @onchange = "TerminalChange()" })
+                                @Html.DropDownList("TerminalNamefilter", new SelectList(ViewBag.Terminal, "ID", "TerminalName"), "Please Select", new { @class = "form-control", @onchange = "TerminalFilterChange()" })
                             </div>
-                            <div class="col-sm-2" style="max-width: 15%;">
+                            <div class="col-sm-2" style="max-width: 15%;" id="berthfilterdrop">
                                 <label for="BerthNameFilter">Berth Name</label>
                                 @Html.DropDownList("BerthNameFilter", new SelectList(ViewBag.Berth, "ID", "BerthName"), "Please Select", new { @class="form-control" })
                             </div>
@@ -262,25 +262,23 @@
             });
         }
 
+        
+
         function PortOnChangefunc() {
             var portid = $('#PortName').val();
-            var PDAEstimitor;
-            PDAEstimitor = {
-                "PortID": portid,
-                "TerminalID": $('#TerminalName').val(),
-                "BerthID": $('#BerthName').val(),
-                //"CargoID": $('#CargoName').val(),
+            var cargoHandled;
+            cargoHandled = {
+                "PortID": portid
             }
             debugger;
             $.ajax({
 
                 type: "GET",
-                url: "/Admin/PDAEstimator/PortNameOnchange",
-                data: PDAEstimitor,
+                url: "/Admin/CargoHandled/PortNameOnchange",
+                data: cargoHandled,
                 dataType: "HTML",
                 async: false,
                 success: function (data) {
-
                     $("#terminaldrop").html(data);
                     
                 },
@@ -289,6 +287,53 @@
             });
         };
 
+        function PortFilterOnChangefunc() {
+            var portid = $('#PortNameFilter').val();
+            var cargoHandled;
+            cargoHandled = {
+                "PortID": portid
+            }
+            debugger;
+            $.ajax({
+
+                type: "GET",
+                url: "/Admin/CargoHandled/PortNameFilterOnchange",
+                data: cargoHandled,
+                dataType: "HTML",
+                async: false,
+                success: function (data) {
+
+                    $("#terminalfilterdrop").html(data);
+
+                },
+                error: function () {
+                }
+            });
+        };
+
+        function TerminalFilterChange() {
+            var portid = $('#PortName').val();
+            debugger;
+            var cargoHandled;
+            cargoHandled = {
+
+                "TerminalID": $('#TerminalNamefilter').val()
+            }
+            $.ajax({
+                type: "GET",
+                url: "/Admin/CargoHandled/TerminalNameFilterOnchange",
+                data: cargoHandled,
+                dataType: "HTML",
+                async: false,
+                success: function (data) {
+
+                    $("#berthfilterdrop").html(data);
+
+                },
+                error: function () {
+                }
+            });
+        };
 
         function TerminalChange() {
             var portid = $('#PortName').val();

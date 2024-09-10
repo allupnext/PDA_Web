@@ -156,6 +156,9 @@
                             <div class="col-sm-2" style="max-width: 12%;">
                                 Validate To<span class="text-danger">*</span>
                             </div>
+                            <div class="col-sm-2" style="max-width: 12%;">
+                                Operation Type<span class="text-danger">*</span>
+                            </div>
                             <div class="col-sm-2" style="max-width: 10%;">
                                 Status<span class="text-danger">*</span>
                             </div>
@@ -200,6 +203,16 @@
                             </div>
                             <div class="col-sm-2" style="max-width: 12%;" id="ToDateDiv">
                                 <input type="text" class="form-control" id="ToDate" autocomplete="off">
+                            </div>
+                            <div class="col-sm-2" style="max-width: 12%;" id="ToDateDiv">
+                                @Html.DropDownList("OperationType", new SelectList(ViewBag.PortActivity, "ID", "ActivityType"), "ALL", new { @class = "form-control" })
+
+                               @*  @Html.DropDownList("OperationType", new List<SelectListItem>
+                                {
+                                new SelectListItem{ Text="All", Value = "0" },
+                                new SelectListItem{ Text="Discharge", Value = "2" },
+                                new SelectListItem{ Text="Loading", Value = "1" }
+                                }, new { @class = "form-control" }) *@
                             </div>
                             <div class="col-sm-2" style="max-width: 10%;" id="StatusDiv">
                                 @Html.DropDownList("Status", new List<SelectListItem>
@@ -753,6 +766,7 @@
                 "StringValidity_To": $("#ToDate").val(),
                 "Rate": $("#Rate").val(),
                 "CurrencyID": $("#Currency").val(),
+                "OperationTypeID": $("#OperationType").val(),
                 "Status": $("#Status").val(),
                 "FormulaID": $("#Formulas").val(),
                 "Remark": $("#Remarks").val(),
@@ -852,6 +866,7 @@
                 "StringValidity_To": $("#ToDate").val(),
                 "Rate": $("#Rate").val(),
                 "CurrencyID": $("#Currency").val(),
+                "OperationTypeID": $("#OperationType").val(),
                 "Status": $("#Status").val(),
                 "FormulaID": $("#Formulas").val(),
                 "Remark": $("#Remarks").val(),
@@ -946,6 +961,7 @@
                 "BerthID": $("#BerthName").val(),
                 "CargoID": $('#CargoName').val(),
                 "CallTypeID": $('#CallType').val(),
+                "OperationTypeID": $('#OperationType').val(),
                 "ExpenseCategoryID": $('#Expenses').val(),
                 "ChargeCodeID": $('#ChargeCodes').val(),
                 "SlabID": $('#Slabs').val(),
@@ -973,13 +989,14 @@
                         $('#TerminalName').val(data.tariffRates.terminalID);
 
                     //TerminalOnChange(1);
-
+                    var operationTypeID = data.tariffRates.operationTypeID == null ? 1 : data.tariffRates.operationTypeID;
                     $('#CargoName').val(data.tariffRates.cargoID);
                     $('#CallType').val(data.tariffRates.callTypeID);
                     $('#Expenses').val(data.tariffRates.expenseCategoryID);
                     $('#ChargeCodes').val(data.tariffRates.chargeCodeID);
                     $('#Rate').val(data.tariffRates.rate);
                     $('#Currency').val(data.tariffRates.currencyID);
+                    $('#OperationType').val(operationTypeID);
                     $('#Status').val(data.tariffRates.status);
                     $('#Texs').val(data.tariffRates.taxID);
                     $('#Remarks').val(data.tariffRates.remark);

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using iTextSharp.tool.xml.html;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NToastNotify;
 using PDAEstimator_Application.Interfaces;
 using PDAEstimator_Domain.Entities;
@@ -24,21 +26,63 @@ namespace PDA_Web.Controllers
         }
         public async Task<IActionResult> Index()
         {
+            ViewBag.Designations = await unitOfWork.Designation.GetAllAsync();
+
+            var CountryData = await unitOfWork.Countrys.GetAllAsync();
+            ViewBag.Country = CountryData;
+            ViewBag.CountryCode = CountryData.Select(x => x.CountryCode).ToList();
+
+            var StateData = await unitOfWork.States.GetAllAsync();
+            ViewBag.State = StateData;
+
+            var CityData = await unitOfWork.Citys.GetAllAsync();
+            ViewBag.City = CityData;
 
 
-            var PrimaryCompanyData = await unitOfWork.Company.GetAllAsync();
-            ViewBag.PrimaryCompany = PrimaryCompanyData;
+            //var PrimaryCompanyData = await unitOfWork.Company.GetAllAsync();
+            //ViewBag.PrimaryCompany = PrimaryCompanyData;
 
-            var SecondryCompanyData = await unitOfWork.Company.GetAllAsync();
-            ViewBag.SecondaryCompany = SecondryCompanyData;
+            //var SecondryCompanyData = await unitOfWork.Company.GetAllAsync();
+            //ViewBag.SecondaryCompany = SecondryCompanyData;
 
-            var BankData = await unitOfWork.BankMaster.GetAllBankDetailsAsync();
-            ViewBag.BankData = BankData;
+            //var BankData = await unitOfWork.BankMaster.GetAllBankDetailsAsync();
+            //ViewBag.BankData = BankData;
             return View();
         }
 
         public async Task<ActionResult> RegisterUserSave(Customer customer)
         {
+            string mailcontent = "";
+            string emailsubject = "";
+            var customerdata = await unitOfWork.CustomerUserMaster.GetAllAsync();
+
+            var CMobileNumber = customerdata.Where(x => x.Mobile == customer.Mobile).ToList();
+            var CEmailId = customerdata.Where(x => x.Email.ToUpper() == customer.Email.ToUpper()).ToList();
+            if (CMobileNumber.Count > 0 && CMobileNumber != null || CEmailId.Count > 0 && CEmailId != null)
+            {
+                _toastNotification.AddWarningToastMessage("MobileNumber Or Email Exist!..");
+                return Json(new
+                {
+                    proceed = false,
+                    msg = ""
+                });
+            }
+
+            var companyexist = customerdata.Where(x => x.Company == customer.Company).ToList();
+            if (companyexist.Count > 0)
+            {
+                _toastNotification.AddWarningToastMessage("Your company is already registered. Please conact to admin.");
+                return Json(new
+                {
+                    proceed = false,
+                    msg = ""
+                });
+
+            }
+
+            //var userid = HttpContext.Session.GetString("UserID");
+            customer.CreatedDate = DateTime.UtcNow;
+
             var custId = await unitOfWork.Customer.AddAsync(customer);
             if (!string.IsNullOrEmpty(custId))
             {
@@ -64,27 +108,117 @@ namespace PDA_Web.Controllers
                         await unitOfWork.Customer.AddCustomer_Company_MappingAsync(company_Customer_Mapping1);
                     }
                 }
+
+                CustomerUserMaster customerUserMaster = new CustomerUserMaster();
+                customerUserMaster.CustomerId = Convert.ToInt32(custId);
+                customerUserMaster.Address1 = customer.Address1;
+                customerUserMaster.City = customer.City;
+                customerUserMaster.State = customer.State != null ? Convert.ToInt32(customer.State) : 0;
+                customerUserMaster.Country = customer.Country;
+                customerUserMaster.CountryCode = customer.CountryCode;
+                customerUserMaster.Designation = customer.Designation;
+                customerUserMaster.Email = customer.Email;
+                customerUserMaster.Mobile = customer.Mobile;
+                customerUserMaster.Salutation = customer.Salutation;
+                customerUserMaster.IsDeleted = false;
+                customerUserMaster.FirstName = customer.FirstName;
+                customerUserMaster.LastName = customer.LastName;
+                customerUserMaster.Password = PasswordGenerator.GeneratePassword(8);
+                await unitOfWork.CustomerUserMaster.AddAsync(customerUserMaster);
+                string customerfullname = string.Concat(customerUserMaster.FirstName, ' ', customerUserMaster.LastName);
+                string customerphone = string.Concat(customer.CountryCode, ' ', customer.Mobile);
+                mailcontent = "<html> <head> <title> Company Registration Request on PDA Portal.</title> </head><body><p> Dear Team,<br> Registration request received from " + customer.Company + ".</p><ul><li>User PIC Name - "+ customerfullname + "</li><li>User Email - " + customer.Email + "</li><li>User Phone - "+ customerphone + "  </li></ul> </br> <p> Kindly approve request in portal.<br><br> <b>Best Regards <br> PDA Portal Team</b></p> </body> </html>";
+                emailsubject = "Company Registration Request on PDA Portal";
+
+                var companydata = await unitOfWork.Company.GetAlllistAsync();
+                int Samsaracompanyid = 0;
+                if (companydata != null && companydata.Count > 0)
+                {
+                    var samsaracompanydata = companydata.Where(x => x.CompanyName.ToLower() == "samsara shipping private limited");
+                    if(samsaracompanydata.Count() > 0)
+                    {
+                        Samsaracompanyid = samsaracompanydata.FirstOrDefault().CompanyId;
+                    }
+                }
+
+
+                if(Samsaracompanyid > 0)
+                    CustomerRegisterEmail("Customer Register", mailcontent, emailsubject, customer.Email, Samsaracompanyid);
+
+                mailcontent = "<html><head><title> Thank you for registering on PDA Portal.</title></head><body><p> Dear "+ customerfullname + ",<br> Thank you for your interest in our PDA portal. </br> Your company registration is in process and our team shall connect with you soon. <br> Thank you once again for your consideration.<br><br> <b>Best Regards <br> PDA Portal Team</b> </p></body></html>";
+                emailsubject = "Thank you for registering on PDA Portal";
+
+                if (Samsaracompanyid > 0)
+                    CustomerRegisterEmail("Customer Register", mailcontent, emailsubject, customer.Email, Samsaracompanyid);
+
+                _toastNotification.AddSuccessToastMessage("Register request sent successfully");
+                return Json(new
+                {
+                    proceed = true,
+                    msg = ""
+                });
             }
-            _toastNotification.AddSuccessToastMessage("Inserted successfully");
-            return Json(new
+            else
             {
-                proceed = true,
-                msg = ""
-            });
+                _toastNotification.AddErrorToastMessage("Issue on register request. Please contact to Admin.");
+                return Json(new
+                {
+                    proceed = false,
+                    msg = ""
+                });
+
+            }
 
         }
 
-/*        public IActionResult CountryOnchange(CustomerUserMaster customer)
+        public async Task<bool> CustomerRegisterEmail(string processname, string mailcontent, string emailsubject, string customeremail, int companyid)
+        {
+            List<string> recipients = new List<string>
+                {
+                    customeremail
+                };
+
+            string Content = mailcontent;
+            string Subject = emailsubject;
+
+            List<string> ccrecipients = new List<string>();
+            string FromCompany = "";
+            string ccEmail = "";
+            var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByCompanyandProcessNameAsync(companyid, processname);
+            
+            if (emailconfig != null)
+            {
+                ccEmail = emailconfig.ToEmail;
+                FromCompany = emailconfig.FromEmail;
+                if (emailconfig.ToEmail != null)
+                {
+                    ccrecipients = ccEmail.Split(',').ToList();
+                }
+            }
+
+            var Msg = new Message(recipients, ccrecipients, Subject, Content, FromCompany);
+
+            _emailSender.SendEmail(Msg);
+            return true;
+        }
+
+        public IActionResult CountryOnchange(CustomerUserMaster customer)
         {
             var StateData = unitOfWork.States.GetAllAsync().Result.Where(x => x.CountryId == customer.Country);
-            var CityData = unitOfWork.Citys.GetCitylistByCountry(customer.Country, 0);
+            //var CityData = unitOfWork.Citys.GetCitylistByCountry(customer.Country, 0);
 
-            ViewBag.City = CityData;
+            //ViewBag.City = CityData;
             ViewBag.State = StateData;
             return PartialView("partial/StatesList");
         }
+        public IActionResult StateOnchange(PortDetails portDetails)
+        {
+            var CityData = unitOfWork.Citys.GetAllAsync().Result.Where(x => x.StateId == portDetails.State);
 
-        public async Task<IActionResult> CountryOnChangeforCountryCode(CustomerUserMaster customer)
+            ViewBag.City = CityData;
+            return PartialView("partial/CityList");
+        }
+        public async Task<IActionResult> CountryOnChangeforCountryCode(Customer customer)
         {
             var CountryData = await unitOfWork.Countrys.GetCountryCodeByCountryIdAsync(customer.Country);
             ViewBag.CountryCode = CountryData;
@@ -95,14 +229,26 @@ namespace PDA_Web.Controllers
                 msg = ""
             });
         }
-        public IActionResult CountryOnchangeforCity(CustomerUserMaster customer)
-        {
-            var CountryData = unitOfWork.Countrys.GetAllAsync();
 
-            var CityData = unitOfWork.Citys.GetCitylistByCountry(customer.Country, 0).Result;
-            ViewBag.City = CityData;
-            return PartialView("partial/CityList");
-        }*/
+        /*        public async Task<IActionResult> CountryOnChangeforCountryCode(CustomerUserMaster customer)
+                {
+                    var CountryData = await unitOfWork.Countrys.GetCountryCodeByCountryIdAsync(customer.Country);
+                    ViewBag.CountryCode = CountryData;
+                    return Json(new
+                    {
+                        code = CountryData.CountryCode,
+                        proceed = true,
+                        msg = ""
+                    });
+                }
+                public IActionResult CountryOnchangeforCity(CustomerUserMaster customer)
+                {
+                    var CountryData = unitOfWork.Countrys.GetAllAsync();
+
+                    var CityData = unitOfWork.Citys.GetCitylistByCountry(customer.Country, 0).Result;
+                    ViewBag.City = CityData;
+                    return PartialView("partial/CityList");
+                }*/
 
         public IActionResult PrimaryCompneySelected(Customer customer)
         {

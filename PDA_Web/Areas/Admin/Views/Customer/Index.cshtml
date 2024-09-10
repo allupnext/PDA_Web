@@ -44,9 +44,11 @@
                                     <input type="text" class="form-control" id="_Company" placeholder="Company">
                                 </div>
                             </div>
+                         
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="Status">CustomerStatus<span class="text-danger">*</span></label>
+                                    <input type="hidden" id="Oldstatus" value="" />
                                     <select class="form-control" id="Status">
                                         <option value="">Please Select</option>
                                         <option value="Active">
@@ -58,17 +60,22 @@
                                         <option value="Rejected">
                                             Rejected
                                         </option>
-                                        <option value="pending">
+                                        <option value="Pending For Approval">
                                             Pending For Approval
                                         </option>
 
                                     </select>
                                 </div>
                             </div>
+
+
+                        </div>
+
+                        <div class="row">
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="PrimaryCompany">Primary Company<span class="text-danger">*</span></label>
-                                    @Html.DropDownList("PrimaryCompany", new SelectList(ViewBag.PrimaryCompany, "CompanyId", "CompanyName"), "Please Select", new { @class = "form-control"})
+                                    @Html.DropDownList("PrimaryCompany", new SelectList(ViewBag.PrimaryCompany, "CompanyId", "CompanyName"), "Please Select", new { @class = "form-control" })
                                 </div>
 
                             </div>
@@ -76,18 +83,10 @@
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="SecondaryCompany">Secondary Company</label>
-                                    @Html.ListBox("SecondaryCompany", new MultiSelectList(ViewBag.SecondaryCompany,  "CompanyId", "CompanyName"),  new { @class = "form-control"})
+                                    @Html.ListBox("SecondaryCompany", new MultiSelectList(ViewBag.SecondaryCompany, "CompanyId", "CompanyName"), new { @class = "form-control" })
                                 </div>
 
                             </div>
-                 
-                        </div>
-
-
-
-
-                        <div class="row">
-           
                             <div class="col-sm-3">
 
                                 <div class="form-group" id="BeneficiaryBank">
@@ -96,15 +95,10 @@
                                 </div>
                             </div>
 
-                            <div class="col-sm-3">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="CustomerStatus">
-                                    <label class="form-check-label" for="CustomerStatus">Status</label>
-                                </div>
 
-                            </div>
                         </div>
- 
+
+
                     </div>
 
                     @using PDAEstimator_Domain.Entities;
@@ -124,7 +118,7 @@
                     }
 
 
-               
+
                 </div>
 
             </div>
@@ -135,9 +129,36 @@
                 <div class="card card-primary">
                     <div class="card-header">
                         <h3 class="card-title">Customer List</h3>
-                    </div>  
+                    </div>
+                    <div class="card-body">
+                        <label for="">Filters:</label>
+                        <div class="row" style="padding-bottom: 10px;">                            
+                            <div class="col-sm-4" style="max-width: 20%;">
+                                <label for="CompanyFilter">Customer's Company</label>
+                                <input type="text" class="form-control" id="CompanyFilter" placeholder="Customer's Company">
+                            </div>
+                            <div class="col-sm-4" style="max-width: 20%;">
+                                <label for="StatusFilter">CustomerStatus</label>
+                                <select class="form-control" id="StatusFilter">
+                                    <option value="">Please Select</option>
+                                    <option value="Active">
+                                        Active
+                                    </option>
+                                    <option value="InActive">
+                                        InActive
+                                    </option>
+                                    <option value="Rejected">
+                                        Rejected
+                                    </option>
+                                    <option value="Pending For Approval">
+                                        Pending For Approval
+                                    </option>
 
-                    <div id="viewAll" class="card-body table-responsive"></div>
+                                </select>
+                            </div>
+                        </div>
+                    <div id="viewAll" class="table-responsive"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -164,7 +185,7 @@
 
 
 @section Scripts
-    {
+{
     <script>
         function customerSave() {
             var Customer;
@@ -175,12 +196,13 @@
                 "IsEmailNotification": $("#EmailNotification").prop('checked'),
                 "PrimaryCompanyId": $('#PrimaryCompany').val(),
                 "SecondaryCompanyId": $('#SecondaryCompany').val(),
-                "BankID": $('#Beneficiary').val()
-
+                "BankID": $('#Beneficiary').val(),
+                "Email": $('#Email').val(),
+                "Mobile": $('#Mobile').val(),
+                "CountryCode": $('#CountryCode').val(),
+                "Oldstatus": $('#Oldstatus').val(),
             }
 
-            debugger
- 
             if ($('#_Company').val() == "") {
                 toastr.error("Please enter customer's company.", 'Error Alert');
                 $('#_Company').css("border-color", "Red");
@@ -213,27 +235,13 @@
                     }
                 });
                 $('#CustomerId').val("");
-                $('#Salutation').val("");
-                $('#FirstName').val("");
-                $('#LastName').val("");
-                $('#Designation').val("");
-                $('#Address1').val("");
-                $('#Address2').val("");
-                $('#_Company').val("");
-                $('#City').val("");
-                $('#State').val("");
-                $('#Country').val("");
-                $('#Email').val("");
-                $('#AlternativeEmail').val("");
-                $('#Mobile').val("");
-                $('#Telephone').val("");
-                $('#Password').val("");
+               
                 $('#Status').val("");
                 $('#Beneficiary').val("");
                 $('#SecondaryCompany').val("");
-                $("#EmailNotification").prop('checked', false);
+               
                 $('#PrimaryCompany').val("");
-                $('#CustomerStatus').prop('checked', false);
+                // $('#CustomerStatus').prop('checked', false);
             }
         }
 
@@ -284,23 +292,8 @@
 
             Customer = {
                 "CustomerId": $('#CustomerId').val(),
-                "Salutation": $('#Salutation').val(),
-                "FirstName": $('#FirstName').val(),
-                "LastName": $('#LastName').val(),
-                "Designation": $('#Designation').val(),
-                "Address1": $('#Address1').val(),
-                "Address2": $('#Address2').val(),
-                "City": $('#City').val(),
-                "State": $('#State').val(),
-                "Country": $('#Country').val(),
-                "Company": $('#_Company').val(),
-                "Email": $('#Email').val(),
-                "AlternativeEmail": $('#AlternativeEmail').val(),
-                "Mobile": $('#Mobile').val(),
-                "Telephone": $('#Telephone').val(),
-                "Password": $('#Password').val(),
+               
                 "Status": $('#Status').val(),
-                ////////////////////
                 "BankID": $('#Beneficiary').val()
 
             }
@@ -313,10 +306,12 @@
                     debugger
                     $('#_Company').val(data.customer.company);
                     $('#Status').val(data.customer.status);
+                    $('#Oldstatus').val(data.customer.status);
                     $('#PrimaryCompany').val(data.customer.primaryCompany);
                     $('#SecondaryCompany').val(data.customer.secondaryCompanyId);
                     ///////////
                     $('#Beneficiary').val(data.customer.bankID);
+                   
 
                 },
                 error: function () {
@@ -329,8 +324,34 @@
             $('#Customer_Menu').addClass('active');
             $('#Customer_Menu').parent().closest('ul').parent().addClass('menu-open');
             // $('#Status').prop("checked", true);
-            loadData();
 
+            debugger
+            if ('@ViewBag.CustomerStatus' == '2') {
+                $('#StatusFilter').val("Pending For Approval");
+                loadData();
+            }
+            else
+            {
+                loadData();
+            }
+            
+            $("#CompanyFilter").change(function () {
+                loadData();
+            });
+            $("#StatusFilter").change(function () {
+                debugger;
+                var Status= $('option:selected', this).val();
+               
+                $.ajax({
+                    url: '/Admin/Customer/LoadAll',
+                    type: 'POST',
+                    data: { Status: Status },
+                    success: function (data) {
+                        $("#viewAll").html(data);
+                    }
+                });
+                //loadData();
+            });
             $("#Country").change(function () {
                 var countryid = $('option:selected', this).val();
                 debugger;
@@ -406,19 +427,14 @@
 
         });
 
-        function loadData() {
+        function loadData(parm) {
             var Customer;
+
             Customer = {
-                "CustomerId": $('#CustomerId').val(),
-                "FirstName": $("#FirstNameFilter").val(),
-                "Address1": $('#Address1Filter').val(),
-                "Country": $('#CountryFilter').val(),
-                "Company": $('#CompanyFilter').val(),
-                "Email": $('#EmailFilter').val(),
-                "Mobile": $('#MobileFilter').val(),
-
-
+                "Status": $('#StatusFilter').val(),
+                 "Company": $('#CompanyFilter').val(),
             }
+
             $.ajax({
                 type: "GET",
                 url: "/Admin/Customer/LoadAll",
@@ -431,8 +447,6 @@
                 }
             });
         }
-
-
 
 
 
@@ -449,8 +463,7 @@
             }
         }
 
-        function ChangeCountryfunc(val)
-        {
+        function ChangeCountryfunc(val) {
 
             var Countryid = val;
             var Customer;
@@ -543,8 +556,7 @@
             loadcustomeruserData();
         }
 
-        function OnChangeCountryFilterfunc()
-        {
+        function OnChangeCountryFilterfunc() {
             loadcustomeruserData();
         }
 
@@ -574,7 +586,10 @@
         }
 
         function CustomerUserSave() {
-
+            var Status = false;
+            if ($('#CustomerUserStatus').is(":checked")) {
+                Status = true;
+            }
             var Customer;
             Customer = {
                 "ID": $('#CustomerUserId').val(),
@@ -596,6 +611,7 @@
                 "AlterCountryCode": $('#AlterCountryCode').val(),
                 "AlternativeEmail": $('#AlternativeEmail').val(),
                 "Telephone": $('#Telephone').val(),
+                "Status": Status
             }
 
             debugger
@@ -609,7 +625,7 @@
                 toastr.error("Please enter last name.", 'Error Alert');
                 $('#LastName').css("border-color", "Red");
             }
-             else if ($('#Address1').val() == "") {
+            else if ($('#Address1').val() == "") {
                 toastr.error("Please enter address 1.", 'Error Alert');
                 $('#Address1').css("border-color", "Red");
             }
@@ -617,7 +633,7 @@
             else {
                 $.ajax({
                     type: "POST",
-                url: "/Admin/Customer/CustomerUserSave",
+                    url: "/Admin/Customer/CustomerUserSave",
                     data: Customer,
                     success: function (data) {
                         if (!data.proceed) {
@@ -647,7 +663,7 @@
                 $('#Mobile').val("");
                 $('#Telephone').val("");
                 $('#Password').val("");
-                $('#Status').val("");
+                $('#CustomerUserStatus').prop("checked", true);
 
                 $('#PrimaryCompany').val("");
             }
@@ -674,7 +690,10 @@
         }
 
         function editCustomerUserDetails(id) {
-            //Id
+            var Status = false;
+            if ($('#CustomerUserStatus').is(":checked")) {
+                Status = true;
+            }
             var ID = id;
             debugger
             var Customer;
@@ -697,7 +716,7 @@
                 "Mobile": $('#Mobile').val(),
                 "Telephone": $('#Telephone').val(),
                 "Password": $('#Password').val(),
-                "Status": $('#Status').val(),
+                "Status": Status
             }
 
             $.ajax({
@@ -732,7 +751,7 @@
                     $('#AlterCountryCode').val(T[0]);
                     $('#Password').val(data.customer.password);
                     $('#Status').val(data.customer.status);
-                    
+
 
                 },
                 error: function () {
@@ -766,7 +785,7 @@
         }
 
         function loadcustomeruserData() {
-           
+
             var Customer;
             Customer = {
                 "CustomerId": $('#CompanyDrop').val(),

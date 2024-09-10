@@ -24,7 +24,6 @@ namespace PDAEstimator_Domain.Entities
         public int Country { get; set; }
         [Required(ErrorMessage = "Emmail must be valid")]
         [EmailAddress]
-        public string Emmail { get; set; }
         public string Email { get; set; }
         public string Mobile { get; set; }
         public string Telephone { get; set; }
@@ -43,6 +42,13 @@ namespace PDAEstimator_Domain.Entities
         public int BankID { get; set; }
         public int[]? SecondaryCompanyId { get; set; }
         public string? Token { get; set; }
+
+        public int? CreatedBy { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public int? ModifyBy { get; set; }
+        public DateTime? ModifyDate { get; set; }
+
+        public string? Oldstatus {  get; set; }
     }
 
 }

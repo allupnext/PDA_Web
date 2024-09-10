@@ -113,7 +113,7 @@
                             <div class="col-sm-2">
                                 <div class="form-group" id="berthdrop">
                                     <label for="PortName">Berth<span class="text-danger">*</span></label>
-                                    @Html.DropDownList("BerthName", new SelectList(ViewBag.Berth, "ID", "BerthName"), "Please Select", new { @class="form-control" })
+                                    @Html.DropDownList("BerthName", new SelectList(ViewBag.Berth, "ID", "BerthName"), "Please Select", new { @class = "form-control", @onchange = "BerthChangefunc(this.value)" })
                                 </div>
                             </div>
 
@@ -175,7 +175,7 @@
 
                             <div class="col-sm-2">
                                 <div class="form-group">
-                                    <label for="ArrivalDraft">Arrival Draft (M)</label>
+                                    <label for="ArrivalDraft">Arrival Draft (M)<span class="text-danger">*</span></label></label>
                                     <input type="number" class="form-control" id="ArrivalDraft" placeholder="Arrival Draft">
                                 </div>
                             </div>
@@ -353,10 +353,10 @@
                                 <label for="CallType">Call Type<span class="text-danger">*</span></label>
                                 @Html.DropDownList("CallTypeFilter", new SelectList(ViewBag.CallType, "ID", "CallTypeName"), "Please select", new { @class = "form-control" })
                             </div>
-                            <div class="col-sm-2">
+                           @*  <div class="col-sm-2">
                                 <label for="UserFilter">UserFilter<span class="text-danger">*</span></label>
                                 @Html.DropDownList("UserFilter", new SelectList(ViewBag.EmployeeCode, "ID", "EmployCode"), "Please select", new { @class = "form-control" })
-                            </div>
+                            </div> *@
                         </div>
                         <div id="viewAll" class="table-responsive"></div>
                         <div id="ReportList" class="table-responsive"></div>
@@ -364,6 +364,24 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+
+    <div id="BerthDetailsModel" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document" style="max-width: 90% !important;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">Berth Details</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="BerthDetailsModelclose">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div id="BerthDetailsModelbody">
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -533,13 +551,57 @@
                 success: function (data) {
 
                     $("#berthdrop").html(data);
+                    showBrethDetailPopUp();
+                },
+                error: function () {
+                }
+            });
+        }
+        function BerthChangefunc(val) {
+            debugger;
+            var portid = $('option:selected', this).val();
+
+            var cargoHandled;
+            cargoHandled = {
+                "BerthId": val,
+                "TerminalID": $('#TerminalName').val()
+            }
+            $.ajax({
+                type: "GET",
+                url: "/PDA/BerthNameOnchange",
+                data: cargoHandled,
+                dataType: "JSON",
+                async: false,
+                success: function (data) {
+                    debugger;
+                    $("#LOA").val(data.loa);
+                    $("#Beam").val(data.beam);
+                    $("#ArrivalDraft").val(data.arrivalDraft);
 
                 },
                 error: function () {
                 }
             });
         }
-
+        function showBrethDetailPopUp() {
+            debugger;
+            var cargoHandled;
+            cargoHandled = {
+                "TerminalID": $('#TerminalName').val()
+            }
+            $.ajax({
+                type: "GET",
+                url: "/PDA/OpenBerthDetailsPopUp",
+                data: cargoHandled,
+                dataType: "HTML",
+                success: function (data) {
+                    $("#BerthDetailsModel").modal('show');
+                    $("#BerthDetailsModel").find(".modal-body").html(data);
+                },
+                error: function () {
+                }
+            });
+        }
         function ViewPDAEstimator(id) {
 
         }
@@ -688,6 +750,10 @@
                 toastr.error("Please Enter ROERate.", 'Error Alert');
                 $('#ROERate').css("border-color", "Red");
             }
+            else if ($('#ArrivalDraft').val() == "") {
+                toastr.error("Please Enter Arrival Draft.", 'Error Alert');
+                $('#ArrivalDraft').css("border-color", "Red");
+            }
             else if ($('#GRT').val() == "") {
                 toastr.error("Please Enter GRT.", 'Error Alert');
                 $('#GRT').css("border-color", "Red");
@@ -713,6 +779,7 @@
                 $('#ETA').css("border-color", "Red");
             }
             else {
+                showLoader(this);
                 //showLoader(this);
                 $.ajax({
                     type: "POST",
@@ -720,12 +787,15 @@
                     data: PDAEstimitor,
                     success: function (data) {
                         if (!data.proceed) {
-                            //$('.loading').hide();
+                            $('.loading').hide();
                             return;
                         }
                         else {
+                            if (data.pdaid != 0) {
+                                PDAEstimatorDownloadandSave(data.pdaid);
+                            }
                             clear();
-                            //$('.loading').hide();
+                            $('.loading').hide();
                             loadData();
 
 
@@ -733,7 +803,7 @@
 
                     },
                     error: function () {
-                        //$('.loading').hide();
+                       $('.loading').hide();
                     }
                 });
             }
@@ -881,33 +951,48 @@
 
         }
 
-        //function pdaEstimatorRedirect() {
-        //    var customerId = $('#PDAEstimatorId').val()
+        function PDAEstimatorDownloadandSave(id) {
+           
+           $.ajax({
+               type: "POST",
+                url: "/PDA/PDAEstimatorDownloadandSave/" + id,
+               success: function (data) {
+                   if (!data.proceed) {
+                        PDAEstimatorEmail(id);
+                       // return;
+                   }
+                   else {
+                       PDAEstimatorEmail(id);
+                   }
 
-        //    var customerName = $('#customerid').val()
+               },
+               error: function () {
+               }
+           });
+        }
 
-        //    $.ajax({
-        //        type: "POST",
-        //        url: "/PDA/PdaEstimatorRedirect" + customerId,
-        //        data: PDAEstimitor,
-        //        success: function (data) {
-        //            if (!data.proceed) {
-        //                return;
-        //            }
-        //            else {
-        //                loadData();
-        //            }
+        function PDAEstimatorEmail(id) {
 
-        //        },
-        //        error: function () {
-        //        }
-        //    });
-        //}
+            $.ajax({
+                type: "POST",
+                url: "/PDA/PDAEstimatorEmail/" + id,
+                success: function (data) {
+                    if (!data.proceed) {
+                        return;
+                    }
+                    else {
+                        // loadData();
+                    }
+
+                },
+                error: function () {
+                }
+            });
+        }
 
         function loadData() {
-
-            //showLoader(this);
-            
+            showLoader(this);
+            debugger;
             var Padestimator;
             debugger
             Padestimator = {
@@ -925,10 +1010,10 @@
                 dataType: "HTML",
                 success: function (data) {
                     $("#viewAll").html(data);
-                    //$('.loading').hide();
+                    $('.loading').hide();
                 },
                 error: function () {
-                    //$('.loading').hide();
+                    $('.loading').hide();
                 }
             });
 

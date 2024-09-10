@@ -35,7 +35,7 @@ namespace PDA_Web.Areas.Admin.Controllers
 
                     // Create a new file name to avoid existing files on the server with the same names.
                     fileName = filenames[count].ToString();
-
+                    fileName = fileName + "." + orgFileName.Split(".")[1];
                     string fullPath = GetFullPathOfFile(fileName.Replace("\"", ""));
 
 
@@ -47,7 +47,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                     await using FileStream output = System.IO.File.Create(fullPath);
                     await source.CopyToAsync(output);
 
-                    fileName = fileName + "." + orgFileName.Split(".")[1];
+                    
 
 
 
@@ -62,6 +62,48 @@ namespace PDA_Web.Areas.Admin.Controllers
                 throw ex;
             }
         }
+
+        //[HttpPost]
+        //public async Task<ActionResult> UploadFilesTanker(IList<IFormFile> files, IList<string> filenames)
+        //{
+        //    try
+        //    {
+        //        string fileName = null;
+        //        int count = 0;
+        //        foreach (IFormFile source in files)
+        //        {
+        //            // Get original file name to get the extension from it.
+        //            string orgFileName = ContentDispositionHeaderValue.Parse(source.ContentDisposition).FileName;
+        //            fileName = fileName + "." + orgFileName.Split(".")[1];
+        //            // Create a new file name to avoid existing files on the server with the same names.
+        //            fileName = filenames[count].ToString();
+
+        //            string fullPath = GetFullPathOfFile(fileName.Replace("\"", ""));
+
+
+
+        //            // Create the directory.
+        //            Directory.CreateDirectory(Directory.GetParent(fullPath).FullName);
+
+        //            // Save the file to the server.
+        //            await using FileStream output = System.IO.File.Create(fullPath);
+        //            await source.CopyToAsync(output);
+
+                    
+
+
+
+        //        }
+
+        //        var response = new { FileName = fileName.Replace("\"", "") };
+
+        //        return Ok(response);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
 
         private string GetFullPathOfFile(string fileName)
         {
@@ -183,7 +225,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                 else 
                 {
                     await unitOfWork.PortDetails.UpdateAsync(portDetails);
-                 _toastNotification.AddSuccessToastMessage("Updated Successfully");
+                    _toastNotification.AddSuccessToastMessage("Updated Successfully");
                 }
             }
             else

@@ -21,5 +21,6 @@ namespace PDAEstimator_Application.Interfaces
         Task<string> ChangePassword(string Password, long id);
         Task<int> AuthenticateById(int id, string Password);
 
+
     }
 }

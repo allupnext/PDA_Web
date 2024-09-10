@@ -19,7 +19,10 @@
                 @Html.DisplayNameFor(model => model.Status)
             </th>
             <th width="50">
-                Port Information
+                Port Information(Dry Bulk)
+            </th>
+            <th width="50">
+                Port Information(Tanker)
             </th>
             <th></th>
         </tr>
@@ -46,9 +49,14 @@
                     }
                     @*Html.DisplayFor(modelItem => item.Status == true)*@
                 </td>
-                <td width="50">
+                <td width="20">
                     @if (item.PortFile != null)
                     @Html.ActionLink(item.PortFile, "DownloadFile", new { fileName = item.PortFile })
+                    @*@Html.DisplayFor(modelItem => item.PortFile)*@
+                </td>
+                <td width="20">
+                    @if (item.PortFileTanker != null)
+                        @Html.ActionLink(item.PortFileTanker, "DownloadFile", new { fileName = item.PortFileTanker })
                     @*@Html.DisplayFor(modelItem => item.PortFile)*@
                 </td>
                 <td>

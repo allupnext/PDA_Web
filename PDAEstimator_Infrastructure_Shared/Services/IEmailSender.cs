@@ -8,6 +8,6 @@ namespace PDAEstimator_Infrastructure_Shared.Services
 {
     public interface IEmailSender
     {
-        void SendEmail(Message message);
+        void SendEmail(Message message, string filepath= "");
     }
 }

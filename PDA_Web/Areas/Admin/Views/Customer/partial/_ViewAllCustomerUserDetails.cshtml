@@ -53,9 +53,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.AlternativeEmail)
             </th>
-            @*                                 <th>
-            @Html.DisplayNameFor(model => model.Status)
-            </th> *@
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
 
             <th></th>
         </tr>
@@ -111,17 +111,17 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.AlternativeEmail)
                     </td>
-                    @*                                         <td>
-            @if (item.Status == true)
-            {
-            <span class="badge badge-success">Active</span>
-            }
-            else
-            {
-            <span class="badge badge-danger">In Active</span>
-            }
-            </td> *@
-                    @using PDAEstimator_Domain.Entities;
+                    <td>
+                        @if (item.Status == true)
+                        {
+                            <span class="badge badge-success">Active</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-danger">In Active</span>
+                        }
+                    </td>
+            @using PDAEstimator_Domain.Entities;
                     @if (ViewBag.UserPermissionModel != null)
                     {
                         List<UserPermissionRights> userPermissionRights = new List<UserPermissionRights>();
@@ -142,11 +142,11 @@
                             {
                                 <a class="btn btn-danger btn-sm" onclick="deleteCustomerUserDetails(@item.ID)">
                                     <i class="fas fa-trash">
-                                </i>
-                                Delete
-                            </a>
-                        }
-                    </td>
+                                    </i>
+                                    Delete
+                                </a>
+                            }
+                        </td>
                     }
                 </tr>
             }
@@ -171,12 +171,12 @@
 <script src="~/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="~/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 <script>
-    
 
-   
-     $(function () {
+
+
+    $(function () {
         $("#TerminalDetailsTable").DataTable({
-           
+
             "searching": false,
             scrollX: true,
             scrollCollapse: true,
@@ -184,9 +184,9 @@
             fixedHeader: {
                 header: true,
             },
-             "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
         }).buttons().container().appendTo('#TerminalDetailsTable_wrapper .col-md-6:eq(0)');
-     });
+    });
     //     //$('#portDetailsTable').DataTable({
     //     //    "paging": true,
     //     //    "lengthChange": false,

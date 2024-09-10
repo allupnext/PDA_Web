@@ -10,6 +10,7 @@ namespace PDAEstimator_Application.Interfaces
     public interface IFormulaTransactionRepository : IGenericRepository<FormulaTransaction>
     {
         Task<List<FormularTransList>> GetAllTransAsync(int formulaID);
+        Task<List<FormularTransList>> GetAllTransAsync();
         Task<int> DeleteByFormulaIdAsync(int formulaID);
         Task<int> DeleteFormulaIdAsync(int formulaID);
 

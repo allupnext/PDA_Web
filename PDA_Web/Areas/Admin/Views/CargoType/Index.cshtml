@@ -212,6 +212,7 @@
                 success: function (data) {
                     debugger;
                     $('#CargoTypeName').val(data.cargoTypes.cargoTypeName);
+                    $('#CargoTypeStatus').prop("checked", data.cargoTypes.cargoTypeStatus);
 
                 },
                 error: function () {

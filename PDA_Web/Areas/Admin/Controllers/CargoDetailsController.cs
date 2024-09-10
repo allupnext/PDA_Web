@@ -83,6 +83,13 @@ namespace PDA_Web.Areas.Admin.Controllers
             return $"{_hostEnvironment.WebRootPath}\\uploads\\{fileName}";
         }
 
+        public IActionResult CargoTypeOnChange(CargoDetails cargoDetails)
+        {
+            var CargoFamilysData = unitOfWork.CargoFamilys.GetAllAsync().Result.Where(x => x.CargoTypeID == cargoDetails.CargoTypeID);
+
+            ViewBag.CargoFamilys = CargoFamilysData;
+            return PartialView("partial/cargoType");
+        }
         public async Task<IActionResult> Index()
         {
             var userid = HttpContext.Session.GetString("UserID");

@@ -152,8 +152,8 @@
                             <div class="col-sm-6">
 
                                 <div class="form-group">
-                                    <label for="PortName">Employ Code(UserName)<span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="EmployCode" placeholder="EmployCode" onchange="onUserChange(this.val,3)">
+                                    <label for="PortName">Employee Code(User Name)<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="EmployCode" placeholder="Employee Code" onchange="onUserChange(this.val,3)">
                                 </div>
                             </div>
                         </div>
@@ -162,7 +162,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="PortName">UserPassword<span class="text-danger">*</span></label>
-                                    <input type="password" class="form-control" id="UserPassword" placeholder="UserPassword" onkeyup="checkPasswordMatch();" onchange="onUserChange(this.val,4)">
+                                    <input type="password" class="form-control" id="UserPassword" placeholder="User Password" onkeyup="checkPasswordMatch();" onchange="onUserChange(this.val,4)">
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -178,7 +178,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="PortName">Mobile<span class="text-danger">*</span> </label>
-                                    <input type="text" class="form-control" id="MobileNo" placeholder="MobileNo" maxlength="11" onchange="onUserChange(this.val,5)">
+                                    <input type="text" class="form-control" id="MobileNo" placeholder="Mobile No" maxlength="11" onchange="onUserChange(this.val,5)">
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -292,6 +292,10 @@
                             <div class="col-sm-2" style="max-width: 15%;">
                                 <label for="NameFilter">Name</label>
                                 <input type="text" class="form-control" id="NameFilter" placeholder="Name">
+                            </div>
+                             <div class="col-sm-2" style="max-width: 15%;">
+                                <label for="EmployeeCode">Employee Code</label>
+                                <input type="text" class="form-control" id="EmployeeCode" placeholder="Name">
                             </div>
                             <div class="col-sm-2" style="max-width: 15%;">
                                 <label for="RoleFilter">Role</label>
@@ -585,6 +589,7 @@
                 "SearchedName": $('#NameFilter').val(), 
                 "RoleID": $('#RoleFilter').val(),
                 "PrimaryCompanyId": $('#PrimaryCompanyFilter').val(),
+                "EmployCode": $('#EmployeeCode').val(),
                 "PrimaryCompany": $('#PrimaryCompanyFilter').find("option:selected").text()
 
 

@@ -4,6 +4,7 @@ using PDAEstimator_Application.Interfaces;
 using PDAEstimator_Domain.Entities;
 using PDAEstimator_Infrastructure_Shared;
 using PDAEstimator_Infrastructure_Shared.Services;
+using static System.Net.WebRequestMethods;
 
 namespace PDA_Web.Areas.Admin.Controllers
 {
@@ -14,6 +15,7 @@ namespace PDA_Web.Areas.Admin.Controllers
         private readonly IUnitOfWork unitOfWork;
         private readonly IToastNotification _toastNotification;
         private readonly IEmailSender _emailSender;
+        private static TimeZoneInfo INDIAN_ZONE = TimeZoneInfo.FindSystemTimeZoneById("India Standard Time");
         public CustomerController(IUnitOfWork unitOfWork, IToastNotification toastNotification, IEmailSender emailSender)
         {
             this.unitOfWork = unitOfWork;
@@ -21,8 +23,16 @@ namespace PDA_Web.Areas.Admin.Controllers
             _emailSender = emailSender;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string Parm2)
         {
+            if (Parm2 == "pending")
+            {
+                ViewBag.CustomerStatus = "2";
+            }
+            else
+            {
+                ViewBag.CustomerStatus = "1";
+            }
             var userid = HttpContext.Session.GetString("UserID");
             if (!string.IsNullOrEmpty(userid))
             {
@@ -36,17 +46,17 @@ namespace PDA_Web.Areas.Admin.Controllers
                 // Temp Solution END
                 var CountryData = await unitOfWork.Countrys.GetAllAsync();
 
-                /*                ViewBag.Country = CountryData;
-                                ViewBag.CountryCode = CountryData.Select(x => x.CountryCode).ToList();
+                ViewBag.Country = CountryData;
+                ViewBag.CountryCode = CountryData.Select(x => x.CountryCode).ToList();
 
-                                var DesignationData = await unitOfWork.Designation.GetAllAsync();
-                                ViewBag.Designations = DesignationData;
+                /*           var DesignationData = await unitOfWork.Designation.GetAllAsync();
+                         ViewBag.Designations = DesignationData;
 
-                                var StateData = await unitOfWork.States.GetAllAsync();
-                                ViewBag.State = StateData;
+                         var StateData = await unitOfWork.States.GetAllAsync();
+                         ViewBag.State = StateData;
 
-                                var CityData = await unitOfWork.Citys.GetAllAsync();
-                                ViewBag.City = CityData;*/
+                         var CityData = await unitOfWork.Citys.GetAllAsync();
+                         ViewBag.City = CityData;*/
 
                 var PrimaryCompanyData = await unitOfWork.Company.GetAllAsync();
                 ViewBag.PrimaryCompany = PrimaryCompanyData;
@@ -104,11 +114,6 @@ namespace PDA_Web.Areas.Admin.Controllers
 
             var corecustomerdata = await unitOfWork.Customer.GetByIdAsync(customer.CustomerId);
 
-            Int64 PrimaryCompanyId = Convert.ToInt64(corecustomerdata.PrimaryCompany);
-
-            var FromPrimaryCompany = await unitOfWork.Company.GetByIdAsync(PrimaryCompanyId);
-            var PrimaryCompnayName = FromPrimaryCompany.CompanyName;
-
             if (customer.ID > 0)
             {
                 var CMobileNumber = customerdata.Where(x => x.Mobile == customer.Mobile && x.ID != customer.ID).ToList();
@@ -116,6 +121,11 @@ namespace PDA_Web.Areas.Admin.Controllers
                 if (CMobileNumber.Count > 0 && CMobileNumber != null || CEmailId.Count > 0 && CEmailId != null)
                 {
                     _toastNotification.AddWarningToastMessage("MobileNumber Or Email Exist!..");
+                    return Json(new
+                    {
+                        proceed = false,
+                        msg = ""
+                    });
                 }
                 else
                 {
@@ -131,6 +141,11 @@ namespace PDA_Web.Areas.Admin.Controllers
                 if (CMobileNumber.Count > 0 && CMobileNumber != null || CEmailId.Count > 0 && CEmailId != null)
                 {
                     _toastNotification.AddWarningToastMessage("MobileNumber Or Email Exist!..");
+                    return Json(new
+                    {
+                        proceed = false,
+                        msg = ""
+                    });
                 }
                 else
                 {
@@ -140,18 +155,23 @@ namespace PDA_Web.Areas.Admin.Controllers
                        customer.Email
                     };
                     //string Content = "You are added in PDA Estimator and you can access our platform using below login credentials: </br> UserName :" + customer.Email + " User Password:" + customer.Password;
-                    string Content = "<html> <head>   <title>PDA Estimator Login Credentials</title> </head> <body>   <p> Dear User,<br>    Thanks for registering on the PDA portal.Your login details are as follows:     <br/>     <b>UserName:</b> " + customer.Email + "     <br/>     <b>User Password:</b> " + customer.Password+ " <br><br> <b>Regards <br> PDA Portal</b>  </p> </body> </html> ";
+                    string Content = "<html> <head>   <title>PDA Estimator Login Credentials</title> </head> <body>   <p> Dear User,<br>    Thanks for registering on the PDA portal.Your login details are as follows:     <br/>     <b>UserName:</b> " + customer.Email + "     <br/>     <b>User Password:</b> " + customer.Password + " <br><br> <b>Regards <br> PDA Portal</b>  </p> </body> </html> ";
                     string Subject = "Welcome to PDAEstimator";
+                    List<string> ccrecipients = new List<string>();
                     string FromCompany = "";
-                    if (PrimaryCompnayName == "Merchant Shipping Services Private Limited")
+                    string ToEmail = "";
+                    var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByProcessNameAsync("Customer Register");
+                    if (emailconfig != null)
                     {
-                        FromCompany = "FromMerchant";
+                        ToEmail = emailconfig.ToEmail;
+                        FromCompany = emailconfig.FromEmail;
+                        if (emailconfig.ToEmail != null)
+                        {
+                            ccrecipients = ToEmail.Split(',').ToList();
+                        }
+                        
                     }
-                    if (PrimaryCompnayName == "Samsara Shipping Private Limited")
-                    {
-                        FromCompany = "FromSamsara";
-                    }
-                    var Msg = new Message(recipients, Subject, Content, FromCompany);
+                    var Msg = new Message(recipients, ccrecipients, Subject, Content, FromCompany);
 
                     _emailSender.SendEmail(Msg);
 
@@ -239,25 +259,29 @@ namespace PDA_Web.Areas.Admin.Controllers
             ViewBag.UserRoleName = UserRole;
             // Temp Solution END
 
-            if (customer.FirstName != null /*&& customer.FirstName != 0*/)
-            {
-                customerdata = customerdata.Where(x => x.FirstName.Contains(customer.FirstName)).ToList();
-            }
-            if (customer.Country != null && customer.Country != 0)
-            {
-                customerdata = customerdata.Where(x => x.Country == customer.Country).ToList();
-            }
-            if (customer.Address1 != null /*&& customer.FirstName != 0*/)
-            {
-                customerdata = customerdata.Where(x => x.Address1.Contains(customer.Address1)).ToList();
-            }
-            if (customer.Email != null /*&& customer.FirstName != 0*/)
-            {
-                customerdata = customerdata.Where(x => x.Email.Contains(customer.Email)).ToList();
-            }
+            //if (customer.FirstName != null /*&& customer.FirstName != 0*/)
+            //{
+            //    customerdata = customerdata.Where(x => x.FirstName.Contains(customer.FirstName)).ToList();
+            //}
+            //if (customer.Country != null && customer.Country != 0)
+            //{
+            //    customerdata = customerdata.Where(x => x.Country == customer.Country).ToList();
+            //}
+            //if (customer.Address1 != null /*&& customer.FirstName != 0*/)
+            //{
+            //    customerdata = customerdata.Where(x => x.Address1.Contains(customer.Address1)).ToList();
+            //}
+            //if (customer.Email != null /*&& customer.FirstName != 0*/)
+            //{
+            //    customerdata = customerdata.Where(x => x.Email.Contains(customer.Email)).ToList();
+            //}
             if (customer.Company != null /*&& customer.FirstName != 0*/)
             {
-                customerdata = customerdata.Where(x => x.Company == customer.Company).ToList();
+                customerdata = customerdata.Where(x => x.Company.ToLower().Contains(customer.Company.ToLower())).ToList();
+            }
+            if (customer.Status != null /*&& customer.FirstName != 0*/)
+            {
+                customerdata = customerdata.Where(x => x.Status.ToLower() == customer.Status.ToLower()).ToList();
             }
             return PartialView("partial/_ViewAll", customerdata);
 
@@ -280,7 +304,7 @@ namespace PDA_Web.Areas.Admin.Controllers
 
             if (customer.FirstName != null /*&& customer.FirstName != 0*/)
             {
-                customerdata = customerdata.Where(x => x.FirstName.Contains(customer.FirstName)).ToList();
+                customerdata = customerdata.Where(x => x.FirstName.ToLower().Contains(customer.FirstName.ToLower())).ToList();
             }
             if (customer.Country != null && customer.Country != 0)
             {
@@ -292,11 +316,11 @@ namespace PDA_Web.Areas.Admin.Controllers
             }
             if (customer.Email != null /*&& customer.FirstName != 0*/)
             {
-                customerdata = customerdata.Where(x => x.Email.Contains(customer.Email)).ToList();
+                customerdata = customerdata.Where(x => x.Email.ToLower().Contains(customer.Email.ToLower())).ToList();
             }
             if (customer.Company != null /*&& customer.FirstName != 0*/)
             {
-                customerdata = customerdata.Where(x => x.Company.Contains(customer.Company)).ToList();
+                customerdata = customerdata.Where(x => x.Company.ToLower().Contains(customer.Company.ToLower())).ToList();
             }
             return PartialView("partial/_ViewAllCustomerUserDetails", customerdata);
 
@@ -304,40 +328,135 @@ namespace PDA_Web.Areas.Admin.Controllers
 
         public async Task<ActionResult> CustomerSave(Customer customer)
         {
+            string mailcontent = "";
+            string emailsubject = "";
             var customerdata = await unitOfWork.Customer.GetAlllistAsync();
             if (customer.CustomerId > 0)
             {
+                var userid = HttpContext.Session.GetString("UserID");
+                customer.ModifyDate = DateTime.UtcNow;
+                customer.ModifyBy = Convert.ToInt32(userid);
+                await unitOfWork.Customer.UpdateAsync(customer);
+                await unitOfWork.Customer.DeleteCustomer_Company_MappingAsync(customer.CustomerId);
+                if (customer.PrimaryCompanyId != null)
+                {
+                    Company_Customer_Mapping company_Customer_Mapping = new Company_Customer_Mapping();
 
+                    company_Customer_Mapping.CustomerID = Convert.ToInt32(customer.CustomerId);
+                    company_Customer_Mapping.CompanyID = (int)customer.PrimaryCompanyId;
+                    company_Customer_Mapping.IsPrimary = true;
+                    await unitOfWork.Customer.AddCustomer_Company_MappingAsync(company_Customer_Mapping);
+                }
+                if (customer.SecondaryCompanyId != null)
+                {
+                    Company_Customer_Mapping company_Customer_Mapping1 = new Company_Customer_Mapping();
 
-                    await unitOfWork.Customer.UpdateAsync(customer);
-                    await unitOfWork.Customer.DeleteCustomer_Company_MappingAsync(customer.CustomerId);
-                    if (customer.PrimaryCompanyId != null)
+                    foreach (int i in customer.SecondaryCompanyId)
                     {
-                        Company_Customer_Mapping company_Customer_Mapping = new Company_Customer_Mapping();
-
-                        company_Customer_Mapping.CustomerID = Convert.ToInt32(customer.CustomerId);
-                        company_Customer_Mapping.CompanyID = (int)customer.PrimaryCompanyId;
-                        company_Customer_Mapping.IsPrimary = true;
-                        await unitOfWork.Customer.AddCustomer_Company_MappingAsync(company_Customer_Mapping);
+                        company_Customer_Mapping1 = new Company_Customer_Mapping();
+                        company_Customer_Mapping1.CustomerID = Convert.ToInt32(customer.CustomerId);
+                        company_Customer_Mapping1.CompanyID = i;
+                        company_Customer_Mapping1.IsPrimary = false;
+                        await unitOfWork.Customer.AddCustomer_Company_MappingAsync(company_Customer_Mapping1);
                     }
-                    if (customer.SecondaryCompanyId != null)
-                    {
-                        Company_Customer_Mapping company_Customer_Mapping1 = new Company_Customer_Mapping();
+                }
 
-                        foreach (int i in customer.SecondaryCompanyId)
+                var companydata = await unitOfWork.Company.GetAlllistAsync();
+                int Samsaracompanyid = 0;
+                if (companydata != null && companydata.Count > 0)
+                {
+                    var samsaracompanydata = companydata.Where(x => x.CompanyName.ToLower() == "samsara shipping private limited");
+                    if (samsaracompanydata.Count() > 0)
+                    {
+                        Samsaracompanyid = samsaracompanydata.FirstOrDefault().CompanyId;
+                    }
+                }
+
+                if (customer.Oldstatus != null && customer.Oldstatus == "Pending For Approval" && customer.Status == "Active")
+                {
+
+                    var custuser = unitOfWork.CustomerUserMaster.GetByCustomerIdAsync(customer.CustomerId).Result.OrderByDescending(x => x.ID).FirstOrDefault();
+
+                    if (custuser != null)
+                    {
+                        string customerfullname = string.Concat(custuser.FirstName, ' ', custuser.LastName);
+                        string customerphone = string.Concat(custuser.CountryCode, ' ', custuser.Mobile);
+
+                        DateTime indianTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, INDIAN_ZONE);
+                        mailcontent = "<html><head><title> Welcome to PDA Portal.</title> </head><body><p> Dear " + customerfullname + ", <br> Thank you for registering on PDA portal. <br> Your company registration process is now complete. <br> Your login credentials are as below. <br><br> <b> Username - </b> " + custuser.Email + " <br><b>User Password – </b> " + custuser.Password + " <br><br> Your free trial starts from <b>" + indianTime.ToString("dd-MM-yyyy") + "</b> and is valid up to <b>" + indianTime.AddDays(15).ToString("dd-MM-yyyy") + "</b>. <br> <br>Appreciate your valuable feedback and if you wish to continue using the PDA portal please complete formalities. <br> Our team will be happy to assist you on any additional information that you may require. <br> <br> PIC - " + customerfullname + " <br>  Contact -  " + customerphone + " <br> E-mail ID - " + custuser.Email + " <br><br> <b>Regards <br> PDA Portal</b> </p></body></html>";
+                        emailsubject = "Welcome to PDA Portal";
+
+                        int companyid = customer.PrimaryCompanyId != null ? (int)customer.PrimaryCompanyId : Samsaracompanyid;
+
+                        CustomerRegisterEmail("Customer Approved", mailcontent, emailsubject, custuser.Email, companyid);
+                    }
+                }
+                else if (customer.Oldstatus != null && customer.Oldstatus != "Rejected" && customer.Status == "Rejected")
+                {
+
+                    var custuser = unitOfWork.CustomerUserMaster.GetByCustomerIdAsync(customer.CustomerId).Result.OrderByDescending(x => x.ID).FirstOrDefault();
+                    List<string> recipients = new List<string>
+                    {
+                        custuser.Email
+                    };
+
+                    string Content = "<html> <body>   <p>Hello, <br> Your Register company is not approved and you can not access PDA Portal. For further question conact to Admin. </p> <div> </br> <p> <b> User Name :</b> " + custuser.Email + " </br> <b> Password: </b> " + custuser.Password + "  </p> </br> </br> <p> Regard, </br> PDA Portal </p> </div> </body> </html> ";
+
+                    string Subject = "Registion request is not approved";
+                    List<string> ccrecipients = new List<string>();
+                    string FromCompany = "";
+                    string ToEmail = "";
+                    var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByProcessNameAsync("Customer Rejected");
+                    if (emailconfig != null)
+                    {
+                        ToEmail = emailconfig.ToEmail;
+                        FromCompany = emailconfig.FromEmail;
+                        if (emailconfig.ToEmail != null)
                         {
-                            company_Customer_Mapping1 = new Company_Customer_Mapping();
-                            company_Customer_Mapping1.CustomerID = Convert.ToInt32(customer.CustomerId);
-                            company_Customer_Mapping1.CompanyID = i;
-                            company_Customer_Mapping1.IsPrimary = false;
-                            await unitOfWork.Customer.AddCustomer_Company_MappingAsync(company_Customer_Mapping1);
+                            ccrecipients = ToEmail.Split(',').ToList();
                         }
                     }
-                    _toastNotification.AddSuccessToastMessage("Updated Successfully");
-                
+
+                    var Msg = new Message(recipients, ccrecipients, Subject, Content, FromCompany);
+                    _emailSender.SendEmail(Msg);
+                }
+                else if (customer.Oldstatus != null && customer.Oldstatus != "InActive" && customer.Status == "InActive")
+                {
+
+                    var custuser = unitOfWork.CustomerUserMaster.GetByCustomerIdAsync(customer.CustomerId).Result.OrderByDescending(x => x.ID).FirstOrDefault();
+                    List<string> recipients = new List<string>
+                    {
+                        custuser.Email
+                    };
+
+                    string Content = "<html> <body>   <p>Hello, <br> Your Register company is not Active any more and you can not access PDA Portal from now. For further question conact to Admin. </p> <div> </br> <p> <b> User Name :</b> " + custuser.Email + " </br> <b> Password: </b> " + custuser.Password + "  </p> </br> </br> <p> Regard, </br> PDA Portal </p> </div> </body> </html> ";
+
+                    string Subject = "PDA Protal Account Inactive";
+                    List<string> ccrecipients = new List<string>();
+                    string FromCompany = "";
+                    string ToEmail = "";
+                    var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByProcessNameAsync("Customer InActive");
+                    if (emailconfig != null)
+                    {
+                        ToEmail = emailconfig.ToEmail;
+                        FromCompany = emailconfig.FromEmail;
+                        if (emailconfig.ToEmail != null)
+                        {
+                            ccrecipients = ToEmail.Split(',').ToList();
+                        }
+                    }
+
+                    var Msg = new Message(recipients, ccrecipients, Subject, Content, FromCompany);
+                    _emailSender.SendEmail(Msg);
+                }
+                _toastNotification.AddSuccessToastMessage("Updated Successfully");
+
             }
             else
             {
+                var userid = HttpContext.Session.GetString("UserID");
+                customer.CreatedDate = DateTime.UtcNow;
+                customer.CreatedBy = Convert.ToInt32(userid);
                 var custId = await unitOfWork.Customer.AddAsync(customer);
                 if (!string.IsNullOrEmpty(custId))
                 {
@@ -365,7 +484,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                     }
                 }
                 _toastNotification.AddSuccessToastMessage("Inserted successfully");
-                
+
             }
             return Json(new
             {
@@ -374,6 +493,36 @@ namespace PDA_Web.Areas.Admin.Controllers
             });
         }
 
+        public async Task<bool> CustomerRegisterEmail(string processname, string mailcontent, string emailsubject, string customeremail, int companyid)
+        {
+            List<string> recipients = new List<string>
+                {
+                    customeremail
+                };
+
+            string Content = mailcontent;
+            string Subject = emailsubject;
+
+            List<string> ccrecipients = new List<string>();
+            string FromCompany = "";
+            string ccEmail = "";
+            var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByCompanyandProcessNameAsync(companyid, processname);
+
+            if (emailconfig != null)
+            {
+                ccEmail = emailconfig.ToEmail;
+                FromCompany = emailconfig.FromEmail;
+                if (emailconfig.ToEmail != null)
+                {
+                    ccrecipients = ccEmail.Split(',').ToList();
+                }
+            }
+
+            var Msg = new Message(recipients, ccrecipients, Subject, Content, FromCompany);
+
+            _emailSender.SendEmail(Msg);
+            return true;
+        }
 
         public IActionResult PrimaryCompneySelected(Customer customer)
         {

@@ -8,6 +8,7 @@ using PDAEstimator_Infrastructure_Shared;
 using PDAEstimator_Infrastructure_Shared.Services;
 using System.Configuration;
 using System.Net.NetworkInformation;
+using static System.Net.WebRequestMethods;
 
 namespace PDA_Web.Areas.Admin.Controllers
 {
@@ -38,15 +39,24 @@ namespace PDA_Web.Areas.Admin.Controllers
                             .Select(nic => nic.GetPhysicalAddress().ToString())
                             .FirstOrDefault();
 
+
             if (user != null)
             {
                 User isAuthenticated = await unitOfWork.User.Authenticate(user.EmployCode, user.UserPassword);
-
+                
 
                 if (isAuthenticated != null)
                 {
-                    HttpContext.Session.SetString("UserID", isAuthenticated.ID.ToString());
-                  
+                    if (isAuthenticated.EmailID == null || isAuthenticated.EmailID == "")
+                    {
+                        _toastNotification.AddErrorToastMessage("We did't not found User Email Id. Please conact to admin.");
+                        return Json(new
+                        {
+                            proceed = false,
+                            msg = "",
+                            otp = ""
+                        });
+                    }
                     var isMacIDCheck = _configuration.GetValue<bool>("MacIDCheck");
                     if (isMacIDCheck)
                     {
@@ -54,72 +64,167 @@ namespace PDA_Web.Areas.Admin.Controllers
 
                         if (string.IsNullOrEmpty(isAuthenticated.MacAddress))
                         {
-                            var AddMacAddress = await unitOfWork.User.AddMacAddress(macAddress, Convert.ToInt64(isAuthenticated.ID));
-                            return RedirectToAction("Index", "Home");
+                            var AddMacAddress = await unitOfWork.User.AddMacAddress(macAddress, isAuthenticated.ID);
+                           
+
+                            string otp = await SendOTPEmail(isAuthenticated.EmailID, isAuthenticated.ID);
+                            return Json(new
+                            {
+                                proceed = true,
+                                msg = "",
+                                otp = otp
+                            });
 
                         }
                         else if (isAuthenticated.MacAddress != macAddress)
                         {
-                            _toastNotification.AddErrorToastMessage("Your MACAddress does not match with old MACAddress.");
-                            return View();
+                            var LoginMachineName = System.Environment.MachineName;
+                            if (isAuthenticated.LoginMachineName != null && isAuthenticated.LoginMachineName == LoginMachineName)
+                            {
+                                string otp = await SendOTPEmail(isAuthenticated.EmailID, isAuthenticated.ID);
+                                return Json(new
+                                {
+                                    proceed = true,
+                                    msg = "",
+                                    otp = otp
+                                });
+                            }
+                            else
+                            {
+                                _toastNotification.AddErrorToastMessage("This device is not registered. Please login through your registered device (" + isAuthenticated.LoginMachineName + ") Or reset your password");
+                                return Json(new
+                                {
+                                    proceed = false,
+                                    msg = "",
+                                    otp = ""
+                                });
+                            }
                         }
                         else
                         {
-                            return RedirectToAction("Index", "Home");
+                            string otp = await SendOTPEmail(isAuthenticated.EmailID, isAuthenticated.ID);
+                            return Json(new
+                            {
+                                proceed = true,
+                                msg = "",
+                                otp = otp
+                            });
                         }
                     }
                     else
                     {
-                        return RedirectToAction("Index", "Home");
+                        string otp = await SendOTPEmail(isAuthenticated.EmailID, isAuthenticated.ID);
+                        return Json(new
+                        {
+                            proceed = true,
+                            msg = "",
+                            otp = otp
+                        });
                     }
                 }
                 else
                 {
                     _toastNotification.AddErrorToastMessage("You have entered an invalid username or password.");
-                    return View();
+                    return Json(new
+                    {
+                        proceed = false,
+                        msg = "",
+                        otp = ""
+                    });
                 }
             }
             else
             {
                 _toastNotification.AddErrorToastMessage("You have entered an invalid username or password.");
-                return View();
+                return Json(new
+                {
+                    proceed = false,
+                    msg = "",
+                    otp = ""
+                });
             }
         }
 
-        public async Task<bool> SendOTPEmail(string Email)
+        [HttpPost]
+        public async Task<ActionResult> LoginwitOTP(UserAuth user)
         {
-            var CustomerUserData = await unitOfWork.CustomerUserMaster.GetCustomerUserByEmailAsync(Email);
+            User isAuthenticated = await unitOfWork.User.Authenticate(user.EmployCode, user.UserPassword);
+            if (isAuthenticated.OTP == user.OTP && isAuthenticated.OTPSentDate != null && isAuthenticated.OTPSentDate.Value.AddMinutes(5) > DateTime.UtcNow)
+            {
+                var LoginMachineName = System.Environment.MachineName;
+                DateTime LoginDateTime = DateTime.UtcNow;
+                await unitOfWork.User.UpdateLoginDetails(LoginMachineName, LoginDateTime, isAuthenticated.ID);
 
-            var CustomerId = CustomerUserData.Select(x => x.CustomerId).First();
+                HttpContext.Session.SetString("UserID", isAuthenticated.ID.ToString());
+                //return RedirectToAction("Index", "Home");
 
-            var corecustomerdata = await unitOfWork.Customer.GetByIdAsync(Convert.ToInt32(CustomerId));
+                return Json(new
+                {
+                    proceed = true,
+                    msg = ""
+                });
+            }
+            else
+            {
+                _toastNotification.AddErrorToastMessage("You have entered an invalid OTP.");
+                return Json(new
+                {
+                    proceed = false,
+                    msg = ""
+                });
+            }
+        }
 
-            Int64 PrimaryCompanyId = Convert.ToInt64(corecustomerdata.PrimaryCompany);
+        public async Task<string> SendOTPEmail(string Email, int Id)
+        {
+            //var CustomerUserData = await unitOfWork.CustomerUserMaster.GetCustomerUserByEmailAsync(Email);
+            //var CustomerId = CustomerUserData.Select(x => x.CustomerId).First();
+            //var corecustomerdata = await unitOfWork.Customer.GetByIdAsync(Convert.ToInt32(CustomerId));
+            //Int64 PrimaryCompanyId = Convert.ToInt64(corecustomerdata.PrimaryCompany);
+            //var FromPrimaryCompany = await unitOfWork.Company.GetByIdAsync(PrimaryCompanyId);
+            //var PrimaryCompnayName = FromPrimaryCompany.CompanyName;
 
-            var FromPrimaryCompany = await unitOfWork.Company.GetByIdAsync(PrimaryCompanyId);
-            var PrimaryCompnayName = FromPrimaryCompany.CompanyName;
+            string otp = (GenerateOTP.NextInt() % 1000000).ToString("000000");
+            await unitOfWork.User.UpdateOTP(otp, DateTime.UtcNow, Id);
 
             List<string> recipients = new List<string>
             {
                 Email
             };
-            string Content = "<html> <body>   <p>Hello, <br> You recently requested to reset the password for your PDAEstimator account. Click the button below to proceed.    </p> <div> <a  href=" + "" + "> <button style='height:30px; margin-bottom:30px; font-size:14px;' type='button'> Reset Password </button> </a> </div> </body> </html> ";
-            string Subject = "Reset Password";
+
+            
+            string Content = "<div style='font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2'>"
+   + "<div style='margin:50px auto;width:70%;padding:20px 0'>"
+   + "<div style='border-bottom:1px solid #eee'>"
+   + "  <a href='' style='font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600'>PDA Portal</a>"
+   + "</div>"
+   + "<p style='font-size:1.1em'>Hi,</p>"
+   + "<p>Thank you for choosing PDA Portal. Use the following OTP to complete your Sign Up procedures. OTP is valid for 5 minutes</p>"
+   + "<h2 style='background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;'>" + otp + "</h2>"
+   + "<p style='font-size:0.9em;'>Regards,<br />PDA Portal Team</p>"
+   + "<hr style='border:none;border-top:1px solid #eee' />"
+   + "<div style='float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300'>"
+   + "<p></p>"
+    + "</div> </div></div> ";
+            string Subject = "Login in PDA Portal";
+            List<string> ccrecipients = new List<string>();
             string FromCompany = "";
-            if (PrimaryCompnayName == "Merchant Shipping Services Private Limited")
-            {
-                FromCompany = "FromMerchant";
-            }
-            if (PrimaryCompnayName == "Samsara Shipping Private Limited")
-            {
-                FromCompany = "FromSamsara";
-            }
+            //string ToEmail = "";
+            //var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByProcessNameAsync("Customer Register");
+            //if (emailconfig != null)
+            //{
+            //    ToEmail = emailconfig.ToEmail;
+            //    FromCompany = emailconfig.FromEmail;
+            //    if (emailconfig.ToEmail != null)
+            //    {
+            //        ccrecipients = ToEmail.Split(',').ToList();
+            //    }
+            //}
 
-
-            var Msg = new Message(recipients, Subject, Content, FromCompany);
+            var Msg = new Message(recipients, ccrecipients, Subject, Content, FromCompany);
             _emailSender.SendEmail(Msg);
 
-            return true;
+            return otp;
         }
 
         public async Task<IActionResult> ForgotPassword(string Email)
@@ -174,18 +279,22 @@ namespace PDA_Web.Areas.Admin.Controllers
                     /*                    string Content = "You recently requested to reset the password for your PDAEstimator account. Click the button below to proceed. ";*/
                     string Content = "<html> <body>   <p>Hello, <br> You recently requested to reset the password for your PDAEstimator account. Click the button below to proceed.    </p> <div> <a  href=" + confirmationLink + "> <button style='height:30px; margin-bottom:30px; font-size:14px;' type='button'> Reset Password </button> </a> </div> </body> </html> ";
                     string Subject = "Reset Password";
+                    List<string> ccrecipients = new List<string>();
                     string FromCompany = "";
-                    if (PrimaryCompnayName == "Merchant Shipping Services Private Limited")
+                    string ToEmail = "";
+                    var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByProcessNameAsync("Customer Register");
+                    if (emailconfig != null)
                     {
-                        FromCompany = "FromMerchant";
-                    }
-                    if (PrimaryCompnayName == "Samsara Shipping Private Limited")
-                    {
-                        FromCompany = "FromSamsara";
+                        ToEmail = emailconfig.ToEmail;
+                        FromCompany = emailconfig.FromEmail;
+                        if (emailconfig.ToEmail != null)
+                        {
+                            ccrecipients = ToEmail.Split(',').ToList();
+                        }
                     }
 
 
-                    var Msg = new Message(recipients, Subject, Content, FromCompany);
+                    var Msg = new Message(recipients, ccrecipients, Subject, Content, FromCompany);
                     /*                   _toastNotification.AddSuccessToastMessage("Email hase been sent to given Email Address");*/
                     _emailSender.SendEmail(Msg);
 
@@ -197,9 +306,6 @@ namespace PDA_Web.Areas.Admin.Controllers
             }
             return View();
         }
-
-
-
 
         public async Task<ActionResult> Logout()
         {
