@@ -35,33 +35,29 @@
                     }
                 </td>
 
-                @using PDAEstimator_Domain.Entities;
+            @using PDAEstimator_Domain.Entities;
                 @if (ViewBag.UserPermissionModel != null)
                 {
                     List<UserPermissionRights> userPermissionRights = new List<UserPermissionRights>();
                     List<UserRoleName> userRoleName = new List<UserRoleName>();
                     userPermissionRights = ViewBag.UserPermissionModel;
-                        userRoleName = ViewBag.UserRoleName;
+                    userRoleName = ViewBag.UserRoleName;
                     <td>
-                        @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Formulas" && x.UserRolePermission == "Edit").Count() > 0))
+                        @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "Formulas" && x.UserRolePermission == "Delete").Count() > 0))
                         {
-                            <a class="btn btn-info btn-sm" onclick="editFormula(@item.formulaMasterID)">
-                                <i class="fas fa-pencil-alt">
+                            <a class="btn btn-danger btn-sm" onclick="deleteTariffMaster(@item.formulaMasterID)">
+                                <i class="fas fa-trash">
                                 </i>
-                                Edit
+                                Delete
                             </a>
+
                         }
                     </td>
                 }
 
-            
-    
-                    @*<a class="btn btn-danger btn-sm" onclick="deleteTariffMaster(@item.formulaMasterID)">
-                        <i class="fas fa-trash">
-                        </i>
-                        Delete
-                    </a>*@
-              
+
+
+
             </tr>
         }
     </tbody>

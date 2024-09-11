@@ -989,7 +989,7 @@
                         $('#TerminalName').val(data.tariffRates.terminalID);
 
                     //TerminalOnChange(1);
-                    var operationTypeID = data.tariffRates.operationTypeID == null ? 1 : data.tariffRates.operationTypeID;
+                    var operationTypeID = data.tariffRates.operationTypeID == null ? '' : data.tariffRates.operationTypeID;
                     $('#CargoName').val(data.tariffRates.cargoID);
                     $('#CallType').val(data.tariffRates.callTypeID);
                     $('#Expenses').val(data.tariffRates.expenseCategoryID);
