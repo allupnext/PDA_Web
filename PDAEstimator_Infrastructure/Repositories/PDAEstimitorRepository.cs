@@ -104,7 +104,7 @@ namespace PDAEstimator_Infrastructure.Repositories
                     var sql = @"
                 SELECT DISTINCT CargoDetails.*
                 FROM CargoDetails
-                left JOIN CargoHandled ON CargoDetails.ID = CargoHandled.CargoID
+                left JOIN CargoHandled ON CargoDetails.ID = CargoHandled.CargoID and CargoHandled.IsDeleted = 0
                 WHERE CargoHandled.TerminalID = @TerminalId AND CargoHandled.PortID = @PortId and CargoDetails.Isdeleted = 0";
 
                     using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
@@ -119,7 +119,7 @@ namespace PDAEstimator_Infrastructure.Repositories
                     var sql = @"
                 SELECT DISTINCT CargoDetails.*
                 FROM CargoDetails
-                left JOIN CargoHandled ON CargoDetails.ID = CargoHandled.CargoID
+                left JOIN CargoHandled ON CargoDetails.ID = CargoHandled.CargoID and CargoHandled.IsDeleted = 0
                 WHERE CargoHandled.PortID = @PortId and CargoDetails.Isdeleted = 0";
 
                     using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
@@ -144,7 +144,7 @@ namespace PDAEstimator_Infrastructure.Repositories
                 {
                     var sql = @"
                 SELECT Distinct TerminalDetails.* FROM TerminalDetails 
-                Left Join CargoHandled ON TerminalDetails.ID = CargoHandled.TerminalID where CargoHandled.CargoID = @CargoID and TerminalDetails.PortID = @PortID and TerminalDetails.Isdeleted = 0";
+                Left Join CargoHandled ON TerminalDetails.ID = CargoHandled.TerminalID and CargoHandled.IsDeleted = 0 where CargoHandled.CargoID = @CargoID and TerminalDetails.PortID = @PortID and TerminalDetails.Isdeleted = 0";
 
                     using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                     {
@@ -157,7 +157,7 @@ namespace PDAEstimator_Infrastructure.Repositories
                 {
                     var sql = @"
                  SELECT Distinct TerminalDetails.* FROM TerminalDetails 
-                Left Join CargoHandled ON TerminalDetails.ID = CargoHandled.TerminalID where TerminalDetails.PortID = @PortID and TerminalDetails.Isdeleted = 0";
+                Left Join CargoHandled ON TerminalDetails.ID = CargoHandled.TerminalID and CargoHandled.IsDeleted = 0 where TerminalDetails.PortID = @PortID and TerminalDetails.Isdeleted = 0";
 
                     using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                     {

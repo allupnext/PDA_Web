@@ -106,6 +106,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                     BerthStayHoursCoastal = PDAData.BerthStayHoursCoastal,
                     VesselBallast = PDAData.VesselBallast,
                     BerthID = PDAData.BerthId,
+                    BerthName = PDAData.BerthName,
                     CompanyName = pDAEstimatorOutPutdata.CompanyName,
                     CompanyAddress1 = pDAEstimatorOutPutdata.CompanyAddress1.ToUpper(),
                     CompanyAddress2 = pDAEstimatorOutPutdata.CompanyAddress2.ToUpper(),
@@ -264,7 +265,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                     BerthStayDayCoastal = PDAData.BerthStayDayCoastal,
                     BerthStayHoursCoastal = PDAData.BerthStayHoursCoastal,
                     VesselBallast = PDAData.VesselBallast,
-                    BerthID = PDAData.BerthId
+                    BerthID = PDAData.BerthId,
+                    BerthName = PDAData.BerthName
                 };
 
                 var CompanyData = unitOfWork.Company.GetAlllistAsync().Result.Where(x => x.CompanyId == PDAData.InternalCompanyID).FirstOrDefault();

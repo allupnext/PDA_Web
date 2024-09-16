@@ -71,7 +71,7 @@
                     @Model.VesselName.ToUpper()
                 </li>
             }
-            <li class="lablebold">PORT/TERMINAL</li>
+            <li class="lablebold">PORT / TERMINAL / BERTH</li>
             @if (Model.PortName == null)
             {
                 <li class="valuefont"> SR </li>
@@ -79,7 +79,7 @@
             else
             {
                 <li class="valuefont">
-                    @Model.PortName.ToUpper() / @Model.TerminalName.ToUpper()
+                    @Model.PortName.ToUpper() / @Model.TerminalName.ToUpper() / @Model.BerthName.ToUpper()
                 </li>
             }
         </ul>
