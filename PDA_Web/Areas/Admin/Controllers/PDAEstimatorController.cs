@@ -858,7 +858,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             ViewBag.UserRoleName = UserRole;
             // Temp Solution END
 
-            if(userid == null)
+            if (userid == null)
             {
                 return RedirectToAction("index", "AdminLogin");
             }
@@ -907,7 +907,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             return PartialView("partial/_ViewAll", pDAEstimatorLists);
         }
 
-        public async Task<IActionResult> LoadAllReport (PDAEstimator pDAEstimator)
+        public async Task<IActionResult> LoadAllReport(PDAEstimator pDAEstimator)
         {
 
             List<PDAEstimatorList> pDAEstimatorLists = new List<PDAEstimatorList>();
@@ -961,7 +961,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                 {
                     pDAEstimatorLists = pDAEstimatorLists.Where(x => x.CreationDate.Date <= Convert.ToDateTime(pDAEstimator.CreationToDate).Date).ToList();
                 }
-                
+
                 //if (pDAEstimator.TerminalID != null && pDAEstimator.TerminalID != 0)
                 //{
                 //    pDAEstimatorLists = pDAEstimatorLists.Where(x => x.TerminalID == pDAEstimator.TerminalID).ToList();
@@ -991,7 +991,7 @@ namespace PDA_Web.Areas.Admin.Controllers
 
         public IActionResult TeaminalLoad(int selectedCargoId, int selectedPortId)
         {
-          
+
             var TerminalDetailData = unitOfWork.PDAEstimitor.GetTerminalByCargoIdAndPortAsync(selectedCargoId, selectedPortId).Result;
             if (TerminalDetailData != null && TerminalDetailData.Count() > 0)
                 TerminalDetailData = TerminalDetailData.Where(x => x.Status == true).ToList();
@@ -1011,7 +1011,7 @@ namespace PDA_Web.Areas.Admin.Controllers
 
         public IActionResult BerthNameOnchange(PDAEstimator PDAEstimitor)
         {
-            if(PDAEstimitor.BerthId != 0)
+            if (PDAEstimitor.BerthId != 0)
             {
                 var BearthDetailData = unitOfWork.BerthDetails.GetByIdAsync(PDAEstimitor.BerthId).Result;
                 return Json(new
@@ -1045,7 +1045,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             string ETA_String = PDAEstimitor.ETA_String + " " + "12:00:00 AM";
             DateTime Validity_To = DateTime.ParseExact(ETA_String, new string[] { "dd.M.yyyy hh:mm:ss tt", "dd-M-yyyy hh:mm:ss tt", "dd/M/yyyy hh:mm:ss tt" }, provider, DateTimeStyles.None);
             var BearthDetailData = unitOfWork.BerthDetails.GetAllAsync().Result.Where(x => x.ID == PDAEstimitor.BerthId);
-            
+
             var maxLoa = BearthDetailData.FirstOrDefault().MaxLoa;
             var maxBeam = BearthDetailData.FirstOrDefault().MaxBeam;
             var maxArribvaldraft = BearthDetailData.FirstOrDefault().MaxArrivalDraft;
@@ -1214,16 +1214,16 @@ namespace PDA_Web.Areas.Admin.Controllers
                     //pDAEstimatorOutPut.Taxrate = taxrate;
                     var Disclaimersdata = await unitOfWork.Disclaimers.GetAllAsync();
 
-                    if(Disclaimersdata != null && Disclaimersdata.Count() > 0)
+                    if (Disclaimersdata != null && Disclaimersdata.Count() > 0)
                     {
-                       var ActiveDisclaimersdata =  Disclaimersdata.Where(x => x.IsActive == true);
+                        var ActiveDisclaimersdata = Disclaimersdata.Where(x => x.IsActive == true);
                         if (ActiveDisclaimersdata != null && ActiveDisclaimersdata.Count() > 0)
                         {
                             pDAEstimatorOutPut.Disclaimer = ActiveDisclaimersdata.FirstOrDefault().Disclaimer;
                         }
 
                     }
-                    
+
                     pDAEstimatorOutPut.PDAEstimatorOutPutDate = DateTime.Now;
                     var PDAEstimitorOUTPUTid = await unitOfWork.PDAEstimitorOUTPUT.AddAsync(pDAEstimatorOutPut);
 
@@ -1255,7 +1255,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                                 var formulatransdata = await unitOfWork.FormulaTransaction.GetAllTransAsync((int)triff.FormulaID);
                                 if (formulatransdata.Count > 0)
                                 {
-                                   
+
                                     if (triff.SlabName == "GRT")
                                         slabattributvalue = PDAEstimitor.GRT;
                                     else if (triff.SlabName == "RGRT")
@@ -1280,7 +1280,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                                         slabattributvalue = PDAEstimitor.CargoQty;
                                     else if (triff.SlabName == "QTYCBM")
                                         slabattributvalue = PDAEstimitor.CargoQtyCBM;
-                                    
+
                                     bool Range_Tariff = triff.Range_TariffID > 0 ? true : false;
                                     UnitCalculation(triff, PDAEstimitor.GRT, (long)slabattributvalue, Range_Tariff);
                                     foreach (var formularTransList in formulatransdata)
@@ -1478,7 +1478,18 @@ namespace PDA_Web.Areas.Admin.Controllers
                             if (triff.Formula != "")
                             {
                                 DataTable dt = new DataTable();
-                                var amount = dt.Compute(triff.Formula, "");
+
+                                var amount = new object();
+                                try
+                                {
+                                    amount = dt.Compute(triff.Formula, "");
+                                }
+                                catch (Exception ex)
+                                {
+                                    continue;
+                                }
+
+
                                 decimal amt = Convert.ToDecimal(amount);
                                 amt = Math.Abs(amt);
                                 amt = amt * triff.Rate;
@@ -1600,7 +1611,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                                 PDAEstimatorOutPutTariff pDAEstimatorOutPutTariff = new PDAEstimatorOutPutTariff();
                                 if (triff.Range_TariffID > 0)
                                 {
-                                    pDAEstimatorOutPutTariff.UNITS = slabattributvalue != null? Convert.ToDecimal(slabattributvalue): 0;
+                                    pDAEstimatorOutPutTariff.UNITS = slabattributvalue != null ? Convert.ToDecimal(slabattributvalue) : 0;
                                 }
                                 else
                                 {
