@@ -101,7 +101,7 @@
                             <div class="col-sm-2">
                                 <div class="form-group" id="cargodrop">
                                     <label for="Cargo">Cargo<span class="text-danger">*</span></label>
-                                    @Html.DropDownList("CargoName", new SelectList(ViewBag.Cargo, "ID", "CargoName"), "Please select", new { @class = "form-control" })
+                                    @Html.DropDownList("CargoName", new SelectList(ViewBag.Cargo, "ID", "CargoName"), "Please select", new { @class = "form-control", @onchange = "CargoNameOnChangefunc()" })
                                 </div>
                             </div>
                             <div class="col-sm-2">
@@ -122,20 +122,22 @@
                         <div class="row">
                             <div class="col-sm-2">
                                 <div class="form-group">
-                                    <label for="CargoQty">Cargo Qty<span class="text-danger">*</span></label>
+                                    <label for="CargoQty">Cargo Qty (MT)<span class="text-danger">*</span></label>
                                     <input type="number" class="form-control" id="CargoQty" placeholder="Cargo Qty">
                                 </div>
                             </div>
                             <div class="col-sm-3">
                                 <div class="form-group">
-                                    <label for="CargoUnitofMasurement">Cargo Unit of Masurement</label>
+                                    <label for="CargoQtyCBM">Cargo Qty (CBM)</label>
+                                    <input type="number" class="form-control" id="CargoQtyCBM" placeholder="Cargo Qty (CBM)">
+                                    @* <label for="CargoUnitofMasurement">Cargo Unit of Measurement</label>
                                     <select class="form-control" id="CargoUnitofMasurement">
 
-                                        <option value="MT">MT</option>
-                                        <option value="KGs">KGs</option>
-                                        <option value="CBM">CBM</option>
-                                        <option value="Nos/Units">Nos/Units</option>
-                                    </select>
+                                    <option value="MT">MT</option>
+                                    <option value="KGs">KGs</option>
+                                    <option value="CBM">CBM</option>
+                                    <option value="Nos/Units">Nos/Units</option>
+                                    </select> *@
                                 </div>
                             </div>
                             <div class="col-sm-2">
@@ -168,15 +170,19 @@
 
                             <div class="col-sm-2">
                                 <div class="form-group">
-                                    <label for="DWT">DWT</label>
+                                        <label for="DWT">DWT<span class="text-danger">*</span></label>
                                     <input type="number" class="form-control" id="DWT" placeholder="DWT">
+                                    <input type="hidden" class="form-control" id="MAXDWT" placeholder="">
+
                                 </div>
                             </div>
 
                             <div class="col-sm-2">
                                 <div class="form-group">
-                                    <label for="ArrivalDraft">Arrival Draft (M)<span class="text-danger">*</span></label></label>
+                                    <label for="ArrivalDraft">Arrival Draft (M)<span class="text-danger">*</span></label>
                                     <input type="number" class="form-control" id="ArrivalDraft" placeholder="Arrival Draft">
+                                    <input type="hidden" class="form-control" id="MAXArrivalDraft" placeholder="">
+
                                 </div>
                             </div>
 
@@ -196,12 +202,16 @@
                                 <div class="form-group">
                                     <label for="LOA">LOA<span class="text-danger">*</span></label>
                                     <input type="number" class="form-control" id="LOA" placeholder="LOA">
+                                    <input type="hidden" class="form-control" id="MAXLOA" placeholder="">
+
                                 </div>
                             </div>
                             <div class="col-sm-1">
                                 <div class="form-group">
                                     <label for="Beam">Beam<span class="text-danger">*</span></label>
                                     <input type="number" class="form-control" id="Beam" placeholder="Beam">
+                                    <input type="hidden" class="form-control" id="MAXBeam" placeholder="">
+
                                 </div>
                             </div>
 
@@ -397,6 +407,71 @@
                 changeMonth: true,
                 changeYear: true
             });
+
+            $("#PortName").change(function () {
+                debugger
+                $('#PortName').css("border-color", "");
+            })
+            $("#PortActivityName").change(function () {
+                debugger
+                $('#PortActivityName').css("border-color", "");
+            })
+            $("#CallTypeName").change(function () {
+                debugger
+                $('#CallTypeName').css("border-color", "");
+            })
+            $("#CargoName").change(function () {
+                debugger
+                $('#CargoName').css("border-color", "");
+            })
+            $("#CargoQty").change(function () {
+                debugger
+                $('#CargoQty').css("border-color", "");
+            })
+            $("#LoadDischargeRate").change(function () {
+                debugger
+                $('#LoadDischargeRate').css("border-color", "");
+            })
+            $("#ROERate").change(function () {
+                debugger
+                $('#ROERate').css("border-color", "");
+            })
+            $("#VesselName").change(function () {
+                debugger
+                $('#VesselName').css("border-color", "");
+            })
+            $("#ArrivalDraft").change(function () {
+                debugger
+                $('#ArrivalDraft').css("border-color", "");
+            })
+            $("#GRT").change(function () {
+                debugger
+                $('#GRT').css("border-color", "");
+            })
+            $("#NRT").change(function () {
+                debugger
+                $('#NRT').css("border-color", "");
+            })
+            $("#LOA").change(function () {
+                debugger
+                $('#LOA').css("border-color", "");
+            })
+            $("#Beam").change(function () {
+                debugger
+                $('#Beam').css("border-color", "");
+            })
+            $("#VesselBallast").change(function () {
+                debugger
+                $('#VesselBallast').css("border-color", "");
+            })
+            $("#ReducedGRT").change(function () {
+                debugger
+                $('#ReducedGRT').css("border-color", "");
+            })
+            $("#IsReducedGRT").change(function () {
+                debugger
+                $('#IsReducedGRT').css("border-color", "");
+            })
         });
 
         function berthstaycalculation() {
@@ -533,55 +608,115 @@
                 }
             });
         };
+        function CargoNameOnChangefunc() {
 
-        function callChangefunc(val) {
-            var portid = $('option:selected', this).val();
-            debugger;
-            var cargoHandled;
-            cargoHandled = {
+            var portid = $('#PortName').val();
 
-                "TerminalID": $('#TerminalName').val()
-            }
+            var cargoId = $('#CargoName').val();
+
             $.ajax({
                 type: "GET",
-                url: "/PDA/TerminalNameOnchange",
-                data: cargoHandled,
-                dataType: "HTML",
+                url: "/Admin/PDAEstimator/TeaminalLoad",
+                data: { selectedCargoId: cargoId, selectedPortId: portid },
                 async: false,
+                dataType: "HTML",
                 success: function (data) {
-
-                    $("#berthdrop").html(data);
-                    showBrethDetailPopUp();
+                    $("#terminaldrop").html(data);
                 },
                 error: function () {
                 }
             });
         }
+
+        function callChangefunc(val) {
+            var portid = $('option:selected', this).val();
+            debugger;
+            if (val != "") {
+                $('#TerminalName').css("border-color", "");
+                var cargoHandled;
+                cargoHandled = {
+
+                    "TerminalID": $('#TerminalName').val()
+                }
+                $.ajax({
+                    type: "GET",
+                    url: "/PDA/TerminalNameOnchange",
+                    data: cargoHandled,
+                    dataType: "HTML",
+                    async: false,
+                    success: function (data) {
+
+                        $("#berthdrop").html(data);
+                        showBrethDetailPopUp();
+                    },
+                    error: function () {
+                    }
+                });
+            }
+        }
+
+        function DWTOnchange() {
+            var MAXDWT = $("#MAXDWT").val();
+            if (MAXDWT != "" && MAXDWT > 0 && MAXDWT < $("#DWT").val()) {
+                toastr.error("Please enter Max DWT Less then :" + MAXDWT, 'Error Alert');
+                $("#DWT").val(MAXDWT);
+            }
+        }
+        function ArrivalDraftOnchange() {
+            var MAXArrivalDraft = $("#MAXArrivalDraft").val();
+            if (MAXArrivalDraft != "" && MAXArrivalDraft > 0 && MAXArrivalDraft < $("#ArrivalDraft").val()) {
+                toastr.error("Please enter Max Arrival Draft Less then :" + MAXArrivalDraft, 'Error Alert');
+                $("#ArrivalDraft").val(MAXArrivalDraft);
+            }
+        }
+
+        function LOAOnchange() {
+            var MAXLOA = $("#MAXLOA").val();
+               if (MAXLOA != "" && MAXLOA > 0 && MAXLOA < $("#LOA").val()) {
+                toastr.error("Please enter MaxLOA Less then :" + MAXLOA, 'Error Alert');
+                $("#LOA").val(MAXLOA);
+            }
+        }
+
+        function BeamOnchange() {
+            var MAXBeam = $("#MAXBeam").val();
+            if (MAXBeam != "" && MAXBeam > 0 && MAXBeam < $("#Beam").val()) {
+                toastr.error("Please enter MaxBeam Less then :" + MAXBeam, 'Error Alert');
+                $("#Beam").val(MAXBeam);
+            }
+        }
+
         function BerthChangefunc(val) {
             debugger;
             var portid = $('option:selected', this).val();
-
-            var cargoHandled;
-            cargoHandled = {
-                "BerthId": val,
-                "TerminalID": $('#TerminalName').val()
-            }
-            $.ajax({
-                type: "GET",
-                url: "/PDA/BerthNameOnchange",
-                data: cargoHandled,
-                dataType: "JSON",
-                async: false,
-                success: function (data) {
-                    debugger;
-                    $("#LOA").val(data.loa);
-                    $("#Beam").val(data.beam);
-                    $("#ArrivalDraft").val(data.arrivalDraft);
-
-                },
-                error: function () {
+            if (val != "") {
+                $('#BerthName').css("border-color", "");
+                var cargoHandled;
+                cargoHandled = {
+                    "BerthId": val,
+                    "TerminalID": $('#TerminalName').val()
                 }
-            });
+                $.ajax({
+                    type: "GET",
+                    url: "/PDA/BerthNameOnchange",
+                    data: cargoHandled,
+                    dataType: "JSON",
+                    async: false,
+                    success: function (data) {
+                        debugger;
+                        $("#LOA").val(data.loa);
+                        $("#Beam").val(data.beam);
+                        $("#ArrivalDraft").val(data.arrivalDraft);
+                        $("#DWT").val(data.dwt);
+                        $("#MAXLOA").val(data.loa);
+                        $("#MAXBeam").val(data.beam);
+                        $("#MAXDWT").val(data.dwt);
+                        $("#MAXArrivalDraft").val(data.arrivalDraft);
+                    },
+                    error: function () {
+                    }
+                });
+            }
         }
         function showBrethDetailPopUp() {
             debugger;
@@ -607,32 +742,36 @@
         }
 
         function callCustomerfunc(id) {
-            debugger;
-            $.ajax({
-                type: "GET",
-                url: "/PDA/CustomerOnchange?CustomerId=" + id,
-                dataType: "json",
-                success: function (data) {
-                    $("#Company").val(data.primarycustomer);
+            if (val != "") {
+                $('#Currency').css("border-color", "");
+                $.ajax({
+                    type: "GET",
+                    url: "/PDA/CustomerOnchange?CustomerId=" + id,
+                    dataType: "json",
+                    success: function (data) {
+                        $("#Company").val(data.primarycustomer);
 
-                },
-                error: function () {
-                }
-            });
+                    },
+                    error: function () {
+                    }
+                });
+            }
         }
 
         function callCurrencyfunc(val) {
+            if (val != "") {
+                $('#Currency').css("border-color", "");
+                $.ajax({
 
-            $.ajax({
-
-                type: "GET",
-                url: "/PDA/CurrencyOnchange?Currency=" + val,
-                success: function (data) {
-                    $('#ROERate').val(data.roeRate);
-                },
-                error: function () {
-                }
-            });
+                    type: "GET",
+                    url: "/PDA/CurrencyOnchange?Currency=" + val,
+                    success: function (data) {
+                        $('#ROERate').val(data.roeRate);
+                    },
+                    error: function () {
+                    }
+                });
+            }
         }
 
         function clear() {
@@ -646,7 +785,9 @@
             $('#CallTypeName').val("");
             $('#CargoName').val("");
             $('#CargoQty').val("");
-            $('#CargoUnitofMasurement').val("MT");
+            $('#CargoQtyCBM').val("");
+
+            // $('#CargoUnitofMasurement').val("MT");
             $('#LoadDischargeRate').val("");
             $('#DWT').val("");
             $('#GRT').val("");
@@ -684,7 +825,8 @@
                 "CallTypeID": $('#CallTypeName').val(),
                 "CargoID": $('#CargoName').val(),
                 "CargoQty": $('#CargoQty').val(),
-                "CargoUnitofMasurement": $('#CargoUnitofMasurement').val(),
+                "CargoQtyCBM": $('#CargoQtyCBM').val(),
+                // "CargoUnitofMasurement": $('#CargoUnitofMasurement').val(),
                 "LoadDischargeRate": $('#LoadDischargeRate').val(),
                 "CurrencyID": $('#Currency').val(),
                 "ROE": $('#ROERate').val(),
@@ -711,29 +853,40 @@
 
             if ($('#customerid').val() == "") {
                 toastr.error("Please select customer.", 'Error Alert');
+                $('#customerid').css("border-color", "Red");
             }
             else if ($('#Company').val() == "") {
                 toastr.error("Please Select InternalCompany.", 'Error Alert');
+                $('#Company').css("border-color", "Red");
 
             }
-            else if ($('#VesselName').val() == "") {
-                toastr.error("Please enter VesselName.", 'Error Alert');
-                $('#VesselName').css("border-color", "Red");
-            }
+            // else if ($('#VesselName').val() == "") {
+            //     toastr.error("Please enter VesselName.", 'Error Alert');
+            //     // $('#VesselName').css("border-color", "Red");
+            // }
             else if ($('#PortName').val() == "") {
                 toastr.error("Please Select PortName.", 'Error Alert');
+                $('#PortName').css("border-color", "Red");
             }
             else if ($('#PortActivityName').val() == "") {
                 toastr.error("Please enter PortOperationType.", 'Error Alert');
+                $('#PortActivityName').css("border-color", "Red");
             }
             else if ($('#TerminalName').val() == "") {
                 toastr.error("Please Select TerminalName.", 'Error Alert');
+                $('#TerminalName').css("border-color", "Red");
+            }
+            else if ($('#BerthName').val() == "") {
+                toastr.error("Please Select BerthName.", 'Error Alert');
+                $('#BerthName').css("border-color", "Red");
             }
             else if ($('#CallTypeName').val() == "") {
                 toastr.error("Please Select CallTypeName.", 'Error Alert');
+                $('#CallTypeName').css("border-color", "Red");
             }
             else if ($('#CargoName').val() == "") {
                 toastr.error("Please Select CargoName.", 'Error Alert');
+                $('#CargoName').css("border-color", "Red");
             }
             else if ($('#CargoQty').val() == "") {
                 toastr.error("Please Enter CargoName.", 'Error Alert');
@@ -745,10 +898,19 @@
             }
             else if ($('#Currency').val() == "") {
                 toastr.error("Please Enter Currency.", 'Error Alert');
+                ('#Currency').css("border-color", "Red");
             }
             else if ($('#ROERate').val() == "") {
                 toastr.error("Please Enter ROERate.", 'Error Alert');
                 $('#ROERate').css("border-color", "Red");
+            }
+            else if ($('#VesselName').val() == "") {
+                toastr.error("Please enter VesselName.", 'Error Alert');
+                $('#VesselName').css("border-color", "Red");
+            }
+            else if ($('#DWT').val() == "") {
+                toastr.error("Please enter DWT.", 'Error Alert');
+                $('#DWT').css("border-color", "Red");
             }
             else if ($('#ArrivalDraft').val() == "") {
                 toastr.error("Please Enter Arrival Draft.", 'Error Alert');
@@ -777,6 +939,18 @@
             else if ($('#ETA').val() == "") {
                 toastr.error("Please Enter ETA.", 'Error Alert');
                 $('#ETA').css("border-color", "Red");
+            }
+            else if ($('#VesselBallast').val() == "") {
+                toastr.error("Please Enter VesselBallast.", 'Error Alert');
+                $('#VesselBallast').css("border-color", "Red");
+            }
+            // else if ($('#ReducedGRT').val() == "") {
+            //     toastr.error("Please Enter Reduced GRT.", 'Error Alert');
+            //     $('#ReducedGRT').css("border-color", "Red");
+            // }
+            else if ($('#IsReducedGRT').val() == "") {
+                toastr.error("Please Select Is Reduced GRT.", 'Error Alert');
+                $('#IsReducedGRT').css("border-color", "Red");
             }
             else {
                 showLoader(this);
@@ -826,7 +1000,9 @@
                 "CallTypeID": $('#CallTypeName').val(),
                 "CargoID": $('#CargoName').val(),
                 "CargoQty": $('#CargoQty').val(),
-                "CargoUnitofMasurement": $('#CargoUnitofMasurement').val(),
+                "CargoQtyCBM": $('#CargoQtyCBM').val(),
+
+                // "CargoUnitofMasurement": $('#CargoUnitofMasurement').val(),
                 "LoadDischargeRate": $('#LoadDischargeRate').val(),
                 "CurrencyID": $('#Currency').val(),
                 "ROERate": $('#ROERate').val(),
@@ -861,7 +1037,9 @@
                     $('#CallTypeName').val(data.pdaEstimitor.callTypeID);
                     $('#CargoName').val(data.pdaEstimitor.cargoID);
                     $('#CargoQty').val(data.pdaEstimitor.cargoQty);
-                    $('#CargoUnitofMasurement').val(data.pdaEstimitor.cargoUnitofMasurement);
+                    $('#CargoQtyCBM').val(data.pdaEstimitor.CargoQtyCBM);
+
+                    // $('#CargoUnitofMasurement').val(data.pdaEstimitor.cargoUnitofMasurement);
                     $('#LoadDischargeRate').val(data.pdaEstimitor.loadDischargeRate);
                     $('#Currency').val(data.pdaEstimitor.currencyID);
                     $('#ROERate').val(data.pdaEstimitor.roe);
@@ -921,7 +1099,9 @@
                 "CallTypeName": $('#CallTypeName').val(),
                 "CargoName": $('#CargoName').val(),
                 "CargoQty": $('#CargoQty').val(),
-                "CargoUnitofMasurement": $('#CargoUnitofMasurement').val(),
+                "CargoQtyCBM": $('#CargoQtyCBM').val(),
+
+                // "CargoUnitofMasurement": $('#CargoUnitofMasurement').val(),
                 "LoadDischargeRate": $('#LoadDischargeRate').val(),
                 "Currency": $('#Currency').val(),
                 "ROERate": $('#ROERate').val(),

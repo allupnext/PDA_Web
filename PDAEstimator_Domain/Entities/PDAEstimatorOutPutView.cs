@@ -28,6 +28,7 @@ namespace PDAEstimator_Domain.Entities
         public int ActivityTypeId { get; set; }
         
         public string TerminalName { get; set; } = string.Empty;
+        public string BerthName { get; set; } = string.Empty;
 
         public DateTime? ETA { get; set; }
         public string ActivityType { get; set; } = string.Empty;
@@ -105,7 +106,6 @@ namespace PDAEstimator_Domain.Entities
         public int VesselBallast { get; set; } = 0;
 
         public int BerthID { get; set; }
-        public string BerthName { get; set; }
         public string? Disclaimer { get; set; }
     }
 }

@@ -171,6 +171,7 @@ namespace PDA_Web.Controllers
                     CurrencyName = PDAData.CurrencyName,
                     CargoID = PDAData.CargoID,
                     CargoQty = PDAData.CargoQty,
+                    CargoQtyCBM = PDAData.CargoQtyCBM,
                     CargoUnitofMasurement = PDAData.CargoUnitofMasurement,
                     LoadDischargeRate = PDAData.LoadDischargeRate,
                     CargoName = PDAData.CargoName,
@@ -193,6 +194,7 @@ namespace PDA_Web.Controllers
                     BerthStayHoursCoastal = PDAData.BerthStayHoursCoastal,
                     VesselBallast = PDAData.VesselBallast,
                     BerthID = PDAData.BerthId,
+                    BerthName = PDAData.BerthName,
                     CompanyName = pDAEstimatorOutPutdata.CompanyName,
                     CompanyAddress1 = pDAEstimatorOutPutdata.CompanyAddress1.ToUpper(),
                     CompanyAddress2 = pDAEstimatorOutPutdata.CompanyAddress2.ToUpper(),
@@ -329,6 +331,7 @@ namespace PDA_Web.Controllers
                     CurrencyName = PDAData.CurrencyName,
                     CargoID = PDAData.CargoID,
                     CargoQty = PDAData.CargoQty,
+                    CargoQtyCBM = PDAData.CargoQtyCBM,
                     CargoUnitofMasurement = PDAData.CargoUnitofMasurement,
                     LoadDischargeRate = PDAData.LoadDischargeRate,
                     CargoName = PDAData.CargoName,
@@ -351,7 +354,8 @@ namespace PDA_Web.Controllers
                     BerthStayDayCoastal = PDAData.BerthStayDayCoastal,
                     BerthStayHoursCoastal = PDAData.BerthStayHoursCoastal,
                     VesselBallast = PDAData.VesselBallast,
-                    BerthID = PDAData.BerthId
+                    BerthID = PDAData.BerthId,
+                    BerthName = PDAData.BerthName
                 };
 
                 var CompanyData = unitOfWork.Company.GetAlllistAsync().Result.Where(x => x.CompanyId == PDAData.InternalCompanyID).FirstOrDefault();
@@ -470,6 +474,8 @@ namespace PDA_Web.Controllers
                                 slabattributvalue = pDAEstimatorOutPut.AnchorageStay;
                             else if (triff.SlabName == "QTYMT")
                                 slabattributvalue = pDAEstimatorOutPut.CargoQty;
+                            else if (triff.SlabName == "QTYCBM")
+                                slabattributvalue = pDAEstimatorOutPut.CargoQtyCBM;
                             UnitCalculation(triff, pDAEstimatorOutPut.GRT, (long)slabattributvalue);
 
                             foreach (var formularTransList in formulatransdata)
@@ -618,6 +624,18 @@ namespace PDA_Web.Controllers
                                             formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.CargoQty.ToString() : pDAEstimatorOutPut.CargoQty.ToString();
                                         }
                                     }
+                                    else if (FormulaAttributedata.Contains("QTYCBM"))
+                                    {
+                                        //UnitCalculation(triff, pDAEstimatorOutPut.CargoQtyCBM);
+                                        if (triff.SlabID != null && triff.SlabID > 0 && FormulaAttributedata == triff.SlabName)
+                                        {
+                                            formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                        }
+                                        else
+                                        {
+                                            formulastring = formulastring != "" ? formulastring + " " + pDAEstimatorOutPut.CargoQtyCBM.ToString() : pDAEstimatorOutPut.CargoQtyCBM.ToString();
+                                        }
+                                    }
                                     else
                                     {
                                         if (triff.UNITS == null || triff.UNITS == 0)
@@ -651,7 +669,15 @@ namespace PDA_Web.Controllers
                     if (triff.Formula != "")
                     {
                         DataTable dt = new DataTable();
-                        var amount = dt.Compute(triff.Formula, "");
+                        var amount = new object();
+                        try
+                        {
+                            amount = dt.Compute(triff.Formula, "");
+                        }
+                        catch (Exception ex)
+                        {
+                            continue;
+                        }
                         decimal amt = Convert.ToDecimal(amount);
                         amt = Math.Abs(amt);
                         amt = amt * triff.Rate;
@@ -702,6 +728,10 @@ namespace PDA_Web.Controllers
             return pDAEstimatorOutPut;
         }
 
+        private string GetFullPathOfFile1(string fileName)
+        {
+            return $"{_hostEnvironment.WebRootPath}\\uploads\\{fileName}";
+        }
         private string GetFullPathOfFile(string fileName)
         {
             return $"{_hostEnvironment.WebRootPath}\\companylogo\\{fileName}";
@@ -839,6 +869,17 @@ namespace PDA_Web.Controllers
             {
                 return RedirectToAction("index", "Login");
             }
+        }
+        public FileResult DownloadFile(string fileName)
+        {
+            //Build the File Path.
+            //string path = Path.Combine(this.Environment.WebRootPath, "Files/") + fileName;
+            string fullPath = GetFullPathOfFile1(fileName.Replace("\"", ""));
+            //Read the File data into Byte Array.
+            byte[] bytes = System.IO.File.ReadAllBytes(fullPath);
+
+            //Send the File to Download.
+            return File(bytes, "application/octet-stream", fileName);
         }
         public async Task<IActionResult> TempData()
         {
@@ -989,6 +1030,15 @@ namespace PDA_Web.Controllers
             ViewBag.Terminal = TerminalDetailData;
             return PartialView("partial/TerminalList");
         }
+        public IActionResult TeaminalLoad(int selectedCargoId, int selectedPortId)
+        {
+
+            var TerminalDetailData = unitOfWork.PDAEstimitor.GetTerminalByCargoIdAndPortAsync(selectedCargoId, selectedPortId).Result;
+            if (TerminalDetailData != null && TerminalDetailData.Count() > 0)
+                TerminalDetailData = TerminalDetailData.Where(x => x.Status == true).ToList();
+            ViewBag.Terminal = TerminalDetailData;
+            return PartialView("partial/TerminalList");
+        }
 
         public IActionResult TerminalNameOnchange(PDAEstimator PDAEstimitor)
         {
@@ -1001,13 +1051,21 @@ namespace PDA_Web.Controllers
 
         public IActionResult BerthNameOnchange(PDAEstimator PDAEstimitor)
         {
-            var BearthDetailData = unitOfWork.BerthDetails.GetByIdAsync(PDAEstimitor.BerthId).Result;
-
+            if (PDAEstimitor.BerthId != 0)
+            {
+                var BearthDetailData = unitOfWork.BerthDetails.GetByIdAsync(PDAEstimitor.BerthId).Result;
+                return Json(new
+                {
+                    loa = BearthDetailData.MaxLoa,
+                    beam = BearthDetailData.MaxBeam,
+                    arrivalDraft = BearthDetailData.MaxArrivalDraft,
+                    dwt = BearthDetailData.DWT,
+                    proceed = true,
+                    msg = ""
+                });
+            }
             return Json(new
             {
-                loa = BearthDetailData.MaxLoa,
-                beam = BearthDetailData.MaxBeam,
-                arrivalDraft = BearthDetailData.MaxArrivalDraft,
                 proceed = true,
                 msg = ""
             });
@@ -1095,7 +1153,7 @@ namespace PDA_Web.Controllers
 
                 if (maxArribvaldraft != null && maxArribvaldraft < PDAEstimitor.ArrivalDraft)
                 {
-                    _toastNotification.AddErrorToastMessage("Please enter Max Arribval Draft Less then : " + maxArribvaldraft);
+                    _toastNotification.AddErrorToastMessage("Please enter Max Arrival Draft Less then : " + maxArribvaldraft);
                     return Json(new
                     {
                         proceed = false,
@@ -1254,7 +1312,8 @@ namespace PDA_Web.Controllers
                                             slabattributvalue = PDAEstimitor.AnchorageStay;
                                         else if (triff.SlabName == "QTYMT")
                                             slabattributvalue = PDAEstimitor.CargoQty;
-
+                                        else if (triff.SlabName == "QTYCBM")
+                                            slabattributvalue = PDAEstimitor.CargoQtyCBM;
                                         bool Range_Tariff = triff.Range_TariffID > 0 ? true : false;
                                         UnitCalculation(triff, PDAEstimitor.GRT, (long)slabattributvalue, Range_Tariff);
                                         foreach (var formularTransList in formulatransdata)
@@ -1403,6 +1462,18 @@ namespace PDA_Web.Controllers
                                                         formulastring = formulastring != "" ? formulastring + " " + PDAEstimitor.CargoQty.ToString() : PDAEstimitor.CargoQty.ToString();
                                                     }
                                                 }
+                                                else if (FormulaAttributedata.Contains("QTYCBM"))
+                                                {
+                                                    //UnitCalculation(triff, pDAEstimatorOutPut.CargoQty);
+                                                    if (triff.SlabID != null && triff.SlabID > 0 && FormulaAttributedata == triff.SlabName)
+                                                    {
+                                                        formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                                    }
+                                                    else
+                                                    {
+                                                        formulastring = formulastring != "" ? formulastring + " " + PDAEstimitor.CargoQtyCBM.ToString() : PDAEstimitor.CargoQtyCBM.ToString();
+                                                    }
+                                                }
                                                 else
                                                 {
                                                     if (triff.UNITS == null || triff.UNITS == 0)
@@ -1440,7 +1511,15 @@ namespace PDA_Web.Controllers
                                 if (triff.Formula != "")
                                 {
                                     DataTable dt = new DataTable();
-                                    var amount = dt.Compute(triff.Formula, "");
+                                    var amount = new object();
+                                    try
+                                    {
+                                        amount = dt.Compute(triff.Formula, "");
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        continue;
+                                    }
                                     decimal amt = Convert.ToDecimal(amount);
                                     amt = Math.Abs(amt);
                                     amt = amt * triff.Rate;
@@ -1500,6 +1579,10 @@ namespace PDA_Web.Controllers
                                                 else if (FormulaAttributedata.Contains("QTYMT"))
                                                 {
                                                     formulastringref = formulastringref != "" ? formulastringref + " " + PDAEstimitor.CargoQty.ToString() : PDAEstimitor.CargoQty.ToString();
+                                                }
+                                                else if (FormulaAttributedata.Contains("QTYCBM"))
+                                                {
+                                                    formulastringref = formulastringref != "" ? formulastringref + " " + PDAEstimitor.CargoQtyCBM.ToString() : PDAEstimitor.CargoQty.ToString();
                                                 }
                                                 else
                                                 {
