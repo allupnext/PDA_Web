@@ -129,13 +129,13 @@
                                 <div class="col-sm-2">
                                     <div class="form-group">
                                         <label for="CargoQty">Cargo Qty (MT)<span class="text-danger">*</span></label>
-                                        <input type="number" class="form-control" id="CargoQty" placeholder="Cargo Qty (MT)">
+                                        <input type="number" class="form-control" id="CargoQty" onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="Cargo Qty (MT)">
                                     </div>
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="form-group">
                                         <label for="CargoQtyCBM">Cargo Qty (CBM)</label>
-                                        <input type="number" class="form-control" id="CargoQtyCBM" placeholder="Cargo Qty (CBM)">
+                                        <input type="number" class="form-control" id="CargoQtyCBM"  onkeypress="return event.charCode >= 48 && event.charCode <= 57" placeholder="Cargo Qty (CBM)">
                                         @* <label for="CargoUnitofMasurement">Cargo Unit of Measurement</label>
                                         <select class="form-control" id="CargoUnitofMasurement">
 

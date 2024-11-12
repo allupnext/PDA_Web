@@ -1288,25 +1288,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                                         if (formularTransList.formulaAttributeID > 0)
                                         {
                                             string FormulaAttributedata = formularTransList.formulaAttributeName;
-                                            if (FormulaAttributedata.Contains("GRT"))
-                                            {
-                                                if (triff.SlabID == null || triff.SlabID == 0)
-                                                {
-                                                    triff.UNITS = PDAEstimitor.GRT;
-                                                }
-
-                                                if (triff.SlabID != null && triff.SlabID > 0 && FormulaAttributedata == triff.SlabName)
-                                                {
-                                                    formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
-                                                }
-                                                else
-                                                {
-                                                    formulastring = formulastring != "" ? formulastring + " " + PDAEstimitor.GRT.ToString() : PDAEstimitor.GRT.ToString();
-                                                }
-
-                                                //UnitCalculation(triff, pDAEstimatorOutPut.GRT, pDAEstimatorOutPut);
-                                            }
-                                            else if (FormulaAttributedata.Contains("RGRT"))
+                                            if (FormulaAttributedata.Contains("RGRT"))
                                             {
                                                 if (triff.SlabID == null || triff.SlabID == 0)
                                                 {
@@ -1324,6 +1306,25 @@ namespace PDA_Web.Areas.Admin.Controllers
 
                                                 //UnitCalculation(triff, pDAEstimatorOutPut.GRT, pDAEstimatorOutPut);
                                             }
+                                            else if (FormulaAttributedata.Contains("GRT"))
+                                            {
+                                                if (triff.SlabID == null || triff.SlabID == 0)
+                                                {
+                                                    triff.UNITS = PDAEstimitor.GRT;
+                                                }
+
+                                                if (triff.SlabID != null && triff.SlabID > 0 && FormulaAttributedata == triff.SlabName)
+                                                {
+                                                    formulastring = formulastring != "" ? formulastring + " " + triff.UNITS.ToString() : triff.UNITS.ToString();
+                                                }
+                                                else
+                                                {
+                                                    formulastring = formulastring != "" ? formulastring + " " + PDAEstimitor.GRT.ToString() : PDAEstimitor.GRT.ToString();
+                                                }
+
+                                                //UnitCalculation(triff, pDAEstimatorOutPut.GRT, pDAEstimatorOutPut);
+                                            }
+                                            
                                             else if (FormulaAttributedata.Contains("NRT"))
                                             {
                                                 if (triff.SlabID == null || triff.SlabID == 0)
