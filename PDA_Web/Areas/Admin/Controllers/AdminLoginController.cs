@@ -234,20 +234,6 @@ namespace PDA_Web.Areas.Admin.Controllers
                 var EmailExist = await unitOfWork.User.CheckEmailExist(Email);
                 if (EmailExist != null)
                 {
-                    var CustomerUserData = await unitOfWork.CustomerUserMaster.GetCustomerUserByEmailAsync(Email);
-
-                    var CustomerId = CustomerUserData.Select(x => x.CustomerId).First();
-
-                    var corecustomerdata = await unitOfWork.Customer.GetByIdAsync(Convert.ToInt32(CustomerId));
-
-                    Int64 PrimaryCompanyId = Convert.ToInt64(corecustomerdata.PrimaryCompany);
-
-                    var FromPrimaryCompany = await unitOfWork.Company.GetByIdAsync(PrimaryCompanyId);
-                    var PrimaryCompnayName = FromPrimaryCompany.CompanyName;
-
-                    /*                    Int64 PrimaryCompanyId = Convert.ToInt64(CustomerUserData.);*/
-
-
                     Random random = new Random();
                     int length = Email.Length; // Desired string length
                     string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -275,23 +261,22 @@ namespace PDA_Web.Areas.Admin.Controllers
                     {
                         Email
                     };
-                    /*                    string Content = confirmationLink;*/
-                    /*                    string Content = "You recently requested to reset the password for your PDAEstimator account. Click the button below to proceed. ";*/
+                 
                     string Content = "<html> <body>   <p>Hello, <br> You recently requested to reset the password for your PDAEstimator account. Click the button below to proceed.    </p> <div> <a  href=" + confirmationLink + "> <button style='height:30px; margin-bottom:30px; font-size:14px;' type='button'> Reset Password </button> </a> </div> </body> </html> ";
                     string Subject = "Reset Password";
                     List<string> ccrecipients = new List<string>();
-                    string FromCompany = "";
-                    string ToEmail = "";
-                    var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByProcessNameAsync("Customer Register");
-                    if (emailconfig != null)
-                    {
-                        ToEmail = emailconfig.ToEmail;
-                        FromCompany = emailconfig.FromEmail;
-                        if (emailconfig.ToEmail != null)
-                        {
-                            ccrecipients = ToEmail.Split(',').ToList();
-                        }
-                    }
+                    string FromCompany = "alert@hindfreight.net";
+                    //string ToEmail = "";
+                    //var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByProcessNameAsync("Customer Register");
+                    //if (emailconfig != null)
+                    //{
+                    //    ToEmail = emailconfig.ToEmail;
+                    //    FromCompany = emailconfig.FromEmail;
+                    //    if (emailconfig.ToEmail != null)
+                    //    {
+                    //        ccrecipients = ToEmail.Split(',').ToList();
+                    //    }
+                    //}
 
 
                     var Msg = new Message(recipients, ccrecipients, Subject, Content, FromCompany);
