@@ -291,7 +291,7 @@ namespace PDA_Web.Controllers
                         List<string> ccrecipients = new List<string>();
                         string FromCompany = "";
                         string ToEmail = "";
-                        var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByProcessNameAsync("Customer Reset Password");
+                        var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByCompanyandProcessNameAsync((int)PrimaryCompanyId, "Customer Reset Password");
                         if (emailconfig != null)
                         {
                             ToEmail = emailconfig.ToEmail;

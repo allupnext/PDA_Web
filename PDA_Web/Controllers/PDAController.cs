@@ -116,7 +116,22 @@ namespace PDA_Web.Controllers
                     };
                     string FromCompany = "";
                     string ToEmail = "";
-                    var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByProcessNameAsync("PDA Generate");
+
+                   var customer = await unitOfWork.Customer.GetByIdAsync(custuser.CustomerId);
+                    var companydata = await unitOfWork.Company.GetAlllistAsync();
+                    int Samsaracompanyid = 0;
+                    if (companydata != null && companydata.Count > 0)
+                    {
+                        var samsaracompanydata = companydata.Where(x => x.CompanyName.ToLower() == "samsara shipping private limited");
+                        if (samsaracompanydata.Count() > 0)
+                        {
+                            Samsaracompanyid = samsaracompanydata.FirstOrDefault().CompanyId;
+                        }
+                    }
+
+                    int companyid = customer.PrimaryCompanyId != null ? (int)customer.PrimaryCompanyId : Samsaracompanyid;
+
+                    var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByCompanyandProcessNameAsync(companyid, "PDA Generate");
                     if (emailconfig != null)
                     {
                         ToEmail = emailconfig.ToEmail;
