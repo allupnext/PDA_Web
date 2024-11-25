@@ -384,8 +384,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                         string customerphone = string.Concat(custuser.CountryCode, ' ', custuser.Mobile);
 
                         DateTime indianTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, INDIAN_ZONE);
-                        mailcontent = "<html><head><title> Welcome to PDA Portal.</title> </head><body><p> Dear " + customerfullname + ", <br> Thank you for registering on PDA portal. <br> Your company registration process is now complete. <br> Your login credentials are as below. <br><br> <b> Username - </b> " + custuser.Email + " <br><b>User Password – </b> " + custuser.Password + " <br><br> Your free trial starts from <b>" + indianTime.ToString("dd-MM-yyyy") + "</b> and is valid up to <b>" + indianTime.AddDays(15).ToString("dd-MM-yyyy") + "</b>. <br> <br>Appreciate your valuable feedback and if you wish to continue using the PDA portal please complete formalities. <br> Our team will be happy to assist you on any additional information that you may require. <br> <br> PIC - " + customerfullname + " <br>  Contact -  " + customerphone + " <br> E-mail ID - " + custuser.Email + " <br><br> <b>Regards <br> PDA Portal</b> </p></body></html>";
-                        emailsubject = "Welcome to PDA Portal";
+                        mailcontent = "<html><head><title> Welcome to PDA Portal.</title> </head><body><p> Dear " + customerfullname + ", <br> Your Registration has been Approved. \r\nPlease find below your Login Credentials. <br><br> <b> Registered Email/Login - </b> " + custuser.Email + " <br><b> Password – </b> " + custuser.Password + " <br><br> Your free trial starts from <b>" + indianTime.ToString("dd-MM-yyyy") + "</b> and is valid up to <b>" + indianTime.AddDays(15).ToString("dd-MM-yyyy") + "</b>. <br> Please email your feedback/suggestions to EPDA.Support@samsaragroup.com <br><br> <b>Regards <br> EPDA Portal Team. </b> </p></body></html>";
+                        emailsubject = "EPDA Portal: Registration Approved";
 
                      
 
@@ -403,7 +403,7 @@ namespace PDA_Web.Areas.Admin.Controllers
 
                     string Content = "<html> <body>   <p>Hello, <br> Your Register company is not approved and you can not access PDA Portal. For further question conact to Admin. </p> <div> </br> <p> <b> User Name :</b> " + custuser.Email + " </br> <b> Password: </b> " + custuser.Password + "  </p> </br> </br> <p> Regard, </br> PDA Portal </p> </div> </body> </html> ";
 
-                    string Subject = "Registion request is not approved";
+                    string Subject = "EPDA Portal: Registration Rejected/Inactive";
                     List<string> ccrecipients = new List<string>();
                     string FromCompany = "";
                     string ToEmail = "";

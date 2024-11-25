@@ -191,7 +191,7 @@ namespace PDA_Web.Controllers
    + "<div style='float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300'>"
    + "<p></p>"
     + "</div> </div></div> ";
-            string Subject = "Login in PDA Portal";
+            string Subject = "EPDA Portal: Login OTP";
             List<string> ccrecipients = new List<string>();
             string FromCompany = "";
             string ToEmail = "";
