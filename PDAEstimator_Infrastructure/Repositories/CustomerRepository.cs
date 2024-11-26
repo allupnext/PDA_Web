@@ -23,7 +23,7 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<CustomerUserMaster> Authenticate(string email, string password)
         {
-            var sql = "SELECT * FROM CustomerUserMaster where Email=@Email and Password=@Password";
+            var sql = "SELECT * FROM CustomerUserMaster where Email=@Email and Password=@Password and IsDeleted != 1";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();

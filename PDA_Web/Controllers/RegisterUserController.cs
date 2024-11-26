@@ -127,8 +127,8 @@ namespace PDA_Web.Controllers
                 await unitOfWork.CustomerUserMaster.AddAsync(customerUserMaster);
                 string customerfullname = string.Concat(customerUserMaster.FirstName, ' ', customerUserMaster.LastName);
                 string customerphone = string.Concat(customer.CountryCode, ' ', customer.Mobile);
-                mailcontent = "<html> <head> <title> Company Registration Request on PDA Portal.</title> </head><body><p> Dear Team,<br> Registration request received from " + customer.Company + ".</p><ul><li>User PIC Name - "+ customerfullname + "</li><li>User Email - " + customer.Email + "</li><li>User Phone - "+ customerphone + "  </li></ul> </br> <p> Kindly approve request in portal.<br><br> <b>Best Regards <br> PDA Portal Team</b></p> </body> </html>";
-                emailsubject = "Company Registration Request on PDA Portal";
+                mailcontent = "<html> <head> <title> Registration request received from.</title> </head><body><p> Dear Team,<br> Registration request received from " + customer.Company + ".</p><ul><li>Registered Email/Login: - " + customer.Email + "</li><li>Mobile - " + customerphone + "  </li></ul> </br> <p> Kindly approve request in portal.<br><br> <b>Best Regards <br> PDA Portal Team</b></p> </body> </html>";
+                emailsubject = "EPDA Portal: New Registration Request";
 
                 var companydata = await unitOfWork.Company.GetAlllistAsync();
                 int Samsaracompanyid = 0;
@@ -145,8 +145,8 @@ namespace PDA_Web.Controllers
                 if(Samsaracompanyid > 0)
                     CustomerRegisterEmail("Customer Register", mailcontent, emailsubject, "", Samsaracompanyid);
 
-                mailcontent = "<html><head><title> Thank you for registering on PDA Portal.</title></head><body><p> Dear "+ customerfullname + ",<br> Thank you for your interest in our PDA portal. </br> Your company registration is in process and our team shall connect with you soon. <br> Thank you once again for your consideration.<br><br> <b>Best Regards <br> PDA Portal Team</b> </p></body></html>";
-                emailsubject = "Thank you for registering on PDA Portal";
+                mailcontent = "<html><head><title> Thank you for registering on PDA Portal.</title></head><body><p> Dear "+ customerfullname + ",<br> We have received your Registration request with below detail.</br> </p><ul><li>Registered Email/Login: - " + customer.Email + "</li><li>Mobile - " + customerphone + "  </li></ul> </br> <p>  <br> You'll shortly receive your Login Credentials.<br><br> <b>Best Regards <br> PDA Portal Team</b> </p></body></html>";
+                emailsubject = "EPDA Portal: New Registration Request";
 
                 if (Samsaracompanyid > 0)
                     CustomerRegisterThankYouEmail("Customer Register", mailcontent, emailsubject, customer.Email, Samsaracompanyid);

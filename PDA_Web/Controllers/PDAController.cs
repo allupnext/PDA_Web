@@ -106,8 +106,8 @@ namespace PDA_Web.Controllers
                 {
                     string customerfullname = string.Concat(custuser.FirstName, ' ', custuser.LastName);
 
-                    string Content = "<html><head><title> PDA .</title></head><body><p> Dear "+ customerfullname + ", <br><br>  Thank you for using PDA portal. <br> Please find attached PDA for [Port] - [Port Operation type] - [cargo] - [PDA ID]. <br> Please be advised that this PDA is only for estimation Please contact our team for more details. <br> [E-mail ID - Common E-mail ID of Bulk Ops team] <br> We look forward to your successful business and agency appointment.   <br><br> <b>Regards <br> PDA Portal</b> </p></body></html>";
-                    string Subject = "PDA for "+ pDAEstimatorOutPut.PortName + " - "+ pDAEstimatorOutPut.ActivityType +" - "+ pDAEstimatorOutPut.CargoName + " - "+ pDAEstimatorOutPut.PDAEstimatorID + "";
+                    string Content = "<html><head><title> PDA .</title></head><body><p> Dear "+ customerfullname + ", <br><br>  Please find attached PDA "+ id + " for Port "+ pDAEstimatorOutPut.PortName + " For further details/query on the attached PDA, you may connect/email us on bulkopsindia@samsarashipping.com <br> Please email your feedback/suggestions to EPDA.Support@samsaragroup.com  <br><br> <b>Regards <br> EPDA Portal Team</b> </p></body></html>";
+                    string Subject = "EPDA Portal: PDA "+ id + " for Port "+ pDAEstimatorOutPut.PortName;
                     List<string> ccrecipients = new List<string>();
 
                     List<string> recipients = new List<string>
