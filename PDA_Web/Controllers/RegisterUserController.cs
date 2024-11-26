@@ -143,13 +143,13 @@ namespace PDA_Web.Controllers
 
 
                 if(Samsaracompanyid > 0)
-                    CustomerRegisterEmail("Customer Register", mailcontent, emailsubject, customer.Email, Samsaracompanyid);
+                    CustomerRegisterEmail("Customer Register", mailcontent, emailsubject, "", Samsaracompanyid);
 
                 mailcontent = "<html><head><title> Thank you for registering on PDA Portal.</title></head><body><p> Dear "+ customerfullname + ",<br> Thank you for your interest in our PDA portal. </br> Your company registration is in process and our team shall connect with you soon. <br> Thank you once again for your consideration.<br><br> <b>Best Regards <br> PDA Portal Team</b> </p></body></html>";
                 emailsubject = "Thank you for registering on PDA Portal";
 
                 if (Samsaracompanyid > 0)
-                    CustomerRegisterEmail("Customer Register", mailcontent, emailsubject, customer.Email, Samsaracompanyid);
+                    CustomerRegisterThankYouEmail("Customer Register", mailcontent, emailsubject, customer.Email, Samsaracompanyid);
 
                 _toastNotification.AddSuccessToastMessage("Register request sent successfully");
                 return Json(new
@@ -173,6 +173,40 @@ namespace PDA_Web.Controllers
 
         public async Task<bool> CustomerRegisterEmail(string processname, string mailcontent, string emailsubject, string customeremail, int companyid)
         {
+          
+
+            string Content = mailcontent;
+            string Subject = emailsubject;
+
+            List<string> ccrecipients = new List<string>();
+            string FromCompany = "";
+            string ccEmail = "";
+            var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByCompanyandProcessNameAsync(companyid, processname);
+
+            if (emailconfig != null)
+            {
+                ccEmail = emailconfig.ToEmail;
+                FromCompany = emailconfig.FromEmail;
+                if (emailconfig.ToEmail != null)
+                {
+                    ccrecipients = ccEmail.Split(',').ToList();
+                }
+                FromCompany = emailconfig.FromEmail;
+
+            }
+
+            List<string> recipients = new List<string>
+                {
+                    customeremail
+                };
+            var Msg = new Message(recipients, ccrecipients, Subject, Content, FromCompany);
+
+            _emailSender.SendEmail(Msg);
+            return true;
+        }
+
+        public async Task<bool> CustomerRegisterThankYouEmail(string processname, string mailcontent, string emailsubject, string customeremail, int companyid)
+        {
             List<string> recipients = new List<string>
                 {
                     customeremail
@@ -185,7 +219,7 @@ namespace PDA_Web.Controllers
             string FromCompany = "";
             string ccEmail = "";
             var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByCompanyandProcessNameAsync(companyid, processname);
-            
+
             if (emailconfig != null)
             {
                 ccEmail = emailconfig.ToEmail;

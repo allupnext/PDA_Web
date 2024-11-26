@@ -36,7 +36,7 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<CustomerUserMaster> CheckEmailExist(string email)
         {
-            var sql = "SELECT * FROM CustomerUserMaster where Email=@Email";
+            var sql = "SELECT * FROM CustomerUserMaster where Email=@Email and IsDeleted != 1";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
@@ -167,11 +167,11 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<int> DeleteAsync(long id)
         {
-            var sql = "Update CustomerMaster set IsDeleted = 1 WHERE CustomerId = @Id";
+            var sql = "DeleteCustomerById";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
-                var result = await connection.ExecuteAsync(sql, new { Id = id });
+                var result = await connection.ExecuteAsync(sql, new { Id = id }, commandType: System.Data.CommandType.StoredProcedure);
                 return result;
             }
         }
@@ -191,7 +191,7 @@ namespace PDAEstimator_Infrastructure.Repositories
         {
             try
             {
-                var sql = "SELECT * FROM CustomerMaster WHERE CustomerId = @Id";
+                var sql = "SELECT * FROM CustomerMaster WHERE CustomerId = @Id and IsDeleted != 1";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
                     var dynamicParameters = new DynamicParameters();
