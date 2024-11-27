@@ -384,7 +384,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                         string customerphone = string.Concat(custuser.CountryCode, ' ', custuser.Mobile);
 
                         DateTime indianTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, INDIAN_ZONE);
-                        mailcontent = "<html><head><title> Welcome to PDA Portal.</title> </head><body><p> Dear " + customerfullname + ", <br> Your Registration has been Approved. \r\nPlease find below your Login Credentials. <br><br> <b> Registered Email/Login - </b> " + custuser.Email + " <br><b> Password – </b> " + custuser.Password + " <br><br> Your free trial starts from <b>" + indianTime.ToString("dd-MM-yyyy") + "</b> and is valid up to <b>" + indianTime.AddDays(15).ToString("dd-MM-yyyy") + "</b>. <br> Please email your feedback/suggestions to EPDA.Support@samsaragroup.com <br><br> <b>Regards <br> EPDA Portal Team. </b> </p></body></html>";
+                        mailcontent = "<html><head><title> Welcome to PDA Portal.</title> </head><body><p> Dear " + customerfullname + ", <br> Your Registration has been Approved. \r\nPlease find below your Login Credentials. <br><br> <b> Registered Email/Login - </b> " + custuser.Email + " <br><b> Password – </b> " + custuser.Password + " <br><br> Your free trial starts from <b>" + indianTime.ToString("dd-MM-yyyy") + "</b> and is valid up to <b>" + indianTime.AddDays(15).ToString("dd-MM-yyyy") + "</b>. <br> Please email your feedback/suggestions to EPDA.Support@samsaragroup.com   <br><br> <b>Regards <br> EPDA Portal Team. </b> </body></html>";
                         emailsubject = "EPDA Portal: Registration Approved";
 
                      

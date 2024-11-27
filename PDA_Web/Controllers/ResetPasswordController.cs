@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using Microsoft.AspNetCore.Mvc;
 using NToastNotify;
 using PDAEstimator_Application.Interfaces;
 using PDAEstimator_Domain.Entities;
+using PDAEstimator_Infrastructure_Shared;
+using PDAEstimator_Infrastructure_Shared.Services;
 
 namespace PDA_Web.Controllers
 {
@@ -9,14 +12,15 @@ namespace PDA_Web.Controllers
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly ILogger<LoginController> _logger;
+        private readonly IEmailSender _emailSender;
 
         private readonly IToastNotification _toastNotification;
-        public ResetPasswordController(ILogger<LoginController> logger, IUnitOfWork unitOfWork, IToastNotification toastNotification)
+        public ResetPasswordController(ILogger<LoginController> logger, IUnitOfWork unitOfWork, IToastNotification toastNotification, IEmailSender emailSender)
         {
             this.unitOfWork = unitOfWork;
             _logger = logger;
             _toastNotification = toastNotification;
-
+             _emailSender = emailSender;
         }
         public IActionResult Index()
         {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
@@ -44,8 +48,62 @@ namespace PDA_Web.Controllers
             if (resetPassword != null)
             {
                 var ChekCustomer = unitOfWork.Customer.ChangePassword(resetPassword.Password, resetPassword.userId);
+               var custuserdata = await unitOfWork.CustomerUserMaster.GetByIdAsync(resetPassword.userId);
+                if (custuserdata != null)
+                {
+                    string Email = custuserdata.Email;
+                    var CustomerUserData = await unitOfWork.CustomerUserMaster.GetCustomerUserByEmailAsync(Email);
 
-                var data = new
+                    var CustomerId = CustomerUserData.Select(x => x.CustomerId).FirstOrDefault();
+
+                    var corecustomerdata = await unitOfWork.Customer.GetByIdAsync(Convert.ToInt32(CustomerId));
+
+                    Int64 PrimaryCompanyId = Convert.ToInt64(corecustomerdata.PrimaryCompany);
+
+                    var FromPrimaryCompany = await unitOfWork.Company.GetByIdAsync(PrimaryCompanyId);
+                    var PrimaryCompnayName = FromPrimaryCompany.CompanyName;
+
+
+                    Random random = new Random();
+                    int length = Email.Length; // Desired string length
+                    string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                    char[] randomString = new char[length];
+
+                    for (int i = 0; i < length; i++)
+                    {
+                        randomString[i] = characters[random.Next(characters.Length)];
+                    }
+
+                    string token = new string(randomString);
+                    await unitOfWork.Customer.GenerateEmailConfirmationTokenAsync(token, custuserdata.ID);
+
+
+                    List<string> recipients = new List<string>
+                    {
+                        Email
+                    };
+                    string Content = "<html> <body> <div>  <p>Dear "+ custuserdata.FirstName +" " + custuserdata.LastName + ", <br> Password has been Reset. New Login Credentials: </br> <p> Registered Email/Login: "+ custuserdata.Email +" </p>  <p> Password: "+ custuserdata.Password +" </p> </br> Please email your feedback/suggestions to EPDA.Support@samsaragroup.com </br>  </div> </body> </html> ";
+                    string Subject = "Reset your Password for PDA Portal";
+                    List<string> ccrecipients = new List<string>();
+                    string FromCompany = "";
+                    string ToEmail = "";
+                    var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByCompanyandProcessNameAsync((int)PrimaryCompanyId, "Customer Reset Password");
+                    if (emailconfig != null)
+                    {
+                        ToEmail = emailconfig.ToEmail;
+                        FromCompany = emailconfig.FromEmail;
+                        if (emailconfig.ToEmail != null)
+                        {
+                            ccrecipients = ToEmail.Split(',').ToList();
+                        }
+                    }
+
+                    var Msg = new Message(recipients, ccrecipients, Subject, Content, FromCompany);
+                    /*            _toastNotification.AddSuccessToastMessage("Email hase been sent to given Email Address");*/
+                    _emailSender.SendEmail(Msg);
+                }
+
+                    var data = new
                 {
                     success = true,
                     message =  1
