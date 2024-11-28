@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NToastNotify;
+using Org.BouncyCastle.Cms;
 using PDAEstimator_Application.Interfaces;
 using PDAEstimator_Domain.Entities;
 using PDAEstimator_Infrastructure_Shared;
@@ -160,7 +161,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                     List<string> ccrecipients = new List<string>();
                     string FromCompany = "";
                     string ToEmail = "";
-                    var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByCompanyandProcessNameAsync(corecustomerdata.PrimaryCompanyId != null?  (int)corecustomerdata.PrimaryCompanyId: 0, "Customer Register");
+                    var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByCompanyandProcessNameAsync(corecustomerdata.PrimaryCompanyId != null ? (int)corecustomerdata.PrimaryCompanyId : 0, "Customer Register");
                     if (emailconfig != null)
                     {
                         ToEmail = emailconfig.ToEmail;
@@ -169,7 +170,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                         {
                             ccrecipients = ToEmail.Split(',').ToList();
                         }
-                        
+
                     }
                     var Msg = new Message(recipients, ccrecipients, Subject, Content, FromCompany);
 
@@ -380,75 +381,100 @@ namespace PDA_Web.Areas.Admin.Controllers
 
                     if (custuser != null)
                     {
+                        List<string> recipients = new List<string>
+                        {
+                            custuser.Email
+                        };
                         string customerfullname = string.Concat(custuser.FirstName, ' ', custuser.LastName);
                         string customerphone = string.Concat(custuser.CountryCode, ' ', custuser.Mobile);
-
                         DateTime indianTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, INDIAN_ZONE);
-                        mailcontent = "<html><head><title> Welcome to PDA Portal.</title> </head><body><p> Dear " + customerfullname + ", <br> Your Registration has been Approved. \r\nPlease find below your Login Credentials. <br><br> <b> Registered Email/Login - </b> " + custuser.Email + " <br><b> Password – </b> " + custuser.Password + " <br><br> Your free trial starts from <b>" + indianTime.ToString("dd-MM-yyyy") + "</b> and is valid up to <b>" + indianTime.AddDays(15).ToString("dd-MM-yyyy") + "</b>. <br> Please email your feedback/suggestions to EPDA.Support@samsaragroup.com   <br><br> <b>Regards <br> EPDA Portal Team. </b> </body></html>";
-                        emailsubject = "EPDA Portal: Registration Approved";
 
-                     
+                        string Content = "<html><head><title> Welcome to PDA Portal.</title> </head><body><p> Dear " + customerfullname + ", <br> Your Registration has been Approved. Please find below your Login Credentials. <br><br> <b> Registered Email/Login - </b> " + custuser.Email + " <br><b> Password – </b> " + custuser.Password + " <br><br> Your free trial starts from <b>" + indianTime.ToString("dd-MM-yyyy") + "</b> and is valid up to <b>" + indianTime.AddDays(15).ToString("dd-MM-yyyy") + "</b>. <br> Please email your feedback/suggestions to EPDA.Support@samsaragroup.com   <br><br> <b>Regards <br> EPDA Portal Team. </b> </body></html>";
 
-                        CustomerRegisterEmail("Customer Approved", mailcontent, emailsubject, custuser.Email, companyid);
+                        string Subject = "EPDA Portal: Registration Approved";
+                        List<string> ccrecipients = new List<string>();
+                        string FromCompany = "";
+                        string ToEmail = "";
+                        var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByCompanyandProcessNameAsync(companyid, "Customer Approved");
+                        if (emailconfig != null)
+                        {
+                            ToEmail = emailconfig.ToEmail;
+                            FromCompany = emailconfig.FromEmail;
+                            if (emailconfig.ToEmail != null)
+                            {
+                                ccrecipients = ToEmail.Split(',').ToList();
+                            }
+                        }
+
+                        var Msg = new Message(recipients, ccrecipients, Subject, Content, FromCompany);
+                        _emailSender.SendEmail(Msg);
                     }
                 }
                 else if (customer.Oldstatus != null && customer.Oldstatus != "Rejected" && customer.Status == "Rejected")
                 {
 
                     var custuser = unitOfWork.CustomerUserMaster.GetByCustomerIdAsync(customer.CustomerId).Result.OrderByDescending(x => x.ID).FirstOrDefault();
-                    List<string> recipients = new List<string>
+                   
+                    if (custuser != null)
+                    {
+                        List<string> recipients = new List<string>
                     {
                         custuser.Email
                     };
+                        string customerfullname = string.Concat(custuser.FirstName, ' ', custuser.LastName);
 
-                    string Content = "<html> <body>   <p>Hello, <br> Your Register company is not approved and you can not access PDA Portal. For further question conact to Admin. </p> <div> </br> <p> <b> User Name :</b> " + custuser.Email + " </br> <b> Password: </b> " + custuser.Password + "  </p> </br> </br> <p> Regard, </br> PDA Portal </p> </div> </body> </html> ";
+                        string Content = "<html> <body>   <p>Dear " + customerfullname + ",  <br> Your Registration has been Rejected. </p> <div> </br> <p> Please email your feedback/suggestions to EPDA.Support@samsaragroup.com </p> </br> </br> <p> Best Regards, </br> EPDA Portal Team. </p> </div> </body> </html> ";
 
-                    string Subject = "EPDA Portal: Registration Rejected/Inactive";
-                    List<string> ccrecipients = new List<string>();
-                    string FromCompany = "";
-                    string ToEmail = "";
-                    var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByCompanyandProcessNameAsync(companyid, "Customer Rejected");
-                    if (emailconfig != null)
-                    {
-                        ToEmail = emailconfig.ToEmail;
-                        FromCompany = emailconfig.FromEmail;
-                        if (emailconfig.ToEmail != null)
+                        string Subject = "EPDA Portal: Registration Rejected";
+                        List<string> ccrecipients = new List<string>();
+                        string FromCompany = "";
+                        string ToEmail = "";
+                        var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByCompanyandProcessNameAsync(companyid, "Customer Rejected");
+                        if (emailconfig != null)
                         {
-                            ccrecipients = ToEmail.Split(',').ToList();
+                            ToEmail = emailconfig.ToEmail;
+                            FromCompany = emailconfig.FromEmail;
+                            if (emailconfig.ToEmail != null)
+                            {
+                                ccrecipients = ToEmail.Split(',').ToList();
+                            }
                         }
-                    }
 
-                    var Msg = new Message(recipients, ccrecipients, Subject, Content, FromCompany);
-                    _emailSender.SendEmail(Msg);
+                        var Msg = new Message(recipients, ccrecipients, Subject, Content, FromCompany);
+                        _emailSender.SendEmail(Msg);
+                    }
                 }
                 else if (customer.Oldstatus != null && customer.Oldstatus != "InActive" && customer.Status == "InActive")
                 {
 
                     var custuser = unitOfWork.CustomerUserMaster.GetByCustomerIdAsync(customer.CustomerId).Result.OrderByDescending(x => x.ID).FirstOrDefault();
-                    List<string> recipients = new List<string>
+                    if (custuser != null)
+                    {
+                        List<string> recipients = new List<string>
                     {
                         custuser.Email
                     };
 
-                    string Content = "<html> <body>   <p>Hello, <br> Your Register company is not Active any more and you can not access PDA Portal from now. For further question conact to Admin. </p> <div> </br> <p> <b> User Name :</b> " + custuser.Email + " </br> <b> Password: </b> " + custuser.Password + "  </p> </br> </br> <p> Regard, </br> PDA Portal </p> </div> </body> </html> ";
+                        string Content = "<html> <body>   <p>Hello, <br> Your Register company is not Active any more and you can not access PDA Portal from now. For further question conact to Admin. </p> <div> </br> <p> <b> User Name :</b> " + custuser.Email + " </br> <b> Password: </b> " + custuser.Password + "  </p> </br> </br> <p> Best Regards, </br> PDA Portal </p> </div> </body> </html> ";
 
-                    string Subject = "PDA Protal Account Inactive";
-                    List<string> ccrecipients = new List<string>();
-                    string FromCompany = "";
-                    string ToEmail = "";
-                    var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByCompanyandProcessNameAsync(companyid, "Customer InActive");
-                    if (emailconfig != null)
-                    {
-                        ToEmail = emailconfig.ToEmail;
-                        FromCompany = emailconfig.FromEmail;
-                        if (emailconfig.ToEmail != null)
+                        string Subject = "EPDA Portal: Registration Inactive";
+                        List<string> ccrecipients = new List<string>();
+                        string FromCompany = "";
+                        string ToEmail = "";
+                        var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByCompanyandProcessNameAsync(companyid, "Customer InActive");
+                        if (emailconfig != null)
                         {
-                            ccrecipients = ToEmail.Split(',').ToList();
+                            ToEmail = emailconfig.ToEmail;
+                            FromCompany = emailconfig.FromEmail;
+                            if (emailconfig.ToEmail != null)
+                            {
+                                ccrecipients = ToEmail.Split(',').ToList();
+                            }
                         }
-                    }
 
-                    var Msg = new Message(recipients, ccrecipients, Subject, Content, FromCompany);
-                    _emailSender.SendEmail(Msg);
+                        var Msg = new Message(recipients, ccrecipients, Subject, Content, FromCompany);
+                        _emailSender.SendEmail(Msg);
+                    }
                 }
                 _toastNotification.AddSuccessToastMessage("Updated Successfully");
 

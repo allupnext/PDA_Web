@@ -26,18 +26,18 @@ namespace PDAEstimator_Infrastructure_Shared.Services
             var emailMessage = new MimeMessage();
             if (message.FromCompany == "FromSamsara")
             {
-                emailMessage.From.Add(new MailboxAddress("email ", _emailConfig.FromSamsara));
+                emailMessage.From.Add(new MailboxAddress(_emailConfig.FromSamsara, _emailConfig.FromSamsara));
             }
             else if (message.FromCompany == "FromMerchant")
             {
-                emailMessage.From.Add(new MailboxAddress("email ", _emailConfig.FromMerchant));
+                emailMessage.From.Add(new MailboxAddress(_emailConfig.FromMerchant, _emailConfig.FromMerchant));
             }
             else
             {
                 if (!string.IsNullOrEmpty(message.FromCompany))
-                    emailMessage.From.Add(new MailboxAddress("email ", message.FromCompany));
+                    emailMessage.From.Add(new MailboxAddress(message.FromCompany, message.FromCompany));
                 else
-                    emailMessage.From.Add(new MailboxAddress("email ", _emailConfig.FromMerchant));
+                    emailMessage.From.Add(new MailboxAddress(_emailConfig.FromMerchant, _emailConfig.FromMerchant));
             }
             emailMessage.To.AddRange(message.To);
             emailMessage.Cc.AddRange(message.Cc);
