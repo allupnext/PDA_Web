@@ -81,7 +81,32 @@
     <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="~/dist/js/adminlte.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script language="javascript" type="text/javascript">
+        // function GetMacAddress() {
+        //     var obj = new COMObject("MSXML2.DOMDocument.6.0");
+        //     var s = obj.ConnectServer(".");
+        //     var properties = s.ExecQuery("SELECT * FROM Win32_NetworkAdapterConfiguration");
+        //     var e = new Enumerator(properties);
+        //     var output;
+        //     output = '<table border="0" cellpadding="5px" cellspacing="1px" bgcolor="#CCCCCC">';
+        //     output = output + '<tr bgcolor="#EAEAEA"><td>Caption</td><td>MACAddress</td></tr>';
+        //     while (!e.atEnd()) {
+        //         e.moveNext();
+        //         var p = e.item();
+        //         if (!p) continue;
+        //         output = output + '<tr bgcolor="#FFFFFF">';
+        //         output = output + '<td>' + p.Caption + '</td>';
+        //         output = output + '<td>' + p.MACAddress + '</td>';
+        //         output = output + '</tr>';
+        //     }
+        //     output = output + '</table>';
+
+        //     return output;
+        // }
+    </script>
     <script>
+
+
         var showLoader = function (form) {
             $("<div id='loading' class='loading'/>").css({
                 'position': 'fixed',
@@ -177,6 +202,8 @@
                 "Otp": $('#txtOtp').val()
             }
 
+            // var macaddress = GetMacAddress();
+            // alert(macaddress);
             $.ajax({
                 type: "POST",
                 url: "/Admin/AdminLogin/LoginwitOTP",
