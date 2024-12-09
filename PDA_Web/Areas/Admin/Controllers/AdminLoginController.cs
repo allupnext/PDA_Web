@@ -8,7 +8,10 @@ using PDAEstimator_Infrastructure_Shared;
 using PDAEstimator_Infrastructure_Shared.Services;
 using System.Configuration;
 using System.Net.NetworkInformation;
+using static System.Net.Mime.MediaTypeNames;
 using static System.Net.WebRequestMethods;
+using System.Web;
+using System.Net;
 
 namespace PDA_Web.Areas.Admin.Controllers
 {
@@ -20,19 +23,35 @@ namespace PDA_Web.Areas.Admin.Controllers
         private readonly IEmailSender _emailSender;
         private readonly IToastNotification _toastNotification;
         private readonly IConfiguration _configuration;
+        private readonly HttpContext _httpContext;
 
-        public AdminLoginController(ILogger<HomeController> logger, IUnitOfWork unitOfWork, IToastNotification toastNotification, IEmailSender emailSender, IConfiguration configuration)
+        public AdminLoginController(ILogger<HomeController> logger, IUnitOfWork unitOfWork, IToastNotification toastNotification, IEmailSender emailSender, IConfiguration configuration, HttpContext httpContext)
         {
             this.unitOfWork = unitOfWork;
             _logger = logger;
             _toastNotification = toastNotification;
             _emailSender = emailSender;
             _configuration = configuration;
+            _httpContext = httpContext; 
         }
 
         [HttpPost]
         public async Task<ActionResult> Index(UserAuth user)
         {
+            //var cookieOptions = new CookieOptions
+            //{
+            //    Expires = DateTime.Now.AddDays(30), // Expires in 30 days
+            //    IsEssential = true, // Necessary for the application to function
+            //    HttpOnly = true, // Accessible only by the server
+            //    Secure = true // Only sent over HTTPS
+            //};
+            //Response.Cookies.Append("PersistentCookie", "CookieValue", cookieOptions);
+            var MachineName =  Dns.GetHostEntry(HttpContext.Connection.RemoteIpAddress).HostName;
+            
+            string key = "PersistentCookie";
+            var CookieValue = Request.Cookies[key];
+
+
             var macAddress = NetworkInterface
                 .GetAllNetworkInterfaces()
                             .Where(nic => nic.OperationalStatus == OperationalStatus.Up && nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
@@ -78,7 +97,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                         }
                         else if (isAuthenticated.MacAddress != macAddress)
                         {
-                            var LoginMachineName = System.Environment.MachineName;
+                            var LoginMachineName = MachineName;
                             if (isAuthenticated.LoginMachineName != null && isAuthenticated.LoginMachineName == LoginMachineName)
                             {
                                 string otp = await SendOTPEmail(isAuthenticated.EmailID, isAuthenticated.ID);
@@ -148,10 +167,12 @@ namespace PDA_Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> LoginwitOTP(UserAuth user)
         {
+            var MachineName = Dns.GetHostEntry(HttpContext.Connection.RemoteIpAddress).HostName;
+
             User isAuthenticated = await unitOfWork.User.Authenticate(user.EmployCode, user.UserPassword);
             if (isAuthenticated.OTP == user.OTP && isAuthenticated.OTPSentDate != null && isAuthenticated.OTPSentDate.Value.AddMinutes(5) > DateTime.UtcNow)
             {
-                var LoginMachineName = System.Environment.MachineName;
+                var LoginMachineName = MachineName;
                 DateTime LoginDateTime = DateTime.UtcNow;
                 await unitOfWork.User.UpdateLoginDetails(LoginMachineName, LoginDateTime, isAuthenticated.ID);
 
@@ -265,8 +286,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                     string Content = "<html> <body>   <p>Hello, <br> You recently requested to reset the password for your PDAEstimator account. Click the button below to proceed.    </p> <div> <a  href=" + confirmationLink + "> <button style='height:30px; margin-bottom:30px; font-size:14px;' type='button'> Reset Password </button> </a> </div> </body> </html> ";
                     string Subject = "Reset Password";
                     List<string> ccrecipients = new List<string>();
-                    string FromCompany = "bulkopsindia@merchantshpg.com";
-                    //string FromCompany = "alert@hindfreight.net";
+                    //string FromCompany = "bulkopsindia@merchantshpg.com";
+                    string FromCompany = "alert@hindfreight.net";
 
                     //string ToEmail = "";
                     //var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByProcessNameAsync("Customer Register");

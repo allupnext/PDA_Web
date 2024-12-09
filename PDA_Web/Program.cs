@@ -3,12 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using NToastNotify;
 using PDA_Web.Data;
 using PDAEstimator_Application.Interfaces;
-using PDAEstimator_Domain.Entities;
 using PDAEstimator_Infrastructure.Repositories;
 using PDAEstimator_Infrastructure_Shared;
 using PDAEstimator_Infrastructure_Shared.Services;
 using Rotativa.AspNetCore;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -58,7 +56,7 @@ builder.Services.AddTransient<IPDAEstimatorOutPutTariffRepository, PDAEstimatorO
 builder.Services.AddTransient<ICustomerUserMaster, CustomerUser>();
 builder.Services.AddTransient<IDisclaimersRepository, DisclaimersRepository>();
 builder.Services.AddTransient<IEmailNotificationConfigurationRepository, EmailNotificationConfigurationRepository>();
-
+//builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 
@@ -72,7 +70,7 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-
+//builder.Services.AddHttpContextAccessor();
 var emailConfig = builder.Configuration
         .GetSection("EmailConfiguration")
         .Get<EmailConfiguration>();
