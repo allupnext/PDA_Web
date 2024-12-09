@@ -53,6 +53,14 @@
                     </div>
                 </div>
                 <div class="input-group mb-3">
+                    <input type="text" class="form-control" style="display:none" id="MacAddress" placeholder="MacAddress" asp-for="@Model.MacAddress">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-envelope"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
                     <input type="number" class="form-control" id="txtOtp" placeholder="OTP" asp-for="@Model.OTP" style="display:none;">
 
                 </div>
@@ -155,18 +163,31 @@
                     $('#divCountdown').hide();
                 }
             }, 1000);
-           
+
         }
 
         function RequiestOTP() {
             showLoader(this);
             var user;
+
             user = {
                 "EmployCode": $('#EmployCode').val(),
                 "UserPassword": $('#Password').val(),
+                "MacAddress": $('#MacAddress').val(),
             }
 
-            $.ajax({
+              $.ajax({
+                type: "POST",
+                url: "/Admin/AdminLogin/Index",
+                data: user,
+                success: function (data) {
+                    if(data.proceed == false)
+                    {
+                         $('.loading').hide();
+                    $('#MacAddress').show();
+                    return;
+                    }
+                $.ajax({
                 type: "POST",
                 url: "/Admin/AdminLogin/Index",
                 data: user,
@@ -190,6 +211,15 @@
                     $('.loading').hide();
                 }
             });
+                },
+                error: function () {
+                    $('.loading').hide();
+                    $('#MacAddress').show();
+                }
+            });
+
+
+
 
         }
 

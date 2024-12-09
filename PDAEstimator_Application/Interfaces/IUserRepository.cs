@@ -30,5 +30,7 @@ namespace PDAEstimator_Application.Interfaces
         Task<int> UpdateOTP(string OTP, DateTime OTPSent, long Id);
 
         Task<int> UpdateLoginDetails(string LoginMachineName, DateTime LoginDateTime, long Id);
+
+        Task<int> UpdateMacAddress(string MacAddress, int ID);
     }
 }

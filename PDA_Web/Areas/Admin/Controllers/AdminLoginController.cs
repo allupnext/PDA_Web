@@ -57,6 +57,23 @@ namespace PDA_Web.Areas.Admin.Controllers
                             otp = ""
                         });
                     }
+                    if (user.MacAddress != "" || user.MacAddress != null) 
+                    {
+                        var Res = await unitOfWork.User.UpdateMacAddress(user.MacAddress,isAuthenticated.ID);
+                    }
+
+                    User isMacAddress = await unitOfWork.User.Authenticate(user.EmployCode, user.UserPassword);
+
+                    if (isMacAddress.MacAddress == null || isMacAddress.MacAddress == "")
+                    {
+                        _toastNotification.AddErrorToastMessage("Enter Your MacAddress");
+                        return Json(new
+                        {
+                            proceed = false,
+                            msg = "",
+                            otp = ""
+                        });
+                    }
                     var isMacIDCheck = _configuration.GetValue<bool>("MacIDCheck");
                     if (isMacIDCheck)
                     {
@@ -265,8 +282,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                     string Content = "<html> <body>   <p>Hello, <br> You recently requested to reset the password for your PDAEstimator account. Click the button below to proceed.    </p> <div> <a  href=" + confirmationLink + "> <button style='height:30px; margin-bottom:30px; font-size:14px;' type='button'> Reset Password </button> </a> </div> </body> </html> ";
                     string Subject = "Reset Password";
                     List<string> ccrecipients = new List<string>();
-                    string FromCompany = "bulkopsindia@merchantshpg.com";
-                    //string FromCompany = "alert@hindfreight.net";
+                    //string FromCompany = "bulkopsindia@merchantshpg.com";
+                    string FromCompany = "alert@hindfreight.net";
 
                     //string ToEmail = "";
                     //var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByProcessNameAsync("Customer Register");
@@ -282,7 +299,7 @@ namespace PDA_Web.Areas.Admin.Controllers
 
 
                     var Msg = new Message(recipients, ccrecipients, Subject, Content, FromCompany);
-                    /*                   _toastNotification.AddSuccessToastMessage("Email hase been sent to given Email Address");*/
+                    _toastNotification.AddSuccessToastMessage("Email hase been sent to given Email Address");
                     _emailSender.SendEmail(Msg);
 
                 }
