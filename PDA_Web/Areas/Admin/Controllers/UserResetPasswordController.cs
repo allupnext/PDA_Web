@@ -45,6 +45,8 @@ namespace PDA_Web.Areas.Admin.Controllers
 				.Select(nic => nic.GetPhysicalAddress().ToString())
 				.FirstOrDefault();
 
+            macAddress = resetPassword.MacAddress;
+
 			if (resetPassword != null)
             {
                 var ChekCustomer = unitOfWork.User.ChangePassword(resetPassword.Password, resetPassword.userId,macAddress);

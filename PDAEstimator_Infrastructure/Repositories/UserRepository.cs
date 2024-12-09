@@ -326,11 +326,30 @@ namespace PDAEstimator_Infrastructure.Repositories
         {
             try
             {
-                var sql = "UPDATE UserMaster SET OTP= @OTP, OTPSentDate = @OTPSentDate WHERE ID = @Id";
+                var sql = "UPDATE UserMaster SET OTP= @OTP, OTPSentDate = @OTPSentDate  WHERE ID = @Id";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
                     connection.Open();
                     var result = await connection.ExecuteAsync(sql, new { OTP = OTP, OTPSentDate = OTPSentDate, Id = Id });
+                    return result;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<int> UpdateMacAddress(string MacAddress,int ID)
+        {
+            try
+            {
+                var sql = "UPDATE UserMaster SET MacAddress= @MacAddress  WHERE ID = @Id";
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                {
+                    connection.Open();
+                    var result = await connection.ExecuteAsync(sql, new {MacAddress = MacAddress, ID = ID });
                     return result;
                 }
             }

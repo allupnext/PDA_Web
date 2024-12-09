@@ -374,7 +374,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                 }
 
                 int companyid = customer.PrimaryCompanyId != null ? (int)customer.PrimaryCompanyId : Samsaracompanyid;
-                if (customer.Oldstatus != null && customer.Oldstatus == "Pending For Approval" && customer.Status == "Active")
+                if (customer.Oldstatus != null && customer.Oldstatus.ToLower() == "pending for approval" && customer.Status.ToLower() == "active")
                 {
 
                     var custuser = unitOfWork.CustomerUserMaster.GetByCustomerIdAsync(customer.CustomerId).Result.OrderByDescending(x => x.ID).FirstOrDefault();
@@ -389,7 +389,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                         string customerphone = string.Concat(custuser.CountryCode, ' ', custuser.Mobile);
                         DateTime indianTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, INDIAN_ZONE);
 
-                        string Content = "<html><head><title> Welcome to PDA Portal.</title> </head><body><p> Dear " + customerfullname + ", <br> Your Registration has been Approved. Please find below your Login Credentials. <br><br> <b> Registered Email/Login - </b> " + custuser.Email + " <br><b> Password – </b> " + custuser.Password + " <br><br> Your free trial starts from <b>" + indianTime.ToString("dd-MM-yyyy") + "</b> and is valid up to <b>" + indianTime.AddDays(15).ToString("dd-MM-yyyy") + "</b>. <br> Please email your feedback/suggestions to EPDA.Support@samsaragroup.com   <br><br> <b>Regards <br> EPDA Portal Team. </b> </body></html>";
+                        string Content = "<html> <body>   <p>Dear " + customerfullname + ",  <br> Your Registration has been Approved. </p> <div> </br> <p> <b> User Name :</b> " + custuser.Email + " </br> <b> Password: </b> " + custuser.Password + "  </p> </br> <p> Please email your feedback/suggestions to EPDA.Support@samsaragroup.com </p>  </br> </br> <p> Best Regards, </br> EPDA Portal Team </p> </div> </body> </html> ";
 
                         string Subject = "EPDA Portal: Registration Approved";
                         List<string> ccrecipients = new List<string>();
@@ -455,7 +455,9 @@ namespace PDA_Web.Areas.Admin.Controllers
                         custuser.Email
                     };
 
-                        string Content = "<html> <body>   <p>Hello, <br> Your Register company is not Active any more and you can not access PDA Portal from now. For further question conact to Admin. </p> <div> </br> <p> <b> User Name :</b> " + custuser.Email + " </br> <b> Password: </b> " + custuser.Password + "  </p> </br> </br> <p> Best Regards, </br> PDA Portal </p> </div> </body> </html> ";
+                        string customerfullname = string.Concat(custuser.FirstName, ' ', custuser.LastName);
+
+                        string Content = "<html> <body>   <p>Dear " + customerfullname + ", <br> Your Register company is not Active any more and you can not access PDA Portal from now. For further question conact to Admin. </p> <div> </br> <p> <b> User Name :</b> " + custuser.Email + " </br> <b> Password: </b> " + custuser.Password + "  </p> </br> </br> <p> Best Regards, </br> PDA Portal </p> </div> </body> </html> ";
 
                         string Subject = "EPDA Portal: Registration Inactive";
                         List<string> ccrecipients = new List<string>();

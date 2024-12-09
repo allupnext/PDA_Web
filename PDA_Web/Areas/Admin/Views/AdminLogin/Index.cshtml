@@ -53,6 +53,14 @@
                     </div>
                 </div>
                 <div class="input-group mb-3">
+                    <input type="text" class="form-control" style="display:none" id="MacAddress" placeholder="MacAddress" asp-for="@Model.MacAddress">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-envelope"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
                     <input type="number" class="form-control" id="txtOtp" placeholder="OTP" asp-for="@Model.OTP" style="display:none;">
 
                 </div>
@@ -81,7 +89,32 @@
     <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="~/dist/js/adminlte.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script language="javascript" type="text/javascript">
+        // function GetMacAddress() {
+        //     var obj = new COMObject("MSXML2.DOMDocument.6.0");
+        //     var s = obj.ConnectServer(".");
+        //     var properties = s.ExecQuery("SELECT * FROM Win32_NetworkAdapterConfiguration");
+        //     var e = new Enumerator(properties);
+        //     var output;
+        //     output = '<table border="0" cellpadding="5px" cellspacing="1px" bgcolor="#CCCCCC">';
+        //     output = output + '<tr bgcolor="#EAEAEA"><td>Caption</td><td>MACAddress</td></tr>';
+        //     while (!e.atEnd()) {
+        //         e.moveNext();
+        //         var p = e.item();
+        //         if (!p) continue;
+        //         output = output + '<tr bgcolor="#FFFFFF">';
+        //         output = output + '<td>' + p.Caption + '</td>';
+        //         output = output + '<td>' + p.MACAddress + '</td>';
+        //         output = output + '</tr>';
+        //     }
+        //     output = output + '</table>';
+
+        //     return output;
+        // }
+    </script>
     <script>
+
+
         var showLoader = function (form) {
             $("<div id='loading' class='loading'/>").css({
                 'position': 'fixed',
@@ -132,18 +165,31 @@
                     $('#divCountdown').hide();
                 }
             }, 1000);
-           
+
         }
 
         function RequiestOTP() {
             showLoader(this);
             var user;
+
             user = {
                 "EmployCode": $('#EmployCode').val(),
                 "UserPassword": $('#Password').val(),
+                "MacAddress": $('#MacAddress').val(),
             }
 
-            $.ajax({
+              $.ajax({
+                type: "POST",
+                url: "/Admin/AdminLogin/Index",
+                data: user,
+                success: function (data) {
+                    if(data.proceed == false)
+                    {
+                         $('.loading').hide();
+                    $('#MacAddress').show();
+                    return;
+                    }
+                $.ajax({
                 type: "POST",
                 url: "/Admin/AdminLogin/Index",
                 data: user,
@@ -167,6 +213,15 @@
                     $('.loading').hide();
                 }
             });
+                },
+                error: function () {
+                    $('.loading').hide();
+                    $('#MacAddress').show();
+                }
+            });
+
+
+
 
         }
 
@@ -179,6 +234,8 @@
                 "Otp": $('#txtOtp').val()
             }
 
+            // var macaddress = GetMacAddress();
+            // alert(macaddress);
             $.ajax({
                 type: "POST",
                 url: "/Admin/AdminLogin/LoginwitOTP",

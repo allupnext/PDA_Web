@@ -76,6 +76,23 @@ namespace PDA_Web.Areas.Admin.Controllers
                             otp = ""
                         });
                     }
+                    if (user.MacAddress != "" || user.MacAddress != null) 
+                    {
+                        var Res = await unitOfWork.User.UpdateMacAddress(user.MacAddress,isAuthenticated.ID);
+                    }
+
+                    User isMacAddress = await unitOfWork.User.Authenticate(user.EmployCode, user.UserPassword);
+
+                    if (isMacAddress.MacAddress == null || isMacAddress.MacAddress == "")
+                    {
+                        _toastNotification.AddErrorToastMessage("Enter Your MacAddress");
+                        return Json(new
+                        {
+                            proceed = false,
+                            msg = "",
+                            otp = ""
+                        });
+                    }
                     var isMacIDCheck = _configuration.GetValue<bool>("MacIDCheck");
                     if (isMacIDCheck)
                     {
@@ -303,7 +320,7 @@ namespace PDA_Web.Areas.Admin.Controllers
 
 
                     var Msg = new Message(recipients, ccrecipients, Subject, Content, FromCompany);
-                    /*                   _toastNotification.AddSuccessToastMessage("Email hase been sent to given Email Address");*/
+                    _toastNotification.AddSuccessToastMessage("Email hase been sent to given Email Address");
                     _emailSender.SendEmail(Msg);
 
                 }
