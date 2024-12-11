@@ -52,6 +52,14 @@
                     </div>
                 </div>
                 <div class="input-group mb-3">
+                    <input type="text" class="form-control" style="display:none" id="MacAddress" placeholder="MacAddress" asp-for="@Model.MacAddress">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-envelope"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
                     <input type="number" class="form-control" id="txtOtp" placeholder="OTP" asp-for="@Model.OTP" style="display:none;">
 
                 </div>
@@ -149,9 +157,21 @@
             user = {
                 "Email": $('#Email').val(),
                 "CustomerPassword": $('#CustomerPassword').val(),
+                "MacAddress": $('#MacAddress').val(),
             }
 
             $.ajax({
+                type: "POST",
+                url: "/Login/Index",
+                data: user,
+                success: function (data) {
+                    if(data.proceed == false)
+                    {
+                         $('.loading').hide();
+                    $('#MacAddress').show();
+                    return;
+                    }
+                    $.ajax({
                 type: "POST",
                 url: "/Login/Index",
                 data: user,
@@ -165,13 +185,21 @@
                         $('#txtOtp').val(data.otp);
                         $("#EmployCode").attr("disabled", "disabled");
                         $("#Password").attr("disabled", "disabled");
-                    } else {
+                    }
+                    else {
                         $('.loading').hide();
+
                     }
                     // loadData();
                 },
                 error: function () {
                     $('.loading').hide();
+                }
+            });
+                },
+                error: function () {
+                    $('.loading').hide();
+                    $('#MacAddress').show();
                 }
             });
 

@@ -47,7 +47,7 @@ namespace PDA_Web.Controllers
         {
             if (resetPassword != null)
             {
-                var ChekCustomer = unitOfWork.Customer.ChangePassword(resetPassword.Password, resetPassword.userId);
+                var ChekCustomer = unitOfWork.Customer.ChangePassword(resetPassword.Password, resetPassword.userId,resetPassword.MacAddress);
                var custuserdata = await unitOfWork.CustomerUserMaster.GetByIdAsync(resetPassword.userId);
                 if (custuserdata != null)
                 {
@@ -140,7 +140,7 @@ namespace PDA_Web.Controllers
 
                 if (ChekUser.Result == 1)
                 {
-                    var SetPassword = unitOfWork.Customer.ChangePassword(Data.NewPassword, Data.userId);
+                    var SetPassword = unitOfWork.Customer.ChangePasswordByCurrent(Data.NewPassword, Data.userId);
                     _toastNotification.AddSuccessToastMessage("PassWord Set Successfully..");
                     var data = new
                     {
