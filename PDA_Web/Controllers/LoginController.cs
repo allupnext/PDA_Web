@@ -35,13 +35,17 @@ namespace PDA_Web.Controllers
         [HttpPost]
         public async Task<ActionResult> Index(CustomerAuth customerAuth)
         {
+            string CookieskeyMacAddress = "MacAddress";
+
+            var MachineName = Dns.GetHostEntry(HttpContext.Connection.RemoteIpAddress).HostName;
+
             if (customerAuth != null)
             {
-                var macAddress = NetworkInterface
-             .GetAllNetworkInterfaces()
-                         .Where(nic => nic.OperationalStatus == OperationalStatus.Up && nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
-                         .Select(nic => nic.GetPhysicalAddress().ToString())
-                         .FirstOrDefault();
+             //   var macAddress = NetworkInterface
+             //.GetAllNetworkInterfaces()
+             //            .Where(nic => nic.OperationalStatus == OperationalStatus.Up && nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
+             //            .Select(nic => nic.GetPhysicalAddress().ToString())
+             //            .FirstOrDefault();
 
 
                 CustomerUserMaster isAuthenticated = await unitOfWork.Customer.Authenticate(customerAuth.Email, customerAuth.CustomerPassword);
@@ -88,13 +92,38 @@ namespace PDA_Web.Controllers
                     }
 
 
+                    if ((string.IsNullOrEmpty(customerAuth.MacAddress)) && (string.IsNullOrEmpty(isAuthenticated.MacAddress)))
+                    {
+                        _toastNotification.AddErrorToastMessage("Enter Your MacAddress");
+                        return Json(new
+                        {
+                            proceed = false,
+                            msg = "MacAddress",
+                            otp = ""
+                        });
+                    }
+                    else if (!string.IsNullOrEmpty(customerAuth.MacAddress))
+                    {
+
+                        var ResMacAddress = await unitOfWork.User.AddMacAddress(customerAuth.MacAddress, isAuthenticated.ID);
+                        var cookieOptions = new CookieOptions
+                        {
+                            Expires = DateTime.Now.AddDays(30), // Expires in 30 days
+                            IsEssential = true, // Necessary for the application to function
+                            HttpOnly = true, // Accessible only by the server
+                            Secure = true // Only sent over HTTPS
+                        };
+                        Response.Cookies.Append(CookieskeyMacAddress, customerAuth.MacAddress, cookieOptions);
+                    }
+
                     var isMacIDCheck = _configuration.GetValue<bool>("MacIDCheck");
                     if (isMacIDCheck)
                     {
+                        var CookieValueMacAddress = Request.Cookies[CookieskeyMacAddress];
 
                         if (string.IsNullOrEmpty(isAuthenticated.MacAddress))
                         {
-                            var AddMacAddress = await unitOfWork.CustomerUserMaster.AddMacAddress(macAddress, isAuthenticated.ID);
+                            //var AddMacAddress = await unitOfWork.CustomerUserMaster.AddMacAddress(macAddress, isAuthenticated.ID);
                             string otp = await SendOTPEmail(isAuthenticated.Email, isAuthenticated.ID);
                             return Json(new
                             {
@@ -104,9 +133,9 @@ namespace PDA_Web.Controllers
                             });
 
                         }
-                        else if (isAuthenticated.MacAddress != macAddress)
+                        else if (CookieValueMacAddress != null && CookieValueMacAddress != isAuthenticated.MacAddress)
                         {
-                            var LoginMachineName = System.Environment.MachineName;
+                            var LoginMachineName = MachineName;
                             if (isAuthenticated.LoginMachineName != null && isAuthenticated.LoginMachineName == LoginMachineName)
                             {
                                 string otp = await SendOTPEmail(isAuthenticated.Email, isAuthenticated.ID);

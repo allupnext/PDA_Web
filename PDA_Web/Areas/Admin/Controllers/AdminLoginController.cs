@@ -12,6 +12,7 @@ using static System.Net.Mime.MediaTypeNames;
 using static System.Net.WebRequestMethods;
 using System.Web;
 using System.Net;
+using Microsoft.IdentityModel.Tokens;
 
 namespace PDA_Web.Areas.Admin.Controllers
 {
@@ -23,21 +24,21 @@ namespace PDA_Web.Areas.Admin.Controllers
         private readonly IEmailSender _emailSender;
         private readonly IToastNotification _toastNotification;
         private readonly IConfiguration _configuration;
-        private readonly HttpContext _httpContext;
 
-        public AdminLoginController(ILogger<HomeController> logger, IUnitOfWork unitOfWork, IToastNotification toastNotification, IEmailSender emailSender, IConfiguration configuration, HttpContext httpContext)
+        public AdminLoginController(ILogger<HomeController> logger, IUnitOfWork unitOfWork, IToastNotification toastNotification, IEmailSender emailSender, IConfiguration configuration)
         {
             this.unitOfWork = unitOfWork;
             _logger = logger;
             _toastNotification = toastNotification;
             _emailSender = emailSender;
             _configuration = configuration;
-            _httpContext = httpContext; 
         }
 
         [HttpPost]
         public async Task<ActionResult> Index(UserAuth user)
         {
+            string CookieskeyMacAddress = "MacAddress";
+
             //var cookieOptions = new CookieOptions
             //{
             //    Expires = DateTime.Now.AddDays(30), // Expires in 30 days
@@ -48,24 +49,23 @@ namespace PDA_Web.Areas.Admin.Controllers
             //Response.Cookies.Append("PersistentCookie", "CookieValue", cookieOptions);
             var MachineName =  Dns.GetHostEntry(HttpContext.Connection.RemoteIpAddress).HostName;
             
-            string key = "PersistentCookie";
-            var CookieValue = Request.Cookies[key];
+            //var CookieValue = Request.Cookies[key];
 
 
-            var macAddress = NetworkInterface
-                .GetAllNetworkInterfaces()
-                            .Where(nic => nic.OperationalStatus == OperationalStatus.Up && nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
-                            .Select(nic => nic.GetPhysicalAddress().ToString())
-                            .FirstOrDefault();
+            //var macAddress = NetworkInterface
+            //    .GetAllNetworkInterfaces()
+            //                .Where(nic => nic.OperationalStatus == OperationalStatus.Up && nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
+            //                .Select(nic => nic.GetPhysicalAddress().ToString())
+            //                .FirstOrDefault();
 
 
             if (user != null)
             {
                 User isAuthenticated = await unitOfWork.User.Authenticate(user.EmployCode, user.UserPassword);
-                
 
                 if (isAuthenticated != null)
                 {
+
                     if (isAuthenticated.EmailID == null || isAuthenticated.EmailID == "")
                     {
                         _toastNotification.AddErrorToastMessage("We did't not found User Email Id. Please conact to admin.");
@@ -76,31 +76,41 @@ namespace PDA_Web.Areas.Admin.Controllers
                             otp = ""
                         });
                     }
-                    if (user.MacAddress != "" || user.MacAddress != null) 
-                    {
-                        var Res = await unitOfWork.User.UpdateMacAddress(user.MacAddress,isAuthenticated.ID);
-                    }
 
-                    User isMacAddress = await unitOfWork.User.Authenticate(user.EmployCode, user.UserPassword);
-
-                    if (isMacAddress.MacAddress == null || isMacAddress.MacAddress == "")
+                    if ((string.IsNullOrEmpty(user.MacAddress)) && (string.IsNullOrEmpty(isAuthenticated.MacAddress)))
                     {
                         _toastNotification.AddErrorToastMessage("Enter Your MacAddress");
                         return Json(new
                         {
                             proceed = false,
-                            msg = "",
+                            msg = "MacAddress",
                             otp = ""
                         });
+                    }else if(!string.IsNullOrEmpty(user.MacAddress))
+                    {
+
+                        var ResMacAddress = await unitOfWork.User.AddMacAddress(user.MacAddress,isAuthenticated.ID);
+                        var cookieOptions = new CookieOptions
+                        {
+                            Expires = DateTime.Now.AddDays(30), // Expires in 30 days
+                            IsEssential = true, // Necessary for the application to function
+                            HttpOnly = true, // Accessible only by the server
+                            Secure = true // Only sent over HTTPS
+                        };
+                        Response.Cookies.Append(CookieskeyMacAddress, user.MacAddress, cookieOptions);
                     }
+
+                   
+                   
                     var isMacIDCheck = _configuration.GetValue<bool>("MacIDCheck");
                     if (isMacIDCheck)
                     {
+                        var CookieValueMacAddress = Request.Cookies[CookieskeyMacAddress];
                         //var macAddressa = unitOfWork.User.GetAllAsync().Result.Where(x => x.MacAddress == macAddress && x.EmployCode == user.EmployCode);
 
                         if (string.IsNullOrEmpty(isAuthenticated.MacAddress))
                         {
-                            var AddMacAddress = await unitOfWork.User.AddMacAddress(macAddress, isAuthenticated.ID);
+                            //var AddMacAddress = await unitOfWork.User.AddMacAddress(macAddress, isAuthenticated.ID);
                            
 
                             string otp = await SendOTPEmail(isAuthenticated.EmailID, isAuthenticated.ID);
@@ -112,7 +122,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                             });
 
                         }
-                        else if (isAuthenticated.MacAddress != macAddress)
+                        else if (CookieValueMacAddress != null && CookieValueMacAddress != isAuthenticated.MacAddress )
                         {
                             var LoginMachineName = MachineName;
                             if (isAuthenticated.LoginMachineName != null && isAuthenticated.LoginMachineName == LoginMachineName)
