@@ -87,16 +87,16 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         }
 
-        public async Task<string> ChangePassword(string Password, long id, string macAddress)
+        public async Task<string> ChangePassword(string Password, long id, string macAddress, string loginMachineName)
         {
             try
             {
                 //var sql = "update CustomerMaster set Password = @Password Where CustomerId = @CustomerId";
-                var sql = "update CustomerUserMaster set Password = @Password,MacAddress = @macAddress Where ID = @ID";
+                var sql = "update CustomerUserMaster set Password = @Password,MacAddress = @macAddress, LoginMachineName = @loginMachineName Where ID = @ID";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
                     connection.Open();
-                    var result = await connection.ExecuteAsync(sql, new { Password = Password, ID = id, MacAddress = macAddress });
+                    var result = await connection.ExecuteAsync(sql, new { Password = Password, ID = id, MacAddress = macAddress, LoginMachineName = loginMachineName });
                     return result.ToString();
                 }
             }

@@ -73,23 +73,23 @@ namespace PDA_Web.Controllers
                         });
 
                     }
-                    if (isAuthenticated.MacAddress != "" || isAuthenticated.MacAddress != null)
-                    {
-                        var Res = await unitOfWork.Customer.UpdateMacAddress(customerAuth.MacAddress, isAuthenticated.ID);
-                    }
+                    //if (isAuthenticated.MacAddress != "" || isAuthenticated.MacAddress != null)
+                    //{
+                    //    var Res = await unitOfWork.Customer.UpdateMacAddress(customerAuth.MacAddress, isAuthenticated.ID);
+                    //}
 
-                    CustomerUserMaster isMacAddress = await unitOfWork.Customer.Authenticate(customerAuth.Email, customerAuth.CustomerPassword);
+                    //CustomerUserMaster isMacAddress = await unitOfWork.Customer.Authenticate(customerAuth.Email, customerAuth.CustomerPassword);
 
-                    if (isMacAddress.MacAddress == null || isMacAddress.MacAddress == "")
-                    {
-                        _toastNotification.AddErrorToastMessage("Enter Your MacAddress");
-                        return Json(new
-                        {
-                            proceed = false,
-                            msg = "",
-                            otp = ""
-                        });
-                    }
+                    ////if (isMacAddress.MacAddress == null || isMacAddress.MacAddress == "")
+                    //{
+                    //    _toastNotification.AddErrorToastMessage("Enter Your MacAddress");
+                    //    return Json(new
+                    //    {
+                    //        proceed = false,
+                    //        msg = "",
+                    //        otp = ""
+                    //    });
+                    //}
 
 
                     if ((string.IsNullOrEmpty(customerAuth.MacAddress)) && (string.IsNullOrEmpty(isAuthenticated.MacAddress)))

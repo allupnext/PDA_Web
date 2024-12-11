@@ -313,8 +313,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                     string Content = "<html> <body>   <p>Hello, <br> You recently requested to reset the password for your PDAEstimator account. Click the button below to proceed.    </p> <div> <a  href=" + confirmationLink + "> <button style='height:30px; margin-bottom:30px; font-size:14px;' type='button'> Reset Password </button> </a> </div> </body> </html> ";
                     string Subject = "Reset Password";
                     List<string> ccrecipients = new List<string>();
-                    //string FromCompany = "bulkopsindia@merchantshpg.com";
-                    string FromCompany = "alert@hindfreight.net";
+                    string FromCompany = "bulkopsindia@merchantshpg.com";
+                    //string FromCompany = "alert@hindfreight.net";
 
                     //string ToEmail = "";
                     //var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByProcessNameAsync("Customer Register");

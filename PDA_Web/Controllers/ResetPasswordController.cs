@@ -5,6 +5,7 @@ using PDAEstimator_Application.Interfaces;
 using PDAEstimator_Domain.Entities;
 using PDAEstimator_Infrastructure_Shared;
 using PDAEstimator_Infrastructure_Shared.Services;
+using System.Net;
 
 namespace PDA_Web.Controllers
 {
@@ -47,7 +48,9 @@ namespace PDA_Web.Controllers
         {
             if (resetPassword != null)
             {
-                var ChekCustomer = unitOfWork.Customer.ChangePassword(resetPassword.Password, resetPassword.userId,resetPassword.MacAddress);
+                var MachineName = Dns.GetHostEntry(HttpContext.Connection.RemoteIpAddress).HostName;
+
+                var ChekCustomer = unitOfWork.Customer.ChangePassword(resetPassword.Password, resetPassword.userId,resetPassword.MacAddress, MachineName);
                var custuserdata = await unitOfWork.CustomerUserMaster.GetByIdAsync(resetPassword.userId);
                 if (custuserdata != null)
                 {

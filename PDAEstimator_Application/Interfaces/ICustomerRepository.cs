@@ -18,7 +18,7 @@ namespace PDAEstimator_Application.Interfaces
         Task<List<CustomerList>> GetAlllistCustomerAsync(int customerId);
         Task<CustomerUserMaster> CheckEmailExist(string email);
         Task<string> GenerateEmailConfirmationTokenAsync(string token, int id);
-        Task<string> ChangePassword(string Password, long id, string macAddress);
+        Task<string> ChangePassword(string Password, long id, string macAddress, string loginMachineName);
         Task<int> AuthenticateById(int id, string Password);
         Task<int> UpdateMacAddress(string MacAddress, int ID);
         Task<string> ChangePasswordByCurrent(string Password, long id);
