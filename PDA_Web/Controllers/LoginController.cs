@@ -37,7 +37,7 @@ namespace PDA_Web.Controllers
         {
             string CookieskeyMacAddress = "MacAddress";
 
-            var MachineName = Dns.GetHostEntry(HttpContext.Connection.RemoteIpAddress).HostName;
+            //var MachineName = Dns.GetHostEntry(HttpContext.Connection.RemoteIpAddress).HostName;
 
             if (customerAuth != null)
             {
@@ -133,22 +133,35 @@ namespace PDA_Web.Controllers
                             });
 
                         }
-                        else if (CookieValueMacAddress != null && CookieValueMacAddress != isAuthenticated.MacAddress)
+                        else if (CookieValueMacAddress != isAuthenticated.MacAddress)
                         {
-                            var LoginMachineName = MachineName;
-                            if (isAuthenticated.LoginMachineName != null && isAuthenticated.LoginMachineName == LoginMachineName)
+                            //var LoginMachineName = MachineName;
+                            //if (isAuthenticated.LoginMachineName != null && isAuthenticated.LoginMachineName == LoginMachineName)
+                            //{
+                            //    string otp = await SendOTPEmail(isAuthenticated.Email, isAuthenticated.ID);
+                            //    return Json(new
+                            //    {
+                            //        proceed = true,
+                            //        msg = "",
+                            //        otp = otp
+                            //    });
+                            //}
+                            //else
+                            //{
+                            if (CookieValueMacAddress != null)
                             {
-                                string otp = await SendOTPEmail(isAuthenticated.Email, isAuthenticated.ID);
+                                _toastNotification.AddErrorToastMessage("This device is not registered. Please login through your registered device Or reset your password");
                                 return Json(new
                                 {
-                                    proceed = true,
+                                    proceed = false,
                                     msg = "",
-                                    otp = otp
+                                    otp = ""
                                 });
+                                //}
                             }
                             else
                             {
-                                _toastNotification.AddErrorToastMessage("This device is not registered. Please login through your registered device (" + isAuthenticated.LoginMachineName + ") Or reset your password");
+                                _toastNotification.AddErrorToastMessage("This device is not registered. Please login through your registered device (" + CookieValueMacAddress + ") Or reset your password");
                                 return Json(new
                                 {
                                     proceed = false,
