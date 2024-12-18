@@ -105,7 +105,7 @@ namespace PDA_Web.Controllers
                     else if (!string.IsNullOrEmpty(customerAuth.MacAddress))
                     {
 
-                        var ResMacAddress = await unitOfWork.User.AddMacAddress(customerAuth.MacAddress, isAuthenticated.ID);
+                        var ResMacAddress = await unitOfWork.CustomerUserMaster.AddMacAddress(customerAuth.MacAddress, isAuthenticated.ID);
                         var cookieOptions = new CookieOptions
                         {
                             Expires = DateTime.Now.AddDays(30), // Expires in 30 days

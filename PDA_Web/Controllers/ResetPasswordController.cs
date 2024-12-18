@@ -48,10 +48,20 @@ namespace PDA_Web.Controllers
         {
             if (resetPassword != null)
             {
-                var MachineName = Dns.GetHostEntry(HttpContext.Connection.RemoteIpAddress).HostName;
+                var MachineName = System.Environment.MachineName;
 
-                var ChekCustomer = unitOfWork.Customer.ChangePassword(resetPassword.Password, resetPassword.userId,resetPassword.MacAddress, MachineName);
-               var custuserdata = await unitOfWork.CustomerUserMaster.GetByIdAsync(resetPassword.userId);
+                string CookieskeyMacAddress = "MacAddress";
+                var ChekCustomer = unitOfWork.Customer.ChangePassword(resetPassword.Password, resetPassword.userId, resetPassword.MacAddress, MachineName);
+                var cookieOptions = new CookieOptions
+                {
+                    Expires = DateTime.Now.AddDays(30), // Expires in 30 days
+                    IsEssential = true, // Necessary for the application to function
+                    HttpOnly = true, // Accessible only by the server
+                    Secure = true // Only sent over HTTPS
+                };
+                Response.Cookies.Append(CookieskeyMacAddress, resetPassword.MacAddress, cookieOptions);
+
+                var custuserdata = await unitOfWork.CustomerUserMaster.GetByIdAsync(resetPassword.userId);
                 if (custuserdata != null)
                 {
                     string Email = custuserdata.Email;

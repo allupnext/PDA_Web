@@ -39,22 +39,34 @@ namespace PDA_Web.Areas.Admin.Controllers
         }
         public async Task<IActionResult> ChangePassword(ResetPassword resetPassword)
         {
-			var macAddress = NetworkInterface
-                .GetAllNetworkInterfaces()
-				.Where(nic => nic.OperationalStatus == OperationalStatus.Up && nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
-				.Select(nic => nic.GetPhysicalAddress().ToString())
-				.FirstOrDefault();
+            string CookieskeyMacAddress = "MacAddress";
+            //var macAddress = NetworkInterface
+            //             .GetAllNetworkInterfaces()
+            //	.Where(nic => nic.OperationalStatus == OperationalStatus.Up && nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
+            //	.Select(nic => nic.GetPhysicalAddress().ToString())
+            //	.FirstOrDefault();
 
-            macAddress = resetPassword.MacAddress;
+            //macAddress = resetPassword.MacAddress;
 
-			if (resetPassword != null)
+            if (resetPassword != null)
             {
-                var ChekCustomer = unitOfWork.User.ChangePassword(resetPassword.Password, resetPassword.userId,macAddress);
+                var ChekCustomer = unitOfWork.User.ChangePassword(resetPassword.Password, resetPassword.userId, resetPassword.MacAddress);
 				var data = new
                 {
 				    success = true,
                     message = 1
                 };
+
+                var cookieOptions = new CookieOptions
+                {
+                    Expires = DateTime.Now.AddDays(30), // Expires in 30 days
+                    IsEssential = true, // Necessary for the application to function
+                    HttpOnly = true, // Accessible only by the server
+                    Secure = true // Only sent over HTTPS
+                };
+                Response.Cookies.Append(CookieskeyMacAddress, resetPassword.MacAddress, cookieOptions);
+
+
                 return Json(data);
                 /*_toastNotification.AddSuccessToastMessage("Password New Password is Updated.");
                 return RedirectToAction("Index", "AdminLogin", new { area = "Admin" });*/

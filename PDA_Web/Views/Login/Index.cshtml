@@ -20,6 +20,42 @@
     <link rel="stylesheet" href="~/dist/css/adminlte.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <style>
+        .box {
+            background-color: black;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .box a {
+                padding: 15px;
+                background-color: #fff;
+                border-radius: 3px;
+                text-decoration: none;
+            }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgb(210 210 210 / 11%);
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .content {
+            position: relative;
+            background: white;
+            padding: 1em 2em;
+            border-radius: 4px;
+        }
+
+        .modal:target {
+            display: flex;
+        }
+    </style>
 </head>
 <body class="hold-transition login-page">
     <div class="login-box">
@@ -51,13 +87,15 @@
                         </div>
                     </div>
                 </div>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" style="display:none" id="MacAddress" placeholder="MacAddress" asp-for="@Model.MacAddress">
-                   @*  <div class="input-group-append">
+                <div class="input-group mb-3" style="display:none" id="MacAddressdiv">
+                    <input type="text" class="form-control" id="MacAddress" placeholder="MacAddress" asp-for="@Model.MacAddress">
+                    <div class="input-group-append">
                         <div class="input-group-text">
-                            <span class="fas fa-envelope"></span>
+                            <a href="#popup-box">
+                                <span class="fas fa-question-circle"></span>
+                            </a>
                         </div>
-                    </div> *@
+                    </div>
                 </div>
                 <div class="input-group mb-3">
                     <input type="number" class="form-control" id="txtOtp" placeholder="OTP" asp-for="@Model.OTP" style="display:none;">
@@ -90,6 +128,51 @@
                 @* </form> *@
 
 
+            </div>
+        </div>
+
+        <div id="popup-box" class="modal">
+            <div class="content">
+                <h3 style="color: green">
+                    How to get MacAddress
+                </h3>
+                <p>
+                    <b> Windows </b><br />
+                    <ol>
+                        <li>Open the Command Prompt by pressing the Windows key + R, typing cmd, and pressing Enter</li>
+                        <li>
+                            Type getmac and press Enter
+                        </li>
+                        <li>
+                            The MAC address will be displayed in the Command Prompt window and you need to pick first one Physical Address.
+                        </li>
+                    </ol>
+                    <b> Mac </b><br />
+                    <ol>
+                        <li>
+                            Select the Apple menu, then click System Settings
+                        <li>
+                            Click Network
+                        </li>
+                        <li>
+                            Click the desired network, then click Details
+                        </li>
+                        <li>
+                            Click Hardware
+                        </li>
+                        <li>
+                            The MAC address will be listed below and you need to pick first one Physical Address.
+                        </li>
+                    </ol>
+                </p>
+                <a href="#" style="
+                        position: absolute;
+                        top: 10px;
+                        right: 10px;
+                        color: #fe0606;
+                        font-size: 30px;
+                        text-decoration: none;
+                    ">&times;</a>
             </div>
         </div>
     </div>
@@ -169,7 +252,7 @@
                     {
                         $('.loading').hide();
                         if (data.msg == "MacAddress") {
-                            $('#MacAddress').show();
+                            $('#MacAddressdiv').show();
                         }
                     return;
                     }
@@ -184,7 +267,7 @@
                                 $('#BtnLogin').show();
                                 $('#RequiestOTP').hide();
                                 $('#txtOtp').show();
-                                $('#txtOtp').val(data.otp);
+                                // $('#txtOtp').val(data.otp);
                                 $("#EmployCode").attr("disabled", "disabled");
                                 $("#Password").attr("disabled", "disabled");
                         }
@@ -200,7 +283,7 @@
                 },
                 error: function () {
                     $('.loading').hide();
-                    $('#MacAddress').show();
+                    $('#MacAddressdiv').show();
                 }
             });
 
