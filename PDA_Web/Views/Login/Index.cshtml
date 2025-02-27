@@ -255,31 +255,45 @@
                             $('#MacAddressdiv').show();
                         }
                     return;
+                    } if (data.proceed == true) {
+                        StartTimer();
+                        $('.loading').hide();
+                        $('#BtnLogin').show();
+                        $('#RequiestOTP').hide();
+                        $('#txtOtp').show();
+                        // $('#txtOtp').val(data.otp);
+                        $("#EmployCode").attr("disabled", "disabled");
+                        $("#Password").attr("disabled", "disabled");
                     }
-                        $.ajax({
-                        type: "POST",
-                        url: "/Login/Index",
-                        data: user,
-                        success: function (data) {
-                            if (data.proceed == true) {
-                                StartTimer();
-                                $('.loading').hide();
-                                $('#BtnLogin').show();
-                                $('#RequiestOTP').hide();
-                                $('#txtOtp').show();
-                                // $('#txtOtp').val(data.otp);
-                                $("#EmployCode").attr("disabled", "disabled");
-                                $("#Password").attr("disabled", "disabled");
-                        }
-                        else {
-                            $('.loading').hide();
-                        }
-                    // loadData();
-                    },
-                    error: function () {
+                    else {
                         $('.loading').hide();
                     }
-                });
+
+                        // $.ajax({
+                        // type: "POST",
+                        // url: "/Login/Index",
+                        // data: user,
+                        // success: function (data) 
+                        // {
+                        //     if (data.proceed == true) 
+                        //     {
+                        //         StartTimer();
+                        //         $('.loading').hide();
+                        //         $('#BtnLogin').show();
+                        //         $('#RequiestOTP').hide();
+                        //         $('#txtOtp').show();
+                        //         // $('#txtOtp').val(data.otp);
+                        //         $("#EmployCode").attr("disabled", "disabled");
+                        //         $("#Password").attr("disabled", "disabled");
+                        //     }
+                        //     else {
+                        //         $('.loading').hide();
+                        //     }
+                        // },
+                        // error: function () {
+                        //     $('.loading').hide();
+                        // }
+                        // });
                 },
                 error: function () {
                     $('.loading').hide();

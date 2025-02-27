@@ -359,7 +359,7 @@
                                     }
                                     @if (@chargecodeitem.CurrencyID == Model.BaseCurrencyCodeID)
                                     {
-                                        <li class="valuefont">₹ @chargecodeitem.Amount.ToString("#,##0.##")</li>
+                                        <li class="valuefont">₹ @chargecodeitem.Amount.ToString("#,##0")</li>
                                         subtotalbaseamount += chargecodeitem.Amount;
                                         if (chargecodeitem.TaxID != null && chargecodeitem.TaxID > 0)
                                             GSTsubtotalbaseamount += chargecodeitem.Amount;
@@ -368,14 +368,14 @@
                                     {
                                         decimal amountconvtbase = 0;
                                         amountconvtbase = @chargecodeitem.Amount * Model.ROE;
-                                        <li class="valuefont">₹ @amountconvtbase.ToString("#,##0.##")</li>
+                                        <li class="valuefont">₹ @amountconvtbase.ToString("#,##0")</li>
                                         subtotalbaseamount += amountconvtbase;
                                         if (chargecodeitem.TaxID != null && chargecodeitem.TaxID > 0)
                                             GSTsubtotalbaseamount += amountconvtbase;
                                     }
                                     @if (@chargecodeitem.CurrencyID == Model.DefaultCurrencyCodeID)
                                     {
-                                        <li class="valuefont">$ @chargecodeitem.Amount.ToString("#,##0.##")</li>
+                                        <li class="valuefont">$ @chargecodeitem.Amount.ToString("#,##0")</li>
                                         subtotaldefaultamount += chargecodeitem.Amount;
                                         if (chargecodeitem.TaxID != null && chargecodeitem.TaxID > 0)
                                             GSTsubtotaldefaultamount += chargecodeitem.Amount;
@@ -384,7 +384,7 @@
                                     {
                                         decimal amountconvtdefault = 0;
                                         amountconvtdefault = @chargecodeitem.Amount / Model.ROE;
-                                        <li class="valuefont">$ @amountconvtdefault.ToString("#,##0.##")</li>
+                                        <li class="valuefont">$ @amountconvtdefault.ToString("#,##0")</li>
                                         subtotaldefaultamount += amountconvtdefault;
                                         if (chargecodeitem.TaxID != null && chargecodeitem.TaxID > 0)
                                             GSTsubtotaldefaultamount += amountconvtdefault;
@@ -415,8 +415,8 @@
                                 <li></li>
                                 <li></li>
                                 <li class="valuefont">@Model.Taxrate%</li>
-                                <li class="valuefont">₹ @gstbasevalue.ToString("#,##0.##")</li>
-                                <li class="valuefont">$ @gstdefaultvalue.ToString("#,##0.##")</li>
+                                <li class="valuefont">₹ @gstbasevalue.ToString("#,##0")</li>
+                                <li class="valuefont">$ @gstdefaultvalue.ToString("#,##0")</li>
 
                                 <li>-</li>
                             </ul>
@@ -432,8 +432,8 @@
                                     subtotaldefaultwithgst = subtotaldefaultamount + gstdefaultvalue;
                                 }
                                 <li class="lablebold">SUB TOTAL</li>
-                                <li class="lablebold">₹ @subtotalbasewithgst.ToString("#,##0.##")</li>
-                                <li class="lablebold">$ @subtotaldefaultwithgst.ToString("#,##0.##")</li>
+                                <li class="lablebold">₹ @subtotalbasewithgst.ToString("#,##0")</li>
+                                <li class="lablebold">$ @subtotaldefaultwithgst.ToString("#,##0")</li>
                                 <li></li>
                             </ul>
 
@@ -444,8 +444,8 @@
                 <div class="grand_total">
                     <ul>
                         <li class="lablebold">GRAND TOTAL</li>
-                        <li class="lablebold">₹ @Grandtotalbaseamount.ToString("#,##0.##")</li>
-                        <li class="lablebold">$ @Grandtotaldefaultamount.ToString("#,##0.##")</li>
+                        <li class="lablebold">₹ @Grandtotalbaseamount.ToString("#,##0")</li>
+                        <li class="lablebold">$ @Grandtotaldefaultamount.ToString("#,##0")</li>
                         <li class="lablebold"></li>
                     </ul>
 

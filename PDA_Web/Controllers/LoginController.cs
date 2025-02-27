@@ -128,7 +128,7 @@ namespace PDA_Web.Controllers
                             return Json(new
                             {
                                 proceed = true,
-                                msg = "",
+                                msg = "otpsent",
                                 otp = otp
                             });
 
@@ -176,7 +176,8 @@ namespace PDA_Web.Controllers
                             return Json(new
                             {
                                 proceed = true,
-                                msg = "",
+                                msg = "otpsent",
+
                                 otp = otp
                             });
                         }
@@ -188,7 +189,7 @@ namespace PDA_Web.Controllers
                         return Json(new
                         {
                             proceed = true,
-                            msg = "",
+                            msg = "otpsent",
                             otp = otp
                         });
                     }

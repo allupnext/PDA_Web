@@ -272,29 +272,42 @@
                         }
                         return;
                     }
-                    $.ajax({
-                        type: "POST",
-                        url: "/Admin/AdminLogin/Index",
-                        data: user,
-                        success: function (data) {
-                            if (data.proceed == true) {
-                                StartTimer();
-                                $('.loading').hide();
-                                $('#BtnLogin').show();
-                                $('#RequiestOTP').hide();
-                                $('#txtOtp').show();
-                                // $('#txtOtp').val(data.otp);
-                                $("#EmployCode").attr("disabled", "disabled");
-                                $("#Password").attr("disabled", "disabled");
-                            } else {
-                                $('.loading').hide();
-                            }
-                            // loadData();
-                        },
-                        error: function () {
-                            $('.loading').hide();
-                        }
-                    });
+                    if (data.proceed == true) {
+                        StartTimer();
+                        $('.loading').hide();
+                        $('#BtnLogin').show();
+                        $('#RequiestOTP').hide();
+                        $('#txtOtp').show();
+                        // $('#txtOtp').val(data.otp);
+                        $("#EmployCode").attr("disabled", "disabled");
+                        $("#Password").attr("disabled", "disabled");
+                    }
+                    else {
+                        $('.loading').hide();
+                    }
+                    // $.ajax({
+                    //     type: "POST",
+                    //     url: "/Admin/AdminLogin/Index",
+                    //     data: user,
+                    //     success: function (data) {
+                    //         if (data.proceed == true) {
+                    //             StartTimer();
+                    //             $('.loading').hide();
+                    //             $('#BtnLogin').show();
+                    //             $('#RequiestOTP').hide();
+                    //             $('#txtOtp').show();
+                    //             // $('#txtOtp').val(data.otp);
+                    //             $("#EmployCode").attr("disabled", "disabled");
+                    //             $("#Password").attr("disabled", "disabled");
+                    //         } else {
+                    //             $('.loading').hide();
+                    //         }
+                    //         // loadData();
+                    //     },
+                    //     error: function () {
+                    //         $('.loading').hide();
+                    //     }
+                    // });
                 },
                 error: function () {
                     $('.loading').hide();
