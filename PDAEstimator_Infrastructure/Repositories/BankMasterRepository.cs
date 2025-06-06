@@ -85,7 +85,7 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<BankMaster> GetByCompanyIdAsync(int id)
         {
-            var sql = "select top 1 * From BankMaster WHERE CompanyId= @CompanyId";
+            var sql = "select top 1 * From BankMaster WHERE CompanyId= @CompanyId and IsDefault = 1";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
