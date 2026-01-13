@@ -17,6 +17,7 @@ namespace PDAEstimator_Application.Interfaces
         Task<Company_Customer_Mapping> GetbyCustIdasync(int id);
         Task<List<PDAEstimatorList>> GetPDAEstiomatorListOfLast30Days();
         Task<List<PDAEstimatorList>> GetAlllistByCustIdAsync(int CustomerID);
+        Task UpdatePdaTotalAmountAsync(decimal pdaBaseAmount, decimal pdaDefaultAmount, long id);
 
     }
 }

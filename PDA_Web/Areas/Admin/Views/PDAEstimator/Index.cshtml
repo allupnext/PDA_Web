@@ -106,7 +106,7 @@
                                 </div>
                                 <div class="col-sm-2">
                                     <div class="form-group" id="cargodrop">
-                                        <label for="Cargo">Cargo<span class="text-danger">*</span></label>
+                                        <label for="Cargo">Cargo Name<span class="text-danger">*</span></label>
                                         @Html.DropDownList("CargoName", new SelectList(ViewBag.Cargo, "ID", "CargoName"), "Please select", new { @class = "form-control", @onchange = "CargoNameOnChangefunc()" })
                                     </div>
                                 </div>
@@ -173,7 +173,12 @@
                                         <input type="text" class="form-control" id="VesselName" placeholder="Vessel Name">
                                     </div>
                                 </div>
-
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label for="VesselSizeTypeId">Vessel Size Type</label>
+                                        @Html.DropDownList("VesselSizeTypeId", new SelectList(ViewBag.VesselSizeType, "VesselSizeTypeId", "VesselSizeTypeName"), "Please select", new { @class = "form-control", id = "VesselSizeTypeId", onchange = "onVesselSizeTypeChange(this.value)" })
+                                    </div>
+                                </div>
                                 <div class="col-sm-2">
                                     <div class="form-group">
                                         <label for="DWT">DWT<span class="text-danger">*</span></label>
@@ -202,14 +207,14 @@
                                         <input type="number" class="form-control" id="NRT" placeholder="NRT">
                                     </div>
                                 </div>
-                                <div class="col-sm-1">
+                                <div class="col-sm-2">
                                     <div class="form-group">
                                         <label for="LOA">LOA<span class="text-danger">*</span></label>
                                         <input type="number" class="form-control" id="LOA" placeholder="LOA" onchange="LOAOnchange()">
                                         <input type="hidden" class="form-control" id="MAXLOA" placeholder="">
                                     </div>
                                 </div>
-                                <div class="col-sm-1">
+                                <div class="col-sm-2">
                                     <div class="form-group">
                                         <label for="Beam">Beam<span class="text-danger">*</span></label>
                                         <input type="number" class="form-control" id="Beam" placeholder="Beam" onchange="BeamOnchange()">
@@ -907,6 +912,7 @@
                 "PDAEstimatorId": $('#PDAEstimatorId').val(),
                 "CustomerId": $('#customerid').val(),
                 "VesselName": $('#VesselName').val(),
+                "VesselSizeTypeId": $('#VesselSizeTypeId').val(),
                 "PortID": $('#PortName').val(),
                 "ActivityTypeId": $('#PortActivityName').val(),
                 "TerminalID": $('#TerminalName').val(),
@@ -1070,6 +1076,7 @@
                 "PDAEstimatorId": $('#PDAEstimatorId').val(),
                 "CustomerId": $('#customerid').val(),
                 "VesselName": $('#VesselName').val(),
+                "VesselSizeTypeId": $('#VesselSizeTypeId').val(),
                 "PortID": $('#PortName').val(),
                 "ActivityTypeId": $('#PortActivityName').val(),
                 "TerminalID": $('#TerminalName').val(),
@@ -1104,6 +1111,7 @@
                     debugger
                     $('#customerid').val(data.pdaEstimitor.customerID);
                     $('#VesselName').val(data.pdaEstimitor.vesselName);
+                    $('#VesselSizeTypeId').val(data.pdaEstimitor.vesselSizeTypeId);
                     $('#PortName').val(data.pdaEstimitor.portID);
                     PortOnChangefunc();
                     $('#PortActivityName').val(data.pdaEstimitor.activityTypeId);
@@ -1170,6 +1178,7 @@
                 "PDAEstimatorId": id,
                 "CustomerId": $('#customerid').val(),
                 "VesselName": $('#VesselName').val(),
+                "VesselSizeTypeId": $('#VesselSizeTypeId').val(),
                 "PortName": $('#PortName').val(),
                 "PortActivityName": $('#PortActivityName').val(),
                 "TerminalName": $('#TerminalName').val(),
@@ -1282,6 +1291,32 @@
 
 
         }
+
+
+        function onVesselSizeTypeChange(id) {
+
+            if (!id) {
+                $('#DWT,#GRT,#NRT,#LOA,#Beam').val('');
+                return;
+            }
+
+            $.ajax({
+                type: "GET",
+                url: "/Admin/VesselSizeTypeMaster/GetById",
+                data: { id },
+                success: function (data) {
+                    $('#DWT').val(data.dwt);
+                    $('#GRT').val(data.grt);
+                    $('#NRT').val(data.nrt);
+                    $('#LOA').val(data.loa);
+                    $('#Beam').val(data.beam);
+                }
+            });
+        }
+
+
+
+
 
         //function ViewPDAEstimator(PDAEstimatorID) {
                         //    alert('hi')

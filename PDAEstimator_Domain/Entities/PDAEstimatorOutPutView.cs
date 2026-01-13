@@ -107,5 +107,8 @@ namespace PDAEstimator_Domain.Entities
 
         public int BerthID { get; set; }
         public string? Disclaimer { get; set; }
+
+        public decimal GrandTotalBaseAmount { get; set; }
+        public decimal GrandTotalDefaultAmount { get; set; }
     }
 }

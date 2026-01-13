@@ -23,7 +23,7 @@ namespace PDAEstimator_Infrastructure.Repositories
         {
             try
             {
-                var sql = "INSERT INTO PDAEstimator (CreatedBy,CreationDate, CustomerID, VesselName, PortID, TerminalID,BerthId, CallTypeID, CargoID, CargoQty,CargoQtyCBM, CargoUnitofMasurement, LoadDischargeRate, CurrencyID, ROE, DWT, ArrivalDraft, GRT, NRT,BerthStay, AnchorageStay, LOA, Beam, IsDeleted,ActivityTypeId,ETA,BerthStayDay, InternalCompanyID, BerthStayShift,VesselBallast,IsReducedGRT, BerthStayDayCoastal, BerthStayShiftCoastal, BerthStayHoursCoastal, RGRT, IsCustomerCreated) VALUES (@CreatedBy,GetDate(), @CustomerID, @VesselName, @PortID, @TerminalID,@BerthId, @CallTypeID, @CargoID, @CargoQty,@CargoQtyCBM, @CargoUnitofMasurement, @LoadDischargeRate, @CurrencyID, @ROE, @DWT, @ArrivalDraft, @GRT,@NRT, @BerthStay, @AnchorageStay, @LOA, @Beam, 0 , @ActivityTypeId ,@ETA,@BerthStayDay, @InternalCompanyID, @BerthStayShift , @VesselBallast ,@IsReducedGRT, @BerthStayDayCoastal, @BerthStayShiftCoastal, @BerthStayHoursCoastal, @RGRT, @IsCustomerCreated) SELECT CAST(SCOPE_IDENTITY() as bigint)";
+                var sql = "INSERT INTO PDAEstimator (CreatedBy,CreationDate, CustomerID, VesselName, VesselSizeTypeId, PortID, TerminalID,BerthId, CallTypeID, CargoID, CargoQty,CargoQtyCBM, CargoUnitofMasurement, LoadDischargeRate, CurrencyID, ROE, DWT, ArrivalDraft, GRT, NRT,BerthStay, AnchorageStay, LOA, Beam, IsDeleted,ActivityTypeId,ETA,BerthStayDay, InternalCompanyID, BerthStayShift,VesselBallast,IsReducedGRT, BerthStayDayCoastal, BerthStayShiftCoastal, BerthStayHoursCoastal, RGRT, IsCustomerCreated) VALUES (@CreatedBy,GetDate(), @CustomerID, @VesselName, @VesselSizeTypeId, @PortID, @TerminalID,@BerthId, @CallTypeID, @CargoID, @CargoQty,@CargoQtyCBM, @CargoUnitofMasurement, @LoadDischargeRate, @CurrencyID, @ROE, @DWT, @ArrivalDraft, @GRT,@NRT, @BerthStay, @AnchorageStay, @LOA, @Beam, 0 , @ActivityTypeId ,@ETA,@BerthStayDay, @InternalCompanyID, @BerthStayShift , @VesselBallast ,@IsReducedGRT, @BerthStayDayCoastal, @BerthStayShiftCoastal, @BerthStayHoursCoastal, @RGRT, @IsCustomerCreated) SELECT CAST(SCOPE_IDENTITY() as bigint)";
         
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
@@ -268,7 +268,7 @@ namespace PDAEstimator_Infrastructure.Repositories
         {
             try
             {
-                var sql = "UPDATE PDAEstimator SET ModifyUserID = @ModifyUserID,ModifyDate = GetDate(),CustomerId = @CustomerId,VesselName = @VesselName,PortId = @PortId,TerminalId = @TerminalId,BerthId = @BerthId,CallTypeID = @CallTypeID,CargoId = @CargoId,CargoQty = @CargoQty,CargoQtyCBM = @CargoQtyCBM, CargoUnitofMasurement = @CargoUnitofMasurement,LoadDischargeRate = @LoadDischargeRate,CurrencyId = @CurrencyId,ROE = @ROE,DWT = @DWT,ArrivalDraft = @ArrivalDraft,GRT = @GRT,RGRT = @RGRT,NRT = @NRT,BerthStay = @BerthStay,AnchorageStay = @AnchorageStay,LOA = @LOA,Beam = @Beam,ActivityTypeId=@ActivityTypeId ,ETA=@ETA,BerthStayDay=@BerthStayDay, InternalCompanyID = @InternalCompanyID, BerthStayShift = @BerthStayShift, VesselBallast = @VesselBallast,IsReducedGRT = @IsReducedGRT BerthStayDayCoastal = @BerthStayDayCoastal, BerthStayShiftCoastal = @BerthStayShiftCoastal, BerthStayHoursCoastal = @BerthStayHoursCoastal WHERE PDAEstimatorID = @PDAEstimatorID";
+                var sql = "UPDATE PDAEstimator SET ModifyUserID = @ModifyUserID,ModifyDate = GetDate(),CustomerId = @CustomerId,VesselName = @VesselName, VesselSizeTypeId = @VesselSizeTypeId, PortId = @PortId,TerminalId = @TerminalId,BerthId = @BerthId,CallTypeID = @CallTypeID,CargoId = @CargoId,CargoQty = @CargoQty,CargoQtyCBM = @CargoQtyCBM, CargoUnitofMasurement = @CargoUnitofMasurement,LoadDischargeRate = @LoadDischargeRate,CurrencyId = @CurrencyId,ROE = @ROE,DWT = @DWT,ArrivalDraft = @ArrivalDraft,GRT = @GRT,RGRT = @RGRT,NRT = @NRT,BerthStay = @BerthStay,AnchorageStay = @AnchorageStay,LOA = @LOA,Beam = @Beam,ActivityTypeId=@ActivityTypeId ,ETA=@ETA,BerthStayDay=@BerthStayDay, InternalCompanyID = @InternalCompanyID, BerthStayShift = @BerthStayShift, VesselBallast = @VesselBallast,IsReducedGRT = @IsReducedGRT BerthStayDayCoastal = @BerthStayDayCoastal, BerthStayShiftCoastal = @BerthStayShiftCoastal, BerthStayHoursCoastal = @BerthStayHoursCoastal WHERE PDAEstimatorID = @PDAEstimatorID";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
                     connection.Open();
@@ -283,5 +283,24 @@ namespace PDAEstimator_Infrastructure.Repositories
             
         }
 
+
+
+        public async Task UpdatePdaTotalAmountAsync(decimal pdaBaseAmount, decimal pdaDefaultAmount, long id)
+        {
+            try
+            {
+                var sql = "UPDATE PDAEstimator SET pdaBaseAmount = @pdaBaseAmount, pdaDefaultAmount = @pdaDefaultAmount WHERE PDAEstimatorID = @PDAEstimatorID";
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                {
+                    connection.Open();
+                    var result = await connection.ExecuteAsync(sql, new { pdaBaseAmount, pdaDefaultAmount, PDAEstimatorID = id });
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
     }
 }

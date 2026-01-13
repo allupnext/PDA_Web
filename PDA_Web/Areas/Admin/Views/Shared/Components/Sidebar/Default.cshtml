@@ -407,7 +407,15 @@
                                 </a>
                             </li>
                         }
-
+                        @if (userRoleName.Where(x => x.RoleName == "Admin").Count() > 0 || (userPermissionRights.Where(x => x.MenuName == "VesselSizeTypeMaster" && x.UserRolePermission == "View").Count() > 0))
+                        {
+                            <li class="nav-item">
+                                <a asp-area="Admin" asp-controller="VesselSizeTypeMaster" asp-action="Index" class="nav-link" id="VesselSizeTypeMasterMenu">
+                                    <i class="far fa-circle11 nav-icon"></i>
+                                    <p>Vessel Size Type</p>
+                                </a>
+                            </li>
+                        }
                     </ul>
                 </li>
 

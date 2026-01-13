@@ -58,11 +58,35 @@ builder.Services.AddTransient<IDisclaimersRepository, DisclaimersRepository>();
 builder.Services.AddTransient<IEmailNotificationConfigurationRepository, EmailNotificationConfigurationRepository>();
 //builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.AddTransient<IVesselSizeTypeMasterRepository, VesselSizeTypeMasterRepository>();
 
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
-builder.Services.AddControllersWithViews();
+
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddControllersWithViews()
+        .AddRazorRuntimeCompilation()
+        .AddNToastNotifyNoty(new NotyOptions
+        {
+            ProgressBar = true,
+            Timeout = 5000,
+            Theme = "metroui",
+            Force = true
+        });
+}
+else
+{
+    builder.Services.AddControllersWithViews()
+        .AddNToastNotifyNoty(new NotyOptions
+        {
+            ProgressBar = true,
+            Timeout = 5000,
+            Theme = "metroui",
+            Force = true
+        });
+}
 
 builder.Services.AddSession(options =>
 {
@@ -70,6 +94,8 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
+
 //builder.Services.AddHttpContextAccessor();
 var emailConfig = builder.Configuration
         .GetSection("EmailConfiguration")
@@ -77,14 +103,6 @@ var emailConfig = builder.Configuration
 builder.Services.AddSingleton(emailConfig);
 
 
-builder.Services.AddMvc()
-               .AddNToastNotifyNoty(new NotyOptions
-               {
-                   ProgressBar = true,
-                   Timeout = 5000,
-                   Theme = "metroui",
-                   Force = true
-               });
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

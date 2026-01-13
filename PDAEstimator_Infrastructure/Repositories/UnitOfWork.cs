@@ -7,7 +7,7 @@ namespace PDAEstimator_Infrastructure.Repositories
     {
 
 
-        public UnitOfWork( ICustomerUserMaster customerUserMaster, IPortDetailsRepository portDetailsRepository, ICountryRepository countryRepository, IStateRepository stateRepository, ICityListRepository cityListRepository, ITerminalDetailsRepository terminalDetailsRepository, IBerthDetailsRepository berthDetailsRepository, ICargoTypeRepository cargoTypeRepository, ICargoDetailsRepository cargoDetailsRepository, ICargoFamilyRepository cargoFamilyRepository, ICurrencyRepository currencysRepository, IROERateRepository ratesRepository , ICargoHandledRepsitory cargoHandledRepository, IExpenseRepository expensesRepository, IUserRepository userRepository, ICallTypeRepository callTypesRepository, ITaxRepository taxRepository, IROENameRepository rOENamesRepository , IRoleRepository rolesRepository ,  IChargeCodeRepository chargeCodeRepository, ITariffMasterRepository tariffMasterRepository, ITariffRateRepository tariffRateRepository, ITariffSegment tariffSegmentRepository,IFormulaAttributesRepository formatAttributeRepository,IFormulaOpratorRepository formulaOpratorRepository,IFormulaTransactionRepository formulaTransactionRepository,IFormulaRepository formulaRepository,ICustomerRepository customerRepository ,IPDAEstimitorRepository pDAEstimitorRepository, IPDAEstimitorOUTRepository pDAEstimitorOUTRepository, IPDAEstimatorOutPutTariffRepository pDAEstimatorOutPutTariffRepository, IPDAEstimitorOUTNoteRepository pDAEstimitorOUTNoteRepository, IDesignationRepository designationRepository,INotesRepository notesRepository, IPortActivityTypeRepository portActivityTypeRepository,IBankMasterRepository bankMasterRepository, ICompanyRepository companyRepository, IDisclaimersRepository disclaimersRepository, IEmailNotificationConfigurationRepository emailNotificationConfigurationRepository)
+        public UnitOfWork( ICustomerUserMaster customerUserMaster, IPortDetailsRepository portDetailsRepository, ICountryRepository countryRepository, IStateRepository stateRepository, ICityListRepository cityListRepository, ITerminalDetailsRepository terminalDetailsRepository, IBerthDetailsRepository berthDetailsRepository, ICargoTypeRepository cargoTypeRepository, ICargoDetailsRepository cargoDetailsRepository, ICargoFamilyRepository cargoFamilyRepository, ICurrencyRepository currencysRepository, IROERateRepository ratesRepository , ICargoHandledRepsitory cargoHandledRepository, IExpenseRepository expensesRepository, IUserRepository userRepository, ICallTypeRepository callTypesRepository, ITaxRepository taxRepository, IROENameRepository rOENamesRepository , IRoleRepository rolesRepository ,  IChargeCodeRepository chargeCodeRepository, ITariffMasterRepository tariffMasterRepository, ITariffRateRepository tariffRateRepository, ITariffSegment tariffSegmentRepository,IFormulaAttributesRepository formatAttributeRepository,IFormulaOpratorRepository formulaOpratorRepository,IFormulaTransactionRepository formulaTransactionRepository,IFormulaRepository formulaRepository,ICustomerRepository customerRepository ,IPDAEstimitorRepository pDAEstimitorRepository, IPDAEstimitorOUTRepository pDAEstimitorOUTRepository, IPDAEstimatorOutPutTariffRepository pDAEstimatorOutPutTariffRepository, IPDAEstimitorOUTNoteRepository pDAEstimitorOUTNoteRepository, IDesignationRepository designationRepository,INotesRepository notesRepository, IPortActivityTypeRepository portActivityTypeRepository,IBankMasterRepository bankMasterRepository, ICompanyRepository companyRepository, IDisclaimersRepository disclaimersRepository, IEmailNotificationConfigurationRepository emailNotificationConfigurationRepository, IVesselSizeTypeMasterRepository vesselSizeTypeMasterRepository)
         {
             PortDetails = portDetailsRepository;
             Countrys = countryRepository;
@@ -48,6 +48,7 @@ namespace PDAEstimator_Infrastructure.Repositories
             CustomerUserMaster = customerUserMaster;
             Disclaimers = disclaimersRepository;
             EmailNotificationConfigurations = emailNotificationConfigurationRepository;
+            VesselSizeTypeMaster = vesselSizeTypeMasterRepository;
 
         }
 
@@ -112,6 +113,6 @@ namespace PDAEstimator_Infrastructure.Repositories
         public ICustomerUserMaster CustomerUserMaster { get; }
 
         public IDisclaimersRepository Disclaimers { get; }
-
+        public IVesselSizeTypeMasterRepository VesselSizeTypeMaster { get; }
     }
 }

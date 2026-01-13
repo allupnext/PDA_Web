@@ -1,0 +1,229 @@
+﻿@using PDAEstimator_Domain.Entities
+@{
+    ViewData["Title"] = "Vessel Size Type Master";
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Vessel Size Type Master</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Vessel Size Type Master</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+
+        <!-- FORM -->
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">Add Vessel Size Type</h3>
+            </div>
+
+            <div class="card-body">
+                <input type="hidden" id="VesselSizeTypeId" />
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="VesselSizeTypeName">Vessel Size Type Name <span class="text-danger">*</span></label>
+                            <input type="text" id="VesselSizeTypeName" placeholder="please enter vessel size type name" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="Description">Description</label>
+                            <input type="text" id="Description" placeholder="please enter description" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label for="DWT">DWT</label>
+                            <input type="number" id="DWT" placeholder="please enter DWT value" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label for="GRT">GRT</label>
+                            <input type="number" id="GRT" placeholder="please enter GRT value" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label for="NRT">NRT</label>
+                            <input type="number" id="NRT" placeholder="please enter NRT value" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="LOA">LOA</label>
+                            <input type="number" step="0.01" id="LOA" placeholder="please enter LOA value" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="Beam">Beam</label>
+                            <input type="number" step="0.01" id="Beam" placeholder="please enter Beam value" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <button class="btn btn-primary" onclick="save()">Submit</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Vessel Size Type List</h3>
+                    </div>
+                    <div class="card-body table-responsive" id="viewAll"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+
+            $('#Comney_Master').addClass('active');
+            $('#VesselSizeTypeMasterMenu').addClass('active');
+            $('#VesselSizeTypeMasterMenu')
+                .parent().closest('ul').parent().addClass('menu-open');
+
+            loadData();
+        });
+
+
+        function save() {
+
+            var model = {
+                VesselSizeTypeId: $('#VesselSizeTypeId').val(),
+                VesselSizeTypeName: $('#VesselSizeTypeName').val(),
+                Description: $('#Description').val(),
+                DWT: $('#DWT').val(),
+                GRT: $('#GRT').val(),
+                NRT: $('#NRT').val(),
+                LOA: $('#LOA').val(),
+                Beam: $('#Beam').val()
+            };
+
+            // consle.
+
+
+            if (!model.VesselSizeTypeName) {
+                toastr.error("Please enter Vessel Size Type Name", "Validation Error");
+                $('#VesselSizeTypeName').css("border-color", "red");
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/VesselSizeTypeMaster/VesselSizeTypeMasterSave",
+                data: model,
+                success: function (res) {
+
+                    if (!res.proceed) {
+                        toastr.error("Operation failed");
+                        return;
+                    }
+
+                    clearForm();
+                    loadData();
+                },
+                error: function () {
+                    toastr.error("Something went wrong");
+                }
+            });
+        }
+
+
+        function edit(id) {
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/VesselSizeTypeMaster/VesselSizeTypeMasterEdit",
+                data: { VesselSizeTypeId: id },
+                success: function (res) {
+
+                    var d = res.states;
+
+                    $('#VesselSizeTypeId').val(d.vesselSizeTypeId);
+                    $('#VesselSizeTypeName').val(d.vesselSizeTypeName);
+                    $('#Description').val(d.description);
+                    $('#DWT').val(d.dwt);
+                    $('#GRT').val(d.grt);
+                    $('#NRT').val(d.nrt);
+                    $('#LOA').val(d.loa);
+                    $('#Beam').val(d.beam);
+                },
+                error: function () {
+                    toastr.error("Failed to load data");
+                }
+            });
+        }
+
+        function deleteRecord(id) {
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/VesselSizeTypeMaster/VesselSizeTypeMasterDelete",
+                data: { VesselSizeTypeId: id },
+                success: function () {
+                    loadData();
+                },
+                error: function () {
+                    toastr.error("Delete failed");
+                }
+            });
+        }
+
+
+        function loadData() {
+
+            $.ajax({
+                type: "GET",
+                url: "/Admin/VesselSizeTypeMaster/LoadAll",
+                dataType: "HTML",
+                success: function (data) {
+                    $("#viewAll").html(data);
+                },
+                error: function () {
+                    toastr.error("Failed to load data");
+                }
+            });
+        }
+
+
+        function clearForm() {
+            $('input').val('');
+            $('#VesselSizeTypeId').val('');
+            $('input').css("border-color", "#ced4da");
+        }
+
+    </script>
+}

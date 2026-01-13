@@ -9,7 +9,7 @@ namespace PDAEstimator_Domain.Entities
         public int CustomerID { get; set; }
 
         public string VesselName { get; set; }
-
+        public long VesselSizeTypeId { get; set; }
         public int PortID { get; set; }
         public int ActivityTypeId { get; set; }
 

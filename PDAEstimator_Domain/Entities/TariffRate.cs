@@ -39,8 +39,8 @@ namespace PDAEstimator_Domain.Entities
         [DisplayFormat(DataFormatString = "{0:MM-dd-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? Validity_To  { get; set; }
 
-        public string StringValidity_To { get; set; }
-        public string StringValidity_From { get; set; }
+        public string StringValidity_To { get; set; } // Extra
+        public string StringValidity_From { get; set; } // Extra
         public bool IsDeleted { get; set; }
 
         public int? FormulaID { get; set; }

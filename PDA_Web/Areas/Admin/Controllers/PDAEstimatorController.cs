@@ -213,9 +213,15 @@ namespace PDA_Web.Areas.Admin.Controllers
             PDAEstimatorOutPutView pDAEstimatorOutPut = new PDAEstimatorOutPutView();
             pDAEstimatorOutPut = await GetPDA(id);
 
+            PDATotalCalculator.CalculateTotals(pDAEstimatorOutPut);
+
+            await unitOfWork.PDAEstimitor.UpdatePdaTotalAmountAsync(pDAEstimatorOutPut.GrandTotalBaseAmount, pDAEstimatorOutPut.GrandTotalDefaultAmount, pDAEstimatorOutPut.PDAEstimatorID);
+            
             return View(pDAEstimatorOutPut);
             //return new ViewAsPdf(pDAEstimatorOutPut);
         }
+
+        
 
         public async Task<PDAEstimatorOutPutView> PDAModelPrePared(PDAEstimatorOutPutView pDAEstimatorOutPut, int id)
         {
@@ -783,6 +789,9 @@ namespace PDA_Web.Areas.Admin.Controllers
                 if (CompanyData.Count > 0)
                     CompanyData = CompanyData.Where(x => x.Status == true).ToList();
                 ViewBag.Companys = CompanyData;
+
+                var VesselSizeType = await unitOfWork.VesselSizeTypeMaster.GetAllAsync();
+                ViewBag.VesselSizeType = VesselSizeType;
 
                 var DefaultCurrecnydata = dataCurrency.Where(x => x.DefaultCurrecny == true);
                 if (DefaultCurrecnydata != null && DefaultCurrecnydata.Count() > 0)
@@ -1738,5 +1747,49 @@ namespace PDA_Web.Areas.Admin.Controllers
         //}
     }
 
+    public static class PDATotalCalculator
+    {
+        public static void CalculateTotals(PDAEstimatorOutPutView model)
+        {
+            model.GrandTotalBaseAmount = 0;
+            model.GrandTotalDefaultAmount = 0;
+
+            foreach (var expitem in model.Expenses
+                .Where(x => model.TariffRateList.Any(y => y.ExpenseCategoryID == x.ID)))
+            {
+                decimal gstBase = 0, gstDefault = 0;
+                decimal subBase = 0, subDefault = 0;
+                decimal gstBaseApplicable = 0, gstDefaultApplicable = 0;
+
+                foreach (var item in model.TariffRateList.Where(x => x.ExpenseCategoryID == expitem.ID))
+                {
+                    decimal baseAmount =
+                        item.CurrencyID == model.BaseCurrencyCodeID
+                            ? item.Amount
+                            : item.Amount * model.ROE;
+
+                    decimal defaultAmount =
+                        item.CurrencyID == model.DefaultCurrencyCodeID
+                            ? item.Amount
+                            : item.Amount / model.ROE;
+
+                    subBase += baseAmount;
+                    subDefault += defaultAmount;
+
+                    if (item.TaxID > 0)
+                    {
+                        gstBaseApplicable += baseAmount;
+                        gstDefaultApplicable += defaultAmount;
+                    }
+                }
+
+                gstBase = (gstBaseApplicable * model.Taxrate) / 100;
+                gstDefault = (gstDefaultApplicable * model.Taxrate) / 100;
+
+                model.GrandTotalBaseAmount += subBase + gstBase;
+                model.GrandTotalDefaultAmount += subDefault + gstDefault;
+            }
+        }
+    }
 
 }

@@ -148,7 +148,7 @@
                 <td>
                     @if (item.VesselBallast == 0)
                     {
-                        <span class="badge badge-success">Not-Applicable</span>
+                        <span class="badge badge-warning">Not-Applicable</span>
                     }
                     else if (item.VesselBallast == 1)
                     {
@@ -156,7 +156,7 @@
                     }
                     else
                     {
-                        <span class="badge badge-danger">Yes</span>
+                        <span class="badge badge-success">Yes</span>
                     }
 
                 </td>
@@ -334,6 +334,7 @@
         $("#TariffRateTable").DataTable({
             "bDestroy": true,
             "searching": false,
+            order: [[0, "desc"]],
             scrollX: true,
             scrollCollapse: true,
             scrollY: '400px',

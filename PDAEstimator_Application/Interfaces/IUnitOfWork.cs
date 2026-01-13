@@ -70,5 +70,6 @@ namespace PDAEstimator_Application.Interfaces
         IDisclaimersRepository Disclaimers { get; }
 
         IEmailNotificationConfigurationRepository EmailNotificationConfigurations { get; }
+        IVesselSizeTypeMasterRepository VesselSizeTypeMaster { get; }
     }
 }

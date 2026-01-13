@@ -8,6 +8,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static PDAEstimator_Domain.Entities.TariffLookupResult;
 
 namespace PDAEstimator_Infrastructure.Repositories
 {
@@ -38,6 +39,43 @@ namespace PDAEstimator_Infrastructure.Repositories
                 throw ex;
             }
         }
+
+        public async Task<TariffLookupAllResult> ResolveAllIdsAsync(TariffLookupRequest req)
+        {
+            var sql = @"
+                SELECT
+                    ISNULL(p.ID,0) PortID,
+                    ISNULL(t.ID,0) TerminalID,
+                    ISNULL(b.ID,0) BerthID,
+                    ISNULL(c.ID,0) CargoID,
+                    ISNULL(ct.ID,0) CallTypeID,
+                    ISNULL(ec.ID,0) ExpenseCategoryID,
+                    ISNULL(cc.ID,0) ChargeCodeID,
+                    ISNULL(tx.ID,0) TaxID,
+                    ISNULL(ts.TariffSegmentID,0) SlabID,
+                    ISNULL(cur.ID,0) CurrencyID,
+                    ISNULL(f.formulaMasterID,0) FormulaID,
+                    ISNULL(pat.ID,0) OperationTypeID
+                FROM (SELECT 1 X) d
+                LEFT JOIN PortDetails p ON p.PortName = @Port
+                LEFT JOIN TerminalDetails t ON t.TerminalName = @Terminal
+                LEFT JOIN BerthDetails b ON b.BerthName = @Berth
+                LEFT JOIN CargoDetails c ON c.CargoName = @Cargo
+                LEFT JOIN CallType ct ON ct.CallTypeName = @CallType
+                LEFT JOIN ExpenseMaster ec ON ec.ExpenseName = @Expense
+                LEFT JOIN ChargeCodeMaster cc ON cc.ChargeCodeName = @ChargeCode
+                LEFT JOIN TaxMaster tx ON tx.TaxName = @Tax 
+                LEFT JOIN TariffSegment ts ON ts.TariffSegmentName = @Slab
+                LEFT JOIN Currency cur ON cur.CurrencyCode = @Currency
+                LEFT JOIN FormulaMaster f ON f.FormulaName = @Formula
+                LEFT JOIN PortActivityType pat ON pat.ActivityType = @OperationType";
+
+            using var con = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
+            return await con.QueryFirstAsync<TariffLookupAllResult>(sql, req);
+        }
+
+
+
         public async Task<string> InsertTarrifFromSelectedPorts(CopyTarrifModelInput Ids)
         {
             try

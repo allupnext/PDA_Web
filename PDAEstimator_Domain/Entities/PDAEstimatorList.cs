@@ -14,6 +14,7 @@ namespace PDAEstimator_Domain.Entities
         public int CustomerID { get; set; }
         public string FirstName { get; set; } = string.Empty;
         public string VesselName { get; set; }
+        public string VesselSizeType { get; set; } = string.Empty;
         public string PortName { get; set; } = string.Empty;
         public int PortID { get; set; }
         public int ActivityTypeId { get; set; }
@@ -30,6 +31,7 @@ namespace PDAEstimator_Domain.Entities
 
         public int CallTypeID { get; set; }
         public string CurrencyName { get; set; } = string.Empty;
+        public decimal pdaDefaultAmount { get; set; }
 
         public int CargoID { get; set; }
 
