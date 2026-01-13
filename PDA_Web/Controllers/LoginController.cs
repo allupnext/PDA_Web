@@ -37,7 +37,7 @@ namespace PDA_Web.Controllers
         {
             string CookieskeyMacAddress = "MacAddress";
 
-            var MachineName = Dns.GetHostEntry(HttpContext.Connection.RemoteIpAddress).HostName;
+            //var MachineName = Dns.GetHostEntry(HttpContext.Connection.RemoteIpAddress).HostName;
 
             if (customerAuth != null)
             {
@@ -73,6 +73,24 @@ namespace PDA_Web.Controllers
                         });
 
                     }
+                    //if (isAuthenticated.MacAddress != "" || isAuthenticated.MacAddress != null)
+                    //{
+                    //    var Res = await unitOfWork.Customer.UpdateMacAddress(customerAuth.MacAddress, isAuthenticated.ID);
+                    //}
+
+                    //CustomerUserMaster isMacAddress = await unitOfWork.Customer.Authenticate(customerAuth.Email, customerAuth.CustomerPassword);
+
+                    ////if (isMacAddress.MacAddress == null || isMacAddress.MacAddress == "")
+                    //{
+                    //    _toastNotification.AddErrorToastMessage("Enter Your MacAddress");
+                    //    return Json(new
+                    //    {
+                    //        proceed = false,
+                    //        msg = "",
+                    //        otp = ""
+                    //    });
+                    //}
+
 
                     if ((string.IsNullOrEmpty(customerAuth.MacAddress)) && (string.IsNullOrEmpty(isAuthenticated.MacAddress)))
                     {
@@ -87,7 +105,7 @@ namespace PDA_Web.Controllers
                     else if (!string.IsNullOrEmpty(customerAuth.MacAddress))
                     {
 
-                        var ResMacAddress = await unitOfWork.User.AddMacAddress(customerAuth.MacAddress, isAuthenticated.ID);
+                        var ResMacAddress = await unitOfWork.CustomerUserMaster.AddMacAddress(customerAuth.MacAddress, isAuthenticated.ID);
                         var cookieOptions = new CookieOptions
                         {
                             Expires = DateTime.Now.AddDays(30), // Expires in 30 days
@@ -110,27 +128,40 @@ namespace PDA_Web.Controllers
                             return Json(new
                             {
                                 proceed = true,
-                                msg = "",
+                                msg = "otpsent",
                                 otp = otp
                             });
 
                         }
-                        else if (CookieValueMacAddress != null && CookieValueMacAddress != isAuthenticated.MacAddress)
+                        else if (CookieValueMacAddress != isAuthenticated.MacAddress)
                         {
-                            var LoginMachineName = MachineName;
-                            if (isAuthenticated.LoginMachineName != null && isAuthenticated.LoginMachineName == LoginMachineName)
+                            //var LoginMachineName = MachineName;
+                            //if (isAuthenticated.LoginMachineName != null && isAuthenticated.LoginMachineName == LoginMachineName)
+                            //{
+                            //    string otp = await SendOTPEmail(isAuthenticated.Email, isAuthenticated.ID);
+                            //    return Json(new
+                            //    {
+                            //        proceed = true,
+                            //        msg = "",
+                            //        otp = otp
+                            //    });
+                            //}
+                            //else
+                            //{
+                            if (CookieValueMacAddress != null)
                             {
-                                string otp = await SendOTPEmail(isAuthenticated.Email, isAuthenticated.ID);
+                                _toastNotification.AddErrorToastMessage("This device is not registered. Please login through your registered device Or reset your password");
                                 return Json(new
                                 {
-                                    proceed = true,
+                                    proceed = false,
                                     msg = "",
-                                    otp = otp
+                                    otp = ""
                                 });
+                                //}
                             }
                             else
                             {
-                                _toastNotification.AddErrorToastMessage("This device is not registered. Please login through your registered device (" + isAuthenticated.LoginMachineName + ") Or reset your password");
+                                _toastNotification.AddErrorToastMessage("This device is not registered. Please login through your registered device (" + CookieValueMacAddress + ") Or reset your password");
                                 return Json(new
                                 {
                                     proceed = false,
@@ -145,7 +176,8 @@ namespace PDA_Web.Controllers
                             return Json(new
                             {
                                 proceed = true,
-                                msg = "",
+                                msg = "otpsent",
+
                                 otp = otp
                             });
                         }
@@ -157,7 +189,7 @@ namespace PDA_Web.Controllers
                         return Json(new
                         {
                             proceed = true,
-                            msg = "",
+                            msg = "otpsent",
                             otp = otp
                         });
                     }

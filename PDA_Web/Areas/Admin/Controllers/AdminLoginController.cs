@@ -47,7 +47,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             //    Secure = true // Only sent over HTTPS
             //};
             //Response.Cookies.Append("PersistentCookie", "CookieValue", cookieOptions);
-            var MachineName =  Dns.GetHostEntry(HttpContext.Connection.RemoteIpAddress).HostName;
+            //var MachineName =  Dns.GetHostEntry(HttpContext.Connection.RemoteIpAddress).HostName;
             
             //var CookieValue = Request.Cookies[key];
 
@@ -122,22 +122,24 @@ namespace PDA_Web.Areas.Admin.Controllers
                             });
 
                         }
-                        else if (CookieValueMacAddress != null && CookieValueMacAddress != isAuthenticated.MacAddress )
+                        else if (CookieValueMacAddress != isAuthenticated.MacAddress )
                         {
-                            var LoginMachineName = MachineName;
-                            if (isAuthenticated.LoginMachineName != null && isAuthenticated.LoginMachineName == LoginMachineName)
+                            //var LoginMachineName = MachineName;
+                            //if (isAuthenticated.LoginMachineName != null && isAuthenticated.LoginMachineName == LoginMachineName)
+                            //{
+                            //    string otp = await SendOTPEmail(isAuthenticated.EmailID, isAuthenticated.ID);
+                            //    return Json(new
+                            //    {
+                            //        proceed = true,
+                            //        msg = "",
+                            //        otp = otp
+                            //    });
+                            //}
+                            //else
+                            //{
+                            if (string.IsNullOrEmpty(CookieValueMacAddress))
                             {
-                                string otp = await SendOTPEmail(isAuthenticated.EmailID, isAuthenticated.ID);
-                                return Json(new
-                                {
-                                    proceed = true,
-                                    msg = "",
-                                    otp = otp
-                                });
-                            }
-                            else
-                            {
-                                _toastNotification.AddErrorToastMessage("This device is not registered. Please login through your registered device (" + isAuthenticated.LoginMachineName + ") Or reset your password");
+                                _toastNotification.AddErrorToastMessage("This device is not registered. Please login through your registered macId Or reset your password");
                                 return Json(new
                                 {
                                     proceed = false,
@@ -145,6 +147,17 @@ namespace PDA_Web.Areas.Admin.Controllers
                                     otp = ""
                                 });
                             }
+                            else
+                            {
+                                _toastNotification.AddErrorToastMessage("This mac id is not registered. Please login through your registered macId (" + CookieValueMacAddress + ") Or reset your password");
+                                return Json(new
+                                {
+                                    proceed = false,
+                                    msg = "",
+                                    otp = ""
+                                });
+                            }
+                            //}
                         }
                         else
                         {
@@ -194,7 +207,8 @@ namespace PDA_Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> LoginwitOTP(UserAuth user)
         {
-            var MachineName = Dns.GetHostEntry(HttpContext.Connection.RemoteIpAddress).HostName;
+            //var MachineName = Dns.GetHostEntry(HttpContext.Connection.RemoteIpAddress).HostName;
+            var MachineName = System.Environment.MachineName;
 
             User isAuthenticated = await unitOfWork.User.Authenticate(user.EmployCode, user.UserPassword);
             if (isAuthenticated.OTP == user.OTP && isAuthenticated.OTPSentDate != null && isAuthenticated.OTPSentDate.Value.AddMinutes(5) > DateTime.UtcNow)
@@ -313,8 +327,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                     string Content = "<html> <body>   <p>Hello, <br> You recently requested to reset the password for your PDAEstimator account. Click the button below to proceed.    </p> <div> <a  href=" + confirmationLink + "> <button style='height:30px; margin-bottom:30px; font-size:14px;' type='button'> Reset Password </button> </a> </div> </body> </html> ";
                     string Subject = "Reset Password";
                     List<string> ccrecipients = new List<string>();
-                    //string FromCompany = "bulkopsindia@merchantshpg.com";
-                    string FromCompany = "alert@hindfreight.net";
+                    string FromCompany = "bulkopsindia@merchantshpg.com";
+                    //string FromCompany = "alert@hindfreight.net";
 
                     //string ToEmail = "";
                     //var emailconfig = await unitOfWork.EmailNotificationConfigurations.GetByProcessNameAsync("Customer Register");

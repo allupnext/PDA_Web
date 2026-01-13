@@ -5,6 +5,7 @@ using PDAEstimator_Application.Interfaces;
 using PDAEstimator_Domain.Entities;
 using PDAEstimator_Infrastructure_Shared;
 using PDAEstimator_Infrastructure_Shared.Services;
+using System.Net;
 
 namespace PDA_Web.Controllers
 {
@@ -47,8 +48,20 @@ namespace PDA_Web.Controllers
         {
             if (resetPassword != null)
             {
-                var ChekCustomer = unitOfWork.Customer.ChangePassword(resetPassword.Password, resetPassword.userId);
-               var custuserdata = await unitOfWork.CustomerUserMaster.GetByIdAsync(resetPassword.userId);
+                var MachineName = System.Environment.MachineName;
+
+                string CookieskeyMacAddress = "MacAddress";
+                var ChekCustomer = unitOfWork.Customer.ChangePassword(resetPassword.Password, resetPassword.userId, resetPassword.MacAddress, MachineName);
+                var cookieOptions = new CookieOptions
+                {
+                    Expires = DateTime.Now.AddDays(30), // Expires in 30 days
+                    IsEssential = true, // Necessary for the application to function
+                    HttpOnly = true, // Accessible only by the server
+                    Secure = true // Only sent over HTTPS
+                };
+                Response.Cookies.Append(CookieskeyMacAddress, resetPassword.MacAddress, cookieOptions);
+
+                var custuserdata = await unitOfWork.CustomerUserMaster.GetByIdAsync(resetPassword.userId);
                 if (custuserdata != null)
                 {
                     string Email = custuserdata.Email;
@@ -140,7 +153,7 @@ namespace PDA_Web.Controllers
 
                 if (ChekUser.Result == 1)
                 {
-                    var SetPassword = unitOfWork.Customer.ChangePassword(Data.NewPassword, Data.userId);
+                    var SetPassword = unitOfWork.Customer.ChangePasswordByCurrent(Data.NewPassword, Data.userId);
                     _toastNotification.AddSuccessToastMessage("PassWord Set Successfully..");
                     var data = new
                     {

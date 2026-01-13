@@ -34,6 +34,25 @@ namespace PDAEstimator_Infrastructure.Repositories
             }
         }
 
+        public async Task<int> UpdateMacAddress(string MacAddress, int ID)
+        {
+            try
+            {
+                var sql = "UPDATE CustomerUserMaster SET MacAddress= @MacAddress  WHERE ID = @Id";
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                {
+                    connection.Open();
+                    var result = await connection.ExecuteAsync(sql, new { MacAddress = MacAddress, ID = ID });
+                    return result;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public async Task<CustomerUserMaster> CheckEmailExist(string email)
         {
             var sql = "SELECT * FROM CustomerUserMaster where Email=@Email and IsDeleted != 1";
@@ -68,7 +87,27 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         }
 
-        public async Task<string> ChangePassword(string Password, long id)
+        public async Task<string> ChangePassword(string Password, long id, string macAddress, string loginMachineName)
+        {
+            try
+            {
+                //var sql = "update CustomerMaster set Password = @Password Where CustomerId = @CustomerId";
+                var sql = "update CustomerUserMaster set Password = @Password,MacAddress = @macAddress, LoginMachineName = @loginMachineName Where ID = @ID";
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                {
+                    connection.Open();
+                    var result = await connection.ExecuteAsync(sql, new { Password = Password, ID = id, MacAddress = macAddress, LoginMachineName = loginMachineName });
+                    return result.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        public async Task<string> ChangePasswordByCurrent(string Password, long id)
         {
             try
             {
