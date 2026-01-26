@@ -23,7 +23,7 @@ namespace PDAEstimator_Infrastructure.Repositories
         {
             try
             {
-                var sql = "Insert into CargoDetails (CargoTypeID,CargoName, CargoStatus, CargoFamilyID, CargoFile, IsDeleted) VALUES (@CargoTypeID, @CargoName, @CargoStatus, @CargoFamilyID, @CargoFile,0)";
+                var sql = "Insert into CargoDetails (CargoTypeID,CargoName, CargoStatus, CargoFamilyID, CargoFile, IsDeleted,IsTarffVisible) VALUES (@CargoTypeID, @CargoName, @CargoStatus, @CargoFamilyID, @CargoFile,0,@IsTarffVisible)";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
                     connection.Open();
@@ -74,7 +74,7 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<List<CargoDetailsList>> GetAlllistAsync()
         {
-            var sql = "SELECT CargoFile, CargoDetails.ID as ID, CargoName, CargoDetails.CargoTypeID as CargoTypeID, CargoDetails.CargoFamilyID as CargoFamilyID, CargoDetails.CargoStatus as CargoStatus, CargoTypeName,CargoFamilyName FROM CargoDetails left join CargoType on CargoType.ID =  CargoDetails.CargoTypeID left join CargoFamily on CargoFamily.ID =  CargoDetails.CargoFamilyID WHERE CargoDetails.IsDeleted != 1 order by CargoName";
+            var sql = "SELECT CargoFile, CargoDetails.ID as ID, CargoName, CargoDetails.CargoTypeID as CargoTypeID, CargoDetails.CargoFamilyID as CargoFamilyID, CargoDetails.CargoStatus as CargoStatus,CargoDetails.IsTarffVisible as IsTarffVisible,CargoTypeName,CargoFamilyName FROM CargoDetails left join CargoType on CargoType.ID =  CargoDetails.CargoTypeID left join CargoFamily on CargoFamily.ID =  CargoDetails.CargoFamilyID WHERE CargoDetails.IsDeleted != 1 order by CargoName";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
@@ -97,7 +97,7 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<int> UpdateAsync(CargoDetails entity)
         {
-            var sql = "UPDATE CargoDetails SET CargoTypeID=@CargoTypeID, CargoName=@CargoName, CargoStatus = @CargoStatus, CargoFamilyID = @CargoFamilyID, CargoFile = @CargoFile WHERE ID = @Id";
+            var sql = "UPDATE CargoDetails SET CargoTypeID=@CargoTypeID, CargoName=@CargoName, CargoStatus = @CargoStatus, CargoFamilyID = @CargoFamilyID, CargoFile = @CargoFile,IsTarffVisible = @IsTarffVisible WHERE ID = @Id";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();

@@ -14,6 +14,6 @@ namespace PDAEstimator_Domain.Entities
         public string CargoFile { get; set; } = string.Empty;
         public int? CargoFamilyID { get; set; }
         public bool IsDeleted { get; set; }
-
+        public bool IsTarffVisible { get; set; }
     }
 }

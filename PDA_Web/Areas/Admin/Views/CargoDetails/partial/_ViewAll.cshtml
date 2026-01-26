@@ -23,7 +23,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.CargoStatus)
             </th>
-            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsTarffVisible)
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -53,6 +55,16 @@
                         <span class="badge badge-danger">In Active</span>
                     }
                     @*@Html.DisplayFor(modelItem => item.CargoStatus)*@
+                </td>
+                <td>
+                    @if(item.IsTarffVisible == true)
+                    {
+                        <span class="badge badge-success">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge badge-success">In Active</span>
+                    }
                 </td>
                 @using PDAEstimator_Domain.Entities;
                 @if (ViewBag.UserPermissionModel != null)
