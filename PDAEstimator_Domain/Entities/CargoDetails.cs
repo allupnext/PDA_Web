@@ -16,5 +16,6 @@ namespace PDAEstimator_Domain.Entities
         public bool IsDeleted { get; set; }
 
         public string CargoTypeName { get; set; } = string.Empty;
+        public bool IsTarffVisible { get; set; }
     }
 }

@@ -88,7 +88,10 @@
 
                             </div>
 
-
+                            <div class="form-check ml-2">
+                                <input type="checkbox" class="form-check-input" id="IsTarffVisible" checked>
+                                <label class="form-check-label" for="IsTarffVisible">IsTarffVisible</label>
+                            </div>
                         </div>
 
                         <!-- /.card-body -->
@@ -155,6 +158,7 @@
 
             var cargoDetails;
             var Status = false;
+            var IsTarffVisible = $('#IsTarffVisible').is(":checked");
             if ($('#Status').is(":checked")) {
                 Status = true;
             }
@@ -164,7 +168,8 @@
                 "CargoName": $('#CargoName').val(),
                 "CargoFamilyID": $('#CargoFamily').val(),
                 "CargoFile": $("#ResumeFileName").val(),
-                "CargoStatus": Status
+                "CargoStatus": Status,
+                "IsTarffVisible": IsTarffVisible
             }
 
             $.ajax({
@@ -188,6 +193,7 @@
             $('#CargoDetailsMenu').addClass('active');
             $('#CargoDetailsMenu').parent().closest('ul').parent().addClass('menu-open');
             $('#Status').prop("checked", true);
+            $('#IsTarffVisible').prop("checked", true);
             //$("#").DataTable();
             loadData();
             $("#CargoNameFilter").change(function () {
@@ -240,6 +246,7 @@
         function cargoDetailsSave() {
             var cargoDetails;
             var Status = false;
+            var IsTarffVisible = $('#IsTarffVisible').is(":checked");
             if ($('#Status').is(":checked")) {
                 Status = true;
             }
@@ -249,7 +256,8 @@
                 "CargoName": $('#CargoName').val(),
                 "CargoFamilyID": $('#CargoFamily').val(),
                 "CargoFile": $("#ResumeFileName").val(),
-                "CargoStatus": Status
+                "CargoStatus": Status,
+                "IsTarffVisible": IsTarffVisible
             }
 
             if ($('#CargoName').val() == "") {
@@ -335,6 +343,7 @@
                     $('#CargoName').val(data.cargoDetails.cargoName);
                     $('#CargoFamily').val(data.cargoDetails.cargoFamilyID);
                     $('#Status').val(data.cargoDetails.cargoStatus);
+                    $('#IsTarffVisible').prop('checked', data.cargoDetails.isTarffVisible);
                 },
                 error: function () {
                 }
