@@ -15,5 +15,6 @@ namespace PDAEstimator_Domain.Entities
         public int? CargoFamilyID { get; set; }
         public bool IsDeleted { get; set; }
 
+        public string CargoTypeName { get; set; } = string.Empty;
     }
 }

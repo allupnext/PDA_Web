@@ -148,7 +148,10 @@
                                 Berth<span class="text-danger">*</span>
                             </div>
                             <div class="col-sm-2" style="max-width: 15%;">
-                                Cargo<span class="text-danger">*</span>
+                                Cargo Type<span class="text-danger">*</span>
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                Cargo Name<span class="text-danger">*</span>
                             </div>
                             <div class="col-sm-2" style="max-width: 12%;">
                                 Validate From<span class="text-danger">*</span>
@@ -192,6 +195,10 @@
                             </div>
                             <div class="col-sm-2" style="max-width: 15%;" id="berthdrop">
                                 @Html.DropDownList("BerthName", new SelectList(ViewBag.Berth, "ID", "BerthName"), "ALL", new { @class = "form-control" })
+
+                            </div>
+                            <div class="col-sm-2" style="max-width: 15%;" id="cargotypedrop">
+                                @Html.DropDownList("CargoType", new SelectList(ViewBag.CargoType, "CargoTypeID", "CargoTypeName"), "ALL", new { @class = "form-control" })
 
                             </div>
                             <div class="col-sm-2" style="max-width: 15%;" id="cargodrop">
@@ -813,6 +820,19 @@
                               dataType: "HTML",
                               success: function (data) {
                                   $("#cargodrop").html(data);
+                                  //loadData();
+                              },
+                              error: function () {
+                              }
+                          });
+
+                            $.ajax({
+                              type: "GET",
+                              url: "/Admin/Tariff/CargoTypeLoad",
+                              data: cargoHandled,
+                              dataType: "HTML",
+                              success: function (data) {
+                                  $("#cargotypedrop").html(data);
                                   //loadData();
                               },
                               error: function () {

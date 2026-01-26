@@ -92,35 +92,52 @@ namespace PDAEstimator_Infrastructure.Repositories
             }
         }
 
-
-
-
-        public async Task<List<CargoDetails>> GetCargoByTerminalAndPortAsync(int terminalId, int portId)
+        /// <summary>
+        /// Retrieves cargo details for a given terminal and port.
+        /// When <paramref name="isTariffVisibleflag"/> is true the query will only return cargos
+        /// where the database column <c>IsTarffVisible</c> equals 1.
+        /// </summary>
+        /// <param name="terminalId">Terminal identifier (0 to ignore terminal filter).</param>
+        /// <param name="portId">Port identifier.</param>
+        /// <param name="isTariffVisibleflag">
+        /// If true, add filter <c>AND CargoDetails.IsTarffVisible = 1</c> to the WHERE clause.
+        /// </param>
+        /// <returns>List of matching <see cref="CargoDetails"/>.</returns>
+        public async Task<List<CargoDetails>> GetCargoByTerminalAndPortAsync(int terminalId, int portId, bool isTariffVisibleflag = false)
         {
             try
             {
+                // Build optional visibility filter only when caller requested it.
+                // Note: keep the exact database column name used in your schema: "IsTarffVisible".
+                var visibleFilter = isTariffVisibleflag ? " AND CargoDetails.IsTarffVisible = 1" : string.Empty;
+
                 if (terminalId > 0)
                 {
-                    var sql = @"
-                SELECT DISTINCT CargoDetails.*
+                    // When terminalId is provided, filter by both TerminalID and PortID.
+                    var sql = $@"
+                SELECT DISTINCT CargoType.CargoTypeName, CargoDetails.*
                 FROM CargoDetails
-                left JOIN CargoHandled ON CargoDetails.ID = CargoHandled.CargoID and CargoHandled.IsDeleted = 0
-                WHERE CargoHandled.TerminalID = @TerminalId AND CargoHandled.PortID = @PortId and CargoDetails.Isdeleted = 0";
+                Left Join CargoType on CargoType.Id = CargoDetails.CargoTypeID and CargoType.IsDeleted = 0
+                LEFT JOIN CargoHandled ON CargoDetails.ID = CargoHandled.CargoID AND CargoHandled.IsDeleted = 0
+                WHERE CargoHandled.TerminalID = @TerminalId AND CargoHandled.PortID = @PortId AND CargoDetails.Isdeleted = 0{visibleFilter}";
 
                     using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                     {
                         connection.Open();
+                        // Use parameterized query to prevent SQL injection and to allow query plan reuse.
                         var result = await connection.QueryAsync<CargoDetails>(sql, new { TerminalId = terminalId, PortId = portId });
                         return result.ToList();
                     }
                 }
                 else
                 {
-                    var sql = @"
-                SELECT DISTINCT CargoDetails.*
+                    // When terminalId is not provided, filter only by PortID.
+                    var sql = $@"
+                SELECT DISTINCT CargoType.CargoTypeName, CargoDetails.*
                 FROM CargoDetails
-                left JOIN CargoHandled ON CargoDetails.ID = CargoHandled.CargoID and CargoHandled.IsDeleted = 0
-                WHERE CargoHandled.PortID = @PortId and CargoDetails.Isdeleted = 0";
+                Left Join CargoType on CargoType.Id = CargoDetails.CargoTypeID and CargoType.IsDeleted = 0
+                LEFT JOIN CargoHandled ON CargoDetails.ID = CargoHandled.CargoID AND CargoHandled.IsDeleted = 0
+                WHERE CargoHandled.PortID = @PortId AND CargoDetails.Isdeleted = 0{visibleFilter}";
 
                     using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                     {
@@ -130,8 +147,9 @@ namespace PDAEstimator_Infrastructure.Repositories
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
+                // Preserve existing behavior: rethrow the original exception.
                 throw;
             }
         }

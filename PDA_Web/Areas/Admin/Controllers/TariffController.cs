@@ -132,9 +132,19 @@ namespace PDA_Web.Areas.Admin.Controllers
         {
             var TerminalId = cargoHandleds.TerminalID;
             var PortId = cargoHandleds.PortID;
-            var cargoList = await unitOfWork.PDAEstimitor.GetCargoByTerminalAndPortAsync(TerminalId, PortId);
+            var cargoList = await unitOfWork.PDAEstimitor.GetCargoByTerminalAndPortAsync(TerminalId, PortId, true);
             ViewBag.Cargo = cargoList;
             return PartialView("partial/_CargoList");
+        }
+
+        public async Task<IActionResult> CargoTypeLoad(CargoHandleds cargoHandleds)
+        {
+            var TerminalId = cargoHandleds.TerminalID;
+            var PortId = cargoHandleds.PortID;
+            var cargoList = await unitOfWork.PDAEstimitor.GetCargoByTerminalAndPortAsync(TerminalId, PortId, true);
+            var cargoTypeList = cargoList.Select(x => new { x.CargoTypeID, x.CargoTypeName }).Distinct().ToList();
+            ViewBag.CargoType = cargoTypeList;
+            return PartialView("partial/_CargoTypeList");
         }
 
         public async Task<ActionResult> formulaByFormulaId(FormulaMaster formula)//Master Save
@@ -229,6 +239,24 @@ namespace PDA_Web.Areas.Admin.Controllers
                 if (dataCargoDetails.Count > 0)
                     dataCargoDetails = dataCargoDetails.Where(x => x.CargoStatus == true).ToList();
                 ViewBag.Cargo = dataCargoDetails;
+
+                var dataCargoTypes = await unitOfWork.CargoTypes.GetAllAsync();
+
+                if (dataCargoTypes.Count > 0)
+                {
+                    dataCargoTypes = dataCargoTypes.Where(x => x.CargoTypeStatus == true).ToList();
+                    var cargoTypeDropdowns = dataCargoTypes.Select(ct => new CargoTypeDropdown
+                    {
+                        CargoTypeID = ct.ID.ToString(),
+                        CargoTypeName = ct.CargoTypeName,
+                        CargoTypeStatus = ct.CargoTypeStatus,
+                        IsDeleted = ct.IsDeleted
+                    }).ToList();
+                    ViewBag.CargoType = cargoTypeDropdowns;
+                }
+                else {
+                    ViewBag.CargoType = dataCargoTypes;
+                }
 
                 var dataCallTypes = await unitOfWork.CallTypes.GetAllAsync();
                 if (dataCallTypes.Count > 0)
