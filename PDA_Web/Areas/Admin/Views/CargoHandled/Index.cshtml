@@ -70,6 +70,18 @@
                                     @Html.DropDownList("CargoNameEdit", new SelectList(ViewBag.Cargo, "ID", "CargoName"), "Please Select", new { @class="form-control" })
                                 </div>
                             </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="LoadRate">Load Rate<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="LoadRate" placeholder="Load Rate">
+                                 </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="DischargeRate">Discharge Rate<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="DischargeRate" placeholder="Discharge Rate">
+                                </div>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="row">
@@ -157,6 +169,8 @@
                 "BerthID": $('#BerthName').val(),
                 "CargoIDs": $('#CargoName').val(),
                 "CargoID": $('#CargoNameEdit').val(),
+                "DischargeRate" : $('#DischargeRate').val(),
+                "LoadRate" : $('#LoadRate').val()
             }
             if ($('#PortName').val() == "") {
                 toastr.error("Please enter port name.", 'Error Alert');
@@ -199,6 +213,8 @@
                 $('#TerminalName').val("");
                 $('#BerthName').val("");
                 $('#CargoName').val("");
+                $('#DischargeRate').val("");
+                $('#LoadRate').val("");
                 $('#CargoNameEdit').val("");
                 $('#CargoName').show();
                 $('#CargoNameEdit').hide();
@@ -239,6 +255,7 @@
                 "TerminalID": $('#TerminalName').val(),
                 "BerthID": $('#BerthName').val(),
                 "CargoID": $('#CargoName').val(),
+
             }
 
             $.ajax({
@@ -254,6 +271,8 @@
                     $('#TerminalName').val(data.cargoHandled.terminalID);
                     TerminalChange();
                     $('#BerthName').val(data.cargoHandled.berthID);
+                    $('#LoadRate').val(data.cargoHandled.loadRate);
+                    $('#DischargeRate').val(data.cargoHandled.dischargeRate);
                     $('#CargoNameEdit').val(data.cargoHandled.cargoIDs);
 
                 },

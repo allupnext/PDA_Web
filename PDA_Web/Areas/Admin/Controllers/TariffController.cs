@@ -237,7 +237,7 @@ namespace PDA_Web.Areas.Admin.Controllers
 
                 var dataCargoDetails = await unitOfWork.CargoDetails.GetAllAsync();
                 if (dataCargoDetails.Count > 0)
-                    dataCargoDetails = dataCargoDetails.Where(x => x.CargoStatus == true).ToList();
+                    dataCargoDetails = dataCargoDetails.Where(x => x.CargoStatus == true).Where(y=>y.IsTarffVisible == true).ToList();
                 ViewBag.Cargo = dataCargoDetails;
 
                 var dataCargoTypes = await unitOfWork.CargoTypes.GetAllAsync();
@@ -320,7 +320,7 @@ namespace PDA_Web.Areas.Admin.Controllers
         {
             var TerminalId = cargoHandleds.TerminalID;
             var PortId = cargoHandleds.PortID;
-            var cargoList = await unitOfWork.PDAEstimitor.GetCargoByTerminalAndPortAsync(TerminalId, PortId);
+            var cargoList = await unitOfWork.PDAEstimitor.GetCargoByTerminalAndPortAsync(TerminalId, PortId, true);
 
             ViewBag.Cargo = cargoList;
             return PartialView("partial/_CargoFilterList");

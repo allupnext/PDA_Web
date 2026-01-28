@@ -21,6 +21,8 @@ namespace PDAEstimator_Domain.Entities
         public int CargoID { get; set; }
         public string CargoName { get; set; } = string.Empty;
         public bool IsDeleted { get; set; }
+        public int? DischargeRate { get; set; }
+        public int? LoadRate { get; set; }
 
         public bool CargoStatus { get; set; } = true;
     }

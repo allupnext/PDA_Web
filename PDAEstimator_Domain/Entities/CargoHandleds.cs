@@ -12,9 +12,10 @@ namespace PDAEstimator_Domain.Entities
         public int BerthID { get; set; }
         public int PortID { get; set; }
         public int CargoID { get; set; }
-
         public bool CargoStatus { get; set; } = true;
         public bool IsDeleted { get; set; }
+        public int? LoadRate { get; set; }
+        public int? DischargeRate { get; set; }
 
         public int[]? CargoIDs { get; set; }
 

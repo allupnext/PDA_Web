@@ -23,7 +23,7 @@ namespace PDAEstimator_Infrastructure.Repositories
         {
             try
             {
-                    var sql = "Insert into CargoHandled (PortID,TerminalID,BerthID,CargoID,CargoStatus, IsDeleted) VALUES (@PortID,@TerminalID, @BerthID,@CargoID,@CargoStatus, 0)";
+                    var sql = "Insert into CargoHandled (PortID,TerminalID,BerthID,CargoID,CargoStatus,IsDeleted,LoadRate,DischargeRate) VALUES (@PortID,@TerminalID, @BerthID,@CargoID,@CargoStatus, 0,@LoadRate,@DischargeRate)";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
                     connection.Open();
@@ -64,7 +64,7 @@ namespace PDAEstimator_Infrastructure.Repositories
         {
             try
             {
-                var sql = "SELECT CargoHandled.ID as ID,CargoHandled.TerminalID as TerminalID,CargoHandled.BerthID as BerthID,CargoHandled.PortID as PortID,CargoHandled.CargoID as CargoID,CargoHandled.CargoStatus as CargoStatus,TerminalDetails.TerminalName,BerthDetails.BerthName,PortDetails.PortName,CargoDetails.CargoName FROM CargoHandled left join TerminalDetails on TerminalDetails.ID =  CargoHandled.TerminalID left join BerthDetails on BerthDetails.ID =  CargoHandled.BerthID left join PortDetails on PortDetails.ID =  CargoHandled.PortID left join CargoDetails on CargoDetails.ID =  CargoHandled.CargoID WHERE CargoHandled.IsDeleted != 1;";
+                var sql = "SELECT CargoHandled.ID as ID,CargoHandled.TerminalID as TerminalID,CargoHandled.BerthID as BerthID,CargoHandled.PortID as PortID,CargoHandled.CargoID as CargoID,CargoHandled.CargoStatus as CargoStatus,TerminalDetails.TerminalName,BerthDetails.BerthName,PortDetails.PortName,CargoDetails.CargoName,CargoHandled.LoadRate,CargoHandled.DischargeRate FROM CargoHandled left join TerminalDetails on TerminalDetails.ID =  CargoHandled.TerminalID left join BerthDetails on BerthDetails.ID =  CargoHandled.BerthID left join PortDetails on PortDetails.ID =  CargoHandled.PortID left join CargoDetails on CargoDetails.ID =  CargoHandled.CargoID WHERE CargoHandled.IsDeleted != 1;";
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
                     connection.Open();
@@ -90,7 +90,7 @@ namespace PDAEstimator_Infrastructure.Repositories
 
         public async Task<int> UpdateAsync(CargoHandleds entity)
         {
-            var sql = "UPDATE CargoHandled SET PortID=@PortID,TerminalID = @TerminalID,BerthID=@BerthID, CargoID=@CargoID,CargoStatus=@CargoStatus  WHERE ID = @Id";
+            var sql = "UPDATE CargoHandled SET PortID=@PortID,TerminalID = @TerminalID,BerthID=@BerthID, CargoID=@CargoID,CargoStatus=@CargoStatus,LoadRate = @LoadRate,DischargeRate = @DischargeRate  WHERE ID = @Id";
 
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
