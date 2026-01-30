@@ -169,7 +169,7 @@ namespace PDAEstimator_Infrastructure.Repositories
         {
             try
             {
-                var sql = "UPDATE TariffRate SET PortID = @PortID, TerminalID=@TerminalID,CurrencyID=@CurrencyID,ModifyDate= GetDate(), ModifyUserID = @ModifyUserID,BerthID=@BerthID,CallTypeID=@CallTypeID,CargoID=@CargoID,ExpenseCategoryID=@ExpenseCategoryID, SlabID=@SlabID, SlabFrom=@SlabFrom, SlabTo = @SlabTo,Rate=@Rate,ChargeCodeID=@ChargeCodeID,Validity_From=@Validity_From, Validity_To=@Validity_To,status=@status, FormulaID = @FormulaID, Remark = @Remark, TaxID = @TaxID, SlabIncreemental = @SlabIncreemental, VesselBallast = @VesselBallast, Reduced_GRT = @Reduced_GRT, Range_TariffID = @Range_TariffID, OperationTypeID = @OperationTypeID WHERE TariffRateID = @TariffRateID";
+                var sql = "UPDATE TariffRate SET PortID = @PortID, TerminalID=@TerminalID,CurrencyID=@CurrencyID,ModifyDate= GetDate(), ModifyUserID = @ModifyUserID,BerthID=@BerthID,CallTypeID=@CallTypeID,CargoID=@CargoID,ExpenseCategoryID=@ExpenseCategoryID, SlabID=@SlabID, SlabFrom=@SlabFrom, SlabTo = @SlabTo,Rate=@Rate,ChargeCodeID=@ChargeCodeID,Validity_From=@Validity_From, Validity_To=@Validity_To,status=@status, FormulaID = COALESCE(@FormulaID, FormulaID), Remark = @Remark, TaxID = @TaxID, SlabIncreemental = @SlabIncreemental, VesselBallast = @VesselBallast, Reduced_GRT = @Reduced_GRT, Range_TariffID = @Range_TariffID, OperationTypeID = @OperationTypeID WHERE TariffRateID = @TariffRateID";
 
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {

@@ -237,7 +237,7 @@ namespace PDA_Web.Areas.Admin.Controllers
 
                 var dataCargoDetails = await unitOfWork.CargoDetails.GetAllAsync();
                 if (dataCargoDetails.Count > 0)
-                    dataCargoDetails = dataCargoDetails.Where(x => x.CargoStatus == true).Where(y=>y.IsTarffVisible == true).ToList();
+                    dataCargoDetails = dataCargoDetails.Where(x => x.CargoStatus == true).Where(y => y.IsTarffVisible == true).ToList();
                 ViewBag.Cargo = dataCargoDetails;
 
                 var dataCargoTypes = await unitOfWork.CargoTypes.GetAllAsync();
@@ -254,7 +254,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                     }).ToList();
                     ViewBag.CargoType = cargoTypeDropdowns;
                 }
-                else {
+                else
+                {
                     ViewBag.CargoType = dataCargoTypes;
                 }
 
@@ -616,47 +617,30 @@ namespace PDA_Web.Areas.Admin.Controllers
         public async Task<IActionResult> DownloadTariffExcelTemplate()
         {
             // =========================
-            // LOAD MASTER DATA (DB)
+            // 1️⃣ LOAD MASTER DATA
             // =========================
 
-            var ports = (await unitOfWork.PortDetails.GetAllAsync())
-                .Select(x => x.PortName).ToList();
+            var ports = (await unitOfWork.PortDetails.GetAllAsync()).Select(x => x.PortName).ToList();
+            var terminals = (await unitOfWork.TerminalDetails.GetAllAsync()).Select(x => x.TerminalName).ToList();
+            var berths = (await unitOfWork.BerthDetails.GetAllAsync()).Select(x => x.BerthName).ToList();
+            var cargos = (await unitOfWork.CargoDetails.GetAllAsync()).Select(x => x.CargoName).ToList();
+            var callTypes = (await unitOfWork.CallTypes.GetAllAsync()).Select(x => x.CallTypeName).ToList();
+            var expenses = (await unitOfWork.Expenses.GetAllAsync()).Select(x => x.ExpenseName).ToList();
+            var chargeCodes = (await unitOfWork.ChargeCodes.GetAllAsync()).Select(x => x.ChargeCodeName).ToList();
+            var currencies = (await unitOfWork.Currencys.GetAllAsync()).Select(x => x.CurrencyCode).ToList();
+            var slabs = (await unitOfWork.tariffSegment.GetAllAsync()).Select(x => x.TariffSegmentName).ToList();
+            var formulas = (await unitOfWork.Formula.GetAllAsync()).Select(x => x.formulaName).ToList();
+            var taxes = (await unitOfWork.Taxs.GetAllAsync()).Select(x => x.TaxName).ToList();
+            var portActivities = (await unitOfWork.PortActivities.GetAllAsync()).Select(x => x.ActivityType).ToList();
 
-            var terminals = (await unitOfWork.TerminalDetails.GetAllAsync())
-                .Select(x => x.TerminalName).ToList();
-
-            var berths = (await unitOfWork.BerthDetails.GetAllAsync())
-                .Select(x => x.BerthName).ToList();
-
-            var cargos = (await unitOfWork.CargoDetails.GetAllAsync())
-                .Select(x => x.CargoName).ToList();
-
-            var callTypes = (await unitOfWork.CallTypes.GetAllAsync())
-                .Select(x => x.CallTypeName).ToList();
-
-            var expenses = (await unitOfWork.Expenses.GetAllAsync())
-                .Select(x => x.ExpenseName).ToList();
-
-            var chargeCodes = (await unitOfWork.ChargeCodes.GetAllAsync())
-                .Select(x => x.ChargeCodeName).ToList();
-
-            var currencies = (await unitOfWork.Currencys.GetAllAsync())
-                .Select(x => x.CurrencyCode).ToList();
-
-            var slabs = (await unitOfWork.tariffSegment.GetAllAsync())
-                .Select(x => x.TariffSegmentName).ToList();
-
-            var formulas = (await unitOfWork.Formula.GetAllAsync())
-                .Select(x => x.formulaName).ToList();
-
-            var taxes = (await unitOfWork.Taxs.GetAllAsync())
-                .Select(x => x.TaxName).ToList();
-
-            var portActivities = (await unitOfWork.PortActivities.GetAllAsync())
-                .Select(x => x.ActivityType).ToList();
+            terminals.Insert(0, "All");
+            berths.Insert(0, "All");
+            cargos.Insert(0, "All");
+            callTypes.Insert(0, "All");
+            portActivities.Insert(0, "All");
 
             // =========================
-            // CREATE EXCEL
+            // 2️⃣ CREATE WORKBOOK
             // =========================
 
             using var wb = new XLWorkbook();
@@ -664,11 +648,11 @@ namespace PDA_Web.Areas.Admin.Controllers
 
             string[] headers =
             {
-                "TariffRateID","Port","Terminal","Berth","Cargo",
-                "Validity_From","Validity_To","OperationType","Status",
-                "CallType","Expenses","ChargeCodes",
-                "VesselBallast","Reduced_GRT","Tax","Slab",
-                "SlabFrom","SlabTo","Range_TariffID",
+                "Tariff ID","Port","Terminal","Berth","Cargo",
+                "Validity From","Validity To","Operation Type","Status",
+                "Call Type","Expenses","Charge Codes",
+                "Vessel Ballast","Reduced GRT","Tax","Slab",
+                "Slab From","Slab To","Range Tariff ID",
                 "Rate","Currency","Formula","Remark"
             };
 
@@ -679,7 +663,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             ws.SheetView.FreezeRows(1);
 
             // =========================
-            // MASTER DATA (HIDDEN)
+            // 3️⃣ MASTER DATA (HIDDEN)
             // =========================
 
             var master = wb.Worksheets.Add("MasterData");
@@ -691,11 +675,10 @@ namespace PDA_Web.Areas.Admin.Controllers
             void Fill(string title, List<string> values)
             {
                 master.Cell(1, col).Value = title;
-
                 for (int i = 0; i < values.Count; i++)
                     master.Cell(i + 2, col).Value = values[i];
 
-                masterRowCount[col] = values.Count + 1; // header + data
+                masterRowCount[col] = values.Count + 1;
                 col++;
             }
 
@@ -713,100 +696,127 @@ namespace PDA_Web.Areas.Admin.Controllers
             Fill("Slab", slabs);
             Fill("Currency", currencies);
             Fill("Formula", formulas);
-            Fill("Incremental", new() { "Increemental", "Not-Increemental" });
+            Fill("Incremental", new() { "Incremental", "Not-Incremental" });
 
             // =========================
-            // 4️⃣ APPLY DROPDOWNS (FIXED)
+            // 4️⃣ DROPDOWNS
             // =========================
 
             void Drop(string column, int masterCol)
             {
                 var lastRow = masterRowCount[masterCol];
-                var dv = ws.Range($"{column}:{column}").SetDataValidation();
-                dv.List(master.Range(2, masterCol, lastRow, masterCol));
+                ws.Range($"{column}:{column}")
+                  .SetDataValidation()
+                  .List(master.Range(2, masterCol, lastRow, masterCol));
             }
 
-            Drop("B", 1);   // Port
-            Drop("C", 2);   // Terminal
-            Drop("D", 3);   // Berth
-            Drop("E", 4);   // Cargo
-            Drop("H", 5);   // OperationType
-            Drop("I", 6);   // Status
-            Drop("J", 7);   // CallType
-            Drop("K", 8);   // Expenses
-            Drop("L", 9);   // ChargeCodes
-            Drop("M", 10);  // VesselBallast
-            Drop("N", 10);  // Reduced_GRT
-            Drop("O", 11);  // Tax
-            Drop("P", 12);  // Slab
-            Drop("U", 13);  // Currency
-            Drop("V", 14);  // Formula
-            Drop("R", 15);  // SlabIncreemental
+            Drop("B", 1);
+            Drop("C", 2);
+            Drop("D", 3);
+            Drop("E", 4);
+            Drop("H", 5);
+            Drop("I", 6);
+            Drop("J", 7);
+            Drop("K", 8);
+            Drop("L", 9);
+            Drop("M", 10);
+            Drop("N", 10);
+            Drop("O", 11);
+            Drop("P", 12);
+            Drop("U", 13);
+            Drop("V", 14);
+            Drop("R", 15);
 
             // =========================
-            // 5️⃣ DATA TYPE VALIDATION
+            // 5️⃣ DATA VALIDATION
             // =========================
 
-            // Validity_From
-            var fromDateValidation = ws.Range("F:F").SetDataValidation();
-            fromDateValidation.AllowedValues = XLAllowedValues.Date;
-            fromDateValidation.Operator = XLOperator.Between;
-            fromDateValidation.MinValue = "DATE(2000,1,1)";
-            fromDateValidation.MaxValue = "DATE(2100,12,31)";
+            // =========================
+            // DATE FORMAT (DISPLAY)
+            // =========================
+            ws.Column("F").Style.DateFormat.Format = "dd/MM/yyyy";
+            ws.Column("G").Style.DateFormat.Format = "dd/MM/yyyy";
+
+            // =========================
+            // DATE VALIDATION (INPUT)
+            // =========================
+            var fromDateValidation = ws.Range("F2:F1048576").SetDataValidation();
+            fromDateValidation.Date
+                .Between(new DateTime(2000, 1, 1), new DateTime(2100, 12, 31));
             fromDateValidation.ShowErrorMessage = true;
             fromDateValidation.ErrorTitle = "Invalid Date";
-            fromDateValidation.ErrorMessage = "Enter a valid date";
+            fromDateValidation.ErrorMessage =
+                "Please enter a valid date in DD/MM/YYYY format only.";
 
-            // Validity_To
-            var toDateValidation = ws.Range("G:G").SetDataValidation();
-            toDateValidation.AllowedValues = XLAllowedValues.Date;
-            toDateValidation.Operator = XLOperator.Between;
-            toDateValidation.MinValue = "DATE(2000,1,1)";
-            toDateValidation.MaxValue = "DATE(2100,12,31)";
+            var toDateValidation = ws.Range("G2:G1048576").SetDataValidation();
+            toDateValidation.Date
+                .Between(new DateTime(2000, 1, 1), new DateTime(2100, 12, 31));
             toDateValidation.ShowErrorMessage = true;
             toDateValidation.ErrorTitle = "Invalid Date";
-            toDateValidation.ErrorMessage = "Enter a valid date";
+            toDateValidation.ErrorMessage =
+                "Please enter a valid date in DD/MM/YYYY format only.";
 
-            // Date display format (calendar picker)
-            ws.Column("F").Style.NumberFormat.Format = "dd/MM/yyyy";
-            ws.Column("G").Style.NumberFormat.Format = "dd/MM/yyyy";
-
-            // Default current date (optional UX)
+            // =========================
+            // DEFAULT VALUES
+            // =========================
             ws.Cell("F2").Value = DateTime.Today;
             ws.Cell("G2").Value = DateTime.Today;
+
+
 
 
             ws.Range("Q:R").SetDataValidation().AllowedValues = XLAllowedValues.Decimal;
             ws.Range("T:T").SetDataValidation().AllowedValues = XLAllowedValues.Decimal;
             ws.Range("S:S").SetDataValidation().AllowedValues = XLAllowedValues.WholeNumber;
 
+            // Formula master column = 14 (Formula)
+            int formulaMasterCol = 14;
+            var formulaLastRow = masterRowCount[formulaMasterCol];
+
+            var formulaRange = ws.Range("V2:V1048576");
+
+            var dv = formulaRange.SetDataValidation();
+
+            // Excel formula: show list only if Tariff ID is blank
+            dv.List(
+                $"=IF($A2=\"\",MasterData!${(char)('A' + formulaMasterCol - 1)}$2:${(char)('A' + formulaMasterCol - 1)}${formulaLastRow},\"\")"
+            );
+
+            dv.ShowErrorMessage = true;
+            dv.ErrorTitle = "Edit Not Allowed";
+            dv.ErrorMessage = "Formula cannot be selected once Tariff ID is entered.";
+
+
             // =========================
-            // 6️⃣ AUTO COLUMN WIDTH BASED ON DROPDOWN TEXT
+            // 6️⃣ AUTO WIDTH (CRITICAL)
             // =========================
 
-            void SetWidth(int colIndex, IEnumerable<string> values)
-            {
-                var max = values.Any() ? values.Max(x => x.Length) : 12;
-                ws.Column(colIndex).Width = Math.Max(14, max + 4);
-            }
+            // Fit based on headers & defaults
+            ws.Columns().AdjustToContents(1, 1);
 
-            SetWidth(2, ports);
-            SetWidth(3, terminals);
-            SetWidth(4, berths);
-            SetWidth(5, cargos);
-            SetWidth(8, portActivities);
-            SetWidth(9, new[] { "Active", "Expired", "Pending" });
-            SetWidth(10, callTypes);
-            SetWidth(11, expenses);
-            SetWidth(12, chargeCodes);
-            SetWidth(13, new[] { "Not-Applicable", "No", "Yes" });
-            SetWidth(14, new[] { "Not-Applicable", "No", "Yes" });
-            SetWidth(15, taxes);
-            SetWidth(16, slabs);
-            SetWidth(21, currencies);
-            SetWidth(22, formulas);
-
-            ws.Columns().AdjustToContents();
+            // Smart minimum widths for dropdown-heavy columns
+            ws.Column("B").Width = 50;
+            ws.Column("C").Width = 50;
+            ws.Column("D").Width = 50;
+            ws.Column("E").Width = 25;
+            ws.Column("F").Width = 10;
+            ws.Column("G").Width = 10;
+            ws.Column("H").Width = 15;
+            ws.Column("I").Width = 10;
+            ws.Column("J").Width = 20;
+            ws.Column("K").Width = 37;
+            ws.Column("L").Width = 50;
+            ws.Column("M").Width = 15;
+            ws.Column("N").Width = 15;
+            ws.Column("O").Width = 5;
+            ws.Column("P").Width = 10;
+            ws.Column("Q").Width = 10;
+            ws.Column("R").Width = 10;
+            ws.Column("S").Width = 10;
+            ws.Column("T").Width = 10;
+            ws.Column("U").Width = 8;
+            ws.Column("V").Width = 35;
+            ws.Column("W").Width = 30;
 
             // =========================
             // 7️⃣ RETURN FILE
@@ -854,6 +864,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                 int tariffRateId = 0;
                 if (HasValue(row[0]) && int.TryParse(row[0].ToString(), out var trId))
                     tariffRateId = trId;
+                bool isInsert = tariffRateId == 0;
 
                 var req = new TariffLookupRequest
                 {
@@ -868,7 +879,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                     Tax = row[14]?.ToString(),
                     Slab = row[15]?.ToString(),
                     Currency = row[20]?.ToString(),
-                    Formula = row[21]?.ToString()
+                    Formula = isInsert ? row[21]?.ToString() : null
                 };
 
                 var lookup = await unitOfWork.TariffRates.ResolveAllIdsAsync(req);
@@ -877,28 +888,28 @@ namespace PDA_Web.Areas.Admin.Controllers
                 if (!HasValue(row[1]) || lookup.PortID == 0)
                     errors.Add($"Row {excelRow}: Invalid port");
 
-                if (HasValue(row[2]) && lookup.TerminalID == 0)
+                if (HasValue(row[2]) && row[2].ToString() != "All" && lookup.TerminalID == 140)
                     errors.Add($"Row {excelRow}: Invalid terminal");
 
-                if (HasValue(row[3]) && lookup.BerthID == 0)
+                if (HasValue(row[3]) && row[3].ToString() != "All" && lookup.BerthID == 0)
                     errors.Add($"Row {excelRow}: Invalid berth");
 
-                if (HasValue(row[4]) && lookup.CargoID == 0)
+                if (HasValue(row[4]) && row[4].ToString() != "All" && lookup.CargoID == 0)
                     errors.Add($"Row {excelRow}: Invalid cargo");
 
-                if (!DateTime.TryParse(row[5]?.ToString(), out DateTime vf))
+                if (!DateTime.TryParseExact(row[5]?.ToString(),"dd/MM/yyyy",CultureInfo.InvariantCulture,DateTimeStyles.None,out DateTime vf))
                     errors.Add($"Row {excelRow}: Invalid validity from date");
 
-                if (!DateTime.TryParse(row[6]?.ToString(), out DateTime vt))
+                if (!DateTime.TryParseExact(row[6]?.ToString(),"dd/MM/yyyy",CultureInfo.InvariantCulture,DateTimeStyles.None,out DateTime vt))
                     errors.Add($"Row {excelRow}: Invalid validity to date");
 
-                if (HasValue(row[7]) && lookup.OperationTypeID == 0)
+                if (HasValue(row[7]) && row[7].ToString() != "All" && lookup.OperationTypeID == 0)
                     errors.Add($"Row {excelRow}: Invalid Operation");
 
                 if (HasValue(row[8]) && MapStatus(row[8]) == 0)
                     errors.Add($"Row {excelRow}: Invalid Status");
 
-                if (HasValue(row[9]) && lookup.CallTypeID == 0)
+                if (HasValue(row[9]) && row[9].ToString() != "All" && lookup.CallTypeID == 0)
                     errors.Add($"Row {excelRow}: Invalid call type");
 
                 if (!HasValue(row[10]) || lookup.ExpenseCategoryID == 0)
@@ -909,7 +920,7 @@ namespace PDA_Web.Areas.Admin.Controllers
 
                 if (HasValue(row[12]) && MapYesNo(row[12]) == 0)
                     errors.Add($"Row {excelRow}: Invalid VesselBallast");
-                
+
                 if (HasValue(row[13]) && MapYesNo(row[13]) == 0)
                     errors.Add($"Row {excelRow}: Invalid Reduced GRT");
 
@@ -922,9 +933,9 @@ namespace PDA_Web.Areas.Admin.Controllers
                 if (HasValue(row[20]) && lookup.CurrencyID == 0)
                     errors.Add($"Row {excelRow}: Invalid Currency");
 
-                if (!HasValue(row[20]) || lookup.FormulaID == 0)
+                if (tariffRateId == 0 && (!HasValue(row[21]) || lookup.FormulaID == 0))
                     errors.Add($"Row {excelRow}: Invalid formulas");
-           
+
                 // ===== SLAB RULE =====
                 bool slabSelected = HasValue(row[15]);
 
@@ -954,16 +965,16 @@ namespace PDA_Web.Areas.Admin.Controllers
                     PortID = lookup.PortID,
                     CurrencyID = lookup.CurrencyID,
 
-                    TerminalID = lookup.TerminalID,
-                    BerthID = lookup.BerthID,
-                    CargoID = lookup.CargoID,
-                    CallTypeID = lookup.CallTypeID,
+                    TerminalID = lookup.TerminalID == 140 ? null : lookup.TerminalID,
+                    BerthID = lookup.BerthID, // Db inside insert 0 when null so no need change
+                    CargoID = lookup.CargoID == 0 ? null : lookup.CargoID,
+                    CallTypeID = lookup.CallTypeID == 0 ? null : lookup.CallTypeID,
                     ExpenseCategoryID = lookup.ExpenseCategoryID,
                     ChargeCodeID = lookup.ChargeCodeID,
                     TaxID = lookup.TaxID,
                     SlabID = slabSelected ? lookup.SlabID : null,
-                    FormulaID = lookup.FormulaID,
-                    OperationTypeID = lookup.OperationTypeID,
+                    FormulaID = isInsert ? lookup.FormulaID : null,
+                    OperationTypeID = lookup.OperationTypeID == 0 ? null : lookup.OperationTypeID,
 
                     Validity_From = vf,
                     Validity_To = vt,
@@ -1016,6 +1027,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             var v = val.ToString().Trim().ToLower();
             if (v == "yes") return 2;
             if (v == "no") return 1;
+            if (v == "not-applicable") return 3;
             return 0;
         }
 
