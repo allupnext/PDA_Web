@@ -396,7 +396,7 @@
                                 @Html.DropDownList("BerthNameFilter", new SelectList(ViewBag.Berth, "ID", "BerthName"), "ALL", new { @class = "form-control" })
                             </div>
                             <div class="col-sm-2" style="max-width: 10%;" id="DivCargoNameFilter">
-                                <label for="CargoNameFilter">Cargo</label>
+                                <label for="CargoNameFilter">Cargo Name</label>
                                 @Html.DropDownList("CargoNameFilter", new SelectList(ViewBag.Cargo, "ID", "CargoName"), "ALL", new { @class = "form-control", @onchange = "onChangeCargoFilter()" })
                             </div>
                             <div class="col-sm-2" style="max-width: 10%;">

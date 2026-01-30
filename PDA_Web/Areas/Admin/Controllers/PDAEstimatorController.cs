@@ -1252,9 +1252,31 @@ namespace PDA_Web.Areas.Admin.Controllers
                         }
 
                         List<PDAEstimatorOutPutTariff> pDAEstimatorOutPutTariffs = new List<PDAEstimatorOutPutTariff>();
-                        var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(PDAEstimitor.PortID, PDAEstimitor.ETA != null ? (DateTime)PDAEstimitor.ETA : DateTime.Now.Date).Result.Where(x => (x.CallTypeID == PDAEstimitor.CallTypeID || x.CallTypeID == null) && (x.TerminalID == PDAEstimitor.TerminalID || x.TerminalID == null) && (x.BerthID == PDAEstimitor.BerthId || x.BerthID == null || x.BerthID == 0) && (x.CargoID == PDAEstimitor.CargoID || x.CargoID == null) && (x.OperationTypeID == PDAEstimitor.ActivityTypeId || x.OperationTypeID == null) && (x.VesselBallast == PDAEstimitor.VesselBallast || x.VesselBallast == 0) && (x.Reduced_GRT == PDAEstimitor.IsReducedGRT || x.Reduced_GRT == 0)).OrderBy(o => o.ChargeCodeSequence).ThenBy(o => o.SlabFrom).ThenBy(o => o.TariffRateID);
+
+                        var cargoDetail = await unitOfWork.CargoDetails.GetByIdAsync(PDAEstimitor.CargoID);
+                        var cargoDetaillist = await unitOfWork.CargoDetails.GetAllPortIdAsync(PDAEstimitor.PortID);
+                        cargoDetaillist = cargoDetaillist.Where(x => x.CargoTypeID == cargoDetail.CargoTypeID).ToList();
+
+                        // Get list of CargoIDs
+                        List<int> cargoIdList = cargoDetaillist.Select(x => x.ID).ToList();
                         List<PDATariffRateList> pDATariffRateList = new List<PDATariffRateList>();
                         decimal taxrate = 0;
+
+                        var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(
+                            PDAEstimitor.PortID,
+                            PDAEstimitor.ETA != null ? (DateTime)PDAEstimitor.ETA : DateTime.Now.Date
+                        ).Result.Where(x =>
+                            (x.CallTypeID == PDAEstimitor.CallTypeID || x.CallTypeID == null) &&
+                            (x.TerminalID == PDAEstimitor.TerminalID || x.TerminalID == null) &&
+                            (x.BerthID == PDAEstimitor.BerthId || x.BerthID == null || x.BerthID == 0) &&
+                            (x.CargoID == null || cargoIdList.Contains(x.CargoID.Value)) &&
+                            (x.OperationTypeID == PDAEstimitor.ActivityTypeId || x.OperationTypeID == null) &&
+                            (x.VesselBallast == PDAEstimitor.VesselBallast || x.VesselBallast == 0) &&
+                            (x.Reduced_GRT == PDAEstimitor.IsReducedGRT || x.Reduced_GRT == 0)
+                        ).OrderBy(o => o.ChargeCodeSequence)
+                         .ThenBy(o => o.SlabFrom)
+                         .ThenBy(o => o.TariffRateID);
+
                         foreach (var triff in triffdata)
                         {
                             long? slabattributvalue = 0;
