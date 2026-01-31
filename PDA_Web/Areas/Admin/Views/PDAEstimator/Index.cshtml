@@ -95,7 +95,7 @@
                                 <div class="col-sm-2">
                                     <div class="form-group">
                                         <label for="PortName">Port Operation Type<span class="text-danger">*</span></label>
-                                        @Html.DropDownList("PortActivityName", new SelectList(ViewBag.PortActivity, "ID", "ActivityType"), "Please Select", new { @class = "form-control" })
+                                        @Html.DropDownList("PortActivityName", new SelectList(ViewBag.PortActivity, "ID", "ActivityType"), "Please Select", new { @class = "form-control", @onchange = "GetLoadOrDischargeRate()" })
                                     </div>
                                 </div>
                                 <div class="col-sm-2">
@@ -692,6 +692,8 @@
                 error: function () {
                 }
             });
+
+            GetLoadOrDischargeRate();
         };
 
         function CargoNameOnChangefunc() {
@@ -712,6 +714,8 @@
                 error: function () {
                 }
             });
+
+            GetLoadOrDischargeRate();
         }
 
         function callChangefunc(val) {  
@@ -741,6 +745,8 @@
                     }
                 });
             }
+
+            GetLoadOrDischargeRate();
         }
 
 
@@ -811,6 +817,38 @@
                     }
                 });
             }
+
+            GetLoadOrDischargeRate();
+        }
+
+        function GetLoadOrDischargeRate() {
+            var portid = $('#PortName').val();
+            var portActivityid = $('#PortActivityName').val();
+            var cargoid = $('#CargoName').val();
+            var terminalid = $('#TerminalName').val();
+            var berthid = $('#BerthName').val();
+
+            if (portid && portActivityid && cargoid && terminalid && berthid) {
+                $.ajax({
+                    type: "GET",
+                    url: "/Admin/PDAEstimator/GetLoadOrDischargeRate",
+                    data: {
+                        portid: portid,
+                        portActivityid: portActivityid,
+                        cargoid: cargoid,
+                        terminalid: terminalid,
+                        berthid: berthid
+                    },
+                    dataType: "json",
+                    success: function (response) {
+                        if (response.success) {
+                            $("#LoadDischargeRate").val(response.data);
+                        } 
+                    },
+                    error: function () {
+                    }
+                });
+            } 
         }
 
         function showBrethDetailPopUp() {

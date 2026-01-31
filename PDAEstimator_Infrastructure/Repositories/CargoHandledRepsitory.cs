@@ -88,6 +88,49 @@ namespace PDAEstimator_Infrastructure.Repositories
             }
         }
 
+        public async Task<int?> GetLoadOrDischargeRate(long portId, long portActivityId, long cargoId, long terminalId, long berthId)
+        {
+            try
+            {
+                var sql = @"
+                    SELECT 
+                        CASE 
+                            WHEN @portActivityId = 1 THEN LoadRate
+                            WHEN @portActivityId = 2 THEN DischargeRate
+                            ELSE NULL
+                        END AS Rate
+                    FROM CargoHandled
+                    WHERE portId = @portId
+                      AND cargoId = @cargoId
+                      AND terminalId = @terminalId
+                      AND berthId = @berthId
+                      AND (
+                        (@portActivityId = 1 AND LoadRate IS NOT NULL) OR
+                        (@portActivityId = 2 AND DischargeRate IS NOT NULL)
+                      );";
+
+                using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
+                {
+                    await connection.OpenAsync();
+                    var result = await connection.QuerySingleOrDefaultAsync<int?>(sql, new
+                    {
+                        portId,
+                        portActivityId,
+                        cargoId,
+                        terminalId,
+                        berthId
+                    });
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching Load/Discharge rate: {ex.Message}");
+                throw;
+            }
+        }
+
+
         public async Task<int> UpdateAsync(CargoHandleds entity)
         {
             var sql = "UPDATE CargoHandled SET PortID=@PortID,TerminalID = @TerminalID,BerthID=@BerthID, CargoID=@CargoID,CargoStatus=@CargoStatus,LoadRate = @LoadRate,DischargeRate = @DischargeRate  WHERE ID = @Id";

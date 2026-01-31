@@ -10,5 +10,6 @@ namespace PDAEstimator_Application.Interfaces
     public interface ICargoHandledRepsitory : IGenericRepository<CargoHandleds>
     {
         Task<List<CargoHandledList>> GetAlllistAsync();
+        Task<int?> GetLoadOrDischargeRate(long portid, long portActivityid, long cargoid, long terminalid, long berthid);
     }
 }

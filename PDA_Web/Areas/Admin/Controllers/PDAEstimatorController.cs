@@ -998,6 +998,17 @@ namespace PDA_Web.Areas.Admin.Controllers
             return PartialView("partial/TerminalList");
         }
 
+        public async Task<IActionResult> GetLoadOrDischargeRate(long portid,long portActivityid,long cargoid,long terminalid,long berthid)
+        {
+            if (portid == 0 || portActivityid == 0 || cargoid == 0 || terminalid == 0 || berthid == 0)
+            {   
+                return Json(new { success = false, message = "Invalid input" });
+            }
+            var loadDischargeRate = await unitOfWork.cargoHandled.GetLoadOrDischargeRate(portid, portActivityid, cargoid, terminalid, berthid);
+            return Json(new { success = true, data = loadDischargeRate });
+        }
+        
+
         public IActionResult TeaminalLoad(int selectedCargoId, int selectedPortId)
         {
 
