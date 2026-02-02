@@ -1265,7 +1265,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                         List<PDAEstimatorOutPutTariff> pDAEstimatorOutPutTariffs = new List<PDAEstimatorOutPutTariff>();
 
                         var cargoDetail = await unitOfWork.CargoDetails.GetByIdAsync(PDAEstimitor.CargoID);
-                        var cargoDetaillist = await unitOfWork.CargoDetails.GetAllPortIdAsync(PDAEstimitor.PortID);
+                        var cargoDetaillist = await unitOfWork.CargoDetails.GetAlllistAsync();
                         cargoDetaillist = cargoDetaillist.Where(x => x.CargoTypeID == cargoDetail.CargoTypeID).ToList();
 
                         // Get list of CargoIDs
