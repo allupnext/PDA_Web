@@ -5,8 +5,6 @@
         word-wrap: break-word;
     }
 
-  
-
 </style>
 <table class="table table-bordered  table-striped" id="TariffRateTable">
     <thead>
@@ -27,6 +25,7 @@
             <th>Reduced GRT</th>
             <th>Tax</th>
             <th>Slab</th>
+            <th>Slab Increemental</th>
             <th>Slab From</th>
             <th>Slab To</th>
             <th>Range Tariff ID</th>
@@ -171,17 +170,33 @@
                     @Html.DisplayFor(modelItem => item.SlabName)
                 </td>
                 <td>
+                    @if (item.SlabIncreemental == 1)
+                    {
+                        <span class="badge badge-success">Increemental</span>
+                    }
+                    else if (item.SlabIncreemental == 2)
+                    {
+                        <span class="badge badge-danger">Not-Increemental</span>
+                    }
+                    else
+                    {
+                        <span class="badge badge-danger">-</span>
+                    }
+                </td>
+                <td>
                     @if (item.SlabFrom != null)
-                        @Convert.ToDecimal(item.SlabFrom).ToString("#,##0.#######")
+@Convert.ToDecimal(item.SlabFrom).ToString("#,##0.#######")
                     
-                </td>
+                    
+</td>
                 <td>
-                        @if (item.SlabTo != null)
-                        @Convert.ToDecimal(item.SlabTo).ToString("#,##0.#######")
+                    @if (item.SlabTo != null)
+@Convert.ToDecimal(item.SlabTo).ToString("#,##0.#######")
+                        
 
-                </td>
+</td>
                 <td>
-                        @Html.DisplayFor(modelItem => item.Range_TariffID)
+                    @Html.DisplayFor(modelItem => item.Range_TariffID)
                 </td>
                 <td>
                     @item.Rate.ToString("#,##0.#######")

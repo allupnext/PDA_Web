@@ -651,7 +651,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                 "Tariff ID","Port","Terminal","Berth","Cargo",
                 "Validity From","Validity To","Operation Type","Status",
                 "Call Type","Expenses","Charge Codes",
-                "Vessel Ballast","Reduced GRT","Tax","Slab",
+                "Vessel Ballast","Reduced GRT","Tax","Slab","Slab Increemental",
                 "Slab From","Slab To","Range Tariff ID",
                 "Rate","Currency","Formula","Remark"
             };
@@ -696,7 +696,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             Fill("Slab", slabs);
             Fill("Currency", currencies);
             Fill("Formula", formulas);
-            Fill("Incremental", new() { "Incremental", "Not-Incremental" });
+            Fill("Incremental", new() { "Increemental", "Not-Increemental" });
 
             // =========================
             // 4️⃣ DROPDOWNS
@@ -723,9 +723,9 @@ namespace PDA_Web.Areas.Admin.Controllers
             Drop("N", 10);
             Drop("O", 11);
             Drop("P", 12);
-            Drop("U", 13);
-            Drop("V", 14);
-            Drop("R", 15);
+            Drop("V", 13);
+            Drop("W", 14);
+            Drop("Q", 15);
 
             // =========================
             // 5️⃣ DATA VALIDATION
@@ -764,16 +764,15 @@ namespace PDA_Web.Areas.Admin.Controllers
 
 
 
-
-            ws.Range("Q:R").SetDataValidation().AllowedValues = XLAllowedValues.Decimal;
-            ws.Range("T:T").SetDataValidation().AllowedValues = XLAllowedValues.Decimal;
-            ws.Range("S:S").SetDataValidation().AllowedValues = XLAllowedValues.WholeNumber;
+            ws.Range("R:S").SetDataValidation().AllowedValues = XLAllowedValues.Decimal;    // SlabFrom/To ← was Q:R
+            ws.Range("T:T").SetDataValidation().AllowedValues = XLAllowedValues.WholeNumber; // RangeTariffID ← was S
+            ws.Range("U:U").SetDataValidation().AllowedValues = XLAllowedValues.Decimal;    // Rate ← was T
 
             // Formula master column = 14 (Formula)
             int formulaMasterCol = 14;
             var formulaLastRow = masterRowCount[formulaMasterCol];
 
-            var formulaRange = ws.Range("V2:V1048576");
+            var formulaRange = ws.Range("W2:W1048576");
 
             var dv = formulaRange.SetDataValidation();
 
@@ -810,13 +809,14 @@ namespace PDA_Web.Areas.Admin.Controllers
             ws.Column("N").Width = 15;
             ws.Column("O").Width = 5;
             ws.Column("P").Width = 10;
-            ws.Column("Q").Width = 10;
-            ws.Column("R").Width = 10;
-            ws.Column("S").Width = 10;
-            ws.Column("T").Width = 10;
-            ws.Column("U").Width = 8;
-            ws.Column("V").Width = 35;
-            ws.Column("W").Width = 30;
+            ws.Column("Q").Width = 15;  // Slab Increemental
+            ws.Column("R").Width = 10;  // Slab From
+            ws.Column("S").Width = 10;  // Slab To
+            ws.Column("T").Width = 10;  // Range Tariff ID
+            ws.Column("U").Width = 10;  // Rate
+            ws.Column("V").Width = 8;   // Currency
+            ws.Column("W").Width = 35;  // Formula
+            ws.Column("X").Width = 30;  // Remark
 
             // =========================
             // 7️⃣ RETURN FILE
@@ -878,8 +878,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                     ChargeCode = row[11]?.ToString(),
                     Tax = row[14]?.ToString(),
                     Slab = row[15]?.ToString(),
-                    Currency = row[20]?.ToString(),
-                    Formula = isInsert ? row[21]?.ToString() : null
+                    Currency = row[21]?.ToString(),
+                    Formula = isInsert ? row[22]?.ToString() : null
                 };
 
                 var lookup = await unitOfWork.TariffRates.ResolveAllIdsAsync(req);
@@ -897,10 +897,10 @@ namespace PDA_Web.Areas.Admin.Controllers
                 if (HasValue(row[4]) && row[4].ToString() != "All" && lookup.CargoID == 0)
                     errors.Add($"Row {excelRow}: Invalid cargo");
 
-                if (!DateTime.TryParseExact(row[5]?.ToString(),"dd/MM/yyyy",CultureInfo.InvariantCulture,DateTimeStyles.None,out DateTime vf))
+                if (!TryGetDate(row[5], out DateTime vf))
                     errors.Add($"Row {excelRow}: Invalid validity from date");
 
-                if (!DateTime.TryParseExact(row[6]?.ToString(),"dd/MM/yyyy",CultureInfo.InvariantCulture,DateTimeStyles.None,out DateTime vt))
+                if (!TryGetDate(row[6], out DateTime vt))
                     errors.Add($"Row {excelRow}: Invalid validity to date");
 
                 if (HasValue(row[7]) && row[7].ToString() != "All" && lookup.OperationTypeID == 0)
@@ -918,22 +918,22 @@ namespace PDA_Web.Areas.Admin.Controllers
                 if (!HasValue(row[11]) || lookup.ChargeCodeID == 0)
                     errors.Add($"Row {excelRow}: Invalid charge codes");
 
-                if (HasValue(row[12]) && MapYesNo(row[12]) == 0)
+                if (HasValue(row[12]) && MapYesNo(row[12]) == -1)
                     errors.Add($"Row {excelRow}: Invalid VesselBallast");
 
-                if (HasValue(row[13]) && MapYesNo(row[13]) == 0)
+                if (HasValue(row[13]) && MapYesNo(row[13]) == -1)
                     errors.Add($"Row {excelRow}: Invalid Reduced GRT");
 
                 if (HasValue(row[14]) && lookup.TaxID == 0)
                     errors.Add($"Row {excelRow}: Invalid tax");
 
-                if (!decimal.TryParse(row[19]?.ToString(), out decimal rate))
+                if (!decimal.TryParse(row[20]?.ToString(), out decimal rate))
                     errors.Add($"Row {excelRow}: Invalid rate");
 
-                if (HasValue(row[20]) && lookup.CurrencyID == 0)
+                if (HasValue(row[21]) && lookup.CurrencyID == 0)
                     errors.Add($"Row {excelRow}: Invalid Currency");
 
-                if (tariffRateId == 0 && (!HasValue(row[21]) || lookup.FormulaID == 0))
+                if (tariffRateId == 0 && (!HasValue(row[22]) || lookup.FormulaID == 0))
                     errors.Add($"Row {excelRow}: Invalid formulas");
 
                 // ===== SLAB RULE =====
@@ -947,11 +947,11 @@ namespace PDA_Web.Areas.Admin.Controllers
                     if (lookup.SlabID == 0)
                         errors.Add($"Row {excelRow}: Invalid slab");
 
-                    if (!decimal.TryParse(row[16]?.ToString(), out var sf))
+                    if (!decimal.TryParse(row[17]?.ToString(), out var sf))
                         errors.Add($"Row {excelRow}: Please enter slab from");
                     else slabFrom = sf;
 
-                    if (!decimal.TryParse(row[17]?.ToString(), out var st))
+                    if (!decimal.TryParse(row[18]?.ToString(), out var st))
                         errors.Add($"Row {excelRow}: Please enter slab to");
                     else slabTo = st;
                 }
@@ -986,10 +986,10 @@ namespace PDA_Web.Areas.Admin.Controllers
 
                     VesselBallast = MapYesNo(row[12]),
                     Reduced_GRT = MapYesNo(row[13]),
-                    SlabIncreemental = MapIncremental(row[15]),
+                    SlabIncreemental = MapIncremental(row[16]),
                     status = MapStatus(row[8]),
 
-                    Remark = row[22]?.ToString(),
+                    Remark = row[23]?.ToString(),
                     CreatedBy = HttpContext.Session.GetString("UserID"),
                     ModifyUserID = HttpContext.Session.GetString("UserID"),
                     CreationDate = DateTime.Now,
@@ -1015,6 +1015,28 @@ namespace PDA_Web.Areas.Admin.Controllers
         }
 
 
+        // Helper method
+        bool TryGetDate(object cell, out DateTime result)
+        {
+            result = default;
+            if (cell == null || cell == DBNull.Value) return false;
+
+            // Excel already parsed it as DateTime
+            if (cell is DateTime dt)
+            {
+                result = dt;
+                return true;
+            }
+
+            // Fallback: user typed it as text
+            return DateTime.TryParseExact(
+                cell.ToString(),
+                new[] { "dd/MM/yyyy", "d/M/yyyy", "MM/dd/yyyy" },
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out result
+            );
+        }
 
         bool HasValue(object val)
         {
@@ -1023,12 +1045,11 @@ namespace PDA_Web.Areas.Admin.Controllers
 
         int MapYesNo(object val)
         {
-            if (!HasValue(val)) return 0;
             var v = val.ToString().Trim().ToLower();
-            if (v == "yes") return 2;
+            if (v == "not-applicable") return 0;
             if (v == "no") return 1;
-            if (v == "not-applicable") return 3;
-            return 0;
+            if (v == "yes") return 2;
+            return -1; // truly invalid
         }
 
         int MapStatus(object val)
@@ -1044,9 +1065,11 @@ namespace PDA_Web.Areas.Admin.Controllers
         int MapIncremental(object val)
         {
             if (!HasValue(val)) return 0;
-            return val.ToString().Trim().ToLower() == "incremental" ? 1 : 0;
+            var v = val.ToString().Trim().ToLower();
+            if (v == "increemental") return 1;  // match typo in dropdown
+            if (v == "not-increemental") return 2;
+            return -1;
         }
-
 
     }
 }
