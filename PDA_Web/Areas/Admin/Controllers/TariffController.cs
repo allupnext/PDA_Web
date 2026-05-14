@@ -982,7 +982,7 @@ namespace PDA_Web.Areas.Admin.Controllers
 
                     SlabFrom = slabFrom,
                     SlabTo = slabTo,
-                    Range_TariffID = int.TryParse(row[18]?.ToString(), out var rt) ? rt : 0,
+                    Range_TariffID = int.TryParse(row[19]?.ToString(), out var rt) ? rt : 0,
 
                     VesselBallast = MapYesNo(row[12]),
                     Reduced_GRT = MapYesNo(row[13]),
