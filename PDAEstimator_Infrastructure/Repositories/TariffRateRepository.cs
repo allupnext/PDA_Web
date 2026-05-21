@@ -57,18 +57,52 @@ namespace PDAEstimator_Infrastructure.Repositories
                     ISNULL(f.formulaMasterID,0) FormulaID,
                     ISNULL(pat.ID,0) OperationTypeID
                 FROM (SELECT 1 X) d
-                LEFT JOIN PortDetails p ON p.PortName = @Port
-                LEFT JOIN TerminalDetails t ON t.TerminalName = @Terminal
-                LEFT JOIN BerthDetails b ON b.BerthName = @Berth
-                LEFT JOIN CargoDetails c ON c.CargoName = @Cargo
-                LEFT JOIN CallType ct ON ct.CallTypeName = @CallType
-                LEFT JOIN ExpenseMaster ec ON ec.ExpenseName = @Expense
-                LEFT JOIN ChargeCodeMaster cc ON cc.ChargeCodeName = @ChargeCode
-                LEFT JOIN TaxMaster tx ON tx.TaxName = @Tax 
-                LEFT JOIN TariffSegment ts ON ts.TariffSegmentName = @Slab
-                LEFT JOIN Currency cur ON cur.CurrencyCode = @Currency
-                LEFT JOIN FormulaMaster f ON f.FormulaName = @Formula
-                LEFT JOIN PortActivityType pat ON pat.ActivityType = @OperationType";
+                LEFT JOIN PortDetails p 
+                    ON p.PortName = @Port 
+                    AND ISNULL(p.IsDeleted,0) = 0
+
+                LEFT JOIN TerminalDetails t 
+                    ON t.TerminalName = @Terminal 
+                    AND ISNULL(t.IsDeleted,0) = 0
+
+                LEFT JOIN BerthDetails b 
+                    ON b.BerthName = @Berth 
+                    AND ISNULL(b.IsDeleted,0) = 0
+
+                LEFT JOIN CargoDetails c 
+                    ON c.CargoName = @Cargo 
+                    AND ISNULL(c.IsDeleted,0) = 0
+
+                LEFT JOIN CallType ct 
+                    ON ct.CallTypeName = @CallType 
+                    AND ISNULL(ct.IsDeleted,0) = 0
+
+                LEFT JOIN ExpenseMaster ec 
+                    ON ec.ExpenseName = @Expense 
+                    AND ISNULL(ec.IsDeleted,0) = 0
+
+                LEFT JOIN ChargeCodeMaster cc 
+                    ON cc.ChargeCodeName = @ChargeCode 
+                    AND ISNULL(cc.IsDeleted,0) = 0
+
+                LEFT JOIN TaxMaster tx 
+                    ON tx.TaxName = @Tax 
+                    AND ISNULL(tx.IsDeleted,0) = 0
+
+                LEFT JOIN TariffSegment ts 
+                    ON ts.TariffSegmentName = @Slab 
+                    AND ISNULL(ts.IsDeleted,0) = 0
+
+                LEFT JOIN Currency cur 
+                    ON cur.CurrencyCode = @Currency 
+                    AND ISNULL(cur.IsDeleted,0) = 0
+
+                LEFT JOIN FormulaMaster f 
+                    ON f.FormulaName = @Formula 
+                    AND ISNULL(f.IsDeleted,0) = 0
+
+                LEFT JOIN PortActivityType pat 
+                    ON pat.ActivityType = @OperationType";
 
             using var con = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
             return await con.QueryFirstAsync<TariffLookupAllResult>(sql, req);
