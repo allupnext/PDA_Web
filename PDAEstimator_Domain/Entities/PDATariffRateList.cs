@@ -71,5 +71,7 @@ namespace PDAEstimator_Domain.Entities
 
         public int? OperationTypeID { get; set; }
 
+        public int? CustomerId { get; set; } // null = tariff applies to all customers
+
     }
 }

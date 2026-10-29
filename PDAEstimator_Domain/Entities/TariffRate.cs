@@ -32,6 +32,7 @@ namespace PDAEstimator_Domain.Entities
         public string? ModifyUserID { get; set; }
         public DateTime? ModifyDate { get; set; }
         public int? OperationTypeID { get; set; }
+        public int? CustomerId { get; set; } // null = applies to all customers
         public int status { get; set; }
         [DisplayFormat(DataFormatString = "{0:MM-dd-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? Validity_From { get; set; }

@@ -59,8 +59,8 @@ namespace PDAEstimator_Infrastructure_Shared.Services
                 try
                 {
                     client.Connect(_emailConfig.SmtpServer, _emailConfig.Port, false);
-                    client.AuthenticationMechanisms.Remove("XOAUTH2");
-                    //client.Authenticate(_emailConfig.UserName, _emailConfig.Password);
+                    client.AuthenticationMechanisms.Remove("XOAUTH2");  // Comment this line for Local and for server use this line to remove XOAUTH2 authentication mechanism
+                    //client.Authenticate(_emailConfig.UserName, _emailConfig.Password); // Comment this line for Server 
                     client.Send(mailMessage);
                 }
                 catch

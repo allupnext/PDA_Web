@@ -82,8 +82,21 @@ namespace PDAEstimator_Infrastructure.Repositories
                 using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
                 {
                     connection.Open();
-                    var result = await connection.QueryAsync<TariffRateList>(sql, new { PortId = PortId });
-                    return new List<TariffRateList>(result.ToList());
+                    var result = (await connection.QueryAsync<TariffRateList>(sql, new { PortId = PortId })).ToList();
+
+                    // Customer is read separately so the GetAllTariffByPortId procedure does not need to change
+                    var customers = (await connection.QueryAsync(
+                        "SELECT tr.TariffRateID, tr.CustomerId, cu.Company AS CustomerName FROM TariffRate tr LEFT JOIN CustomerMaster cu ON cu.CustomerId = tr.CustomerId WHERE tr.PortID = @PortId AND tr.IsDeleted != 1",
+                        new { PortId = PortId })).ToDictionary(x => (int)x.TariffRateID);
+                    foreach (var item in result)
+                    {
+                        if (customers.TryGetValue(item.TariffRateID, out var c))
+                        {
+                            item.CustomerId = (int?)c.CustomerId;
+                            item.CustomerName = (string?)c.CustomerName;
+                        }
+                    }
+                    return result;
                 }
             }
             catch(Exception ex)

@@ -22,6 +22,7 @@ public class TariffLookupResult
         public int? SlabID { get; set; }
         public int? CurrencyID { get; set; }
         public int? FormulaID { get; set; }
+        public int CustomerID { get; set; }
     }
 
 }

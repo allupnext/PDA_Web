@@ -20,6 +20,7 @@ namespace PDAEstimator_Domain.Entities
         public string? Slab { get; set; }
         public string? Currency { get; set; }
         public string? Formula { get; set; }
+        public string? Customer { get; set; }
     }
 
 }

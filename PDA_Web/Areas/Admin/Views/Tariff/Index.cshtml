@@ -141,6 +141,9 @@
                         </div>
                         <div class="row" style="flex-wrap: nowrap !important;">
 
+                            <div class="col-sm-2" style="max-width: 15%;">
+                                Customer<span class="text-danger">*</span>
+                            </div>
                             <div class="col-sm-2" style="max-width: 12%;">
                                 Terminal<span class="text-danger">*</span>
                             </div>
@@ -189,6 +192,9 @@
                         </div>
                         <div class="row" style="flex-wrap: nowrap !important;">
 
+                            <div class="col-sm-2" style="max-width: 15%;" id="customerdrop">
+                                @Html.DropDownList("CustomerName", new SelectList(ViewBag.Customers, "CustomerId", "Company"), "All", new { @class = "form-control" })
+                            </div>
                             <div class="col-sm-2" style="max-width: 12%;" id="terminaldrop">
                                 @Html.DropDownList("TerminalName", new SelectList(ViewBag.Terminal, "ID", "TerminalName"), "ALL", new { @class = "form-control", @onchange = "TerminalOnChange(this.value)" })
 
@@ -387,6 +393,10 @@
 
                         </div>
                         <div class="row" style="padding-bottom: 10px;">
+                            <div class="col-sm-2" style="max-width: 10%;">
+                                <label for="CustomerFilter">Customer</label>
+                                @Html.DropDownList("CustomerFilter", new SelectList(ViewBag.Customers, "CustomerId", "Company"), "ALL", new { @class = "form-control" })
+                            </div>
                             <div class="col-sm-2" style="max-width: 10%;" id="DivTerminalNameFilter">
                                 <label for="TerminalNameFilter">Terminal</label>
                                 @Html.DropDownList("TerminalNameFilter", new SelectList(ViewBag.Terminal, "ID", "TerminalName"), "Please select", new { @class = "form-control", @onchange = "onChangeTerminalNameFilter()" })
@@ -740,7 +750,10 @@
 
                   loadData();
               });
-              $("#CallTypeFilter").change(function () {
+              $("#CustomerFilter").change(function () {
+              loadData();
+          });
+          $("#CallTypeFilter").change(function () {
                   loadData();
               });
               $("#ExpensesFilter").change(function () {
@@ -915,6 +928,7 @@
               TariffMasters = {
                   // "TariffID": $('#TariffID').val(),
                   "TariffRateID": 0,
+                  "CustomerId": $("#CustomerName").val(),
                   "PortID": $("#PortName").val(),
                   "TerminalID": $('#TerminalName').val(),
                   "BerthID": $("#BerthName").val(),
@@ -1018,6 +1032,7 @@
 
               TariffMasters = {
                   "PortID": $('#PortName').val(),
+                  "CustomerId": $("#CustomerName").val(),
                   "TariffRateID": $('#TariffRateID').val(),
                   "TerminalID": $('#TerminalName').val(),
                   "BerthID": $("#BerthName").val(),
@@ -1146,6 +1161,7 @@
                   success: function (data) {
                       debugger;
                       $('#PortName').val(data.tariffRates.portID);
+                      $('#CustomerName').val(data.tariffRates.customerId == null ? '' : data.tariffRates.customerId);
                       if (data.tariffRates.terminalID == 0)
                           $('#TerminalName').val('');
                       else
@@ -1236,6 +1252,7 @@
               return day + '/' + month + '/' + year;
           }
           function clear() {
+              $('#CustomerName').val('');
               $('#TerminalName').val('');
               $("#BerthName").val('');
               $('#CargoName').val('');
@@ -1302,6 +1319,7 @@
               TariffMasters = {
                   "TariffID": 0,
                   "PortID": $("#PortName").val(),
+                  "CustomerId": $('#CustomerFilter').val(),
                   "TerminalID": $('#TerminalNameFilter').val(),
                   "BerthID": $("#BerthNameFilter").val(),
                   "CargoID": $('#CargoNameFilter').val(),

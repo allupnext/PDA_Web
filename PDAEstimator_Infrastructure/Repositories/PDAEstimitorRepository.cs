@@ -81,14 +81,24 @@ namespace PDAEstimator_Infrastructure.Repositories
             }
         }
 
-        public async Task<List<PDATariffRateList>> GetAllPDA_Tariff(int portId, DateTime ETA)
+        public async Task<List<PDATariffRateList>> GetAllPDA_Tariff(int portId, DateTime ETA, int customerId = 0)
         {
             var sql = "GetAllPDA_Tariff";
             using (var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
-                var result = await connection.QueryAsync<PDATariffRateList>(sql, new { PortId = portId, ETA = ETA.Date });
-                return new List<PDATariffRateList>(result.ToList());
+                var result = (await connection.QueryAsync<PDATariffRateList>(sql, new { PortId = portId, ETA = ETA.Date })).ToList();
+
+                // Customer rule: tariffs with no customer apply to everyone; a customer-specific tariff applies
+                // only to that customer and replaces the all-customer tariffs of the same charge code.
+                if (result.Count > 0)
+                {
+                    var overriddenChargeCodes = result.Where(x => customerId > 0 && x.CustomerId == customerId).Select(x => x.ChargeCodeID).ToHashSet();
+                    result = result.Where(x => x.CustomerId == null
+                        ? !overriddenChargeCodes.Contains(x.ChargeCodeID)
+                        : x.CustomerId == customerId).ToList();
+                }
+                return result;
             }
         }
 

@@ -10,6 +10,16 @@
 <link href="~/plugins/jquery-ui/jquery-ui.theme.min.css" rel="stylesheet" />
 <link href="~/plugins/jquery-ui/jquery-ui.theme.css" rel="stylesheet" />
 <link href="~/plugins/jquery-ui/jquery-ui.css" rel="stylesheet" />
+<style>
+    .estimator-section {
+        display: inline-block;
+        background-color: #008080;
+        color: #fff;
+        font-weight: bold;
+        padding: 0 4px;
+        margin: 20px 0 15px 0;
+    }
+</style>
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <div class="container-fluid">
@@ -65,6 +75,7 @@
                         <!-- form start -->
                         <div class="card-body">
                             <input type="hidden" id="PDAEstimatorId" name="PDAEstimatorId" value="">
+                            <h5 class="estimator-section">Customer Details:</h5>
                             <div class="row">
                                 <div class="col-sm-2">
                                     <div class="form-group">
@@ -85,47 +96,14 @@
                             </div>
 
 
+                            <h5 class="estimator-section">Cargo &amp; Call Details:</h5>
                             <div class="row">
-                                <div class="col-sm-2">
-                                    <div class="form-group">
-                                        <label for="PortName">Port<span class="text-danger">*</span></label>
-                                        @Html.DropDownList("PortName", new SelectList(ViewBag.Port, "ID", "PortName"), "Please Select", new { @class = "form-control" , @onchange = "PortOnChangefunc()" })
-                                    </div>
-                                </div>
-                                <div class="col-sm-2">
-                                    <div class="form-group">
-                                        <label for="PortName">Port Operation Type<span class="text-danger">*</span></label>
-                                        @Html.DropDownList("PortActivityName", new SelectList(ViewBag.PortActivity, "ID", "ActivityType"), "Please Select", new { @class = "form-control", @onchange = "GetLoadOrDischargeRate()" })
-                                    </div>
-                                </div>
-                                <div class="col-sm-2">
-                                    <div class="form-group">
-                                        <label for="CallType">Call Type<span class="text-danger">*</span></label>
-                                        @Html.DropDownList("CallTypeName", new SelectList(ViewBag.CallType, "ID", "CallTypeName"), "Please select", new { @class = "form-control" })
-                                    </div>
-                                </div>
                                 <div class="col-sm-2">
                                     <div class="form-group" id="cargodrop">
                                         <label for="Cargo">Cargo Name<span class="text-danger">*</span></label>
                                         @Html.DropDownList("CargoName", new SelectList(ViewBag.Cargo, "ID", "CargoName"), "Please select", new { @class = "form-control", @onchange = "CargoNameOnChangefunc()" })
                                     </div>
                                 </div>
-                                <div class="col-sm-2">
-                                    <div class="form-group" id="terminaldrop">
-                                        <label for="PortName">Terminal<span class="text-danger">*</span></label>
-                                        @Html.DropDownList("TerminalName", new SelectList(ViewBag.Terminal, "ID", "TerminalName"), "Please Select", new { @class = "form-control" , @onchange = "callChangefunc(this.value)" })
-                                    </div>
-                                </div>
-                                <div class="col-sm-2">
-                                    <div class="form-group" id="berthdrop">
-                                        <label for="PortName">Berth<span class="text-danger">*</span></label>
-                                        @Html.DropDownList("BerthName", new SelectList(ViewBag.Berth, "ID", "BerthName"), "Please Select", new { @class = "form-control", @onchange = "BerthChangefunc(this.value)" })
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div class="row">
                                 <div class="col-sm-2">
                                     <div class="form-group">
                                         <label for="CargoQty">Cargo Qty (MT)<span class="text-danger">*</span></label>
@@ -148,6 +126,40 @@
                                 </div>
                                 <div class="col-sm-2">
                                     <div class="form-group">
+                                        <label for="PortName">Port Operation Type<span class="text-danger">*</span></label>
+                                        @Html.DropDownList("PortActivityName", new SelectList(ViewBag.PortActivity, "ID", "ActivityType"), "Please Select", new { @class = "form-control", @onchange = "GetLoadOrDischargeRate()" })
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label for="CallType">Call Type<span class="text-danger">*</span></label>
+                                        @Html.DropDownList("CallTypeName", new SelectList(ViewBag.CallType, "ID", "CallTypeName"), "Please select", new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h5 class="estimator-section">Port Details:</h5>
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label for="PortName">Port<span class="text-danger">*</span></label>
+                                        @Html.DropDownList("PortName", new SelectList(ViewBag.Port, "ID", "PortName"), "Please Select", new { @class = "form-control" , @onchange = "PortOnChangefunc()" })
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group" id="terminaldrop">
+                                        <label for="PortName">Terminal<span class="text-danger">*</span></label>
+                                        @Html.DropDownList("TerminalName", new SelectList(ViewBag.Terminal, "ID", "TerminalName"), "Please Select", new { @class = "form-control" , @onchange = "callChangefunc(this.value)" })
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group" id="berthdrop">
+                                        <label for="PortName">Berth<span class="text-danger">*</span></label>
+                                        @Html.DropDownList("BerthName", new SelectList(ViewBag.Berth, "ID", "BerthName"), "Please Select", new { @class = "form-control", @onchange = "BerthChangefunc(this.value)" })
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
                                         <label for="LoadDischargeRate">Load/Discharge Rate<span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" id="LoadDischargeRate" placeholder="Load/Discharge Rate">
                                     </div>
@@ -166,6 +178,7 @@
                                 </div>
                             </div>
 
+                            <h5 class="estimator-section">Vessel Details:</h5>
                             <div class="row">
                                 <div class="col-sm-2">
                                     <div class="form-group">
@@ -225,6 +238,40 @@
 
                             </div>
 
+                            <div class="row">
+                                <div class="col-sm-2" style="max-width: 15%;">
+                                    <div class="form-group">
+                                        <label for="VesselBallast">VesselBallast</label>
+                                        @Html.DropDownList("VesselBallast", new List<SelectListItem>
+                                        {
+                                        // new SelectListItem{ Text="Not-Applicable", Value = "0" },
+                                        new SelectListItem{ Text="No", Value = "1" },
+                                        new SelectListItem{ Text="Yes", Value = "2" },
+                                        }, new { @class = "form-control" })
+                                    </div>
+                                </div>
+                                <div class="col-sm-2" style="max-width: 15%;">
+                                    <div class="form-group">
+                                        <label for="ReducedGRT">Reduced GRT<span class="text-danger">*</span></label>
+                                        <input type="number" class="form-control" id="ReducedGRT" placeholder="Reduced GRT">
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-2" style="max-width: 15%;">
+                                    <div class="form-group">
+                                        <label for="IsReducedGRT">IsReduced GRT<span class="text-danger">*</span></label>
+                                        @Html.DropDownList("IsReducedGRT", new List<SelectListItem>
+                                        {
+                                        // new SelectListItem{ Text="Not-Applicable", Value = "0" },
+                                        new SelectListItem{ Text="No", Value = "1" },
+                                        new SelectListItem{ Text="Yes", Value = "2" },
+                                        }, new { @class = "form-control" })
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h5 class="estimator-section">Berth &amp; Anchorage Stay:</h5>
                             <div class="row" id="BerthStayForeign">
                                 <div class="col-sm-3">
                                     <div class="form-group">
@@ -242,6 +289,12 @@
                                     <div class="form-group">
                                         <label for="BerthStayShift">Berth Stay Foreign (Shift)</label>
                                         <input type="number" class="form-control" id="BerthStayShift" placeholder="Berth Stay Foreign Shift" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label for="AnchorageStay">Anchorage Stay (Hours)</label>
+                                        <input type="number" class="form-control" id="AnchorageStay" placeholder="Anchorage Stay" value="0">
                                     </div>
                                 </div>
 
@@ -270,46 +323,10 @@
                             <div class="row">
                                 <div class="col-sm-2">
                                     <div class="form-group">
-                                        <label for="AnchorageStay">Anchorage Stay (Hours)</label>
-                                        <input type="number" class="form-control" id="AnchorageStay" placeholder="Anchorage Stay" value="0">
-                                    </div>
-                                </div>
-                                <div class="col-sm-2">
-                                    <div class="form-group">
                                         @*                                     <label for="ETA">ETA<span class="text-danger">*</span></label>
                                         <input type="date" class="form-control" id="ETA" placeholder="ETA"> *@
                                         <label for="ETA">ETA</label>
                                         <input type="text" class="form-control" id="ETA">
-
-                                    </div>
-                                </div>
-                                <div class="col-sm-2" style="max-width: 15%;">
-                                    <div class="form-group">
-                                        <label for="VesselBallast">VesselBallast</label>
-                                        @Html.DropDownList("VesselBallast", new List<SelectListItem>
-                                        {
-                                        // new SelectListItem{ Text="Not-Applicable", Value = "0" },
-                                        new SelectListItem{ Text="No", Value = "1" },
-                                        new SelectListItem{ Text="Yes", Value = "2" },
-                                        }, new { @class = "form-control" })
-                                    </div>
-                                </div>
-                                <div class="col-sm-2" style="max-width: 15%;">
-                                    <div class="form-group">
-                                        <label for="ReducedGRT">Reduced GRT<span class="text-danger">*</span></label>
-                                        <input type="number" class="form-control" id="ReducedGRT" placeholder="Reduced GRT">
-
-                                    </div>
-                                </div>
-                                <div class="col-sm-2" style="max-width: 15%;">
-                                    <div class="form-group">
-                                        <label for="IsReducedGRT">IsReduced GRT<span class="text-danger">*</span></label>
-                                        @Html.DropDownList("IsReducedGRT", new List<SelectListItem>
-                                        {
-                                        // new SelectListItem{ Text="Not-Applicable", Value = "0" },
-                                        new SelectListItem{ Text="No", Value = "1" },
-                                        new SelectListItem{ Text="Yes", Value = "2" },
-                                        }, new { @class = "form-control" })
 
                                     </div>
                                 </div>
@@ -454,6 +471,7 @@
                 changeMonth: true,
                 changeYear: true
             });
+            $("#ETA").val($.datepicker.formatDate('dd/mm/yy', new Date())); // default ETA = today
 
             $("#customerid").change(function () {
                 debugger
@@ -935,7 +953,7 @@
             $('#AnchorageStay').val("0");
             $('#LOA').val("");
             $('#Beam').val("");
-            $('#ETA').val("");
+            $('#ETA').val($.datepicker.formatDate('dd/mm/yy', new Date()));
             $('#Company').val("");
             $('#BerthStayShift').val("");
             $('#BerthStayhourCoastal').val("");

@@ -357,7 +357,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                 pDAEstimatorOutPut.DefaultCurrencyCodeID = currencyData.Where(x => x.DefaultCurrecny == true) != null ? currencyData.Where(x => x.DefaultCurrecny == true).FirstOrDefault().ID : 0;
 
                 //var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(pDAEstimatorOutPut.PortID).Result.Where(x => (x.CallTypeID == pDAEstimatorOutPut.CallTypeID || x.CallTypeID == null) && (x.SlabFrom == null || x.SlabFrom <= pDAEstimatorOutPut.GRT)) ;
-                var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(pDAEstimatorOutPut.PortID, pDAEstimatorOutPut.ETA != null ? (DateTime)pDAEstimatorOutPut.ETA : DateTime.Now.Date).Result.Where(x => (x.CallTypeID == pDAEstimatorOutPut.CallTypeID || x.CallTypeID == null) && (x.TerminalID == pDAEstimatorOutPut.TerminalID || x.TerminalID == null) && (x.BerthID == pDAEstimatorOutPut.BerthID || x.BerthID == null || x.BerthID == 0) && (x.CargoID == pDAEstimatorOutPut.CargoID || x.CargoID == null) && (x.OperationTypeID == pDAEstimatorOutPut.ActivityTypeId || x.OperationTypeID == null) && (x.VesselBallast == pDAEstimatorOutPut.VesselBallast || x.VesselBallast == 0)).OrderBy(o => o.ChargeCodeSequence).ThenBy(o => o.SlabFrom).ThenBy(o => o.TariffRateID);
+                var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(pDAEstimatorOutPut.PortID, pDAEstimatorOutPut.ETA != null ? (DateTime)pDAEstimatorOutPut.ETA : DateTime.Now.Date, PDAData.CustomerID).Result.Where(x => (x.CallTypeID == pDAEstimatorOutPut.CallTypeID || x.CallTypeID == null) && (x.TerminalID == pDAEstimatorOutPut.TerminalID || x.TerminalID == null) && (x.BerthID == pDAEstimatorOutPut.BerthID || x.BerthID == null || x.BerthID == 0) && (x.CargoID == pDAEstimatorOutPut.CargoID || x.CargoID == null) && (x.OperationTypeID == pDAEstimatorOutPut.ActivityTypeId || x.OperationTypeID == null) && (x.VesselBallast == pDAEstimatorOutPut.VesselBallast || x.VesselBallast == 0)).OrderBy(o => o.ChargeCodeSequence).ThenBy(o => o.SlabFrom).ThenBy(o => o.TariffRateID);
                 List<PDATariffRateList> pDATariffRateList = new List<PDATariffRateList>();
                 decimal taxrate = 0;
                 foreach (var triff in triffdata)
@@ -658,18 +658,25 @@ namespace PDA_Web.Areas.Admin.Controllers
                     if (triff.SlabTo != 0 && slabattributvalue >= triff.SlabTo && triff.SlabFrom == 1)
                     {
                         units = triff.SlabTo;
+                        triff.NonIncreemental = true;
                     }
                     else if (triff.SlabTo != 0 && slabattributvalue >= triff.SlabTo && triff.SlabFrom != 1)
                     {
                         units = (triff.SlabTo - triff.SlabFrom) + 1;
                         units = Math.Abs(Convert.ToDecimal(units));
+                        triff.NonIncreemental = true;
                     }
                     else if (slabattributvalue >= triff.SlabFrom)
                     {
                         units = (slabattributvalue - triff.SlabFrom) + 1;
                         units = Math.Abs(Convert.ToDecimal(units));
+                        triff.NonIncreemental = true;
                     }
-                    triff.NonIncreemental = true;
+                    else
+                    {
+                        triff.NonIncreemental = false;
+                    }
+                    
                 }
                 else
                 {
@@ -1275,7 +1282,8 @@ namespace PDA_Web.Areas.Admin.Controllers
 
                         var triffdata = unitOfWork.PDAEstimitor.GetAllPDA_Tariff(
                             PDAEstimitor.PortID,
-                            PDAEstimitor.ETA != null ? (DateTime)PDAEstimitor.ETA : DateTime.Now.Date
+                            PDAEstimitor.ETA != null ? (DateTime)PDAEstimitor.ETA : DateTime.Now.Date,
+                            PDAEstimitor.CustomerID
                         ).Result.Where(x =>
                             (x.CallTypeID == PDAEstimitor.CallTypeID || x.CallTypeID == null) &&
                             (x.TerminalID == PDAEstimitor.TerminalID || x.TerminalID == null) &&

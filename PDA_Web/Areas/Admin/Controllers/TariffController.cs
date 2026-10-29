@@ -291,6 +291,9 @@ namespace PDA_Web.Areas.Admin.Controllers
                 var dataTaxs = await unitOfWork.Taxs.GetAllAsync();
                 ViewBag.Texs = dataTaxs;
 
+                var dataCustomers = await unitOfWork.Customer.GetAllAsync();
+                ViewBag.Customers = dataCustomers.Where(x => !string.IsNullOrWhiteSpace(x.Company)).ToList();
+
                 return View();
             }
             else
@@ -426,6 +429,10 @@ namespace PDA_Web.Areas.Admin.Controllers
             {
                 TariffRatedata = TariffRatedata.Where(x => x.ChargeCodeID == tariff.ChargeCodeID).ToList();
             }
+            if (tariff.CustomerId != null && tariff.CustomerId != 0)
+            {
+                TariffRatedata = TariffRatedata.Where(x => x.CustomerId == tariff.CustomerId).ToList();
+            }
             return PartialView("partial/_ViewAllTariffRate", TariffRatedata);
         }
 
@@ -504,6 +511,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             tariffRate.Remark = tariff.Remark;
             tariffRate.SlabIncreemental = tariff.SlabIncreemental;
             tariffRate.VesselBallast = tariff.VesselBallast;
+            tariffRate.CustomerId = tariff.CustomerId == 0 ? null : tariff.CustomerId;
 
             await unitOfWork.TariffRates.AddAsync(tariffRate);
             _toastNotification.AddSuccessToastMessage("Inserted successfully");
@@ -530,8 +538,7 @@ namespace PDA_Web.Areas.Admin.Controllers
 
             tariffrate.Validity_From = Validity_Froms;
             tariffrate.Validity_To = Validity_To;
-
-
+            if (tariffrate.CustomerId == 0) tariffrate.CustomerId = null; // All customers
 
             if (tariffrate.TariffRateID > 0)
             {
@@ -632,7 +639,9 @@ namespace PDA_Web.Areas.Admin.Controllers
             var formulas = (await unitOfWork.Formula.GetAllAsync()).Select(x => x.formulaName).ToList();
             var taxes = (await unitOfWork.Taxs.GetAllAsync()).Select(x => x.TaxName).ToList();
             var portActivities = (await unitOfWork.PortActivities.GetAllAsync()).Select(x => x.ActivityType).ToList();
+            var customers = (await unitOfWork.Customer.GetAllAsync()).Where(x => !string.IsNullOrWhiteSpace(x.Company)).Select(x => x.Company).Distinct().ToList();
 
+            customers.Insert(0, "All");
             terminals.Insert(0, "All");
             berths.Insert(0, "All");
             cargos.Insert(0, "All");
@@ -653,7 +662,7 @@ namespace PDA_Web.Areas.Admin.Controllers
                 "Call Type","Expenses","Charge Codes",
                 "Vessel Ballast","Reduced GRT","Tax","Slab","Slab Increemental",
                 "Slab From","Slab To","Range Tariff ID",
-                "Rate","Currency","Formula","Remark"
+                "Rate","Currency","Formula","Remark","Customer"
             };
 
             for (int i = 0; i < headers.Length; i++)
@@ -697,6 +706,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             Fill("Currency", currencies);
             Fill("Formula", formulas);
             Fill("Incremental", new() { "Increemental", "Not-Increemental" });
+            Fill("Customer", customers);
 
             // =========================
             // 4️⃣ DROPDOWNS
@@ -726,6 +736,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             Drop("V", 13);
             Drop("W", 14);
             Drop("Q", 15);
+            Drop("Y", 16);
 
             // =========================
             // 5️⃣ DATA VALIDATION
@@ -817,6 +828,7 @@ namespace PDA_Web.Areas.Admin.Controllers
             ws.Column("V").Width = 8;   // Currency
             ws.Column("W").Width = 35;  // Formula
             ws.Column("X").Width = 30;  // Remark
+            ws.Column("Y").Width = 35;  // Customer
 
             // =========================
             // 7️⃣ RETURN FILE
@@ -866,6 +878,10 @@ namespace PDA_Web.Areas.Admin.Controllers
                     tariffRateId = trId;
                 bool isInsert = tariffRateId == 0;
 
+                // Customer column is optional (older templates don't have it); blank or "All" = all customers
+                string customerCell = table.Columns.Count > 24 ? row[24]?.ToString()?.Trim() : null;
+                bool allCustomers = string.IsNullOrEmpty(customerCell) || customerCell.Equals("All", StringComparison.OrdinalIgnoreCase);
+
                 var req = new TariffLookupRequest
                 {
                     Port = row[1]?.ToString(),
@@ -879,7 +895,8 @@ namespace PDA_Web.Areas.Admin.Controllers
                     Tax = row[14]?.ToString(),
                     Slab = row[15]?.ToString(),
                     Currency = row[21]?.ToString(),
-                    Formula = isInsert ? row[22]?.ToString() : null
+                    Formula = isInsert ? row[22]?.ToString() : null,
+                    Customer = customerCell
                 };
 
                 var lookup = await unitOfWork.TariffRates.ResolveAllIdsAsync(req);
@@ -887,6 +904,9 @@ namespace PDA_Web.Areas.Admin.Controllers
                 // ===== REQUIRED (MATCH UI) =====
                 if (!HasValue(row[1]) || lookup.PortID == 0)
                     errors.Add($"Row {excelRow}: Invalid port");
+
+                if (!allCustomers && lookup.CustomerID == 0)
+                    errors.Add($"Row {excelRow}: Invalid customer");
 
                 if (HasValue(row[2]) && row[2].ToString() != "All" && lookup.TerminalID == 140)
                     errors.Add($"Row {excelRow}: Invalid terminal");
@@ -964,6 +984,7 @@ namespace PDA_Web.Areas.Admin.Controllers
 
                     PortID = lookup.PortID,
                     CurrencyID = lookup.CurrencyID,
+                    CustomerId = allCustomers || lookup.CustomerID == 0 ? null : lookup.CustomerID,
 
                     TerminalID = lookup.TerminalID == 140 ? null : lookup.TerminalID,
                     BerthID = lookup.BerthID, // Db inside insert 0 when null so no need change

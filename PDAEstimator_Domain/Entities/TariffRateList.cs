@@ -47,6 +47,8 @@ namespace PDAEstimator_Domain.Entities
 
         public decimal Rate { get; set; }
         public int? OperationTypeID { get; set; }
+        public int? CustomerId { get; set; } // null = All
+        public string? CustomerName { get; set; }
         public int status { get; set; }
 
         public int? CurrencyID { get; set; }
